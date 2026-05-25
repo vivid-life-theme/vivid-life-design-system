@@ -110,23 +110,9 @@ re-reads.
 
 Seven hues, five shades each — Tailwind v3 defaults at `900 / 700 / 500 / 300 / 100`:
 
-```
-Red      #7f1d1d  #b91c1c  #ef4444  #fca5a5  #fee2e2
-Orange   #7c2d12  #c2410c  #f97316  #fdba74  #ffedd5
-Yellow   #713f12  #a16207  #eab308  #fde047  #fef9c3
-Green*   #365314  #4d7c0f  #84cc16  #bef264  #ecfccb
-Blue     #1e3a8a  #1d4ed8  #3b82f6  #93c5fd  #dbeafe
-Purple   #581c87  #7e22ce  #a855f7  #d8b4fe  #f3e8ff
-Gray     #171717  #404040  #737373  #d4d4d4  #f5f5f5
-```
-
-\*Tailwind calls this hue "lime".
-
-**Extension hue (specialty, not a variant):**
-
-```
-Cyan     #164e63  #0e7490  #06b6d4  #67e8f9  #cffafe
-```
+<p align="center">
+  <img src="assets/palette.svg" alt="Source palette: 7 hues × 5 shades (900–100) plus Cyan extension" />
+</p>
 
 Cyan is reserved for places where the protocol or convention _explicitly_
 requires cyan — terminal ANSI `cyan` / `bright-cyan`, diff hunk headers
