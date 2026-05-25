@@ -1,6 +1,6 @@
 # Vivid Life Theme
 
-> A multi-flavor color-scheme syste
+> A multi-flavor color-scheme system
 
 This repository is the **foundation** for a family of themes. It is not
 itself a theme for any one app. Downstream projects — VS Code, GTK,
