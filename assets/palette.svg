@@ -93,17 +93,17 @@
   <rect x="480" y="312" width="120" height="48" fill="#f5f5f5"/>
   <text x="540" y="352" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="9" fill="#171717">#f5f5f5</text>
   <!-- footnote + gap -->
-  <text x="3" y="366" font-family="ui-sans-serif,system-ui,-apple-system,sans-serif" font-size="9" fill="#888888">* Tailwind calls this hue “lime” · ↓ specialty extension, not a variant</text>
+  <text x=”3” y=”375” font-family=”ui-sans-serif,system-ui,-apple-system,sans-serif” font-size=”11” fill=”#737373”>* Tailwind calls this hue “lime” · ↓ specialty extension, not a variant</text>
   <!-- Cyan (extension) -->
-  <rect x="0" y="367" width="120" height="48" fill="#164e63"/>
-  <text x="7" y="382" font-family="ui-sans-serif,system-ui,-apple-system,sans-serif" font-size="11" font-weight="700" fill="white">Cyan</text>
-  <text x="60" y="407" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="9" fill="white">#164e63</text>
-  <rect x="120" y="367" width="120" height="48" fill="#0e7490"/>
-  <text x="180" y="407" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="9" fill="white">#0e7490</text>
-  <rect x="240" y="367" width="120" height="48" fill="#06b6d4"/>
-  <text x="300" y="407" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="9" fill="#171717">#06b6d4</text>
-  <rect x="360" y="367" width="120" height="48" fill="#67e8f9"/>
-  <text x="420" y="407" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="9" fill="#171717">#67e8f9</text>
-  <rect x="480" y="367" width="120" height="48" fill="#cffafe"/>
-  <text x="540" y="407" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="9" fill="#171717">#cffafe</text>
+  <rect x="0" y="382" width="120" height="32" fill="#164e63"/>
+  <text x="7" y="397" font-family="ui-sans-serif,system-ui,-apple-system,sans-serif" font-size="11" font-weight="700" fill="white">Cyan</text>
+  <text x="60" y="406" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="9" fill="white">#164e63</text>
+  <rect x="120" y="382" width="120" height="32" fill="#0e7490"/>
+  <text x="180" y="406" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="9" fill="white">#0e7490</text>
+  <rect x="240" y="382" width="120" height="32" fill="#06b6d4"/>
+  <text x="300" y="406" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="9" fill="#171717">#06b6d4</text>
+  <rect x="360" y="382" width="120" height="32" fill="#67e8f9"/>
+  <text x="420" y="406" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="9" fill="#171717">#67e8f9</text>
+  <rect x="480" y="382" width="120" height="32" fill="#cffafe"/>
+  <text x="540" y="406" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="9" fill="#171717">#cffafe</text>
 </svg>
