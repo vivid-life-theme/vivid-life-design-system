@@ -1,0 +1,434 @@
+/* ====================================================================
+   Vivid Life Theme — Foundation CSS
+   --------------------------------------------------------------------
+   AUTO-GENERATED from tokens.json5 by tools/build-css.mjs.
+   DO NOT EDIT BY HAND — your changes will be overwritten.
+
+   Apply by adding two classes to a container:
+     <body class="vl-midnight variant-purple"> … </body>
+
+   The flavor class sets the canvas, text, borders, syntax map.
+   The variant class only sets --vl-accent (and --vl-selection, which
+   is derived from --vl-accent via color-mix at runtime).
+   ==================================================================== */
+
+
+/* ── Typography — @font-face declarations ───────────────────────── */
+
+@font-face {
+  font-family: 'Atkinson Hyperlegible Next';
+  src: url('fonts/AtkinsonHyperlegibleNext-VariableFont_wght.ttf') format('truetype-variations');
+  font-weight: 200 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Atkinson Hyperlegible Next';
+  src: url('fonts/AtkinsonHyperlegibleNext-Italic-VariableFont_wght.ttf') format('truetype-variations');
+  font-weight: 200 800;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Atkinson Hyperlegible Mono';
+  src: url('fonts/AtkinsonHyperlegibleMono-VariableFont_wght.ttf') format('truetype-variations');
+  font-weight: 200 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Atkinson Hyperlegible Mono';
+  src: url('fonts/AtkinsonHyperlegibleMono-Italic-VariableFont_wght.ttf') format('truetype-variations');
+  font-weight: 200 800;
+  font-style: italic;
+  font-display: swap;
+}
+
+
+/* ── Base palette — 7 hues × 5 shades + cyan extension ─────────── */
+
+:root {
+  --vl-red-900        : #7f1d1d;
+  --vl-red-700        : #b91c1c;
+  --vl-red-500        : #ef4444;
+  --vl-red-300        : #fca5a5;
+  --vl-red-100        : #fee2e2;
+  --vl-orange-900     : #7c2d12;
+  --vl-orange-700     : #c2410c;
+  --vl-orange-500     : #f97316;
+  --vl-orange-300     : #fdba74;
+  --vl-orange-100     : #ffedd5;
+  --vl-yellow-900     : #713f12;
+  --vl-yellow-700     : #a16207;
+  --vl-yellow-500     : #eab308;
+  --vl-yellow-300     : #fde047;
+  --vl-yellow-100     : #fef9c3;
+  --vl-green-900      : #365314;
+  --vl-green-700      : #4d7c0f;
+  --vl-green-500      : #84cc16;
+  --vl-green-300      : #bef264;
+  --vl-green-100      : #ecfccb;
+  --vl-blue-900       : #1e3a8a;
+  --vl-blue-700       : #1d4ed8;
+  --vl-blue-500       : #3b82f6;
+  --vl-blue-300       : #93c5fd;
+  --vl-blue-100       : #dbeafe;
+  --vl-purple-900     : #581c87;
+  --vl-purple-700     : #7e22ce;
+  --vl-purple-500     : #a855f7;
+  --vl-purple-300     : #d8b4fe;
+  --vl-purple-100     : #f3e8ff;
+  --vl-gray-900       : #171717;
+  --vl-gray-700       : #404040;
+  --vl-gray-500       : #737373;
+  --vl-gray-300       : #d4d4d4;
+  --vl-gray-100       : #f5f5f5;
+
+  /* extension hue — protocol/convention-required cyan only */
+  --vl-cyan-900       : #164e63;
+  --vl-cyan-700       : #0e7490;
+  --vl-cyan-500       : #06b6d4;
+  --vl-cyan-300       : #67e8f9;
+  --vl-cyan-100       : #cffafe;
+}
+
+/* ── Root tokens — type, spacing, radii, shadows, motion ───────── */
+
+:root {
+  /* type stacks */
+  --vl-font-sans: "Atkinson Hyperlegible Next", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --vl-font-mono: "Atkinson Hyperlegible Mono", "Cascadia Code", "Cascadia Mono", ui-monospace, Menlo, Consolas, monospace;
+
+  /* spacing — 4px base scale */
+  --vl-space-0: 0;
+  --vl-space-1: 4px;
+  --vl-space-2: 8px;
+  --vl-space-3: 12px;
+  --vl-space-4: 16px;
+  --vl-space-5: 20px;
+  --vl-space-6: 24px;
+  --vl-space-8: 32px;
+  --vl-space-10: 40px;
+  --vl-space-12: 48px;
+  --vl-space-16: 64px;
+  --vl-space-20: 80px;
+  --vl-space-24: 96px;
+  --vl-space-px: 1px;
+
+  /* radii */
+  --vl-radius-none: 0;
+  --vl-radius-sm: 4px;
+  --vl-radius-md: 8px;
+  --vl-radius-lg: 12px;
+  --vl-radius-xl: 16px;
+  --vl-radius-pill: 9999px;
+
+  /* shadows + focus ring */
+  --vl-shadow-sm: 0 1px 2px rgba(0,0,0,0.08);
+  --vl-shadow-md: 0 4px 12px rgba(0,0,0,0.12), 0 1px 3px rgba(0,0,0,0.06);
+  --vl-shadow-lg: 0 12px 32px rgba(0,0,0,0.18), 0 4px 8px rgba(0,0,0,0.08);
+  --vl-focus-ring-width: 2px;
+  --vl-focus-ring-offset: 2px;
+
+  /* motion */
+  --vl-duration-instant: 0ms;
+  --vl-duration-fast: 120ms;
+  --vl-duration-base: 200ms;
+  --vl-duration-slow: 320ms;
+  --vl-ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --vl-ease-enter: cubic-bezier(0, 0, 0.2, 1);
+  --vl-ease-exit: cubic-bezier(0.4, 0, 1, 1);
+}
+
+/* ── Flavor: Midnight (dark, bg #171717) ── */
+.vl-midnight {
+  /* surface */
+  --vl-bg               : #171717;
+  --vl-bg-soft          : #404040;
+  --vl-bg-sunk          : #0a0a0a;
+  --vl-bg-overlay       : #404040;
+  --vl-bg-scrim         : #000000cc;
+  /* text */
+  --vl-fg               : #f5f5f5;
+  --vl-fg-muted         : #d4d4d4;
+  --vl-fg-subtle        : #737373;
+  --vl-fg-disabled      : #525252;
+  /* border */
+  --vl-border-subtle    : #262626;
+  --vl-border           : #404040;
+  --vl-border-strong    : #737373;
+  /* state */
+  --vl-state-hover      : #ffffff14;
+  --vl-state-active     : #ffffff1f;
+  --vl-state-selection  : #2a2f3a;
+  /* semantic */
+  --vl-semantic-success : #bef264;
+  --vl-semantic-warning : #fde047;
+  --vl-semantic-danger  : #fca5a5;
+  --vl-semantic-info    : #93c5fd;
+  /* syntax */
+  --syn-comment         : #737373;
+  --syn-keyword         : #d8b4fe;
+  --syn-string          : #84cc16;
+  --syn-number          : #f97316;
+  --syn-function        : #93c5fd;
+  --syn-type            : #eab308;
+  --syn-constant        : #f97316;
+  --syn-tag             : #93c5fd;
+  --syn-attr            : #eab308;
+  --syn-regex           : #ef4444;
+  --syn-punct           : #d4d4d4;
+  /* ansi (terminal) */
+  --vl-ansi-black       : #0a0a0a;
+  --vl-ansi-red         : #ef4444;
+  --vl-ansi-green       : #84cc16;
+  --vl-ansi-yellow      : #eab308;
+  --vl-ansi-blue        : #93c5fd;
+  --vl-ansi-magenta     : #d8b4fe;
+  --vl-ansi-cyan        : #06b6d4;
+  --vl-ansi-white       : #d4d4d4;
+  --vl-ansi-bright-black: #404040;
+  --vl-ansi-bright-red  : #fca5a5;
+  --vl-ansi-bright-green: #bef264;
+  --vl-ansi-bright-yellow: #fde047;
+  --vl-ansi-bright-blue : #93c5fd;
+  --vl-ansi-bright-magenta: #d8b4fe;
+  --vl-ansi-bright-cyan : #67e8f9;
+  --vl-ansi-bright-white: #f5f5f5;
+
+  /* text color for use on top of --vl-accent */
+  --vl-accent-on: #171717;
+}
+
+/* ── Flavor: Twilight (dark, bg #404040) ── */
+.vl-twilight {
+  /* surface */
+  --vl-bg               : #404040;
+  --vl-bg-soft          : #525252;
+  --vl-bg-sunk          : #171717;
+  --vl-bg-overlay       : #525252;
+  --vl-bg-scrim         : #000000bb;
+  /* text */
+  --vl-fg               : #f5f5f5;
+  --vl-fg-muted         : #d4d4d4;
+  --vl-fg-subtle        : #a3a3a3;
+  --vl-fg-disabled      : #737373;
+  /* border */
+  --vl-border-subtle    : #525252;
+  --vl-border           : #171717;
+  --vl-border-strong    : #0a0a0a;
+  /* state */
+  --vl-state-hover      : #ffffff14;
+  --vl-state-active     : #ffffff1f;
+  --vl-state-selection  : #5b5b5b;
+  /* semantic */
+  --vl-semantic-success : #bef264;
+  --vl-semantic-warning : #eab308;
+  --vl-semantic-danger  : #fca5a5;
+  --vl-semantic-info    : #93c5fd;
+  /* syntax */
+  --syn-comment         : #a3a3a3;
+  --syn-keyword         : #d8b4fe;
+  --syn-string          : #84cc16;
+  --syn-number          : #fdba74;
+  --syn-function        : #93c5fd;
+  --syn-type            : #eab308;
+  --syn-constant        : #fdba74;
+  --syn-tag             : #93c5fd;
+  --syn-attr            : #eab308;
+  --syn-regex           : #fca5a5;
+  --syn-punct           : #d4d4d4;
+  /* ansi (terminal) */
+  --vl-ansi-black       : #171717;
+  --vl-ansi-red         : #fca5a5;
+  --vl-ansi-green       : #84cc16;
+  --vl-ansi-yellow      : #eab308;
+  --vl-ansi-blue        : #93c5fd;
+  --vl-ansi-magenta     : #d8b4fe;
+  --vl-ansi-cyan        : #06b6d4;
+  --vl-ansi-white       : #d4d4d4;
+  --vl-ansi-bright-black: #737373;
+  --vl-ansi-bright-red  : #fca5a5;
+  --vl-ansi-bright-green: #bef264;
+  --vl-ansi-bright-yellow: #fde047;
+  --vl-ansi-bright-blue : #93c5fd;
+  --vl-ansi-bright-magenta: #d8b4fe;
+  --vl-ansi-bright-cyan : #67e8f9;
+  --vl-ansi-bright-white: #f5f5f5;
+
+  /* text color for use on top of --vl-accent */
+  --vl-accent-on: #171717;
+}
+
+/* ── Flavor: Dawn (light, bg #d4d4d4) ── */
+.vl-dawn {
+  /* surface */
+  --vl-bg               : #d4d4d4;
+  --vl-bg-soft          : #f5f5f5;
+  --vl-bg-sunk          : #bdbdbd;
+  --vl-bg-overlay       : #f5f5f5;
+  --vl-bg-scrim         : #17171788;
+  /* text */
+  --vl-fg               : #171717;
+  --vl-fg-muted         : #404040;
+  --vl-fg-subtle        : #525252;
+  --vl-fg-disabled      : #737373;
+  /* border */
+  --vl-border-subtle    : #bdbdbd;
+  --vl-border           : #a3a3a3;
+  --vl-border-strong    : #404040;
+  /* state */
+  --vl-state-hover      : #0000000d;
+  --vl-state-active     : #00000014;
+  --vl-state-selection  : #bdbdbd;
+  /* semantic */
+  --vl-semantic-success : #4d7c0f;
+  --vl-semantic-warning : #a16207;
+  --vl-semantic-danger  : #b91c1c;
+  --vl-semantic-info    : #1d4ed8;
+  /* syntax */
+  --syn-comment         : #525252;
+  --syn-keyword         : #7e22ce;
+  --syn-string          : #365314;
+  --syn-number          : #c2410c;
+  --syn-function        : #1d4ed8;
+  --syn-type            : #713f12;
+  --syn-constant        : #c2410c;
+  --syn-tag             : #1d4ed8;
+  --syn-attr            : #713f12;
+  --syn-regex           : #b91c1c;
+  --syn-punct           : #404040;
+  /* ansi (terminal) */
+  --vl-ansi-black       : #171717;
+  --vl-ansi-red         : #b91c1c;
+  --vl-ansi-green       : #4d7c0f;
+  --vl-ansi-yellow      : #a16207;
+  --vl-ansi-blue        : #1d4ed8;
+  --vl-ansi-magenta     : #7e22ce;
+  --vl-ansi-cyan        : #0e7490;
+  --vl-ansi-white       : #d4d4d4;
+  --vl-ansi-bright-black: #737373;
+  --vl-ansi-bright-red  : #7f1d1d;
+  --vl-ansi-bright-green: #365314;
+  --vl-ansi-bright-yellow: #713f12;
+  --vl-ansi-bright-blue : #1e3a8a;
+  --vl-ansi-bright-magenta: #581c87;
+  --vl-ansi-bright-cyan : #164e63;
+  --vl-ansi-bright-white: #f5f5f5;
+
+  /* text color for use on top of --vl-accent */
+  --vl-accent-on: #f5f5f5;
+}
+
+/* ── Flavor: Noon (light, bg #f5f5f5) ── */
+.vl-noon {
+  /* surface */
+  --vl-bg               : #f5f5f5;
+  --vl-bg-soft          : #ffffff;
+  --vl-bg-sunk          : #d4d4d4;
+  --vl-bg-overlay       : #ffffff;
+  --vl-bg-scrim         : #17171788;
+  /* text */
+  --vl-fg               : #171717;
+  --vl-fg-muted         : #404040;
+  --vl-fg-subtle        : #525252;
+  --vl-fg-disabled      : #737373;
+  /* border */
+  --vl-border-subtle    : #e5e5e5;
+  --vl-border           : #d4d4d4;
+  --vl-border-strong    : #737373;
+  /* state */
+  --vl-state-hover      : #0000000d;
+  --vl-state-active     : #00000014;
+  --vl-state-selection  : #e5e5e5;
+  /* semantic */
+  --vl-semantic-success : #4d7c0f;
+  --vl-semantic-warning : #a16207;
+  --vl-semantic-danger  : #b91c1c;
+  --vl-semantic-info    : #1d4ed8;
+  /* syntax */
+  --syn-comment         : #525252;
+  --syn-keyword         : #7e22ce;
+  --syn-string          : #365314;
+  --syn-number          : #c2410c;
+  --syn-function        : #1d4ed8;
+  --syn-type            : #713f12;
+  --syn-constant        : #c2410c;
+  --syn-tag             : #1d4ed8;
+  --syn-attr            : #713f12;
+  --syn-regex           : #b91c1c;
+  --syn-punct           : #404040;
+  /* ansi (terminal) */
+  --vl-ansi-black       : #171717;
+  --vl-ansi-red         : #b91c1c;
+  --vl-ansi-green       : #4d7c0f;
+  --vl-ansi-yellow      : #a16207;
+  --vl-ansi-blue        : #1d4ed8;
+  --vl-ansi-magenta     : #7e22ce;
+  --vl-ansi-cyan        : #0e7490;
+  --vl-ansi-white       : #404040;
+  --vl-ansi-bright-black: #737373;
+  --vl-ansi-bright-red  : #7f1d1d;
+  --vl-ansi-bright-green: #365314;
+  --vl-ansi-bright-yellow: #713f12;
+  --vl-ansi-bright-blue : #1e3a8a;
+  --vl-ansi-bright-magenta: #581c87;
+  --vl-ansi-bright-cyan : #164e63;
+  --vl-ansi-bright-white: #d4d4d4;
+
+  /* text color for use on top of --vl-accent */
+  --vl-accent-on: #f5f5f5;
+}
+
+/* ── Variants — UI accent only (cursor, link, focus ring, fill) ─── */
+/* Selection is derived from --vl-accent via color-mix at runtime. */
+
+/* Midnight accents */
+.vl-midnight.variant-red     { --vl-accent: #ef4444; }
+.vl-midnight.variant-orange  { --vl-accent: #f97316; }
+.vl-midnight.variant-yellow  { --vl-accent: #eab308; }
+.vl-midnight.variant-green   { --vl-accent: #84cc16; }
+.vl-midnight.variant-blue    { --vl-accent: #93c5fd; }
+.vl-midnight.variant-purple  { --vl-accent: #d8b4fe; }
+
+/* Twilight accents */
+.vl-twilight.variant-red     { --vl-accent: #fca5a5; }
+.vl-twilight.variant-orange  { --vl-accent: #fdba74; }
+.vl-twilight.variant-yellow  { --vl-accent: #eab308; }
+.vl-twilight.variant-green   { --vl-accent: #84cc16; }
+.vl-twilight.variant-blue    { --vl-accent: #93c5fd; }
+.vl-twilight.variant-purple  { --vl-accent: #d8b4fe; }
+
+/* Dawn accents */
+.vl-dawn.variant-red         { --vl-accent: #7f1d1d; }
+.vl-dawn.variant-orange      { --vl-accent: #7c2d12; }
+.vl-dawn.variant-yellow      { --vl-accent: #713f12; }
+.vl-dawn.variant-green       { --vl-accent: #365314; }
+.vl-dawn.variant-blue        { --vl-accent: #1d4ed8; }
+.vl-dawn.variant-purple      { --vl-accent: #7e22ce; }
+
+/* Noon accents */
+.vl-noon.variant-red         { --vl-accent: #b91c1c; }
+.vl-noon.variant-orange      { --vl-accent: #c2410c; }
+.vl-noon.variant-yellow      { --vl-accent: #713f12; }
+.vl-noon.variant-green       { --vl-accent: #365314; }
+.vl-noon.variant-blue        { --vl-accent: #1d4ed8; }
+.vl-noon.variant-purple      { --vl-accent: #7e22ce; }
+
+/* Selection tinted toward accent (25% mix over bg). */
+[class*="vl-"][class*="variant-"] {
+  --vl-selection: color-mix(in srgb, var(--vl-accent) 25%, var(--vl-bg));
+}
+
+/* ── Native ::selection rule, opt-in helper class ───────────────── */
+.vl-flavor-body { background: var(--vl-bg); color: var(--vl-fg); font-family: var(--vl-font-sans); caret-color: var(--vl-accent); }
+.vl-flavor-body ::selection { background: var(--vl-selection); color: var(--vl-fg); }
+.vl-flavor-body a { color: var(--vl-accent); }
+.vl-flavor-body :focus-visible {
+  outline: var(--vl-focus-ring-width) solid var(--vl-accent);
+  outline-offset: var(--vl-focus-ring-offset);
+}
+

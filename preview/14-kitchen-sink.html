@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Vivid Life — kitchen sink</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  /* ─────────────────────────────────────────────────────────────
+     Foundation PoC — uses ONLY tokens from colors_and_type.css
+     ───────────────────────────────────────────────────────────── */
+
+  html, body {
+    margin: 0; padding: 0;
+    background: var(--vl-bg);
+    color: var(--vl-fg);
+    font-family: var(--vl-font-sans);
+    font-size: 14px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* layout shell */
+  .ks-wrap { display: flex; flex-direction: column; min-height: 100vh; }
+  .ks-main { padding: 24px 32px 60px; max-width: 1100px; margin: 0 auto; width: 100%; box-sizing: border-box; }
+
+  /* ─── Switcher bar ─── */
+  .ks-bar {
+    position: sticky; top: 0; z-index: 10;
+    background: var(--vl-bg-sunk);
+    border-bottom: 1px solid var(--vl-border);
+    padding: 10px 32px;
+    display: flex; align-items: center; gap: 20px;
+    backdrop-filter: blur(8px);
+  }
+  .ks-wm { display: flex; align-items: center; gap: 10px; }
+  .ks-wm img { width: 22px; height: 22px; }
+  .ks-wm .name { font-weight: 700; letter-spacing: -0.01em; font-size: 15px; }
+  .ks-wm .name .life { color: var(--vl-fg-subtle); font-weight: 500; }
+
+  .ks-sw { display: flex; align-items: center; gap: 6px; }
+  .ks-sw .lbl {
+    font-size: 10px; font-weight: 600; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--vl-fg-subtle);
+    margin-right: 4px;
+  }
+
+  .ks-pill {
+    background: var(--vl-bg-soft);
+    color: var(--vl-fg-muted);
+    border: 1px solid var(--vl-border);
+    border-radius: 9999px;
+    padding: 4px 10px;
+    font-size: 12px; font-weight: 500;
+    cursor: pointer;
+    transition: background 120ms, color 120ms, border-color 120ms;
+  }
+  .ks-pill:hover { background: var(--vl-bg-overlay); color: var(--vl-fg); }
+  .ks-pill[aria-pressed="true"] {
+    background: var(--vl-accent);
+    color: var(--vl-accent-on);
+    border-color: var(--vl-accent);
+  }
+
+  /* Variant pills get a dot tinted by their hue at the active shade */
+  .ks-vpill { padding-left: 6px; display: inline-flex; align-items: center; gap: 6px; }
+  .ks-vpill .dot { width: 10px; height: 10px; border-radius: 50%; }
+
+  /* ─── Section heading ─── */
+  .ks-h {
+    font-size: 10.5px; font-weight: 700; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--vl-fg-subtle);
+    margin: 32px 0 12px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--vl-border);
+  }
+  .ks-h:first-of-type { margin-top: 8px; }
+
+  /* ─── Surfaces row ─── */
+  .ks-surfaces { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+  .ks-surf {
+    height: 76px; border-radius: 8px;
+    padding: 8px 10px;
+    display: flex; flex-direction: column; justify-content: space-between;
+    box-shadow: inset 0 0 0 1px var(--vl-border);
+    font-size: 10.5px;
+  }
+  .ks-surf .k { font-family: var(--vl-font-mono); color: var(--vl-fg-subtle); }
+  .ks-surf .v { font-family: var(--vl-font-mono); color: var(--vl-fg); font-size: 11px; font-weight: 600; }
+
+  /* ─── Text layers ─── */
+  .ks-text { display: flex; flex-direction: column; gap: 6px; }
+  .ks-text .row {
+    display: grid; grid-template-columns: 100px 1fr;
+    align-items: baseline; gap: 12px;
+  }
+  .ks-text .k {
+    font-family: var(--vl-font-mono); font-size: 11px;
+    color: var(--vl-fg-subtle);
+  }
+  .t-fg          { color: var(--vl-fg); }
+  .t-fg-muted    { color: var(--vl-fg-muted); }
+  .t-fg-subtle   { color: var(--vl-fg-subtle); }
+  .t-fg-disabled { color: var(--vl-fg-disabled); }
+
+  /* ─── Border weights ─── */
+  .ks-borders { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .ks-borders > div {
+    padding: 14px; border-radius: 8px;
+    background: var(--vl-bg-soft);
+    font-family: var(--vl-font-mono); font-size: 11px;
+    color: var(--vl-fg-muted);
+  }
+  .b-subtle  { border: 1px solid var(--vl-border-subtle); }
+  .b-default { border: 1px solid var(--vl-border); }
+  .b-strong  { border: 1px solid var(--vl-border-strong); }
+
+  /* ─── Semantic + accent ─── */
+  .ks-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .ks-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .ks-chip {
+    padding: 4px 10px; border-radius: 9999px;
+    font-size: 11.5px; font-weight: 600;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .ks-chip .dot { width: 6px; height: 6px; border-radius: 50%; }
+  .c-success { background: color-mix(in srgb, var(--vl-semantic-success) 15%, transparent); color: var(--vl-semantic-success); }
+  .c-warning { background: color-mix(in srgb, var(--vl-semantic-warning) 15%, transparent); color: var(--vl-semantic-warning); }
+  .c-danger  { background: color-mix(in srgb, var(--vl-semantic-danger)  15%, transparent); color: var(--vl-semantic-danger); }
+  .c-info    { background: color-mix(in srgb, var(--vl-semantic-info)    15%, transparent); color: var(--vl-semantic-info); }
+  .c-success .dot { background: var(--vl-semantic-success); }
+  .c-warning .dot { background: var(--vl-semantic-warning); }
+  .c-danger  .dot { background: var(--vl-semantic-danger); }
+  .c-info    .dot { background: var(--vl-semantic-info); }
+
+  /* Accent showcase */
+  .ks-accent-row { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; }
+  .ks-link { color: var(--vl-accent); text-decoration: underline; text-underline-offset: 3px; }
+  .ks-focus-mock {
+    padding: 6px 12px; background: var(--vl-bg-soft); border-radius: 6px;
+    box-shadow: 0 0 0 2px var(--vl-accent), 0 0 0 4px var(--vl-bg);
+    color: var(--vl-fg); font-size: 12.5px;
+  }
+  .ks-badge {
+    background: var(--vl-accent); color: var(--vl-accent-on);
+    padding: 2px 9px; border-radius: 9999px;
+    font-size: 11px; font-weight: 600;
+  }
+  .ks-slider {
+    width: 160px; height: 4px;
+    background: var(--vl-bg-soft); border-radius: 9999px; position: relative;
+  }
+  .ks-slider .fill {
+    position: absolute; left: 0; top: 0; bottom: 0; width: 60%;
+    background: var(--vl-accent); border-radius: 9999px;
+  }
+  .ks-slider .knob {
+    position: absolute; left: 60%; top: 50%;
+    width: 14px; height: 14px; border-radius: 50%;
+    background: var(--vl-accent);
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--vl-accent) 20%, transparent);
+  }
+
+  /* ─── Buttons ─── */
+  .ks-buttons { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px 14px; align-items: center; }
+  .ks-buttons .h {
+    font-size: 10px; font-family: var(--vl-font-mono);
+    color: var(--vl-fg-subtle); text-align: center;
+  }
+  .ks-buttons .rh {
+    font-size: 10px; font-family: var(--vl-font-mono);
+    color: var(--vl-fg-subtle); padding-right: 4px;
+  }
+
+  .btn {
+    font-family: inherit; font-weight: 600; font-size: 13px;
+    padding: 6px 14px; border-radius: 8px;
+    border: 1px solid transparent;
+    cursor: pointer; transition: background 120ms;
+  }
+  .btn-primary {
+    background: var(--vl-accent); color: var(--vl-accent-on);
+  }
+  .btn-primary.hover, .btn-primary:hover {
+    background: color-mix(in srgb, var(--vl-accent) 88%, var(--vl-fg));
+  }
+  .btn-primary.active, .btn-primary:active {
+    background: color-mix(in srgb, var(--vl-accent) 75%, var(--vl-fg));
+  }
+  .btn-primary.disabled, .btn-primary:disabled {
+    background: var(--vl-bg-soft); color: var(--vl-fg-disabled);
+    cursor: not-allowed;
+  }
+  .btn-secondary {
+    background: var(--vl-bg-soft); color: var(--vl-fg); border-color: var(--vl-border);
+  }
+  .btn-secondary.hover, .btn-secondary:hover { background: var(--vl-bg-overlay); }
+  .btn-secondary.active, .btn-secondary:active { background: var(--vl-state-active); }
+  .btn-secondary.disabled, .btn-secondary:disabled {
+    color: var(--vl-fg-disabled); cursor: not-allowed;
+  }
+  .btn-ghost { background: transparent; color: var(--vl-fg-muted); }
+  .btn-ghost.hover, .btn-ghost:hover { background: var(--vl-state-hover); color: var(--vl-fg); }
+  .btn-ghost.active, .btn-ghost:active { background: var(--vl-state-active); color: var(--vl-fg); }
+  .btn-ghost.disabled, .btn-ghost:disabled { color: var(--vl-fg-disabled); cursor: not-allowed; }
+
+  /* ─── Form ─── */
+  .ks-form { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 20px; }
+  .ks-field { display: flex; flex-direction: column; gap: 4px; }
+  .ks-field .lab {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.04em;
+    color: var(--vl-fg-muted);
+  }
+  .ks-input, .ks-select, .ks-area {
+    background: var(--vl-bg-soft); color: var(--vl-fg);
+    border: 1px solid var(--vl-border);
+    border-radius: 6px; padding: 7px 10px;
+    font-family: inherit; font-size: 13px;
+    outline: none; transition: border-color 120ms, box-shadow 120ms;
+  }
+  .ks-input:focus, .ks-select:focus, .ks-area:focus {
+    border-color: var(--vl-accent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--vl-accent) 25%, transparent);
+  }
+  .ks-input::placeholder { color: var(--vl-fg-subtle); }
+  .ks-area { min-height: 64px; resize: vertical; font-family: var(--vl-font-mono); font-size: 12px; }
+  .ks-controls { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; }
+  .ks-check, .ks-radio { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; cursor: pointer; }
+  .ks-check input, .ks-radio input { accent-color: var(--vl-accent); width: 14px; height: 14px; cursor: pointer; }
+  .ks-toggle {
+    width: 32px; height: 18px; border-radius: 9999px;
+    background: var(--vl-bg-soft); border: 1px solid var(--vl-border);
+    position: relative; cursor: pointer; transition: background 120ms;
+  }
+  .ks-toggle .knob {
+    width: 12px; height: 12px; border-radius: 50%;
+    background: var(--vl-fg-muted); position: absolute;
+    top: 2px; left: 2px; transition: left 120ms, background 120ms;
+  }
+  .ks-toggle.on { background: var(--vl-accent); border-color: var(--vl-accent); }
+  .ks-toggle.on .knob { left: 16px; background: var(--vl-accent-on); }
+
+  /* ─── Tabs ─── */
+  .ks-tabs {
+    display: flex; gap: 0;
+    border-bottom: 1px solid var(--vl-border);
+  }
+  .ks-tab {
+    padding: 6px 14px;
+    font-size: 12.5px; font-weight: 500;
+    color: var(--vl-fg-muted); cursor: pointer;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+  }
+  .ks-tab:hover { color: var(--vl-fg); }
+  .ks-tab[aria-selected="true"] { color: var(--vl-fg); border-bottom-color: var(--vl-accent); }
+
+  /* ─── Toast / Banner ─── */
+  .ks-toast {
+    background: var(--vl-bg-overlay); color: var(--vl-fg);
+    border: 1px solid var(--vl-border);
+    border-radius: 8px; padding: 10px 14px;
+    display: flex; align-items: center; gap: 10px;
+    box-shadow: var(--vl-shadow-md);
+    font-size: 13px;
+  }
+  .ks-toast .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .ks-toast.success .dot { background: var(--vl-semantic-success); }
+  .ks-toast.danger  .dot { background: var(--vl-semantic-danger); }
+
+  /* ─── Code block ─── */
+  .ks-code {
+    background: var(--vl-bg-soft); color: var(--vl-fg);
+    border: 1px solid var(--vl-border);
+    border-radius: 8px; padding: 12px 14px;
+    font-family: var(--vl-font-mono); font-size: 12.5px; line-height: 1.55;
+    overflow: auto;
+  }
+  .ks-code .com  { color: var(--syn-comment); font-style: italic; }
+  .ks-code .kw   { color: var(--syn-keyword); }
+  .ks-code .str  { color: var(--syn-string); }
+  .ks-code .num  { color: var(--syn-number); }
+  .ks-code .fn   { color: var(--syn-function); }
+  .ks-code .ty   { color: var(--syn-type); }
+  .ks-code .pu   { color: var(--syn-punct); }
+
+  /* ─── App mock ─── */
+  .ks-app {
+    border: 1px solid var(--vl-border);
+    border-radius: 10px;
+    overflow: hidden;
+    background: var(--vl-bg);
+    box-shadow: var(--vl-shadow-md);
+  }
+  .ks-app-title {
+    background: var(--vl-bg-sunk); color: var(--vl-fg-muted);
+    padding: 6px 14px; font-size: 11.5px; border-bottom: 1px solid var(--vl-border);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .ks-app-title .traffic { display: inline-flex; gap: 5px; }
+  .ks-app-title .traffic span {
+    width: 9px; height: 9px; border-radius: 50%; background: var(--vl-border-strong);
+  }
+  .ks-app-body { display: grid; grid-template-columns: 180px 1fr; min-height: 320px; }
+  .ks-app-side {
+    background: var(--vl-bg-sunk);
+    border-right: 1px solid var(--vl-border);
+    padding: 10px 8px;
+    font-size: 12.5px;
+  }
+  .ks-app-side .section {
+    font-size: 9.5px; font-weight: 700; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--vl-fg-subtle);
+    padding: 8px 10px 4px;
+  }
+  .ks-app-side .item {
+    padding: 5px 10px; border-radius: 5px;
+    color: var(--vl-fg-muted); cursor: pointer;
+  }
+  .ks-app-side .item:hover { background: var(--vl-state-hover); color: var(--vl-fg); }
+  .ks-app-side .item.active {
+    background: color-mix(in srgb, var(--vl-accent) 18%, transparent);
+    color: var(--vl-fg);
+  }
+  .ks-app-side .item.active::before {
+    content: ''; display: inline-block;
+    width: 3px; height: 13px; background: var(--vl-accent); border-radius: 2px;
+    vertical-align: -2px; margin-right: 7px; margin-left: -3px;
+  }
+  .ks-app-content { padding: 18px 22px; }
+  .ks-app-content h3 {
+    margin: 0 0 4px; font-size: 18px; font-weight: 600; letter-spacing: -0.01em;
+  }
+  .ks-app-content .sub {
+    color: var(--vl-fg-muted); font-size: 12.5px; margin-bottom: 16px;
+  }
+  .ks-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 0;
+    border-top: 1px solid var(--vl-border-subtle);
+  }
+  .ks-row:first-of-type { border-top: 0; }
+  .ks-row .meta { display: flex; flex-direction: column; gap: 1px; }
+  .ks-row .meta .t { font-size: 13px; }
+  .ks-row .meta .d { font-size: 11.5px; color: var(--vl-fg-subtle); }
+
+  /* helpers */
+  .ks-mono { font-family: var(--vl-font-mono); }
+  .ks-stack { display: flex; flex-direction: column; gap: 12px; }
+  .ks-row-flex { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+</style>
+</head>
+<body class="vl-midnight variant-purple">
+
+<div class="ks-wrap">
+
+  <!-- ─── Top switcher bar ─── -->
+  <div class="ks-bar">
+    <div class="ks-wm">
+      <img src="../assets/icon-32.png" alt="">
+      <div class="name">Vivid<span class="life"> Life</span></div>
+    </div>
+
+    <div class="ks-sw" style="margin-left: auto;">
+      <span class="lbl">Flavor</span>
+      <button class="ks-pill" data-f="midnight" aria-pressed="false">Midnight</button>
+      <button class="ks-pill" data-f="twilight" aria-pressed="false">Twilight</button>
+      <button class="ks-pill" data-f="dawn"     aria-pressed="false">Dawn</button>
+      <button class="ks-pill" data-f="noon"     aria-pressed="false">Noon</button>
+    </div>
+
+    <div class="ks-sw">
+      <span class="lbl">Variant</span>
+      <button class="ks-pill ks-vpill" data-v="red"    aria-pressed="false"><span class="dot" style="background:#ef4444"></span>Red</button>
+      <button class="ks-pill ks-vpill" data-v="orange" aria-pressed="false"><span class="dot" style="background:#f97316"></span>Orange</button>
+      <button class="ks-pill ks-vpill" data-v="yellow" aria-pressed="false"><span class="dot" style="background:#eab308"></span>Yellow</button>
+      <button class="ks-pill ks-vpill" data-v="green"  aria-pressed="false"><span class="dot" style="background:#84cc16"></span>Green</button>
+      <button class="ks-pill ks-vpill" data-v="blue"   aria-pressed="false"><span class="dot" style="background:#3b82f6"></span>Blue</button>
+      <button class="ks-pill ks-vpill" data-v="purple" aria-pressed="false"><span class="dot" style="background:#a855f7"></span>Purple</button>
+    </div>
+  </div>
+
+  <div class="ks-main">
+
+    <!-- ─── SURFACES ─── -->
+    <div class="ks-h">Surfaces</div>
+    <div class="ks-surfaces">
+      <div class="ks-surf" style="background: var(--vl-bg);">         <span class="k">--vl-bg</span>          <span class="v">canvas</span></div>
+      <div class="ks-surf" style="background: var(--vl-bg-soft);">    <span class="k">--vl-bg-soft</span>     <span class="v">panel</span></div>
+      <div class="ks-surf" style="background: var(--vl-bg-sunk);">    <span class="k">--vl-bg-sunk</span>     <span class="v">recess</span></div>
+      <div class="ks-surf" style="background: var(--vl-bg-overlay);"> <span class="k">--vl-bg-overlay</span>  <span class="v">menu</span></div>
+      <div class="ks-surf" style="background: var(--vl-bg-scrim);">   <span class="k" style="color: var(--vl-gray-300)">--vl-bg-scrim</span>    <span class="v" style="color: var(--vl-gray-100)">modal</span></div>
+    </div>
+
+    <!-- ─── TEXT ─── -->
+    <div class="ks-h">Text layers</div>
+    <div class="ks-text">
+      <div class="row"><span class="k">--vl-fg</span>          <span class="t-fg">Primary body text — Atkinson Hyperlegible Next at 14px / 1.5.</span></div>
+      <div class="row"><span class="k">--vl-fg-muted</span>    <span class="t-fg-muted">Secondary text for descriptions and supporting copy.</span></div>
+      <div class="row"><span class="k">--vl-fg-subtle</span>   <span class="t-fg-subtle">Tertiary text for hints, metadata, captions.</span></div>
+      <div class="row"><span class="k">--vl-fg-disabled</span> <span class="t-fg-disabled">Disabled text — visibly inactive but still discoverable.</span></div>
+    </div>
+
+    <!-- ─── BORDERS ─── -->
+    <div class="ks-h">Borders</div>
+    <div class="ks-borders">
+      <div class="b-subtle">--vl-border-subtle</div>
+      <div class="b-default">--vl-border</div>
+      <div class="b-strong">--vl-border-strong</div>
+    </div>
+
+    <!-- ─── ACCENT + SEMANTIC ─── -->
+    <div class="ks-h">Accent &amp; semantic</div>
+    <div class="ks-grid-2">
+      <div class="ks-stack">
+        <div class="ks-row-flex">
+          <div class="ks-badge">42</div>
+          <a class="ks-link" href="#">A link in accent color</a>
+          <div class="ks-focus-mock">focused element</div>
+        </div>
+        <div class="ks-slider"><div class="fill"></div><div class="knob"></div></div>
+      </div>
+      <div class="ks-chips">
+        <span class="ks-chip c-success"><span class="dot"></span> Success</span>
+        <span class="ks-chip c-warning"><span class="dot"></span> Warning</span>
+        <span class="ks-chip c-danger"><span class="dot"></span> Danger</span>
+        <span class="ks-chip c-info"><span class="dot"></span> Info</span>
+      </div>
+    </div>
+
+    <!-- ─── BUTTONS ─── -->
+    <div class="ks-h">Buttons</div>
+    <div class="ks-buttons">
+      <div></div>
+      <div class="h">Rest</div>
+      <div class="h">Hover</div>
+      <div class="h">Active</div>
+
+      <div class="rh">Primary</div>
+      <button class="btn btn-primary">Save changes</button>
+      <button class="btn btn-primary hover">Save changes</button>
+      <button class="btn btn-primary active">Save changes</button>
+
+      <div class="rh">Secondary</div>
+      <button class="btn btn-secondary">Cancel</button>
+      <button class="btn btn-secondary hover">Cancel</button>
+      <button class="btn btn-secondary active">Cancel</button>
+
+      <div class="rh">Ghost</div>
+      <button class="btn btn-ghost">Skip</button>
+      <button class="btn btn-ghost hover">Skip</button>
+      <button class="btn btn-ghost active">Skip</button>
+
+      <div class="rh" style="color: var(--vl-fg-disabled);">Disabled</div>
+      <button class="btn btn-primary disabled" disabled>Save</button>
+      <button class="btn btn-secondary disabled" disabled>Cancel</button>
+      <button class="btn btn-ghost disabled" disabled>Skip</button>
+    </div>
+
+    <!-- ─── FORM ─── -->
+    <div class="ks-h">Form controls</div>
+    <div class="ks-form">
+      <div class="ks-field">
+        <label class="lab">Email</label>
+        <input class="ks-input" type="email" placeholder="you@example.com">
+      </div>
+      <div class="ks-field">
+        <label class="lab">Flavor</label>
+        <select class="ks-select">
+          <option>Midnight</option><option>Twilight</option><option>Dawn</option><option>Noon</option>
+        </select>
+      </div>
+      <div class="ks-field" style="grid-column: 1 / -1;">
+        <label class="lab">Notes</label>
+        <textarea class="ks-area">// A code-like sample inside a textarea — Atkinson Mono renders.</textarea>
+      </div>
+      <div class="ks-field" style="grid-column: 1 / -1;">
+        <label class="lab">Options</label>
+        <div class="ks-controls">
+          <label class="ks-check"><input type="checkbox" checked>Enable italics</label>
+          <label class="ks-check"><input type="checkbox">Bracket-pair colorization</label>
+          <label class="ks-radio"><input type="radio" name="r" checked>Light</label>
+          <label class="ks-radio"><input type="radio" name="r">Dark</label>
+          <label class="ks-radio"><input type="radio" name="r">Follow system</label>
+          <span class="ks-mono" style="color: var(--vl-fg-subtle); font-size: 11.5px;">Toggle:</span>
+          <div class="ks-toggle on" onclick="this.classList.toggle('on')"><div class="knob"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── TABS + FEEDBACK ─── -->
+    <div class="ks-h">Tabs &amp; feedback</div>
+    <div class="ks-tabs">
+      <div class="ks-tab" aria-selected="true">Appearance</div>
+      <div class="ks-tab">Editor</div>
+      <div class="ks-tab">Terminal</div>
+      <div class="ks-tab">Extensions</div>
+    </div>
+    <div style="height: 12px;"></div>
+    <div class="ks-stack">
+      <div class="ks-toast success">
+        <span class="dot"></span>
+        Theme exported successfully — <span class="ks-mono" style="color: var(--vl-fg-subtle);">vivid-life-noon-blue.json</span>
+      </div>
+      <div class="ks-toast danger">
+        <span class="dot"></span>
+        Build failed: 2 contrast warnings in <span class="ks-mono" style="color: var(--vl-fg-subtle);">tokens.json5</span>
+      </div>
+    </div>
+
+    <!-- ─── CODE ─── -->
+    <div class="ks-h">Code (syntax tokens in use)</div>
+<pre class="ks-code"><span class="com">// Theme palette consumer — uses only foundation tokens.</span>
+<span class="kw">import</span> <span class="ty">tokens</span> <span class="kw">from</span> <span class="str">'./dist/tokens.js'</span><span class="pu">;</span>
+
+<span class="kw">export function</span> <span class="fn">resolveAccent</span><span class="pu">(</span><span class="ty">flavor</span><span class="pu">,</span> <span class="ty">variant</span><span class="pu">) {</span>
+  <span class="kw">const</span> shade <span class="pu">=</span> tokens<span class="pu">.</span>accent_shade<span class="pu">[</span>flavor<span class="pu">][</span>variant<span class="pu">]</span><span class="pu">;</span>
+  <span class="kw">return</span> tokens<span class="pu">.</span>palette<span class="pu">[</span>variant<span class="pu">][</span>shade<span class="pu">]</span><span class="pu">;</span>  <span class="com">// e.g. "#a855f7"</span>
+<span class="pu">}</span></pre>
+
+    <!-- ─── APP MOCK ─── -->
+    <div class="ks-h">Foundation in use — settings panel</div>
+    <div class="ks-app">
+      <div class="ks-app-title">
+        <span class="traffic"><span></span><span></span><span></span></span>
+        Vivid Life — Settings
+      </div>
+      <div class="ks-app-body">
+        <div class="ks-app-side">
+          <div class="section">General</div>
+          <div class="item">Profile</div>
+          <div class="item active">Appearance</div>
+          <div class="item">Keyboard</div>
+          <div class="section">Editor</div>
+          <div class="item">Code style</div>
+          <div class="item">Extensions</div>
+          <div class="section">Advanced</div>
+          <div class="item">About</div>
+        </div>
+        <div class="ks-app-content">
+          <h3>Appearance</h3>
+          <div class="sub">Choose how the app looks. Changes apply instantly across all surfaces.</div>
+
+          <div class="ks-row">
+            <div class="meta">
+              <div class="t">Flavor</div>
+              <div class="d">The base theme. Sets the canvas and syntax palette.</div>
+            </div>
+            <select class="ks-select" style="min-width: 140px;">
+              <option>Midnight</option><option>Twilight</option><option>Dawn</option><option>Noon</option>
+            </select>
+          </div>
+          <div class="ks-row">
+            <div class="meta">
+              <div class="t">Accent</div>
+              <div class="d">UI highlight color. Doesn't repaint syntax tokens.</div>
+            </div>
+            <div class="ks-row-flex" style="gap: 6px;">
+              <div class="ks-badge">Active</div>
+              <span class="ks-mono" style="font-size: 11px; color: var(--vl-fg-subtle);">purple</span>
+            </div>
+          </div>
+          <div class="ks-row">
+            <div class="meta">
+              <div class="t">Use system colors</div>
+              <div class="d">Switch flavors automatically with OS light/dark mode.</div>
+            </div>
+            <div class="ks-toggle on" onclick="this.classList.toggle('on')"><div class="knob"></div></div>
+          </div>
+          <div class="ks-row">
+            <div class="meta">
+              <div class="t">Compact mode</div>
+              <div class="d">Reduce padding for denser information display.</div>
+            </div>
+            <div class="ks-toggle" onclick="this.classList.toggle('on')"><div class="knob"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top: 36px; text-align: center; font-size: 11px; color: var(--vl-fg-subtle);">
+      <span class="ks-mono">colors_and_type.css</span> · all components above use only foundation tokens · no hardcoded colors
+    </div>
+
+  </div>
+</div>
+
+
+<script>
+  // ─── Switcher: persist + apply flavor/variant on <body> ───
+  const FLAVORS  = ['midnight', 'twilight', 'dawn', 'noon'];
+  const VARIANTS = ['red', 'orange', 'yellow', 'green', 'blue', 'purple'];
+
+  const body = document.body;
+  const KEY_F = 'vl-ks-flavor';
+  const KEY_V = 'vl-ks-variant';
+
+  function apply(flavor, variant) {
+    FLAVORS.forEach(f => body.classList.toggle('vl-' + f, f === flavor));
+    VARIANTS.forEach(v => body.classList.toggle('variant-' + v, v === variant));
+    document.querySelectorAll('[data-f]').forEach(b => {
+      b.setAttribute('aria-pressed', b.dataset.f === flavor ? 'true' : 'false');
+    });
+    document.querySelectorAll('[data-v]').forEach(b => {
+      b.setAttribute('aria-pressed', b.dataset.v === variant ? 'true' : 'false');
+    });
+    try { localStorage.setItem(KEY_F, flavor); localStorage.setItem(KEY_V, variant); } catch {}
+  }
+
+  let flavor  = localStorage.getItem(KEY_F);
+  let variant = localStorage.getItem(KEY_V);
+  if (!FLAVORS.includes(flavor))   flavor  = 'midnight';
+  if (!VARIANTS.includes(variant)) variant = 'purple';
+  apply(flavor, variant);
+
+  document.querySelectorAll('[data-f]').forEach(b => {
+    b.addEventListener('click', () => apply(b.dataset.f, variant = localStorage.getItem(KEY_V) || variant));
+  });
+  document.querySelectorAll('[data-v]').forEach(b => {
+    b.addEventListener('click', () => apply(localStorage.getItem(KEY_F) || flavor, b.dataset.v));
+  });
+</script>
+
+</body>
+</html>

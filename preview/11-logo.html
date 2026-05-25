@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Vivid Life — logo</title>
+<style>
+  html, body { margin: 0; padding: 0; background: #fafafa; font-family: ui-sans-serif, system-ui, -apple-system, sans-serif; color: #171717; }
+  .wrap { padding: 18px 22px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start; }
+
+  .card { background: #fff; border-radius: 10px; padding: 18px 20px; box-shadow: 0 0 0 1px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04); }
+  .card .title { font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: #525252; margin-bottom: 14px; }
+
+  .lockup { display: flex; align-items: center; gap: 14px; padding: 10px 4px; }
+  .lockup .mark { width: 64px; height: 64px; flex-shrink: 0; }
+  .lockup .word { display: flex; flex-direction: column; }
+  .lockup .word .name { font-size: 28px; font-weight: 700; letter-spacing: -0.02em; line-height: 1; }
+  .lockup .word .name .life { color: #737373; font-weight: 500; }
+  .lockup .word .sub { font-size: 11px; color: #737373; margin-top: 6px; letter-spacing: 0.04em; }
+
+  .sizes { display: flex; align-items: flex-end; justify-content: space-around; gap: 14px; padding: 8px 0 4px; }
+  .sz { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+  .sz img { display: block; image-rendering: -webkit-optimize-contrast; }
+  .sz .lbl { font-family: ui-monospace, monospace; font-size: 9px; color: #737373; letter-spacing: 0.04em; }
+
+  .surface { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .surface .swatch {
+    aspect-ratio: 1 / 1; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.04);
+  }
+  .surface .swatch img { width: 56%; height: 56%; }
+  .surface .swatch.bg-mid  { background: #171717; }
+  .surface .swatch.bg-twi  { background: #404040; }
+  .surface .swatch.bg-noon { background: #f5f5f5; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.06); }
+  .surface .swatch.bg-grad {
+    background: linear-gradient(135deg, #1e3a8a, #7e22ce);
+  }
+  .surface .swatch.bg-paper { background: #fdfaf3; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.06); }
+  .surface .swatch.bg-brand { background: #84cc16; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ─── Lockup + size ladder ─── -->
+  <div class="card">
+    <div class="title">Primary mark + wordmark</div>
+    <div class="lockup">
+      <img class="mark" src="_logo-128.png" alt="Vivid Life Theme">
+      <div class="word">
+        <div class="name">Vivid<span class="life"> Life</span></div>
+        <div class="sub">Theme</div>
+      </div>
+    </div>
+
+    <div style="height: 14px"></div>
+    <div class="title" style="margin-bottom: 10px">Size ladder</div>
+    <div class="sizes">
+      <div class="sz"><img src="_logo-128.png" width="96" height="96" alt=""><div class="lbl">96 px</div></div>
+      <div class="sz"><img src="_logo-128.png" width="64" height="64" alt=""><div class="lbl">64 px</div></div>
+      <div class="sz"><img src="_logo-32.png" width="32" height="32" alt=""><div class="lbl">32 px</div></div>
+      <div class="sz"><img src="_logo-16.png" width="16" height="16" alt=""><div class="lbl">16 px</div></div>
+    </div>
+  </div>
+
+  <!-- ─── On various surfaces ─── -->
+  <div class="card">
+    <div class="title">On surfaces</div>
+    <div class="surface">
+      <div class="swatch bg-mid"><img src="_logo-128.png" alt=""></div>
+      <div class="swatch bg-twi"><img src="_logo-128.png" alt=""></div>
+      <div class="swatch bg-noon"><img src="_logo-128.png" alt=""></div>
+      <div class="swatch bg-grad"><img src="_logo-128.png" alt=""></div>
+      <div class="swatch bg-paper"><img src="_logo-128.png" alt=""></div>
+      <div class="swatch bg-brand"><img src="_logo-128.png" alt=""></div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

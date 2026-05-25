@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>VL palette — 7 × 5 ramps</title>
+<link rel="stylesheet" href="../colors_and_type.css">
+<style>
+  html, body { margin: 0; padding: 0; background: #fafafa; font-family: var(--vl-font-sans); }
+  .wrap { padding: 18px 20px; }
+  .row { display: grid; grid-template-columns: 64px repeat(5, 1fr); gap: 6px; align-items: stretch; margin-bottom: 6px; }
+  .label { display: flex; align-items: center; font-size: 13px; color: #404040; letter-spacing: 0.02em; font-weight: 500; }
+  .sw { height: 56px; border-radius: 8px; display: flex; align-items: flex-end; padding: 6px 8px; font-family: var(--vl-font-mono); font-size: 10.5px; font-weight: 500; }
+  .sw.dark { color: #f5f5f5; }
+  .sw.light { color: #171717; }
+  .scale { display: grid; grid-template-columns: 64px repeat(5, 1fr); gap: 6px; padding-bottom: 4px; }
+  .scale .n { font-size: 11px; color: #737373; text-align: center; font-family: var(--vl-font-mono); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="scale">
+    <div></div>
+    <div class="n">900</div><div class="n">700</div><div class="n">500</div><div class="n">300</div><div class="n">100</div>
+  </div>
+
+  <div class="row"><div class="label">Rot</div>
+    <div class="sw dark"  style="background:#7f1d1d">#7f1d1d</div>
+    <div class="sw dark"  style="background:#b91c1c">#b91c1c</div>
+    <div class="sw dark"  style="background:#ef4444">#ef4444</div>
+    <div class="sw light" style="background:#fca5a5">#fca5a5</div>
+    <div class="sw light" style="background:#fee2e2">#fee2e2</div>
+  </div>
+  <div class="row"><div class="label">Orange</div>
+    <div class="sw dark"  style="background:#7c2d12">#7c2d12</div>
+    <div class="sw dark"  style="background:#c2410c">#c2410c</div>
+    <div class="sw dark"  style="background:#f97316">#f97316</div>
+    <div class="sw light" style="background:#fdba74">#fdba74</div>
+    <div class="sw light" style="background:#ffedd5">#ffedd5</div>
+  </div>
+  <div class="row"><div class="label">Gelb</div>
+    <div class="sw dark"  style="background:#713f12">#713f12</div>
+    <div class="sw dark"  style="background:#a16207">#a16207</div>
+    <div class="sw light" style="background:#eab308">#eab308</div>
+    <div class="sw light" style="background:#fde047">#fde047</div>
+    <div class="sw light" style="background:#fef9c3">#fef9c3</div>
+  </div>
+  <div class="row"><div class="label">Grün</div>
+    <div class="sw dark"  style="background:#365314">#365314</div>
+    <div class="sw dark"  style="background:#4d7c0f">#4d7c0f</div>
+    <div class="sw light" style="background:#84cc16">#84cc16</div>
+    <div class="sw light" style="background:#bef264">#bef264</div>
+    <div class="sw light" style="background:#ecfccb">#ecfccb</div>
+  </div>
+  <div class="row"><div class="label">Blau</div>
+    <div class="sw dark"  style="background:#1e3a8a">#1e3a8a</div>
+    <div class="sw dark"  style="background:#1d4ed8">#1d4ed8</div>
+    <div class="sw dark"  style="background:#3b82f6">#3b82f6</div>
+    <div class="sw light" style="background:#93c5fd">#93c5fd</div>
+    <div class="sw light" style="background:#dbeafe">#dbeafe</div>
+  </div>
+  <div class="row"><div class="label">Purpur</div>
+    <div class="sw dark"  style="background:#581c87">#581c87</div>
+    <div class="sw dark"  style="background:#7e22ce">#7e22ce</div>
+    <div class="sw dark"  style="background:#a855f7">#a855f7</div>
+    <div class="sw light" style="background:#d8b4fe">#d8b4fe</div>
+    <div class="sw light" style="background:#f3e8ff">#f3e8ff</div>
+  </div>
+  <div class="row"><div class="label">Grau</div>
+    <div class="sw dark"  style="background:#171717">#171717</div>
+    <div class="sw dark"  style="background:#404040">#404040</div>
+    <div class="sw dark"  style="background:#737373">#737373</div>
+    <div class="sw light" style="background:#d4d4d4">#d4d4d4</div>
+    <div class="sw light" style="background:#f5f5f5">#f5f5f5</div>
+  </div>
+</div>
+</body>
+</html>

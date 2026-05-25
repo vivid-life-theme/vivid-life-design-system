@@ -1,0 +1,645 @@
+// AUTO-GENERATED from tokens.json5 — do not edit.
+export default {
+  "meta": {
+    "name": "Vivid Life",
+    "version": "0.2.0",
+    "description": "A multi-flavor color scheme system. 4 flavors × 6 variants = 24 themes.",
+    "source_palette": "https://farben.van-laar.de/",
+    "inspiration": [
+      "https://catppuccin.com/",
+      "https://draculatheme.com/"
+    ]
+  },
+  "palette": {
+    "red": {
+      "100": "#fee2e2",
+      "300": "#fca5a5",
+      "500": "#ef4444",
+      "700": "#b91c1c",
+      "900": "#7f1d1d"
+    },
+    "orange": {
+      "100": "#ffedd5",
+      "300": "#fdba74",
+      "500": "#f97316",
+      "700": "#c2410c",
+      "900": "#7c2d12"
+    },
+    "yellow": {
+      "100": "#fef9c3",
+      "300": "#fde047",
+      "500": "#eab308",
+      "700": "#a16207",
+      "900": "#713f12"
+    },
+    "green": {
+      "100": "#ecfccb",
+      "300": "#bef264",
+      "500": "#84cc16",
+      "700": "#4d7c0f",
+      "900": "#365314"
+    },
+    "blue": {
+      "100": "#dbeafe",
+      "300": "#93c5fd",
+      "500": "#3b82f6",
+      "700": "#1d4ed8",
+      "900": "#1e3a8a"
+    },
+    "purple": {
+      "100": "#f3e8ff",
+      "300": "#d8b4fe",
+      "500": "#a855f7",
+      "700": "#7e22ce",
+      "900": "#581c87"
+    },
+    "gray": {
+      "100": "#f5f5f5",
+      "300": "#d4d4d4",
+      "500": "#737373",
+      "700": "#404040",
+      "900": "#171717"
+    },
+    "cyan": {
+      "100": "#cffafe",
+      "300": "#67e8f9",
+      "500": "#06b6d4",
+      "700": "#0e7490",
+      "900": "#164e63"
+    }
+  },
+  "variant_hues": [
+    "red",
+    "orange",
+    "yellow",
+    "green",
+    "blue",
+    "purple"
+  ],
+  "accent_shade": {
+    "midnight": {
+      "red": 500,
+      "orange": 500,
+      "yellow": 500,
+      "green": 500,
+      "blue": 300,
+      "purple": 300
+    },
+    "twilight": {
+      "red": 300,
+      "orange": 300,
+      "yellow": 500,
+      "green": 500,
+      "blue": 300,
+      "purple": 300
+    },
+    "dawn": {
+      "red": 900,
+      "orange": 900,
+      "yellow": 900,
+      "green": 900,
+      "blue": 700,
+      "purple": 700
+    },
+    "noon": {
+      "red": 700,
+      "orange": 700,
+      "yellow": 900,
+      "green": 900,
+      "blue": 700,
+      "purple": 700
+    }
+  },
+  "flavors": {
+    "midnight": {
+      "label": "Midnight",
+      "type": "dark",
+      "surface": {
+        "bg": "#171717",
+        "bg_soft": "#404040",
+        "bg_sunk": "#0a0a0a",
+        "bg_overlay": "#404040",
+        "bg_scrim": "#000000cc"
+      },
+      "text": {
+        "fg": "#f5f5f5",
+        "fg_muted": "#d4d4d4",
+        "fg_subtle": "#737373",
+        "fg_disabled": "#525252"
+      },
+      "border": {
+        "subtle": "#262626",
+        "default": "#404040",
+        "strong": "#737373"
+      },
+      "state": {
+        "hover": "#ffffff14",
+        "active": "#ffffff1f",
+        "selection": "#2a2f3a"
+      },
+      "semantic": {
+        "success": "#bef264",
+        "warning": "#fde047",
+        "danger": "#fca5a5",
+        "info": "#93c5fd"
+      },
+      "syntax": {
+        "comment": "#737373",
+        "keyword": "#d8b4fe",
+        "string": "#84cc16",
+        "number": "#f97316",
+        "function": "#93c5fd",
+        "type": "#eab308",
+        "constant": "#f97316",
+        "tag": "#93c5fd",
+        "attr": "#eab308",
+        "regex": "#ef4444",
+        "punct": "#d4d4d4"
+      },
+      "ansi": {
+        "black": "#0a0a0a",
+        "red": "#ef4444",
+        "green": "#84cc16",
+        "yellow": "#eab308",
+        "blue": "#93c5fd",
+        "magenta": "#d8b4fe",
+        "cyan": "#06b6d4",
+        "white": "#d4d4d4",
+        "bright_black": "#404040",
+        "bright_red": "#fca5a5",
+        "bright_green": "#bef264",
+        "bright_yellow": "#fde047",
+        "bright_blue": "#93c5fd",
+        "bright_magenta": "#d8b4fe",
+        "bright_cyan": "#67e8f9",
+        "bright_white": "#f5f5f5"
+      }
+    },
+    "twilight": {
+      "label": "Twilight",
+      "type": "dark",
+      "surface": {
+        "bg": "#404040",
+        "bg_soft": "#525252",
+        "bg_sunk": "#171717",
+        "bg_overlay": "#525252",
+        "bg_scrim": "#000000bb"
+      },
+      "text": {
+        "fg": "#f5f5f5",
+        "fg_muted": "#d4d4d4",
+        "fg_subtle": "#a3a3a3",
+        "fg_disabled": "#737373"
+      },
+      "border": {
+        "subtle": "#525252",
+        "default": "#171717",
+        "strong": "#0a0a0a"
+      },
+      "state": {
+        "hover": "#ffffff14",
+        "active": "#ffffff1f",
+        "selection": "#5b5b5b"
+      },
+      "semantic": {
+        "success": "#bef264",
+        "warning": "#eab308",
+        "danger": "#fca5a5",
+        "info": "#93c5fd"
+      },
+      "syntax": {
+        "comment": "#a3a3a3",
+        "keyword": "#d8b4fe",
+        "string": "#84cc16",
+        "number": "#fdba74",
+        "function": "#93c5fd",
+        "type": "#eab308",
+        "constant": "#fdba74",
+        "tag": "#93c5fd",
+        "attr": "#eab308",
+        "regex": "#fca5a5",
+        "punct": "#d4d4d4"
+      },
+      "ansi": {
+        "black": "#171717",
+        "red": "#fca5a5",
+        "green": "#84cc16",
+        "yellow": "#eab308",
+        "blue": "#93c5fd",
+        "magenta": "#d8b4fe",
+        "cyan": "#06b6d4",
+        "white": "#d4d4d4",
+        "bright_black": "#737373",
+        "bright_red": "#fca5a5",
+        "bright_green": "#bef264",
+        "bright_yellow": "#fde047",
+        "bright_blue": "#93c5fd",
+        "bright_magenta": "#d8b4fe",
+        "bright_cyan": "#67e8f9",
+        "bright_white": "#f5f5f5"
+      }
+    },
+    "dawn": {
+      "label": "Dawn",
+      "type": "light",
+      "surface": {
+        "bg": "#d4d4d4",
+        "bg_soft": "#f5f5f5",
+        "bg_sunk": "#bdbdbd",
+        "bg_overlay": "#f5f5f5",
+        "bg_scrim": "#17171788"
+      },
+      "text": {
+        "fg": "#171717",
+        "fg_muted": "#404040",
+        "fg_subtle": "#525252",
+        "fg_disabled": "#737373"
+      },
+      "border": {
+        "subtle": "#bdbdbd",
+        "default": "#a3a3a3",
+        "strong": "#404040"
+      },
+      "state": {
+        "hover": "#0000000d",
+        "active": "#00000014",
+        "selection": "#bdbdbd"
+      },
+      "semantic": {
+        "success": "#4d7c0f",
+        "warning": "#a16207",
+        "danger": "#b91c1c",
+        "info": "#1d4ed8"
+      },
+      "syntax": {
+        "comment": "#525252",
+        "keyword": "#7e22ce",
+        "string": "#365314",
+        "number": "#c2410c",
+        "function": "#1d4ed8",
+        "type": "#713f12",
+        "constant": "#c2410c",
+        "tag": "#1d4ed8",
+        "attr": "#713f12",
+        "regex": "#b91c1c",
+        "punct": "#404040"
+      },
+      "ansi": {
+        "black": "#171717",
+        "red": "#b91c1c",
+        "green": "#4d7c0f",
+        "yellow": "#a16207",
+        "blue": "#1d4ed8",
+        "magenta": "#7e22ce",
+        "cyan": "#0e7490",
+        "white": "#d4d4d4",
+        "bright_black": "#737373",
+        "bright_red": "#7f1d1d",
+        "bright_green": "#365314",
+        "bright_yellow": "#713f12",
+        "bright_blue": "#1e3a8a",
+        "bright_magenta": "#581c87",
+        "bright_cyan": "#164e63",
+        "bright_white": "#f5f5f5"
+      }
+    },
+    "noon": {
+      "label": "Noon",
+      "type": "light",
+      "surface": {
+        "bg": "#f5f5f5",
+        "bg_soft": "#ffffff",
+        "bg_sunk": "#d4d4d4",
+        "bg_overlay": "#ffffff",
+        "bg_scrim": "#17171788"
+      },
+      "text": {
+        "fg": "#171717",
+        "fg_muted": "#404040",
+        "fg_subtle": "#525252",
+        "fg_disabled": "#737373"
+      },
+      "border": {
+        "subtle": "#e5e5e5",
+        "default": "#d4d4d4",
+        "strong": "#737373"
+      },
+      "state": {
+        "hover": "#0000000d",
+        "active": "#00000014",
+        "selection": "#e5e5e5"
+      },
+      "semantic": {
+        "success": "#4d7c0f",
+        "warning": "#a16207",
+        "danger": "#b91c1c",
+        "info": "#1d4ed8"
+      },
+      "syntax": {
+        "comment": "#525252",
+        "keyword": "#7e22ce",
+        "string": "#365314",
+        "number": "#c2410c",
+        "function": "#1d4ed8",
+        "type": "#713f12",
+        "constant": "#c2410c",
+        "tag": "#1d4ed8",
+        "attr": "#713f12",
+        "regex": "#b91c1c",
+        "punct": "#404040"
+      },
+      "ansi": {
+        "black": "#171717",
+        "red": "#b91c1c",
+        "green": "#4d7c0f",
+        "yellow": "#a16207",
+        "blue": "#1d4ed8",
+        "magenta": "#7e22ce",
+        "cyan": "#0e7490",
+        "white": "#404040",
+        "bright_black": "#737373",
+        "bright_red": "#7f1d1d",
+        "bright_green": "#365314",
+        "bright_yellow": "#713f12",
+        "bright_blue": "#1e3a8a",
+        "bright_magenta": "#581c87",
+        "bright_cyan": "#164e63",
+        "bright_white": "#d4d4d4"
+      }
+    }
+  },
+  "typography": {
+    "families": {
+      "sans": {
+        "primary": "Atkinson Hyperlegible Next",
+        "weights": [
+          200,
+          300,
+          400,
+          500,
+          600,
+          700,
+          800
+        ],
+        "variable": true,
+        "stack": "\"Atkinson Hyperlegible Next\", ui-sans-serif, system-ui, -apple-system, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif",
+        "source": "https://www.brailleinstitute.org/freefont",
+        "license": "OFL-1.1",
+        "files": [
+          "fonts/AtkinsonHyperlegibleNext-VariableFont_wght.ttf",
+          "fonts/AtkinsonHyperlegibleNext-Italic-VariableFont_wght.ttf"
+        ]
+      },
+      "mono": {
+        "primary": "Atkinson Hyperlegible Mono",
+        "weights": [
+          200,
+          300,
+          400,
+          500,
+          600,
+          700,
+          800
+        ],
+        "variable": true,
+        "stack": "\"Atkinson Hyperlegible Mono\", \"Cascadia Code\", \"Cascadia Mono\", ui-monospace, Menlo, Consolas, monospace",
+        "source": "https://www.brailleinstitute.org/freefont",
+        "license": "OFL-1.1",
+        "files": [
+          "fonts/AtkinsonHyperlegibleMono-VariableFont_wght.ttf",
+          "fonts/AtkinsonHyperlegibleMono-Italic-VariableFont_wght.ttf"
+        ],
+        "notes": "Cascadia Code kept in the stack as a fallback — respects the user's personal coding-font preference where it's installed locally.",
+        "nerd_font_variant": {
+          "name": "Atkinson Hyperlegible Mono Nerd Font",
+          "source": "https://www.nerdfonts.com/font-downloads",
+          "notes": "Port-side asset, not bundled here. Terminal ports (Alacritty, Kitty, iTerm, …) should recommend this variant so icon-using prompts like Starship and Powerlevel10k render correctly. Not used by the design system itself."
+        }
+      }
+    },
+    "weights": {
+      "regular": 400,
+      "medium": 500,
+      "semibold": 600,
+      "bold": 700
+    },
+    "scale": {
+      "display_xl": {
+        "family": "sans",
+        "size_px": 48,
+        "line_height": 1.1,
+        "weight": 700,
+        "tracking": "-0.02em"
+      },
+      "display_lg": {
+        "family": "sans",
+        "size_px": 36,
+        "line_height": 1.15,
+        "weight": 700,
+        "tracking": "-0.02em"
+      },
+      "display_md": {
+        "family": "sans",
+        "size_px": 28,
+        "line_height": 1.2,
+        "weight": 600,
+        "tracking": "-0.015em"
+      },
+      "heading": {
+        "family": "sans",
+        "size_px": 20,
+        "line_height": 1.3,
+        "weight": 600,
+        "tracking": "-0.01em"
+      },
+      "body": {
+        "family": "sans",
+        "size_px": 16,
+        "line_height": 1.5,
+        "weight": 400,
+        "tracking": "0"
+      },
+      "body_sm": {
+        "family": "sans",
+        "size_px": 14,
+        "line_height": 1.5,
+        "weight": 400,
+        "tracking": "0"
+      },
+      "caption": {
+        "family": "sans",
+        "size_px": 12,
+        "line_height": 1.4,
+        "weight": 500,
+        "tracking": "0.02em"
+      },
+      "label": {
+        "family": "sans",
+        "size_px": 11,
+        "line_height": 1.3,
+        "weight": 600,
+        "tracking": "0.08em",
+        "text_transform": "uppercase"
+      },
+      "blockquote": {
+        "family": "sans",
+        "size_px": 18,
+        "line_height": 1.6,
+        "weight": 400,
+        "tracking": "0",
+        "italic": true
+      },
+      "code": {
+        "family": "mono",
+        "size_px": 14,
+        "line_height": 1.5,
+        "weight": 400,
+        "tracking": "0"
+      },
+      "code_sm": {
+        "family": "mono",
+        "size_px": 12,
+        "line_height": 1.45,
+        "weight": 400,
+        "tracking": "0"
+      }
+    }
+  },
+  "spacing": {
+    "0": "0",
+    "1": "4px",
+    "2": "8px",
+    "3": "12px",
+    "4": "16px",
+    "5": "20px",
+    "6": "24px",
+    "8": "32px",
+    "10": "40px",
+    "12": "48px",
+    "16": "64px",
+    "20": "80px",
+    "24": "96px",
+    "px": "1px"
+  },
+  "radii": {
+    "none": "0",
+    "sm": "4px",
+    "md": "8px",
+    "lg": "12px",
+    "xl": "16px",
+    "pill": "9999px"
+  },
+  "shadows": {
+    "sm": "0 1px 2px rgba(0,0,0,0.08)",
+    "md": "0 4px 12px rgba(0,0,0,0.12), 0 1px 3px rgba(0,0,0,0.06)",
+    "lg": "0 12px 32px rgba(0,0,0,0.18), 0 4px 8px rgba(0,0,0,0.08)",
+    "focus_ring_width": "2px",
+    "focus_ring_offset": "2px"
+  },
+  "motion": {
+    "duration": {
+      "instant": "0ms",
+      "fast": "120ms",
+      "base": "200ms",
+      "slow": "320ms"
+    },
+    "easing": {
+      "standard": "cubic-bezier(0.2, 0, 0, 1)",
+      "enter": "cubic-bezier(0, 0, 0.2, 1)",
+      "exit": "cubic-bezier(0.4, 0, 1, 1)"
+    }
+  },
+  "syntax_tokens": {
+    "core": [
+      "comment",
+      "keyword",
+      "string",
+      "number",
+      "function",
+      "type",
+      "constant",
+      "tag",
+      "attr",
+      "regex",
+      "punct"
+    ],
+    "extended": {
+      "variable": "fg",
+      "parameter": "fg",
+      "property": "tag",
+      "operator": "keyword",
+      "builtin": "function",
+      "namespace": "type",
+      "decorator": "type",
+      "macro": "function",
+      "lifetime": "constant",
+      "heading": "keyword",
+      "link": "tag",
+      "selector": "tag",
+      "unit": "number",
+      "hex": "string",
+      "shebang": "comment"
+    }
+  },
+  "iconography": {
+    "inline_ui": {
+      "primary": {
+        "name": "Lucide",
+        "url": "https://lucide.dev/",
+        "license": "ISC",
+        "count": "approx 1500 unique glyphs",
+        "why": "Single-stroke style, forked from Feather specifically to fix small-size legibility. Used by shadcn/ui and most modern design systems. Coherence over coverage.",
+        "usage": "Load from CDN, npm (`lucide`, `lucide-react`, `lucide-vue-next`, `lucide-svelte`), or pre-render specific SVGs at build time. All glyphs use stroke=\"currentColor\" — set `color` in CSS to retint."
+      },
+      "alternative": {
+        "name": "Tabler Icons",
+        "url": "https://tabler.io/icons",
+        "license": "MIT",
+        "count": "approx 5800 unique glyphs",
+        "why": "Larger set if you need rarer glyphs (industry-specific, less common UI patterns). Slightly heavier visual weight; mixes outline + filled styles which becomes a per-icon design decision."
+      },
+      "not_recommended": {
+        "name": "Phosphor",
+        "why": "Quoted count (~9k) is 1512 unique glyphs × 6 weights. Smaller actual coverage than Lucide for typical UI needs; weight system is more complexity than the design system needs."
+      }
+    },
+    "ide_filetree": {
+      "vscode": {
+        "recommended": "Material Icon Theme",
+        "url": "https://marketplace.visualstudio.com/items?itemName=PKief.material-icon-theme",
+        "alt": "Seti (VS Code default) — simpler, fewer file types covered",
+        "note": "Independent of the color theme. Users install it separately. Catppuccin and Dracula both leave file icons to the user; Vivid Life does too."
+      },
+      "helix": {
+        "recommended": "Terminal-side via Nerd Font",
+        "note": "Helix shows file icons through the terminal emulator's font. Recommend Atkinson Hyperlegible Mono Nerd Font."
+      },
+      "neovim": {
+        "recommended": "nvim-web-devicons",
+        "url": "https://github.com/nvim-tree/nvim-web-devicons",
+        "note": "Uses the same Nerd Font glyph set; install Atkinson Hyperlegible Mono Nerd Font and pair."
+      },
+      "jetbrains": {
+        "recommended": "Built-in icons",
+        "note": "JetBrains IDEs do not allow user-configurable file icons. Accept the platform default."
+      }
+    },
+    "desktop": {
+      "recommended": "Papirus",
+      "url": "https://github.com/PapirusDevelopmentTeam/papirus-icon-theme",
+      "license": "GPL-3.0",
+      "count": "approx 7000 icons",
+      "why": "Most popular community icon theme on Linux. Strong monochromatic-ish aesthetic that pairs with Vivid Life without modification. Built-in `papirus-folders` CLI lets users tint folder accents to match their variant.",
+      "port_recipe": "GTK/Xfce ports should ship a small `papirus-folders` mapping recipe that picks a folder color matching each variant. No icons drawn.",
+      "alternatives": [
+        "Numix Circle — older, more stylized, smaller community",
+        "Sweet Icons — works well, smaller community than Papirus"
+      ]
+    },
+    "bundled": {
+      "source": "Lucide v0.x — vendored subset",
+      "path": "assets/glyphs/",
+      "note": "Each SVG uses stroke=\"currentColor\". Container sets `color` to retint. See preview/16-iconography.html for the live spec."
+    }
+  }
+};
