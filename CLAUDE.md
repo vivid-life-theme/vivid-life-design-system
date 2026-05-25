@@ -6,29 +6,27 @@ Foundation for a 4-flavor × 6-variant = 24-theme color system. Source of truth 
 
 | File | Purpose |
 |------|---------|
-| `.claudeignore` | Paths excluded from Claude Code indexing                                   |
-| `.claude/learnings.md` | Tagged + dated observations recalled at the start of each skill run        |
-| `.claude/settings.json` | Permissions, hooks, environment variables                                  |
-| `.editorconfig` | TODO: add description  |
-| `.githooks/pre-commit` | Keeps Key Config Files table in sync before each commit                    |
-| `.github/workflows/claude-code-review.yml` | Auto-reviews every PR when opened or updated                               |
-| `.github/workflows/claude.yml` | Responds to @claude mentions in issues and PRs                             |
-| `.gitignore` | Git ignore patterns                                                        |
-| `handoff/README.md` | How downstream ports use the handoff artifacts                             |
-| `handoff/SKILL.md` | Port-distribution skill — copied into a port's `.claude/skills/`           |
-| `package.json` | npm manifest: exports, files, scripts (build/check/test)                   |
-| `scripts/sync-config-table.sh` | Syncs Key Config Files table with filesystem                               |
-| `tokens.json` | Generated — resolved flat token map; consumed by downstream ports          |
+| `.claudeignore` | Paths excluded from Claude Code indexing                             |
+| `.claude/settings.json` | Permissions, hooks, environment variables                            |
+| `.editorconfig` | Locks indent / EOL / final newline across editors                    |
+| `.githooks/pre-commit` | Keeps Key Config Files table in sync before each commit              |
+| `.github/workflows/claude-code-review.yml` | Auto-reviews every PR when opened or updated                         |
+| `.github/workflows/claude.yml` | Responds to @claude mentions in issues and PRs                       |
+| `.gitignore` | Git ignore patterns                                                  |
+| `handoff/README.md` | How downstream ports use the handoff artifacts                       |
+| `handoff/SKILL.md` | Port-distribution skill — copied into a port's `.claude/skills/`     |
+| `package.json` | npm manifest: exports, files, scripts (build/check/test)             |
+| `.prettierignore` | TODO: add description |
+| `scripts/sync-config-table.sh` | Syncs Key Config Files table with filesystem                         |
+| `tokens.json` | Generated — resolved flat token map; consumed by downstream ports    |
 
 ## Commands
 
-- `node tools/build-tokens.mjs` — resolve `tokens.json5` → `tokens.json` + `dist/tokens.js` + WCAG AA check
-- `node tools/build-tokens.mjs --check` — verify `tokens.json` + `dist/tokens.js` are in sync (CI mode, exits non-zero on drift)
-- `node tools/build-css.mjs` — generate `colors_and_type.css` from `tokens.json5`
-- `node tools/build-css.mjs --check` — verify CSS is in sync (CI mode, exits non-zero on drift)
-- `node tools/build-previews.mjs --check` — validate every `var(--…)` and relative URL in `preview/*.html` resolves
+- `npm run build` — regenerate `tokens.json`, `dist/tokens.js`, and `colors_and_type.css` from `tokens.json5` (with WCAG AA check)
+- `npm run check` — CI integrity: verify token outputs, CSS, and preview references are all in sync (exits non-zero on drift)
+- `npm run test` — run the color-math self-tests in `tools/build-tokens.mjs`
 
-Run both build commands after any change to `tokens.json5`.
+Always run `npm run build` after any change to `tokens.json5`. Underlying scripts (`node tools/build-{tokens,css,previews}.mjs [--check]`) are invocable directly when you need finer control.
 
 ## References
 

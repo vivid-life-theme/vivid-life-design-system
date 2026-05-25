@@ -81,3 +81,12 @@ the default?" Then build accordingly using the patterns above.
   headers / similar protocol uses.
 - Don't draw the brand mark by hand. Copy `assets/logo.svg`.
 - Don't hardcode hex values where a token exists.
+
+## Feedback
+
+After producing an artifact, ask the user: "Did the result use the
+foundation correctly? If not, tell me what's off — I'll log it to
+`.claude/learnings.md` so the next session doesn't repeat it." If they
+flag a gap that's actually a foundation gap (a missing token, an
+underspecified pattern), open it as an issue against the foundation repo
+rather than papering over it on the port side.

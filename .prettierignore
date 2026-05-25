@@ -1,0 +1,13 @@
+# Generated files — produced deterministically by tools/build-*.mjs.
+# Letting any formatter touch these will cause `npm run check` to report
+# drift on the next CI run.
+tokens.json
+dist/
+colors_and_type.css
+
+# Bundled font binaries.
+fonts/
+
+# Generated assets.
+assets/icon-*.png
+preview/_*.png
