@@ -1,4 +1,17 @@
-# Vivid Life Theme
+<p align="center">
+  <img src="assets/wordmark.svg" height="48" alt="Vivid Life Theme" />
+</p>
+<p align="center">
+  <img src="https://img.shields.io/badge/license-MIT-blue" alt="License: MIT" />
+  <img
+    src="https://img.shields.io/badge/WCAG-AA%20%E2%9C%93-22c55e"
+    alt="WCAG AA"
+  />
+  <img
+    src="https://img.shields.io/badge/dependencies-none-737373"
+    alt="No dependencies"
+  />
+</p>
 
 > A multi-flavor color-scheme system
 
