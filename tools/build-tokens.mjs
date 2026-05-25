@@ -61,7 +61,7 @@ export function toHex([r, g, b, a]) {
 /**
  * Mix two hex colors in sRGB space.
  *   mix('#d8b4fe', '#171717', 0.25)
- *     → A at 25%, B at 75%   →   '#3c333a'
+ *     → A at 25%, B at 75%   →   '#473e51'
  *
  * Matches CSS `color-mix(in srgb, A 25%, B)`. Interpolation happens in
  * gamma-encoded sRGB (the same space the channel values live in) — NOT
@@ -89,7 +89,7 @@ export function mix(a, b, p) {
  * theme formats) and you need a concrete hex equivalent.
  *
  *   alphaOver('#ffffff', '#171717', 0.08)
- *     → 8% white over Midnight bg  →  '#2c2c2c'
+ *     → 8% white over Midnight bg  →  '#2a2a2a'
  *
  * @param {string} fg    foreground hex
  * @param {string} bg    background hex (opaque)
@@ -140,7 +140,7 @@ export function readableOn(bg) {
  * Selection background for a (flavor, variant) combo.
  * Equivalent to `color-mix(in srgb, var(--vl-accent) 25%, var(--vl-bg))`.
  *
- *   selection({ bg: '#171717', accent: '#d8b4fe' })  → '#3c333a'
+ *   selection({ bg: '#171717', accent: '#d8b4fe' })  → '#473e51'
  */
 export function selection({ bg, accent, mixPct = 0.25 } = {}) {
   if (!bg || !accent) throw new Error("selection: bg and accent required");
@@ -149,8 +149,8 @@ export function selection({ bg, accent, mixPct = 0.25 } = {}) {
 
 /**
  * Hover overlay baked against a known bg.
- *   hoverOver({ flavor: 'dark', bg: '#171717' })  → '#2c2c2c'
- *   hoverOver({ flavor: 'light', bg: '#f5f5f5' }) → '#e7e7e7'
+ *   hoverOver({ flavor: 'dark', bg: '#171717' })  → '#2a2a2a'
+ *   hoverOver({ flavor: 'light', bg: '#f5f5f5' }) → '#e9e9e9'
  *
  * Dark flavors lighten by 8% white; light flavors darken by 5% black —
  * matches the values in `tokens.json5 → flavors.*.state`.
@@ -360,7 +360,7 @@ function selfTest() {
     // alphaOver
     [
       () => alphaOver("#ffffff", "#171717", 0.08),
-      "#2c2c2c",
+      "#2a2a2a",
       "8% white over midnight",
     ],
     [
