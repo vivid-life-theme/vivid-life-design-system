@@ -1,102 +1,265 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-<meta charset="utf-8">
-<title>VL — syntax reference</title>
-<link rel="stylesheet" href="../colors_and_type.css">
-<style>
-  html, body { margin: 0; padding: 0; background: #fafafa; font-family: var(--vl-font-sans); }
-  .wrap { padding: 14px 16px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
-  .card { border-radius: 10px; overflow: hidden; box-shadow: 0 0 0 1px rgba(0,0,0,0.08); }
-  .head { padding: 9px 14px 8px; background: var(--vl-bg-sunk); color: var(--vl-fg); border-bottom: 1px solid var(--vl-border); display: flex; align-items: baseline; justify-content: space-between; }
-  .name { font-size: 12.5px; font-weight: 600; letter-spacing: 0.01em; }
-  .hex  { font-size: 10.5px; font-family: var(--vl-font-mono); color: var(--vl-fg-subtle); }
-  .code { background: var(--vl-bg); color: var(--vl-fg); padding: 11px 14px 13px; font-family: var(--vl-font-mono); font-size: 11.5px; line-height: 1.55; min-height: 220px; }
-  .com  { color: var(--syn-comment); font-style: italic; }
-  .kw   { color: var(--syn-keyword); }
-  .str  { color: var(--syn-string); }
-  .num  { color: var(--syn-number); }
-  .fn   { color: var(--syn-function); }
-  .ty   { color: var(--syn-type); }
-  .co   { color: var(--syn-constant); }
-  .re   { color: var(--syn-regex); }
-  .pu   { color: var(--syn-punct); }
-  .tag  { color: var(--syn-tag); }
-  .attr { color: var(--syn-attr); }
-  .ln   { color: var(--vl-fg-subtle); margin-right: 10px; user-select: none; display: inline-block; width: 14px; text-align: right; }
-</style>
-</head>
-<body>
-<div class="wrap">
+  <head>
+    <meta charset="utf-8" />
+    <title>VL — syntax reference</title>
+    <link rel="stylesheet" href="../colors_and_type.css" />
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        background: #fafafa;
+        font-family: var(--vl-font-sans);
+      }
+      .wrap {
+        padding: 14px 16px;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+      }
+      .card {
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.08);
+      }
+      .head {
+        padding: 9px 14px 8px;
+        background: var(--vl-bg-sunk);
+        color: var(--vl-fg);
+        border-bottom: 1px solid var(--vl-border);
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+      }
+      .name {
+        font-size: 12.5px;
+        font-weight: 600;
+        letter-spacing: 0.01em;
+      }
+      .hex {
+        font-size: 10.5px;
+        font-family: var(--vl-font-mono);
+        color: var(--vl-fg-subtle);
+      }
+      .code {
+        background: var(--vl-bg);
+        color: var(--vl-fg);
+        padding: 11px 14px 13px;
+        font-family: var(--vl-font-mono);
+        font-size: 11.5px;
+        line-height: 1.55;
+        min-height: 220px;
+      }
+      .com {
+        color: var(--syn-comment);
+        font-style: italic;
+      }
+      .kw {
+        color: var(--syn-keyword);
+      }
+      .str {
+        color: var(--syn-string);
+      }
+      .num {
+        color: var(--syn-number);
+      }
+      .fn {
+        color: var(--syn-function);
+      }
+      .ty {
+        color: var(--syn-type);
+      }
+      .co {
+        color: var(--syn-constant);
+      }
+      .re {
+        color: var(--syn-regex);
+      }
+      .pu {
+        color: var(--syn-punct);
+      }
+      .tag {
+        color: var(--syn-tag);
+      }
+      .attr {
+        color: var(--syn-attr);
+      }
+      .ln {
+        color: var(--vl-fg-subtle);
+        margin-right: 10px;
+        user-select: none;
+        display: inline-block;
+        width: 14px;
+        text-align: right;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <!-- Midnight -->
+      <div class="card vl-midnight">
+        <div class="head">
+          <div class="name">Midnight</div>
+          <div class="hex">vivid-life-midnight</div>
+        </div>
+        <div class="code">
+          <span class="ln">1</span
+          ><span class="com">// Vivid Life Theme — syntax reference</span><br />
+          <span class="ln">2</span><span class="kw">import</span> {
+          <span class="fn">render</span> } <span class="kw">from</span>
+          <span class="str">'./theme'</span><span class="pu">;</span><br />
+          <span class="ln">3</span><br />
+          <span class="ln">4</span><span class="kw">type</span>
+          <span class="ty">Flavor</span> <span class="pu">=</span>
+          <span class="str">'midnight'</span> <span class="pu">|</span>
+          <span class="str">'twilight'</span> <span class="pu">|</span>
+          <span class="str">'dawn'</span> <span class="pu">|</span>
+          <span class="str">'noon'</span><span class="pu">;</span><br />
+          <span class="ln">5</span><br />
+          <span class="ln">6</span><span class="kw">const</span> palette
+          <span class="pu">=</span> <span class="fn">load</span
+          ><span class="pu">(</span><span class="str">'midnight'</span
+          ><span class="pu">,</span> <span class="co">true</span
+          ><span class="pu">);</span><br />
+          <span class="ln">7</span><span class="kw">const</span> count
+          <span class="pu">=</span> <span class="num">24</span
+          ><span class="pu">;</span> <span class="com">// 4 × 6 themes</span
+          ><br />
+          <span class="ln">8</span><span class="kw">const</span> hex
+          <span class="pu">=</span> <span class="re">/^#[0-9a-f]{6}$/i</span
+          ><span class="pu">;</span><br />
+          <span class="ln">9</span><br />
+          <span class="ln">10</span><span class="tag">&lt;Card</span>
+          <span class="attr">flavor</span><span class="pu">=</span
+          ><span class="str">"midnight"</span> <span class="attr">variant</span
+          ><span class="pu">=</span><span class="str">"purple"</span>
+          <span class="tag">/&gt;</span>
+        </div>
+      </div>
 
-  <!-- Midnight -->
-  <div class="card vl-midnight">
-    <div class="head"><div class="name">Midnight</div><div class="hex">vivid-life-midnight</div></div>
-    <div class="code">
-<span class="ln">1</span><span class="com">// Vivid Life — syntax reference</span><br>
-<span class="ln">2</span><span class="kw">import</span> { <span class="fn">render</span> } <span class="kw">from</span> <span class="str">'./theme'</span><span class="pu">;</span><br>
-<span class="ln">3</span><br>
-<span class="ln">4</span><span class="kw">type</span> <span class="ty">Flavor</span> <span class="pu">=</span> <span class="str">'midnight'</span> <span class="pu">|</span> <span class="str">'twilight'</span> <span class="pu">|</span> <span class="str">'dawn'</span> <span class="pu">|</span> <span class="str">'noon'</span><span class="pu">;</span><br>
-<span class="ln">5</span><br>
-<span class="ln">6</span><span class="kw">const</span> palette <span class="pu">=</span> <span class="fn">load</span><span class="pu">(</span><span class="str">'midnight'</span><span class="pu">,</span> <span class="co">true</span><span class="pu">);</span><br>
-<span class="ln">7</span><span class="kw">const</span> count <span class="pu">=</span> <span class="num">24</span><span class="pu">;</span>  <span class="com">// 4 × 6 themes</span><br>
-<span class="ln">8</span><span class="kw">const</span> hex <span class="pu">=</span> <span class="re">/^#[0-9a-f]{6}$/i</span><span class="pu">;</span><br>
-<span class="ln">9</span><br>
-<span class="ln">10</span><span class="tag">&lt;Card</span> <span class="attr">flavor</span><span class="pu">=</span><span class="str">"midnight"</span> <span class="attr">variant</span><span class="pu">=</span><span class="str">"purple"</span> <span class="tag">/&gt;</span>
+      <!-- Twilight -->
+      <div class="card vl-twilight">
+        <div class="head">
+          <div class="name">Twilight</div>
+          <div class="hex">vivid-life-twilight</div>
+        </div>
+        <div class="code">
+          <span class="ln">1</span
+          ><span class="com">// Vivid Life Theme — syntax reference</span><br />
+          <span class="ln">2</span><span class="kw">import</span> {
+          <span class="fn">render</span> } <span class="kw">from</span>
+          <span class="str">'./theme'</span><span class="pu">;</span><br />
+          <span class="ln">3</span><br />
+          <span class="ln">4</span><span class="kw">type</span>
+          <span class="ty">Flavor</span> <span class="pu">=</span>
+          <span class="str">'midnight'</span> <span class="pu">|</span>
+          <span class="str">'twilight'</span> <span class="pu">|</span>
+          <span class="str">'dawn'</span> <span class="pu">|</span>
+          <span class="str">'noon'</span><span class="pu">;</span><br />
+          <span class="ln">5</span><br />
+          <span class="ln">6</span><span class="kw">const</span> palette
+          <span class="pu">=</span> <span class="fn">load</span
+          ><span class="pu">(</span><span class="str">'twilight'</span
+          ><span class="pu">,</span> <span class="co">true</span
+          ><span class="pu">);</span><br />
+          <span class="ln">7</span><span class="kw">const</span> count
+          <span class="pu">=</span> <span class="num">24</span
+          ><span class="pu">;</span> <span class="com">// 4 × 6 themes</span
+          ><br />
+          <span class="ln">8</span><span class="kw">const</span> hex
+          <span class="pu">=</span> <span class="re">/^#[0-9a-f]{6}$/i</span
+          ><span class="pu">;</span><br />
+          <span class="ln">9</span><br />
+          <span class="ln">10</span><span class="tag">&lt;Card</span>
+          <span class="attr">flavor</span><span class="pu">=</span
+          ><span class="str">"twilight"</span> <span class="attr">variant</span
+          ><span class="pu">=</span><span class="str">"yellow"</span>
+          <span class="tag">/&gt;</span>
+        </div>
+      </div>
+
+      <!-- Dawn -->
+      <div class="card vl-dawn">
+        <div class="head">
+          <div class="name">Dawn</div>
+          <div class="hex">vivid-life-dawn</div>
+        </div>
+        <div class="code">
+          <span class="ln">1</span
+          ><span class="com">// Vivid Life Theme — syntax reference</span><br />
+          <span class="ln">2</span><span class="kw">import</span> {
+          <span class="fn">render</span> } <span class="kw">from</span>
+          <span class="str">'./theme'</span><span class="pu">;</span><br />
+          <span class="ln">3</span><br />
+          <span class="ln">4</span><span class="kw">type</span>
+          <span class="ty">Flavor</span> <span class="pu">=</span>
+          <span class="str">'midnight'</span> <span class="pu">|</span>
+          <span class="str">'twilight'</span> <span class="pu">|</span>
+          <span class="str">'dawn'</span> <span class="pu">|</span>
+          <span class="str">'noon'</span><span class="pu">;</span><br />
+          <span class="ln">5</span><br />
+          <span class="ln">6</span><span class="kw">const</span> palette
+          <span class="pu">=</span> <span class="fn">load</span
+          ><span class="pu">(</span><span class="str">'dawn'</span
+          ><span class="pu">,</span> <span class="co">true</span
+          ><span class="pu">);</span><br />
+          <span class="ln">7</span><span class="kw">const</span> count
+          <span class="pu">=</span> <span class="num">24</span
+          ><span class="pu">;</span> <span class="com">// 4 × 6 themes</span
+          ><br />
+          <span class="ln">8</span><span class="kw">const</span> hex
+          <span class="pu">=</span> <span class="re">/^#[0-9a-f]{6}$/i</span
+          ><span class="pu">;</span><br />
+          <span class="ln">9</span><br />
+          <span class="ln">10</span><span class="tag">&lt;Card</span>
+          <span class="attr">flavor</span><span class="pu">=</span
+          ><span class="str">"dawn"</span> <span class="attr">variant</span
+          ><span class="pu">=</span><span class="str">"blue"</span>
+          <span class="tag">/&gt;</span>
+        </div>
+      </div>
+
+      <!-- Noon -->
+      <div class="card vl-noon">
+        <div class="head">
+          <div class="name">Noon</div>
+          <div class="hex">vivid-life-noon</div>
+        </div>
+        <div class="code">
+          <span class="ln">1</span
+          ><span class="com">// Vivid Life Theme — syntax reference</span><br />
+          <span class="ln">2</span><span class="kw">import</span> {
+          <span class="fn">render</span> } <span class="kw">from</span>
+          <span class="str">'./theme'</span><span class="pu">;</span><br />
+          <span class="ln">3</span><br />
+          <span class="ln">4</span><span class="kw">type</span>
+          <span class="ty">Flavor</span> <span class="pu">=</span>
+          <span class="str">'midnight'</span> <span class="pu">|</span>
+          <span class="str">'twilight'</span> <span class="pu">|</span>
+          <span class="str">'dawn'</span> <span class="pu">|</span>
+          <span class="str">'noon'</span><span class="pu">;</span><br />
+          <span class="ln">5</span><br />
+          <span class="ln">6</span><span class="kw">const</span> palette
+          <span class="pu">=</span> <span class="fn">load</span
+          ><span class="pu">(</span><span class="str">'noon'</span
+          ><span class="pu">,</span> <span class="co">true</span
+          ><span class="pu">);</span><br />
+          <span class="ln">7</span><span class="kw">const</span> count
+          <span class="pu">=</span> <span class="num">24</span
+          ><span class="pu">;</span> <span class="com">// 4 × 6 themes</span
+          ><br />
+          <span class="ln">8</span><span class="kw">const</span> hex
+          <span class="pu">=</span> <span class="re">/^#[0-9a-f]{6}$/i</span
+          ><span class="pu">;</span><br />
+          <span class="ln">9</span><br />
+          <span class="ln">10</span><span class="tag">&lt;Card</span>
+          <span class="attr">flavor</span><span class="pu">=</span
+          ><span class="str">"noon"</span> <span class="attr">variant</span
+          ><span class="pu">=</span><span class="str">"red"</span>
+          <span class="tag">/&gt;</span>
+        </div>
+      </div>
     </div>
-  </div>
-
-  <!-- Twilight -->
-  <div class="card vl-twilight">
-    <div class="head"><div class="name">Twilight</div><div class="hex">vivid-life-twilight</div></div>
-    <div class="code">
-<span class="ln">1</span><span class="com">// Vivid Life — syntax reference</span><br>
-<span class="ln">2</span><span class="kw">import</span> { <span class="fn">render</span> } <span class="kw">from</span> <span class="str">'./theme'</span><span class="pu">;</span><br>
-<span class="ln">3</span><br>
-<span class="ln">4</span><span class="kw">type</span> <span class="ty">Flavor</span> <span class="pu">=</span> <span class="str">'midnight'</span> <span class="pu">|</span> <span class="str">'twilight'</span> <span class="pu">|</span> <span class="str">'dawn'</span> <span class="pu">|</span> <span class="str">'noon'</span><span class="pu">;</span><br>
-<span class="ln">5</span><br>
-<span class="ln">6</span><span class="kw">const</span> palette <span class="pu">=</span> <span class="fn">load</span><span class="pu">(</span><span class="str">'twilight'</span><span class="pu">,</span> <span class="co">true</span><span class="pu">);</span><br>
-<span class="ln">7</span><span class="kw">const</span> count <span class="pu">=</span> <span class="num">24</span><span class="pu">;</span>  <span class="com">// 4 × 6 themes</span><br>
-<span class="ln">8</span><span class="kw">const</span> hex <span class="pu">=</span> <span class="re">/^#[0-9a-f]{6}$/i</span><span class="pu">;</span><br>
-<span class="ln">9</span><br>
-<span class="ln">10</span><span class="tag">&lt;Card</span> <span class="attr">flavor</span><span class="pu">=</span><span class="str">"twilight"</span> <span class="attr">variant</span><span class="pu">=</span><span class="str">"yellow"</span> <span class="tag">/&gt;</span>
-    </div>
-  </div>
-
-  <!-- Dawn -->
-  <div class="card vl-dawn">
-    <div class="head"><div class="name">Dawn</div><div class="hex">vivid-life-dawn</div></div>
-    <div class="code">
-<span class="ln">1</span><span class="com">// Vivid Life — syntax reference</span><br>
-<span class="ln">2</span><span class="kw">import</span> { <span class="fn">render</span> } <span class="kw">from</span> <span class="str">'./theme'</span><span class="pu">;</span><br>
-<span class="ln">3</span><br>
-<span class="ln">4</span><span class="kw">type</span> <span class="ty">Flavor</span> <span class="pu">=</span> <span class="str">'midnight'</span> <span class="pu">|</span> <span class="str">'twilight'</span> <span class="pu">|</span> <span class="str">'dawn'</span> <span class="pu">|</span> <span class="str">'noon'</span><span class="pu">;</span><br>
-<span class="ln">5</span><br>
-<span class="ln">6</span><span class="kw">const</span> palette <span class="pu">=</span> <span class="fn">load</span><span class="pu">(</span><span class="str">'dawn'</span><span class="pu">,</span> <span class="co">true</span><span class="pu">);</span><br>
-<span class="ln">7</span><span class="kw">const</span> count <span class="pu">=</span> <span class="num">24</span><span class="pu">;</span>  <span class="com">// 4 × 6 themes</span><br>
-<span class="ln">8</span><span class="kw">const</span> hex <span class="pu">=</span> <span class="re">/^#[0-9a-f]{6}$/i</span><span class="pu">;</span><br>
-<span class="ln">9</span><br>
-<span class="ln">10</span><span class="tag">&lt;Card</span> <span class="attr">flavor</span><span class="pu">=</span><span class="str">"dawn"</span> <span class="attr">variant</span><span class="pu">=</span><span class="str">"blue"</span> <span class="tag">/&gt;</span>
-    </div>
-  </div>
-
-  <!-- Noon -->
-  <div class="card vl-noon">
-    <div class="head"><div class="name">Noon</div><div class="hex">vivid-life-noon</div></div>
-    <div class="code">
-<span class="ln">1</span><span class="com">// Vivid Life — syntax reference</span><br>
-<span class="ln">2</span><span class="kw">import</span> { <span class="fn">render</span> } <span class="kw">from</span> <span class="str">'./theme'</span><span class="pu">;</span><br>
-<span class="ln">3</span><br>
-<span class="ln">4</span><span class="kw">type</span> <span class="ty">Flavor</span> <span class="pu">=</span> <span class="str">'midnight'</span> <span class="pu">|</span> <span class="str">'twilight'</span> <span class="pu">|</span> <span class="str">'dawn'</span> <span class="pu">|</span> <span class="str">'noon'</span><span class="pu">;</span><br>
-<span class="ln">5</span><br>
-<span class="ln">6</span><span class="kw">const</span> palette <span class="pu">=</span> <span class="fn">load</span><span class="pu">(</span><span class="str">'noon'</span><span class="pu">,</span> <span class="co">true</span><span class="pu">);</span><br>
-<span class="ln">7</span><span class="kw">const</span> count <span class="pu">=</span> <span class="num">24</span><span class="pu">;</span>  <span class="com">// 4 × 6 themes</span><br>
-<span class="ln">8</span><span class="kw">const</span> hex <span class="pu">=</span> <span class="re">/^#[0-9a-f]{6}$/i</span><span class="pu">;</span><br>
-<span class="ln">9</span><br>
-<span class="ln">10</span><span class="tag">&lt;Card</span> <span class="attr">flavor</span><span class="pu">=</span><span class="str">"noon"</span> <span class="attr">variant</span><span class="pu">=</span><span class="str">"red"</span> <span class="tag">/&gt;</span>
-    </div>
-  </div>
-
-</div>
-</body>
+  </body>
 </html>

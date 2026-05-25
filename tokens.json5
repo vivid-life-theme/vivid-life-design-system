@@ -18,13 +18,12 @@
 // ════════════════════════════════════════════════════════════════════
 {
   meta: {
-    name: 'Vivid Life',
-    version: '0.2.0',
-    description: 'A multi-flavor color scheme system. 4 flavors × 6 variants = 24 themes.',
-    source_palette: 'https://farben.van-laar.de/',
-    inspiration: ['https://catppuccin.com/', 'https://draculatheme.com/'],
+    name: "Vivid Life Theme",
+    version: "0.2.0",
+    description: "A multi-flavor color scheme system. 4 flavors × 6 variants = 24 themes.",
+    source_palette: "https://farben.van-laar.de/",
+    inspiration: ["https://catppuccin.com/", "https://draculatheme.com/"],
   },
-
 
   // ────────────────────────────────────────────────────────────────
   //   1.  PALETTE  —  the atomic colors
@@ -34,21 +33,68 @@
   // Blau, Purpur, Grau. We use English everywhere downstream.
 
   palette: {
-    red:    { 900: '#7f1d1d', 700: '#b91c1c', 500: '#ef4444', 300: '#fca5a5', 100: '#fee2e2' },
-    orange: { 900: '#7c2d12', 700: '#c2410c', 500: '#f97316', 300: '#fdba74', 100: '#ffedd5' },
-    yellow: { 900: '#713f12', 700: '#a16207', 500: '#eab308', 300: '#fde047', 100: '#fef9c3' },
-    green:  { 900: '#365314', 700: '#4d7c0f', 500: '#84cc16', 300: '#bef264', 100: '#ecfccb' },
-    blue:   { 900: '#1e3a8a', 700: '#1d4ed8', 500: '#3b82f6', 300: '#93c5fd', 100: '#dbeafe' },
-    purple: { 900: '#581c87', 700: '#7e22ce', 500: '#a855f7', 300: '#d8b4fe', 100: '#f3e8ff' },
-    gray:   { 900: '#171717', 700: '#404040', 500: '#737373', 300: '#d4d4d4', 100: '#f5f5f5' },
+    red: {
+      900: "#7f1d1d",
+      700: "#b91c1c",
+      500: "#ef4444",
+      300: "#fca5a5",
+      100: "#fee2e2",
+    },
+    orange: {
+      900: "#7c2d12",
+      700: "#c2410c",
+      500: "#f97316",
+      300: "#fdba74",
+      100: "#ffedd5",
+    },
+    yellow: {
+      900: "#713f12",
+      700: "#a16207",
+      500: "#eab308",
+      300: "#fde047",
+      100: "#fef9c3",
+    },
+    green: {
+      900: "#365314",
+      700: "#4d7c0f",
+      500: "#84cc16",
+      300: "#bef264",
+      100: "#ecfccb",
+    },
+    blue: {
+      900: "#1e3a8a",
+      700: "#1d4ed8",
+      500: "#3b82f6",
+      300: "#93c5fd",
+      100: "#dbeafe",
+    },
+    purple: {
+      900: "#581c87",
+      700: "#7e22ce",
+      500: "#a855f7",
+      300: "#d8b4fe",
+      100: "#f3e8ff",
+    },
+    gray: {
+      900: "#171717",
+      700: "#404040",
+      500: "#737373",
+      300: "#d4d4d4",
+      100: "#f5f5f5",
+    },
 
     // Extension hue — RESERVED for use cases where the protocol or
     // convention explicitly requires cyan (terminal ANSI cyan, git
     // diff hunk headers, etc.). NOT part of the variant axis. NOT in
     // the default syntax token map.
-    cyan:   { 900: '#164e63', 700: '#0e7490', 500: '#06b6d4', 300: '#67e8f9', 100: '#cffafe' },
+    cyan: {
+      900: "#164e63",
+      700: "#0e7490",
+      500: "#06b6d4",
+      300: "#67e8f9",
+      100: "#cffafe",
+    },
   },
-
 
   // ────────────────────────────────────────────────────────────────
   //   2.  VARIANT HUES  —  the 6 hues exposed as accent variants
@@ -56,8 +102,7 @@
   // Cyan deliberately excluded. The order here is canonical and
   // matches the pinwheel wedge order in assets/logo.svg.
 
-  variant_hues: ['red', 'orange', 'yellow', 'green', 'blue', 'purple'],
-
+  variant_hues: ["red", "orange", "yellow", "green", "blue", "purple"],
 
   // ────────────────────────────────────────────────────────────────
   //   3.  ACCENT-SHADE RULESET  —  flavor × hue → shade index
@@ -71,12 +116,39 @@
   // flavor background.
 
   accent_shade: {
-    midnight: { red: 500, orange: 500, yellow: 500, green: 500, blue: 300, purple: 300 },
-    twilight: { red: 300, orange: 300, yellow: 500, green: 500, blue: 300, purple: 300 },
-    dawn:     { red: 900, orange: 900, yellow: 900, green: 900, blue: 700, purple: 700 },
-    noon:     { red: 700, orange: 700, yellow: 900, green: 900, blue: 700, purple: 700 },
+    midnight: {
+      red: 500,
+      orange: 500,
+      yellow: 500,
+      green: 500,
+      blue: 300,
+      purple: 300,
+    },
+    twilight: {
+      red: 300,
+      orange: 300,
+      yellow: 500,
+      green: 500,
+      blue: 300,
+      purple: 300,
+    },
+    dawn: {
+      red: 900,
+      orange: 900,
+      yellow: 900,
+      green: 900,
+      blue: 700,
+      purple: 700,
+    },
+    noon: {
+      red: 700,
+      orange: 700,
+      yellow: 900,
+      green: 900,
+      blue: 700,
+      purple: 700,
+    },
   },
-
 
   // ────────────────────────────────────────────────────────────────
   //   4.  FLAVORS  —  the 4 base themes
@@ -93,265 +165,268 @@
   flavors: {
     // ─── MIDNIGHT (deep dark, OLED-friendly) ───
     midnight: {
-      label: 'Midnight', type: 'dark',
+      label: "Midnight",
+      type: "dark",
       surface: {
-        bg:         '$palette.gray.900',  // #171717
-        bg_soft:    '$palette.gray.700',  // lifted panels
-        bg_sunk:    '#0a0a0a',            // slightly below canvas — outside strict palette
-        bg_overlay: '$palette.gray.700',  // floating menus, dropdowns
-        bg_scrim:   '#000000cc',          // modal backdrop (80% black)
+        bg: "$palette.gray.900", // #171717
+        bg_soft: "$palette.gray.700", // lifted panels
+        bg_sunk: "#0a0a0a", // slightly below canvas — outside strict palette
+        bg_overlay: "$palette.gray.700", // floating menus, dropdowns
+        bg_scrim: "#000000cc", // modal backdrop (80% black)
       },
       text: {
-        fg:          '$palette.gray.100',
-        fg_muted:    '$palette.gray.300',
-        fg_subtle:   '$palette.gray.500',
-        fg_disabled: '#525252',
+        fg: "$palette.gray.100",
+        fg_muted: "$palette.gray.300",
+        fg_subtle: "$palette.gray.500",
+        fg_disabled: "#525252",
       },
       border: {
-        subtle:  '#262626',                // neutral-800; below palette
-        default: '$palette.gray.700',
-        strong:  '$palette.gray.500',
+        subtle: "#262626", // neutral-800; below palette
+        default: "$palette.gray.700",
+        strong: "$palette.gray.500",
       },
       state: {
-        hover:     '#ffffff14',   // 8% white overlay
-        active:    '#ffffff1f',   // 12% white overlay
-        selection: '#2a2f3a',
+        hover: "#ffffff14", // 8% white overlay
+        active: "#ffffff1f", // 12% white overlay
+        selection: "#2a2f3a",
       },
       semantic: {
-        success: '$palette.green.300',
-        warning: '$palette.yellow.300',
-        danger:  '$palette.red.300',
-        info:    '$palette.blue.300',
+        success: "$palette.green.300",
+        warning: "$palette.yellow.300",
+        danger: "$palette.red.300",
+        info: "$palette.blue.300",
       },
       syntax: {
-        comment:  '$palette.gray.500',
-        keyword:  '$palette.purple.300',
-        string:   '$palette.green.500',
-        number:   '$palette.orange.500',
-        function: '$palette.blue.300',
-        type:     '$palette.yellow.500',
-        constant: '$palette.orange.500',
-        tag:      '$palette.blue.300',
-        attr:     '$palette.yellow.500',
-        regex:    '$palette.red.500',
-        punct:    '$palette.gray.300',
+        comment: "$palette.gray.500",
+        keyword: "$palette.purple.300",
+        string: "$palette.green.500",
+        number: "$palette.orange.500",
+        function: "$palette.blue.300",
+        type: "$palette.yellow.500",
+        constant: "$palette.orange.500",
+        tag: "$palette.blue.300",
+        attr: "$palette.yellow.500",
+        regex: "$palette.red.500",
+        punct: "$palette.gray.300",
       },
       ansi: {
-        black:        '#0a0a0a',
-        red:          '$palette.red.500',
-        green:        '$palette.green.500',
-        yellow:       '$palette.yellow.500',
-        blue:         '$palette.blue.300',
-        magenta:      '$palette.purple.300',
-        cyan:         '$palette.cyan.500',
-        white:        '$palette.gray.300',
-        bright_black: '$palette.gray.700',
-        bright_red:   '$palette.red.300',
-        bright_green: '$palette.green.300',
-        bright_yellow:'$palette.yellow.300',
-        bright_blue:  '$palette.blue.300',
-        bright_magenta:'$palette.purple.300',
-        bright_cyan:  '$palette.cyan.300',
-        bright_white: '$palette.gray.100',
+        black: "#0a0a0a",
+        red: "$palette.red.500",
+        green: "$palette.green.500",
+        yellow: "$palette.yellow.500",
+        blue: "$palette.blue.300",
+        magenta: "$palette.purple.300",
+        cyan: "$palette.cyan.500",
+        white: "$palette.gray.300",
+        bright_black: "$palette.gray.700",
+        bright_red: "$palette.red.300",
+        bright_green: "$palette.green.300",
+        bright_yellow: "$palette.yellow.300",
+        bright_blue: "$palette.blue.300",
+        bright_magenta: "$palette.purple.300",
+        bright_cyan: "$palette.cyan.300",
+        bright_white: "$palette.gray.100",
       },
     },
 
     // ─── TWILIGHT (classic dark) ───
     twilight: {
-      label: 'Twilight', type: 'dark',
+      label: "Twilight",
+      type: "dark",
       surface: {
-        bg:         '$palette.gray.700',  // #404040
-        bg_soft:    '#525252',            // neutral-600; lifted
-        bg_sunk:    '$palette.gray.900',  // deeper recess
-        bg_overlay: '#525252',
-        bg_scrim:   '#000000bb',
+        bg: "$palette.gray.700", // #404040
+        bg_soft: "#525252", // neutral-600; lifted
+        bg_sunk: "$palette.gray.900", // deeper recess
+        bg_overlay: "#525252",
+        bg_scrim: "#000000bb",
       },
       text: {
-        fg:          '$palette.gray.100',
-        fg_muted:    '$palette.gray.300',
-        fg_subtle:   '#a3a3a3',           // neutral-400; readable on #404040
-        fg_disabled: '#737373',
+        fg: "$palette.gray.100",
+        fg_muted: "$palette.gray.300",
+        fg_subtle: "#a3a3a3", // neutral-400; readable on #404040
+        fg_disabled: "#737373",
       },
       border: {
-        subtle:  '#525252',
-        default: '$palette.gray.900',
-        strong:  '#0a0a0a',
+        subtle: "#525252",
+        default: "$palette.gray.900",
+        strong: "#0a0a0a",
       },
       state: {
-        hover:     '#ffffff14',
-        active:    '#ffffff1f',
-        selection: '#5b5b5b',
+        hover: "#ffffff14",
+        active: "#ffffff1f",
+        selection: "#5b5b5b",
       },
       semantic: {
-        success: '$palette.green.300',
-        warning: '$palette.yellow.500',
-        danger:  '$palette.red.300',
-        info:    '$palette.blue.300',
+        success: "$palette.green.300",
+        warning: "$palette.yellow.500",
+        danger: "$palette.red.300",
+        info: "$palette.blue.300",
       },
       syntax: {
-        comment:  '#a3a3a3',
-        keyword:  '$palette.purple.300',
-        string:   '$palette.green.500',
-        number:   '$palette.orange.300',
-        function: '$palette.blue.300',
-        type:     '$palette.yellow.500',
-        constant: '$palette.orange.300',
-        tag:      '$palette.blue.300',
-        attr:     '$palette.yellow.500',
-        regex:    '$palette.red.300',
-        punct:    '$palette.gray.300',
+        comment: "#a3a3a3",
+        keyword: "$palette.purple.300",
+        string: "$palette.green.500",
+        number: "$palette.orange.300",
+        function: "$palette.blue.300",
+        type: "$palette.yellow.500",
+        constant: "$palette.orange.300",
+        tag: "$palette.blue.300",
+        attr: "$palette.yellow.500",
+        regex: "$palette.red.300",
+        punct: "$palette.gray.300",
       },
       ansi: {
-        black:        '$palette.gray.900',
-        red:          '$palette.red.300',
-        green:        '$palette.green.500',
-        yellow:       '$palette.yellow.500',
-        blue:         '$palette.blue.300',
-        magenta:      '$palette.purple.300',
-        cyan:         '$palette.cyan.500',
-        white:        '$palette.gray.300',
-        bright_black: '$palette.gray.500',
-        bright_red:   '$palette.red.300',
-        bright_green: '$palette.green.300',
-        bright_yellow:'$palette.yellow.300',
-        bright_blue:  '$palette.blue.300',
-        bright_magenta:'$palette.purple.300',
-        bright_cyan:  '$palette.cyan.300',
-        bright_white: '$palette.gray.100',
+        black: "$palette.gray.900",
+        red: "$palette.red.300",
+        green: "$palette.green.500",
+        yellow: "$palette.yellow.500",
+        blue: "$palette.blue.300",
+        magenta: "$palette.purple.300",
+        cyan: "$palette.cyan.500",
+        white: "$palette.gray.300",
+        bright_black: "$palette.gray.500",
+        bright_red: "$palette.red.300",
+        bright_green: "$palette.green.300",
+        bright_yellow: "$palette.yellow.300",
+        bright_blue: "$palette.blue.300",
+        bright_magenta: "$palette.purple.300",
+        bright_cyan: "$palette.cyan.300",
+        bright_white: "$palette.gray.100",
       },
     },
 
     // ─── DAWN (soft light) ───
     dawn: {
-      label: 'Dawn', type: 'light',
+      label: "Dawn",
+      type: "light",
       surface: {
-        bg:         '$palette.gray.300',  // #d4d4d4
-        bg_soft:    '$palette.gray.100',  // lifted
-        bg_sunk:    '#bdbdbd',            // outside strict palette
-        bg_overlay: '$palette.gray.100',
-        bg_scrim:   '#17171788',
+        bg: "$palette.gray.300", // #d4d4d4
+        bg_soft: "$palette.gray.100", // lifted
+        bg_sunk: "#bdbdbd", // outside strict palette
+        bg_overlay: "$palette.gray.100",
+        bg_scrim: "#17171788",
       },
       text: {
-        fg:          '$palette.gray.900',
-        fg_muted:    '$palette.gray.700',
-        fg_subtle:   '#525252',
-        fg_disabled: '#737373',
+        fg: "$palette.gray.900",
+        fg_muted: "$palette.gray.700",
+        fg_subtle: "#525252",
+        fg_disabled: "#737373",
       },
       border: {
-        subtle:  '#bdbdbd',
-        default: '#a3a3a3',
-        strong:  '$palette.gray.700',
+        subtle: "#bdbdbd",
+        default: "#a3a3a3",
+        strong: "$palette.gray.700",
       },
       state: {
-        hover:     '#0000000d',  // 5% black overlay
-        active:    '#00000014',  // 8% black overlay
-        selection: '#bdbdbd',
+        hover: "#0000000d", // 5% black overlay
+        active: "#00000014", // 8% black overlay
+        selection: "#bdbdbd",
       },
       semantic: {
-        success: '$palette.green.700',
-        warning: '$palette.yellow.700',
-        danger:  '$palette.red.700',
-        info:    '$palette.blue.700',
+        success: "$palette.green.700",
+        warning: "$palette.yellow.700",
+        danger: "$palette.red.700",
+        info: "$palette.blue.700",
       },
       syntax: {
-        comment:  '#525252',
-        keyword:  '$palette.purple.700',
-        string:   '$palette.green.900',
-        number:   '$palette.orange.700',
-        function: '$palette.blue.700',
-        type:     '$palette.yellow.900',
-        constant: '$palette.orange.700',
-        tag:      '$palette.blue.700',
-        attr:     '$palette.yellow.900',
-        regex:    '$palette.red.700',
-        punct:    '$palette.gray.700',
+        comment: "#525252",
+        keyword: "$palette.purple.700",
+        string: "$palette.green.900",
+        number: "$palette.orange.700",
+        function: "$palette.blue.700",
+        type: "$palette.yellow.900",
+        constant: "$palette.orange.700",
+        tag: "$palette.blue.700",
+        attr: "$palette.yellow.900",
+        regex: "$palette.red.700",
+        punct: "$palette.gray.700",
       },
       ansi: {
-        black:        '$palette.gray.900',
-        red:          '$palette.red.700',
-        green:        '$palette.green.700',
-        yellow:       '$palette.yellow.700',
-        blue:         '$palette.blue.700',
-        magenta:      '$palette.purple.700',
-        cyan:         '$palette.cyan.700',
-        white:        '$palette.gray.300',
-        bright_black: '$palette.gray.500',
-        bright_red:   '$palette.red.900',
-        bright_green: '$palette.green.900',
-        bright_yellow:'$palette.yellow.900',
-        bright_blue:  '$palette.blue.900',
-        bright_magenta:'$palette.purple.900',
-        bright_cyan:  '$palette.cyan.900',
-        bright_white: '$palette.gray.100',
+        black: "$palette.gray.900",
+        red: "$palette.red.700",
+        green: "$palette.green.700",
+        yellow: "$palette.yellow.700",
+        blue: "$palette.blue.700",
+        magenta: "$palette.purple.700",
+        cyan: "$palette.cyan.700",
+        white: "$palette.gray.300",
+        bright_black: "$palette.gray.500",
+        bright_red: "$palette.red.900",
+        bright_green: "$palette.green.900",
+        bright_yellow: "$palette.yellow.900",
+        bright_blue: "$palette.blue.900",
+        bright_magenta: "$palette.purple.900",
+        bright_cyan: "$palette.cyan.900",
+        bright_white: "$palette.gray.100",
       },
     },
 
     // ─── NOON (crisp light) ───
     noon: {
-      label: 'Noon', type: 'light',
+      label: "Noon",
+      type: "light",
       surface: {
-        bg:         '$palette.gray.100',  // #f5f5f5
-        bg_soft:    '#ffffff',
-        bg_sunk:    '$palette.gray.300',
-        bg_overlay: '#ffffff',
-        bg_scrim:   '#17171788',
+        bg: "$palette.gray.100", // #f5f5f5
+        bg_soft: "#ffffff",
+        bg_sunk: "$palette.gray.300",
+        bg_overlay: "#ffffff",
+        bg_scrim: "#17171788",
       },
       text: {
-        fg:          '$palette.gray.900',
-        fg_muted:    '$palette.gray.700',
-        fg_subtle:   '#525252',
-        fg_disabled: '#737373',
+        fg: "$palette.gray.900",
+        fg_muted: "$palette.gray.700",
+        fg_subtle: "#525252",
+        fg_disabled: "#737373",
       },
       border: {
-        subtle:  '#e5e5e5',
-        default: '$palette.gray.300',
-        strong:  '$palette.gray.500',
+        subtle: "#e5e5e5",
+        default: "$palette.gray.300",
+        strong: "$palette.gray.500",
       },
       state: {
-        hover:     '#0000000d',
-        active:    '#00000014',
-        selection: '#e5e5e5',
+        hover: "#0000000d",
+        active: "#00000014",
+        selection: "#e5e5e5",
       },
       semantic: {
-        success: '$palette.green.700',
-        warning: '$palette.yellow.700',
-        danger:  '$palette.red.700',
-        info:    '$palette.blue.700',
+        success: "$palette.green.700",
+        warning: "$palette.yellow.700",
+        danger: "$palette.red.700",
+        info: "$palette.blue.700",
       },
       syntax: {
-        comment:  '#525252',
-        keyword:  '$palette.purple.700',
-        string:   '$palette.green.900',
-        number:   '$palette.orange.700',
-        function: '$palette.blue.700',
-        type:     '$palette.yellow.900',
-        constant: '$palette.orange.700',
-        tag:      '$palette.blue.700',
-        attr:     '$palette.yellow.900',
-        regex:    '$palette.red.700',
-        punct:    '$palette.gray.700',
+        comment: "#525252",
+        keyword: "$palette.purple.700",
+        string: "$palette.green.900",
+        number: "$palette.orange.700",
+        function: "$palette.blue.700",
+        type: "$palette.yellow.900",
+        constant: "$palette.orange.700",
+        tag: "$palette.blue.700",
+        attr: "$palette.yellow.900",
+        regex: "$palette.red.700",
+        punct: "$palette.gray.700",
       },
       ansi: {
-        black:        '$palette.gray.900',
-        red:          '$palette.red.700',
-        green:        '$palette.green.700',
-        yellow:       '$palette.yellow.700',
-        blue:         '$palette.blue.700',
-        magenta:      '$palette.purple.700',
-        cyan:         '$palette.cyan.700',
-        white:        '$palette.gray.700',
-        bright_black: '$palette.gray.500',
-        bright_red:   '$palette.red.900',
-        bright_green: '$palette.green.900',
-        bright_yellow:'$palette.yellow.900',
-        bright_blue:  '$palette.blue.900',
-        bright_magenta:'$palette.purple.900',
-        bright_cyan:  '$palette.cyan.900',
-        bright_white: '$palette.gray.300',
+        black: "$palette.gray.900",
+        red: "$palette.red.700",
+        green: "$palette.green.700",
+        yellow: "$palette.yellow.700",
+        blue: "$palette.blue.700",
+        magenta: "$palette.purple.700",
+        cyan: "$palette.cyan.700",
+        white: "$palette.gray.700",
+        bright_black: "$palette.gray.500",
+        bright_red: "$palette.red.900",
+        bright_green: "$palette.green.900",
+        bright_yellow: "$palette.yellow.900",
+        bright_blue: "$palette.blue.900",
+        bright_magenta: "$palette.purple.900",
+        bright_cyan: "$palette.cyan.900",
+        bright_white: "$palette.gray.300",
       },
     },
   },
-
 
   // ────────────────────────────────────────────────────────────────
   //   5.  TYPOGRAPHY
@@ -371,62 +446,129 @@
     // do NOT pair a third-party serif: keeping the brand to one family
     // is more important than completeness.
     families: {
-      sans:  {
-        primary: 'Atkinson Hyperlegible Next',
+      sans: {
+        primary: "Atkinson Hyperlegible Next",
         weights: [200, 300, 400, 500, 600, 700, 800],
         variable: true,
-        stack:   '"Atkinson Hyperlegible Next", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
-        source:  'https://www.brailleinstitute.org/freefont',
-        license: 'OFL-1.1',
+        stack: '"Atkinson Hyperlegible Next", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
+        source: "https://www.brailleinstitute.org/freefont",
+        license: "OFL-1.1",
         files: [
-          'fonts/AtkinsonHyperlegibleNext-VariableFont_wght.ttf',
-          'fonts/AtkinsonHyperlegibleNext-Italic-VariableFont_wght.ttf',
+          "fonts/AtkinsonHyperlegibleNext-VariableFont_wght.ttf",
+          "fonts/AtkinsonHyperlegibleNext-Italic-VariableFont_wght.ttf",
         ],
       },
-      mono:  {
-        primary: 'Atkinson Hyperlegible Mono',
+      mono: {
+        primary: "Atkinson Hyperlegible Mono",
         weights: [200, 300, 400, 500, 600, 700, 800],
         variable: true,
-        stack:   '"Atkinson Hyperlegible Mono", "Cascadia Code", "Cascadia Mono", ui-monospace, Menlo, Consolas, monospace',
-        source:  'https://www.brailleinstitute.org/freefont',
-        license: 'OFL-1.1',
+        stack: '"Atkinson Hyperlegible Mono", "Cascadia Code", "Cascadia Mono", ui-monospace, Menlo, Consolas, monospace',
+        source: "https://www.brailleinstitute.org/freefont",
+        license: "OFL-1.1",
         files: [
-          'fonts/AtkinsonHyperlegibleMono-VariableFont_wght.ttf',
-          'fonts/AtkinsonHyperlegibleMono-Italic-VariableFont_wght.ttf',
+          "fonts/AtkinsonHyperlegibleMono-VariableFont_wght.ttf",
+          "fonts/AtkinsonHyperlegibleMono-Italic-VariableFont_wght.ttf",
         ],
         notes: "Cascadia Code kept in the stack as a fallback — respects the user's personal coding-font preference where it's installed locally.",
         nerd_font_variant: {
-          name: 'Atkinson Hyperlegible Mono Nerd Font',
-          source: 'https://www.nerdfonts.com/font-downloads',
-          notes: 'Port-side asset, not bundled here. Terminal ports (Alacritty, Kitty, iTerm, …) should recommend this variant so icon-using prompts like Starship and Powerlevel10k render correctly. Not used by the design system itself.',
+          name: "Atkinson Hyperlegible Mono Nerd Font",
+          source: "https://www.nerdfonts.com/font-downloads",
+          notes: "Port-side asset, not bundled here. Terminal ports (Alacritty, Kitty, iTerm, …) should recommend this variant so icon-using prompts like Starship and Powerlevel10k render correctly. Not used by the design system itself.",
         },
       },
     },
 
     weights: {
-      regular:  400,
-      medium:   500,
+      regular: 400,
+      medium: 500,
       semibold: 600,
-      bold:     700,
+      bold: 700,
     },
 
     // Logical type styles. Each entry is consumable directly.
     // size_px is the design size at 1× zoom; clients may scale.
     scale: {
-      display_xl: { family: 'sans', size_px: 48, line_height: 1.10, weight: 700, tracking: '-0.02em' },
-      display_lg: { family: 'sans', size_px: 36, line_height: 1.15, weight: 700, tracking: '-0.02em' },
-      display_md: { family: 'sans', size_px: 28, line_height: 1.20, weight: 600, tracking: '-0.015em' },
-      heading:    { family: 'sans', size_px: 20, line_height: 1.30, weight: 600, tracking: '-0.01em' },
-      body:       { family: 'sans', size_px: 16, line_height: 1.50, weight: 400, tracking: '0' },
-      body_sm:    { family: 'sans', size_px: 14, line_height: 1.50, weight: 400, tracking: '0' },
-      caption:    { family: 'sans', size_px: 12, line_height: 1.40, weight: 500, tracking: '0.02em' },
-      label:      { family: 'sans', size_px: 11, line_height: 1.30, weight: 600, tracking: '0.08em', text_transform: 'uppercase' },
-      blockquote: { family: 'sans', size_px: 18, line_height: 1.60, weight: 400, tracking: '0', italic: true },
-      code:       { family: 'mono', size_px: 14, line_height: 1.50, weight: 400, tracking: '0' },
-      code_sm:    { family: 'mono', size_px: 12, line_height: 1.45, weight: 400, tracking: '0' },
+      display_xl: {
+        family: "sans",
+        size_px: 48,
+        line_height: 1.1,
+        weight: 700,
+        tracking: "-0.02em",
+      },
+      display_lg: {
+        family: "sans",
+        size_px: 36,
+        line_height: 1.15,
+        weight: 700,
+        tracking: "-0.02em",
+      },
+      display_md: {
+        family: "sans",
+        size_px: 28,
+        line_height: 1.2,
+        weight: 600,
+        tracking: "-0.015em",
+      },
+      heading: {
+        family: "sans",
+        size_px: 20,
+        line_height: 1.3,
+        weight: 600,
+        tracking: "-0.01em",
+      },
+      body: {
+        family: "sans",
+        size_px: 16,
+        line_height: 1.5,
+        weight: 400,
+        tracking: "0",
+      },
+      body_sm: {
+        family: "sans",
+        size_px: 14,
+        line_height: 1.5,
+        weight: 400,
+        tracking: "0",
+      },
+      caption: {
+        family: "sans",
+        size_px: 12,
+        line_height: 1.4,
+        weight: 500,
+        tracking: "0.02em",
+      },
+      label: {
+        family: "sans",
+        size_px: 11,
+        line_height: 1.3,
+        weight: 600,
+        tracking: "0.08em",
+        text_transform: "uppercase",
+      },
+      blockquote: {
+        family: "sans",
+        size_px: 18,
+        line_height: 1.6,
+        weight: 400,
+        tracking: "0",
+        italic: true,
+      },
+      code: {
+        family: "mono",
+        size_px: 14,
+        line_height: 1.5,
+        weight: 400,
+        tracking: "0",
+      },
+      code_sm: {
+        family: "mono",
+        size_px: 12,
+        line_height: 1.45,
+        weight: 400,
+        tracking: "0",
+      },
     },
   },
-
 
   // ────────────────────────────────────────────────────────────────
   //   6.  SPACING  —  4px base scale
@@ -436,36 +578,34 @@
   // (the scale should not grow linearly past a point).
 
   spacing: {
-    px:  '1px',
-    0:   '0',
-    1:   '4px',
-    2:   '8px',
-    3:   '12px',
-    4:   '16px',
-    5:   '20px',
-    6:   '24px',
-    8:   '32px',
-    10:  '40px',
-    12:  '48px',
-    16:  '64px',
-    20:  '80px',
-    24:  '96px',
+    px: "1px",
+    0: "0",
+    1: "4px",
+    2: "8px",
+    3: "12px",
+    4: "16px",
+    5: "20px",
+    6: "24px",
+    8: "32px",
+    10: "40px",
+    12: "48px",
+    16: "64px",
+    20: "80px",
+    24: "96px",
   },
-
 
   // ────────────────────────────────────────────────────────────────
   //   7.  RADII
   // ────────────────────────────────────────────────────────────────
 
   radii: {
-    none: '0',
-    sm:   '4px',
-    md:   '8px',
-    lg:   '12px',
-    xl:   '16px',
-    pill: '9999px',
+    none: "0",
+    sm: "4px",
+    md: "8px",
+    lg: "12px",
+    xl: "16px",
+    pill: "9999px",
   },
-
 
   // ────────────────────────────────────────────────────────────────
   //   8.  ELEVATION / SHADOW
@@ -474,15 +614,14 @@
   // both light & dark surfaces because the alpha is what carries.
 
   shadows: {
-    sm: '0 1px 2px rgba(0,0,0,0.08)',
-    md: '0 4px 12px rgba(0,0,0,0.12), 0 1px 3px rgba(0,0,0,0.06)',
-    lg: '0 12px 32px rgba(0,0,0,0.18), 0 4px 8px rgba(0,0,0,0.08)',
+    sm: "0 1px 2px rgba(0,0,0,0.08)",
+    md: "0 4px 12px rgba(0,0,0,0.12), 0 1px 3px rgba(0,0,0,0.06)",
+    lg: "0 12px 32px rgba(0,0,0,0.18), 0 4px 8px rgba(0,0,0,0.08)",
 
     // Inset / focus-ring helpers
-    focus_ring_width: '2px',
-    focus_ring_offset: '2px',
+    focus_ring_width: "2px",
+    focus_ring_offset: "2px",
   },
-
 
   // ────────────────────────────────────────────────────────────────
   //   9.  MOTION
@@ -490,18 +629,17 @@
 
   motion: {
     duration: {
-      instant: '0ms',
-      fast:    '120ms',
-      base:    '200ms',
-      slow:    '320ms',
+      instant: "0ms",
+      fast: "120ms",
+      base: "200ms",
+      slow: "320ms",
     },
     easing: {
-      standard: 'cubic-bezier(0.2, 0, 0, 1)',
-      enter:    'cubic-bezier(0, 0, 0.2, 1)',
-      exit:     'cubic-bezier(0.4, 0, 1, 1)',
+      standard: "cubic-bezier(0.2, 0, 0, 1)",
+      enter: "cubic-bezier(0, 0, 0.2, 1)",
+      exit: "cubic-bezier(0.4, 0, 1, 1)",
     },
   },
-
 
   // ────────────────────────────────────────────────────────────────
   //   10.  SYNTAX TOKEN MAP  —  logical → concrete
@@ -512,33 +650,41 @@
 
   syntax_tokens: {
     core: [
-      'comment', 'keyword', 'string', 'number', 'function',
-      'type', 'constant', 'tag', 'attr', 'regex', 'punct',
+      "comment",
+      "keyword",
+      "string",
+      "number",
+      "function",
+      "type",
+      "constant",
+      "tag",
+      "attr",
+      "regex",
+      "punct",
     ],
     extended: {
-      variable:  'fg',         // plain identifiers — uses text.fg
-      parameter: 'fg',         // also italic in supported ports
-      property:  'tag',        // obj.prop, css property
-      operator:  'keyword',    // +, -, =, =>, |
-      builtin:   'function',   // print, len, console.log
-      namespace: 'type',       // module / namespace paths
-      decorator: 'type',       // @foo, #[attr]
-      macro:     'function',   // println!, vec!
-      lifetime:  'constant',   // Rust 'a, 'static
-      heading:   'keyword',    // markdown # ## ###
-      link:      'tag',        // markdown [text](url)
-      selector:  'tag',        // css .foo, :root
-      unit:      'number',     // css 16px, 200ms
-      hex:       'string',     // css #fff, #abc123
-      shebang:   'comment',    // #!/usr/bin/env bash
+      variable: "fg", // plain identifiers — uses text.fg
+      parameter: "fg", // also italic in supported ports
+      property: "tag", // obj.prop, css property
+      operator: "keyword", // +, -, =, =>, |
+      builtin: "function", // print, len, console.log
+      namespace: "type", // module / namespace paths
+      decorator: "type", // @foo, #[attr]
+      macro: "function", // println!, vec!
+      lifetime: "constant", // Rust 'a, 'static
+      heading: "keyword", // markdown # ## ###
+      link: "tag", // markdown [text](url)
+      selector: "tag", // css .foo, :root
+      unit: "number", // css 16px, 200ms
+      hex: "string", // css #fff, #abc123
+      shebang: "comment", // #!/usr/bin/env bash
     },
   },
-
 
   // ────────────────────────────────────────────────────────────────
   //   11.  ICONOGRAPHY  —  what to use, per layer
   // ────────────────────────────────────────────────────────────────
-  // Vivid Life does NOT ship its own icon set. Building one for an
+  // Vivid Life Theme does NOT ship its own icon set. Building one for an
   // IDE + OS + apps would be ~5000 glyphs of work for a generation-
   // behind result. Instead we recommend best-in-class existing sets
   // per layer; ports document the recommendation and pull from CDN /
@@ -547,55 +693,55 @@
 
   iconography: {
     // ── Layer C — INLINE UI GLYPHS  (buttons, menus, toolbars) ──
-    // The only layer where Vivid Life genuinely owns a visual choice.
+    // The only layer where Vivid Life Theme genuinely owns a visual choice.
     // Use stroke="currentColor" so the icon picks up its container's
     // foreground token — usually --vl-fg, --vl-fg-muted, or --vl-accent.
     inline_ui: {
       primary: {
-        name: 'Lucide',
-        url: 'https://lucide.dev/',
-        license: 'ISC',
-        count: 'approx 1500 unique glyphs',
-        why: 'Single-stroke style, forked from Feather specifically to fix small-size legibility. Used by shadcn/ui and most modern design systems. Coherence over coverage.',
+        name: "Lucide",
+        url: "https://lucide.dev/",
+        license: "ISC",
+        count: "approx 1500 unique glyphs",
+        why: "Single-stroke style, forked from Feather specifically to fix small-size legibility. Used by shadcn/ui and most modern design systems. Coherence over coverage.",
         usage: 'Load from CDN, npm (`lucide`, `lucide-react`, `lucide-vue-next`, `lucide-svelte`), or pre-render specific SVGs at build time. All glyphs use stroke="currentColor" — set `color` in CSS to retint.',
       },
       alternative: {
-        name: 'Tabler Icons',
-        url: 'https://tabler.io/icons',
-        license: 'MIT',
-        count: 'approx 5800 unique glyphs',
-        why: 'Larger set if you need rarer glyphs (industry-specific, less common UI patterns). Slightly heavier visual weight; mixes outline + filled styles which becomes a per-icon design decision.',
+        name: "Tabler Icons",
+        url: "https://tabler.io/icons",
+        license: "MIT",
+        count: "approx 5800 unique glyphs",
+        why: "Larger set if you need rarer glyphs (industry-specific, less common UI patterns). Slightly heavier visual weight; mixes outline + filled styles which becomes a per-icon design decision.",
       },
       not_recommended: {
-        name: 'Phosphor',
-        why: 'Quoted count (~9k) is 1512 unique glyphs × 6 weights. Smaller actual coverage than Lucide for typical UI needs; weight system is more complexity than the design system needs.',
+        name: "Phosphor",
+        why: "Quoted count (~9k) is 1512 unique glyphs × 6 weights. Smaller actual coverage than Lucide for typical UI needs; weight system is more complexity than the design system needs.",
       },
     },
 
     // ── Layer B — IDE FILE-TREE / FILETYPE ICONS ──
     // These encode file *type*. They are a visual language users learn
-    // across apps. DO NOT recolor file icons with the Vivid Life
+    // across apps. DO NOT recolor file icons with the Vivid Life Theme
     // accent — leave them as-is. Recolor only folder icons (where the
     // target supports it) and chrome.
     ide_filetree: {
       vscode: {
-        recommended: 'Material Icon Theme',
-        url: 'https://marketplace.visualstudio.com/items?itemName=PKief.material-icon-theme',
-        alt: 'Seti (VS Code default) — simpler, fewer file types covered',
-        note: 'Independent of the color theme. Users install it separately. Catppuccin and Dracula both leave file icons to the user; Vivid Life does too.',
+        recommended: "Material Icon Theme",
+        url: "https://marketplace.visualstudio.com/items?itemName=PKief.material-icon-theme",
+        alt: "Seti (VS Code default) — simpler, fewer file types covered",
+        note: "Independent of the color theme. Users install it separately. Catppuccin and Dracula both leave file icons to the user; Vivid Life Theme does too.",
       },
       helix: {
-        recommended: 'Terminal-side via Nerd Font',
+        recommended: "Terminal-side via Nerd Font",
         note: "Helix shows file icons through the terminal emulator's font. Recommend Atkinson Hyperlegible Mono Nerd Font.",
       },
       neovim: {
-        recommended: 'nvim-web-devicons',
-        url: 'https://github.com/nvim-tree/nvim-web-devicons',
-        note: 'Uses the same Nerd Font glyph set; install Atkinson Hyperlegible Mono Nerd Font and pair.',
+        recommended: "nvim-web-devicons",
+        url: "https://github.com/nvim-tree/nvim-web-devicons",
+        note: "Uses the same Nerd Font glyph set; install Atkinson Hyperlegible Mono Nerd Font and pair.",
       },
       jetbrains: {
-        recommended: 'Built-in icons',
-        note: 'JetBrains IDEs do not allow user-configurable file icons. Accept the platform default.',
+        recommended: "Built-in icons",
+        note: "JetBrains IDEs do not allow user-configurable file icons. Accept the platform default.",
       },
     },
 
@@ -604,27 +750,26 @@
     // Recommend Papirus universally; it already supports per-folder
     // accent recoloring via `papirus-folders`.
     desktop: {
-      recommended: 'Papirus',
-      url: 'https://github.com/PapirusDevelopmentTeam/papirus-icon-theme',
-      license: 'GPL-3.0',
-      count: 'approx 7000 icons',
-      why: 'Most popular community icon theme on Linux. Strong monochromatic-ish aesthetic that pairs with Vivid Life without modification. Built-in `papirus-folders` CLI lets users tint folder accents to match their variant.',
-      port_recipe: 'GTK/Xfce ports should ship a small `papirus-folders` mapping recipe that picks a folder color matching each variant. No icons drawn.',
+      recommended: "Papirus",
+      url: "https://github.com/PapirusDevelopmentTeam/papirus-icon-theme",
+      license: "GPL-3.0",
+      count: "approx 7000 icons",
+      why: "Most popular community icon theme on Linux. Strong monochromatic-ish aesthetic that pairs with Vivid Life Theme without modification. Built-in `papirus-folders` CLI lets users tint folder accents to match their variant.",
+      port_recipe: "GTK/Xfce ports should ship a small `papirus-folders` mapping recipe that picks a folder color matching each variant. No icons drawn.",
       alternatives: [
-        'Numix Circle — older, more stylized, smaller community',
-        'Sweet Icons — works well, smaller community than Papirus',
+        "Numix Circle — older, more stylized, smaller community",
+        "Sweet Icons — works well, smaller community than Papirus",
       ],
     },
 
-    // ── What Vivid Life ships in assets/glyphs/ ──
+    // ── What Vivid Life Theme ships in assets/glyphs/ ──
     // A tiny self-sufficient subset of Lucide for the design system's
     // own previews + future marketing site. Not a substitute for the
     // full set — apps pull Lucide from CDN/npm directly.
     bundled: {
-      source: 'Lucide v0.x — vendored subset',
-      path: 'assets/glyphs/',
+      source: "Lucide v0.x — vendored subset",
+      path: "assets/glyphs/",
       note: 'Each SVG uses stroke="currentColor". Container sets `color` to retint. See preview/16-iconography.html for the live spec.',
     },
   },
 }
-

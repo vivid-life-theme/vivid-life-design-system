@@ -1,7 +1,7 @@
 // AUTO-GENERATED from tokens.json5 — do not edit.
 export default {
   "meta": {
-    "name": "Vivid Life",
+    "name": "Vivid Life Theme",
     "version": "0.2.0",
     "description": "A multi-flavor color scheme system. 4 flavors × 6 variants = 24 themes.",
     "source_palette": "https://farben.van-laar.de/",
@@ -608,7 +608,7 @@ export default {
         "recommended": "Material Icon Theme",
         "url": "https://marketplace.visualstudio.com/items?itemName=PKief.material-icon-theme",
         "alt": "Seti (VS Code default) — simpler, fewer file types covered",
-        "note": "Independent of the color theme. Users install it separately. Catppuccin and Dracula both leave file icons to the user; Vivid Life does too."
+        "note": "Independent of the color theme. Users install it separately. Catppuccin and Dracula both leave file icons to the user; Vivid Life Theme does too."
       },
       "helix": {
         "recommended": "Terminal-side via Nerd Font",
@@ -629,7 +629,7 @@ export default {
       "url": "https://github.com/PapirusDevelopmentTeam/papirus-icon-theme",
       "license": "GPL-3.0",
       "count": "approx 7000 icons",
-      "why": "Most popular community icon theme on Linux. Strong monochromatic-ish aesthetic that pairs with Vivid Life without modification. Built-in `papirus-folders` CLI lets users tint folder accents to match their variant.",
+      "why": "Most popular community icon theme on Linux. Strong monochromatic-ish aesthetic that pairs with Vivid Life Theme without modification. Built-in `papirus-folders` CLI lets users tint folder accents to match their variant.",
       "port_recipe": "GTK/Xfce ports should ship a small `papirus-folders` mapping recipe that picks a folder color matching each variant. No icons drawn.",
       "alternatives": [
         "Numix Circle — older, more stylized, smaller community",

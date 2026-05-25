@@ -1,132 +1,293 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-<meta charset="utf-8">
-<title>VL — type families & scale</title>
-<link rel="stylesheet" href="../colors_and_type.css">
-<style>
-  html, body { margin: 0; padding: 0; background: #fafafa; color: #171717; font-family: var(--vl-font-sans); }
-  .wrap { padding: 16px 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  <head>
+    <meta charset="utf-8" />
+    <title>VL — type families & scale</title>
+    <link rel="stylesheet" href="../colors_and_type.css" />
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        background: #fafafa;
+        color: #171717;
+        font-family: var(--vl-font-sans);
+      }
+      .wrap {
+        padding: 16px 20px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 18px;
+      }
 
-  .card { background: #fff; border-radius: 10px; padding: 18px 22px 20px; box-shadow: 0 0 0 1px rgba(0,0,0,0.06); }
-  .card .title {
-    font-family: var(--vl-font-sans);
-    font-size: 11px; font-weight: 600; letter-spacing: 0.08em;
-    text-transform: uppercase; color: #525252; margin: 0 0 14px;
-  }
+      .card {
+        background: #fff;
+        border-radius: 10px;
+        padding: 18px 22px 20px;
+        box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.06);
+      }
+      .card .title {
+        font-family: var(--vl-font-sans);
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: #525252;
+        margin: 0 0 14px;
+      }
 
-  /* Family showcase */
-  .fam { margin-bottom: 16px; }
-  .fam:last-child { margin-bottom: 0; }
-  .fam .name {
-    font-family: var(--vl-font-sans);
-    font-size: 11px; font-weight: 600; color: #737373;
-    margin-bottom: 4px;
-    display: flex; align-items: baseline; gap: 8px;
-  }
-  .fam .name .badge {
-    font-family: var(--vl-font-mono); font-size: 9.5px; font-weight: 400;
-    color: #737373; background: #f0f0f0; padding: 1px 6px; border-radius: 3px;
-  }
-  .fam .specimen-sans {
-    font-family: var(--vl-font-sans);
-    font-size: 32px; font-weight: 600; line-height: 1.15; letter-spacing: -0.015em;
-  }
-  .fam .specimen-mono {
-    font-family: var(--vl-font-mono);
-    font-size: 22px; font-weight: 500; line-height: 1.25;
-  }
-  .fam .glyphs {
-    font-family: inherit;
-    font-size: 14px; color: #525252;
-    margin-top: 6px;
-  }
+      /* Family showcase */
+      .fam {
+        margin-bottom: 16px;
+      }
+      .fam:last-child {
+        margin-bottom: 0;
+      }
+      .fam .name {
+        font-family: var(--vl-font-sans);
+        font-size: 11px;
+        font-weight: 600;
+        color: #737373;
+        margin-bottom: 4px;
+        display: flex;
+        align-items: baseline;
+        gap: 8px;
+      }
+      .fam .name .badge {
+        font-family: var(--vl-font-mono);
+        font-size: 9.5px;
+        font-weight: 400;
+        color: #737373;
+        background: #f0f0f0;
+        padding: 1px 6px;
+        border-radius: 3px;
+      }
+      .fam .specimen-sans {
+        font-family: var(--vl-font-sans);
+        font-size: 32px;
+        font-weight: 600;
+        line-height: 1.15;
+        letter-spacing: -0.015em;
+      }
+      .fam .specimen-mono {
+        font-family: var(--vl-font-mono);
+        font-size: 22px;
+        font-weight: 500;
+        line-height: 1.25;
+      }
+      .fam .glyphs {
+        font-family: inherit;
+        font-size: 14px;
+        color: #525252;
+        margin-top: 6px;
+      }
 
-  /* Scale ladder */
-  .scale { display: flex; flex-direction: column; gap: 12px; }
-  .scale .row { display: grid; grid-template-columns: 80px 1fr; align-items: baseline; gap: 14px; }
-  .scale .row .lbl {
-    font-family: var(--vl-font-mono); font-size: 10px; color: #737373;
-    letter-spacing: 0.04em; text-transform: uppercase;
-  }
-  .scale .row .lbl .px {
-    display: block; font-size: 9.5px; color: #a3a3a3; margin-top: 2px;
-    letter-spacing: 0;
-  }
+      /* Scale ladder */
+      .scale {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+      .scale .row {
+        display: grid;
+        grid-template-columns: 80px 1fr;
+        align-items: baseline;
+        gap: 14px;
+      }
+      .scale .row .lbl {
+        font-family: var(--vl-font-mono);
+        font-size: 10px;
+        color: #737373;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+      }
+      .scale .row .lbl .px {
+        display: block;
+        font-size: 9.5px;
+        color: #a3a3a3;
+        margin-top: 2px;
+        letter-spacing: 0;
+      }
 
-  .s-display-xl { font-family: var(--vl-font-sans); font-size: 36px; line-height: 1.10; font-weight: 700; letter-spacing: -0.02em; }
-  .s-display-lg { font-family: var(--vl-font-sans); font-size: 28px; line-height: 1.15; font-weight: 700; letter-spacing: -0.02em; }
-  .s-display-md { font-family: var(--vl-font-sans); font-size: 22px; line-height: 1.20; font-weight: 600; letter-spacing: -0.015em; }
-  .s-heading    { font-family: var(--vl-font-sans); font-size: 18px; line-height: 1.30; font-weight: 600; letter-spacing: -0.01em; }
-  .s-body       { font-family: var(--vl-font-sans); font-size: 16px; line-height: 1.50; font-weight: 400; }
-  .s-body-sm    { font-family: var(--vl-font-sans); font-size: 14px; line-height: 1.50; font-weight: 400; }
-  .s-caption    { font-family: var(--vl-font-sans); font-size: 12px; line-height: 1.40; font-weight: 500; letter-spacing: 0.02em; }
-  .s-label      { font-family: var(--vl-font-sans); font-size: 11px; line-height: 1.30; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; }
-  .s-code       { font-family: var(--vl-font-mono); font-size: 14px; line-height: 1.50; font-weight: 400; }
-  .s-code-sm    { font-family: var(--vl-font-mono); font-size: 12px; line-height: 1.45; font-weight: 400; }
-  .s-blockquote { font-family: var(--vl-font-sans); font-size: 18px; line-height: 1.60; font-weight: 400; font-style: italic; }
+      .s-display-xl {
+        font-family: var(--vl-font-sans);
+        font-size: 36px;
+        line-height: 1.1;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+      }
+      .s-display-lg {
+        font-family: var(--vl-font-sans);
+        font-size: 28px;
+        line-height: 1.15;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+      }
+      .s-display-md {
+        font-family: var(--vl-font-sans);
+        font-size: 22px;
+        line-height: 1.2;
+        font-weight: 600;
+        letter-spacing: -0.015em;
+      }
+      .s-heading {
+        font-family: var(--vl-font-sans);
+        font-size: 18px;
+        line-height: 1.3;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+      }
+      .s-body {
+        font-family: var(--vl-font-sans);
+        font-size: 16px;
+        line-height: 1.5;
+        font-weight: 400;
+      }
+      .s-body-sm {
+        font-family: var(--vl-font-sans);
+        font-size: 14px;
+        line-height: 1.5;
+        font-weight: 400;
+      }
+      .s-caption {
+        font-family: var(--vl-font-sans);
+        font-size: 12px;
+        line-height: 1.4;
+        font-weight: 500;
+        letter-spacing: 0.02em;
+      }
+      .s-label {
+        font-family: var(--vl-font-sans);
+        font-size: 11px;
+        line-height: 1.3;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+      .s-code {
+        font-family: var(--vl-font-mono);
+        font-size: 14px;
+        line-height: 1.5;
+        font-weight: 400;
+      }
+      .s-code-sm {
+        font-family: var(--vl-font-mono);
+        font-size: 12px;
+        line-height: 1.45;
+        font-weight: 400;
+      }
+      .s-blockquote {
+        font-family: var(--vl-font-sans);
+        font-size: 18px;
+        line-height: 1.6;
+        font-weight: 400;
+        font-style: italic;
+      }
 
-  .footnote {
-    grid-column: 1 / -1; font-size: 11px; color: #525252;
-    padding: 0 4px;
-    display: flex; align-items: center; gap: 8px;
-  }
-  .footnote .dot {
-    width: 6px; height: 6px; border-radius: 50%; background: #84cc16;
-    flex-shrink: 0;
-  }
-</style>
-</head>
-<body>
-<div class="wrap">
+      .footnote {
+        grid-column: 1 / -1;
+        font-size: 11px;
+        color: #525252;
+        padding: 0 4px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .footnote .dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: #84cc16;
+        flex-shrink: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <!-- ─── Families card ─── -->
+      <div class="card">
+        <div class="title">Families</div>
 
-  <!-- ─── Families card ─── -->
-  <div class="card">
-    <div class="title">Families</div>
+        <div class="fam">
+          <div class="name">
+            Sans · Atkinson Hyperlegible Next
+            <span class="badge">200 → 800 · variable</span>
+          </div>
+          <div class="specimen-sans">Vivid Life Theme</div>
+          <div class="glyphs" style="font-family: var(--vl-font-sans)">
+            AaBbCc 0123456789 — Il1 O0o · The quick brown fox.
+          </div>
+        </div>
 
-    <div class="fam">
-      <div class="name">
-        Sans · Atkinson Hyperlegible Next
-        <span class="badge">200 → 800 · variable</span>
+        <div class="fam">
+          <div class="name">
+            Mono · Atkinson Hyperlegible Mono
+            <span class="badge">200 → 800 · variable</span>
+          </div>
+          <div class="specimen-mono">const flavor = "midnight";</div>
+          <div class="glyphs" style="font-family: var(--vl-font-mono)">
+            AaBbCc 0123456789 — Il1 O0o · =&gt; != &lt;= &gt;= ||
+          </div>
+        </div>
       </div>
-      <div class="specimen-sans">Vivid Life Theme</div>
-      <div class="glyphs"
-           style="font-family: var(--vl-font-sans)">
-        AaBbCc 0123456789 — Il1 O0o · The quick brown fox.
+
+      <!-- ─── Scale card ─── -->
+      <div class="card">
+        <div class="title">Scale</div>
+        <div class="scale">
+          <div class="row">
+            <div class="lbl">display-xl<span class="px">48 / 700</span></div>
+            <div class="s-display-xl">Vivid Life Theme</div>
+          </div>
+          <div class="row">
+            <div class="lbl">display-lg<span class="px">36 / 700</span></div>
+            <div class="s-display-lg">Four flavors of light</div>
+          </div>
+          <div class="row">
+            <div class="lbl">display-md<span class="px">28 / 600</span></div>
+            <div class="s-display-md">Six accents per flavor</div>
+          </div>
+          <div class="row">
+            <div class="lbl">heading<span class="px">20 / 600</span></div>
+            <div class="s-heading">Reading at any time of day</div>
+          </div>
+          <div class="row">
+            <div class="lbl">body<span class="px">16 / 400</span></div>
+            <div class="s-body">
+              Designed by the Braille Institute for readers with low vision —
+              every variant of every flavor is contrast-verified to WCAG AA.
+            </div>
+          </div>
+          <div class="row">
+            <div class="lbl">body-sm<span class="px">14 / 400</span></div>
+            <div class="s-body-sm">
+              Smaller body text for secondary information and dense UI.
+            </div>
+          </div>
+          <div class="row">
+            <div class="lbl">caption<span class="px">12 / 500</span></div>
+            <div class="s-caption">Caption · 12px · 0.02em tracked</div>
+          </div>
+          <div class="row">
+            <div class="lbl">label<span class="px">11 / 600</span></div>
+            <div class="s-label">Eyebrow Label</div>
+          </div>
+          <div class="row">
+            <div class="lbl">blockquote<span class="px">18 / 400i</span></div>
+            <div class="s-blockquote">
+              "Make a theme system that means something."
+            </div>
+          </div>
+          <div class="row">
+            <div class="lbl">code<span class="px">14 / 400</span></div>
+            <div class="s-code">flavor.midnight.surface.bg → #171717</div>
+          </div>
+          <div class="row">
+            <div class="lbl">code-sm<span class="px">12 / 400</span></div>
+            <div class="s-code-sm">$ node tools/build-tokens.mjs</div>
+          </div>
+        </div>
       </div>
     </div>
-
-    <div class="fam">
-      <div class="name">
-        Mono · Atkinson Hyperlegible Mono
-        <span class="badge">200 → 800 · variable</span>
-      </div>
-      <div class="specimen-mono">const flavor = "midnight";</div>
-      <div class="glyphs"
-           style="font-family: var(--vl-font-mono)">
-        AaBbCc 0123456789 — Il1 O0o · =&gt; != &lt;= &gt;= ||
-      </div>
-    </div>
-  </div>
-
-  <!-- ─── Scale card ─── -->
-  <div class="card">
-    <div class="title">Scale</div>
-    <div class="scale">
-      <div class="row"><div class="lbl">display-xl<span class="px">48 / 700</span></div><div class="s-display-xl">Vivid Life</div></div>
-      <div class="row"><div class="lbl">display-lg<span class="px">36 / 700</span></div><div class="s-display-lg">Four flavors of light</div></div>
-      <div class="row"><div class="lbl">display-md<span class="px">28 / 600</span></div><div class="s-display-md">Six accents per flavor</div></div>
-      <div class="row"><div class="lbl">heading<span class="px">20 / 600</span></div>   <div class="s-heading">Reading at any time of day</div></div>
-      <div class="row"><div class="lbl">body<span class="px">16 / 400</span></div>      <div class="s-body">Designed by the Braille Institute for readers with low vision — every variant of every flavor is contrast-verified to WCAG AA.</div></div>
-      <div class="row"><div class="lbl">body-sm<span class="px">14 / 400</span></div>   <div class="s-body-sm">Smaller body text for secondary information and dense UI.</div></div>
-      <div class="row"><div class="lbl">caption<span class="px">12 / 500</span></div>   <div class="s-caption">Caption · 12px · 0.02em tracked</div></div>
-      <div class="row"><div class="lbl">label<span class="px">11 / 600</span></div>     <div class="s-label">Eyebrow Label</div></div>
-      <div class="row"><div class="lbl">blockquote<span class="px">18 / 400i</span></div><div class="s-blockquote">"Make a theme system that means something."</div></div>
-      <div class="row"><div class="lbl">code<span class="px">14 / 400</span></div>      <div class="s-code">flavor.midnight.surface.bg → #171717</div></div>
-      <div class="row"><div class="lbl">code-sm<span class="px">12 / 400</span></div>   <div class="s-code-sm">$ node tools/build-tokens.mjs</div></div>
-    </div>
-  </div>
-
-</div>
-</body>
+  </body>
 </html>

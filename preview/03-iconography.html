@@ -1,193 +1,630 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-<meta charset="utf-8">
-<title>Vivid Life — iconography</title>
-<link rel="stylesheet" href="../colors_and_type.css">
-<style>
-  html, body { margin: 0; padding: 0; background: #fafafa; color: #171717; font-family: var(--vl-font-sans); }
-  .wrap { padding: 16px 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  <head>
+    <meta charset="utf-8" />
+    <title>Vivid Life Theme — iconography</title>
+    <link rel="stylesheet" href="../colors_and_type.css" />
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        background: #fafafa;
+        color: #171717;
+        font-family: var(--vl-font-sans);
+      }
+      .wrap {
+        padding: 16px 20px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+      }
 
-  .card { background: #fff; border-radius: 10px; padding: 16px 18px 18px; box-shadow: 0 0 0 1px rgba(0,0,0,0.06); }
-  .card h3 {
-    margin: 0 0 4px;
-    font-size: 13px; font-weight: 700; letter-spacing: -0.005em;
-    display: flex; align-items: baseline; gap: 8px;
-  }
-  .card h3 .tag {
-    font-family: var(--vl-font-mono); font-size: 9.5px; font-weight: 500;
-    color: #737373; background: #f0f0f0; padding: 1px 6px; border-radius: 3px;
-    text-transform: none; letter-spacing: 0;
-  }
-  .card .desc { font-size: 11.5px; color: #525252; line-height: 1.5; margin: 0 0 12px; }
+      .card {
+        background: #fff;
+        border-radius: 10px;
+        padding: 16px 18px 18px;
+        box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.06);
+      }
+      .card h3 {
+        margin: 0 0 4px;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: -0.005em;
+        display: flex;
+        align-items: baseline;
+        gap: 8px;
+      }
+      .card h3 .tag {
+        font-family: var(--vl-font-mono);
+        font-size: 9.5px;
+        font-weight: 500;
+        color: #737373;
+        background: #f0f0f0;
+        padding: 1px 6px;
+        border-radius: 3px;
+        text-transform: none;
+        letter-spacing: 0;
+      }
+      .card .desc {
+        font-size: 11.5px;
+        color: #525252;
+        line-height: 1.5;
+        margin: 0 0 12px;
+      }
 
-  /* Glyph grid */
-  .grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-top: 6px; }
-  .grid .ic {
-    aspect-ratio: 1;
-    display: flex; align-items: center; justify-content: center;
-    border-radius: 6px;
-    background: #fafafa;
-    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.04);
-    color: #171717;
-  }
-  .grid .ic svg { width: 60%; height: 60%; }
+      /* Glyph grid */
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 4px;
+        margin-top: 6px;
+      }
+      .grid .ic {
+        aspect-ratio: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 6px;
+        background: #fafafa;
+        box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.04);
+        color: #171717;
+      }
+      .grid .ic svg {
+        width: 60%;
+        height: 60%;
+      }
 
-  /* Color test row — same icon on the 4 flavor backgrounds */
-  .flavors { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-top: 12px; }
-  .flavors .swatch {
-    aspect-ratio: 1.5;
-    display: flex; align-items: center; justify-content: center;
-    border-radius: 8px;
-  }
-  .flavors .swatch.mid  { background: #171717; color: #f5f5f5; }
-  .flavors .swatch.twi  { background: #404040; color: #f5f5f5; }
-  .flavors .swatch.dwn  { background: #d4d4d4; color: #171717; }
-  .flavors .swatch.noon { background: #f5f5f5; color: #171717; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.06); }
-  .flavors .swatch svg { width: 26px; height: 26px; }
+      /* Color test row — same icon on the 4 flavor backgrounds */
+      .flavors {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 6px;
+        margin-top: 12px;
+      }
+      .flavors .swatch {
+        aspect-ratio: 1.5;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+      }
+      .flavors .swatch.mid {
+        background: #171717;
+        color: #f5f5f5;
+      }
+      .flavors .swatch.twi {
+        background: #404040;
+        color: #f5f5f5;
+      }
+      .flavors .swatch.dwn {
+        background: #d4d4d4;
+        color: #171717;
+      }
+      .flavors .swatch.noon {
+        background: #f5f5f5;
+        color: #171717;
+        box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.06);
+      }
+      .flavors .swatch svg {
+        width: 26px;
+        height: 26px;
+      }
 
-  /* Accent test row — same icon, 6 variants */
-  .accents { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; margin-top: 10px; }
-  .accents .swatch {
-    aspect-ratio: 1.4;
-    display: flex; align-items: center; justify-content: center;
-    background: #171717; border-radius: 8px;
-  }
-  .accents .swatch svg { width: 24px; height: 24px; }
-  .acc-red    { color: #ef4444; }
-  .acc-orange { color: #f97316; }
-  .acc-yellow { color: #eab308; }
-  .acc-green  { color: #84cc16; }
-  .acc-blue   { color: #93c5fd; }
-  .acc-purple { color: #d8b4fe; }
+      /* Accent test row — same icon, 6 variants */
+      .accents {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        gap: 6px;
+        margin-top: 10px;
+      }
+      .accents .swatch {
+        aspect-ratio: 1.4;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #171717;
+        border-radius: 8px;
+      }
+      .accents .swatch svg {
+        width: 24px;
+        height: 24px;
+      }
+      .acc-red {
+        color: #ef4444;
+      }
+      .acc-orange {
+        color: #f97316;
+      }
+      .acc-yellow {
+        color: #eab308;
+      }
+      .acc-green {
+        color: #84cc16;
+      }
+      .acc-blue {
+        color: #93c5fd;
+      }
+      .acc-purple {
+        color: #d8b4fe;
+      }
 
-  .layer-table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 11px; }
-  .layer-table th, .layer-table td { text-align: left; padding: 5px 8px; border-bottom: 1px solid #f0f0f0; vertical-align: top; }
-  .layer-table th { font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: #737373; font-weight: 600; }
-  .layer-table .mono { font-family: var(--vl-font-mono); font-size: 10.5px; }
-  .layer-table .pill { display: inline-block; padding: 1px 6px; border-radius: 9999px; font-size: 9.5px; font-weight: 600; }
-  .pill-prim { background: #ecfccb; color: #365314; }
-  .pill-alt  { background: #f0f0f0; color: #525252; }
-</style>
-</head>
-<body>
-<div class="wrap">
+      .layer-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 8px;
+        font-size: 11px;
+      }
+      .layer-table th,
+      .layer-table td {
+        text-align: left;
+        padding: 5px 8px;
+        border-bottom: 1px solid #f0f0f0;
+        vertical-align: top;
+      }
+      .layer-table th {
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: #737373;
+        font-weight: 600;
+      }
+      .layer-table .mono {
+        font-family: var(--vl-font-mono);
+        font-size: 10.5px;
+      }
+      .layer-table .pill {
+        display: inline-block;
+        padding: 1px 6px;
+        border-radius: 9999px;
+        font-size: 9.5px;
+        font-weight: 600;
+      }
+      .pill-prim {
+        background: #ecfccb;
+        color: #365314;
+      }
+      .pill-alt {
+        background: #f0f0f0;
+        color: #525252;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <!-- Layer C: bundled Lucide subset -->
+      <div class="card">
+        <h3>
+          Layer C — Inline UI glyphs <span class="tag">Lucide subset</span>
+        </h3>
+        <p class="desc">
+          A small vendored subset of Lucide for the design system's own
+          previews. Each SVG uses <code>stroke="currentColor"</code> — set
+          <code>color</code>
+          on the container to retint. Apps pull the full set from Lucide
+          directly.
+        </p>
+        <div class="grid">
+          <div class="ic" title="chevron-right">
+            <img
+              src="../assets/glyphs/chevron-right.svg"
+              alt=""
+              style="width: 60%; height: 60%"
+            />
+          </div>
+          <div class="ic" title="chevron-down">
+            <img
+              src="../assets/glyphs/chevron-down.svg"
+              alt=""
+              style="width: 60%; height: 60%"
+            />
+          </div>
+          <div class="ic" title="arrow-right">
+            <img
+              src="../assets/glyphs/arrow-right.svg"
+              alt=""
+              style="width: 60%; height: 60%"
+            />
+          </div>
+          <div class="ic" title="arrow-up-right">
+            <img
+              src="../assets/glyphs/arrow-up-right.svg"
+              alt=""
+              style="width: 60%; height: 60%"
+            />
+          </div>
+          <div class="ic" title="external-link">
+            <img
+              src="../assets/glyphs/external-link.svg"
+              alt=""
+              style="width: 60%; height: 60%"
+            />
+          </div>
+          <div class="ic" title="check">
+            <img
+              src="../assets/glyphs/check.svg"
+              alt=""
+              style="width: 60%; height: 60%"
+            />
+          </div>
+          <div class="ic" title="x">
+            <img
+              src="../assets/glyphs/x.svg"
+              alt=""
+              style="width: 60%; height: 60%"
+            />
+          </div>
+          <div class="ic" title="plus">
+            <img
+              src="../assets/glyphs/plus.svg"
+              alt=""
+              style="width: 60%; height: 60%"
+            />
+          </div>
+          <div class="ic" title="minus">
+            <img
+              src="../assets/glyphs/minus.svg"
+              alt=""
+              style="width: 60%; height: 60%"
+            />
+          </div>
+          <div class="ic" title="search">
+            <img
+              src="../assets/glyphs/search.svg"
+              alt=""
+              style="width: 60%; height: 60%"
+            />
+          </div>
+          <div class="ic" title="settings">
+            <img
+              src="../assets/glyphs/settings.svg"
+              alt=""
+              style="width: 60%; height: 60%"
+            />
+          </div>
+          <div class="ic" title="menu">
+            <img
+              src="../assets/glyphs/menu.svg"
+              alt=""
+              style="width: 60%; height: 60%"
+            />
+          </div>
+          <div class="ic" title="file">
+            <img
+              src="../assets/glyphs/file.svg"
+              alt=""
+              style="width: 60%; height: 60%"
+            />
+          </div>
+          <div class="ic" title="file-text">
+            <img
+              src="../assets/glyphs/file-text.svg"
+              alt=""
+              style="width: 60%; height: 60%"
+            />
+          </div>
+          <div class="ic" title="folder">
+            <img
+              src="../assets/glyphs/folder.svg"
+              alt=""
+              style="width: 60%; height: 60%"
+            />
+          </div>
+          <div class="ic" title="folder-open">
+            <img
+              src="../assets/glyphs/folder-open.svg"
+              alt=""
+              style="width: 60%; height: 60%"
+            />
+          </div>
+          <div class="ic" title="code">
+            <img
+              src="../assets/glyphs/code.svg"
+              alt=""
+              style="width: 60%; height: 60%"
+            />
+          </div>
+          <div class="ic" title="circle-check">
+            <img
+              src="../assets/glyphs/circle-check.svg"
+              alt=""
+              style="width: 60%; height: 60%"
+            />
+          </div>
+          <div class="ic" title="circle-alert">
+            <img
+              src="../assets/glyphs/circle-alert.svg"
+              alt=""
+              style="width: 60%; height: 60%"
+            />
+          </div>
+          <div class="ic" title="circle-x">
+            <img
+              src="../assets/glyphs/circle-x.svg"
+              alt=""
+              style="width: 60%; height: 60%"
+            />
+          </div>
+          <div class="ic" title="info">
+            <img
+              src="../assets/glyphs/info.svg"
+              alt=""
+              style="width: 60%; height: 60%"
+            />
+          </div>
+          <div class="ic" title="sun">
+            <img
+              src="../assets/glyphs/sun.svg"
+              alt=""
+              style="width: 60%; height: 60%"
+            />
+          </div>
+          <div class="ic" title="moon">
+            <img
+              src="../assets/glyphs/moon.svg"
+              alt=""
+              style="width: 60%; height: 60%"
+            />
+          </div>
+          <div class="ic" title="palette">
+            <img
+              src="../assets/glyphs/palette.svg"
+              alt=""
+              style="width: 60%; height: 60%"
+            />
+          </div>
+          <div class="ic" title="eye">
+            <img
+              src="../assets/glyphs/eye.svg"
+              alt=""
+              style="width: 60%; height: 60%"
+            />
+          </div>
+          <div class="ic" title="paint-bucket">
+            <img
+              src="../assets/glyphs/paint-bucket.svg"
+              alt=""
+              style="width: 60%; height: 60%"
+            />
+          </div>
+          <div class="ic" title="sparkles">
+            <img
+              src="../assets/glyphs/sparkles.svg"
+              alt=""
+              style="width: 60%; height: 60%"
+            />
+          </div>
+        </div>
+      </div>
 
-  <!-- Layer C: bundled Lucide subset -->
-  <div class="card">
-    <h3>Layer C — Inline UI glyphs <span class="tag">Lucide subset</span></h3>
-    <p class="desc">
-      A small vendored subset of Lucide for the design system's own previews.
-      Each SVG uses <code>stroke="currentColor"</code> — set <code>color</code>
-      on the container to retint. Apps pull the full set from Lucide directly.
-    </p>
-    <div class="grid">
-      <div class="ic" title="chevron-right"><img src="../assets/glyphs/chevron-right.svg" alt="" style="width:60%; height:60%;"></div>
-      <div class="ic" title="chevron-down"><img src="../assets/glyphs/chevron-down.svg" alt="" style="width:60%; height:60%;"></div>
-      <div class="ic" title="arrow-right"><img src="../assets/glyphs/arrow-right.svg" alt="" style="width:60%; height:60%;"></div>
-      <div class="ic" title="arrow-up-right"><img src="../assets/glyphs/arrow-up-right.svg" alt="" style="width:60%; height:60%;"></div>
-      <div class="ic" title="external-link"><img src="../assets/glyphs/external-link.svg" alt="" style="width:60%; height:60%;"></div>
-      <div class="ic" title="check"><img src="../assets/glyphs/check.svg" alt="" style="width:60%; height:60%;"></div>
-      <div class="ic" title="x"><img src="../assets/glyphs/x.svg" alt="" style="width:60%; height:60%;"></div>
-      <div class="ic" title="plus"><img src="../assets/glyphs/plus.svg" alt="" style="width:60%; height:60%;"></div>
-      <div class="ic" title="minus"><img src="../assets/glyphs/minus.svg" alt="" style="width:60%; height:60%;"></div>
-      <div class="ic" title="search"><img src="../assets/glyphs/search.svg" alt="" style="width:60%; height:60%;"></div>
-      <div class="ic" title="settings"><img src="../assets/glyphs/settings.svg" alt="" style="width:60%; height:60%;"></div>
-      <div class="ic" title="menu"><img src="../assets/glyphs/menu.svg" alt="" style="width:60%; height:60%;"></div>
-      <div class="ic" title="file"><img src="../assets/glyphs/file.svg" alt="" style="width:60%; height:60%;"></div>
-      <div class="ic" title="file-text"><img src="../assets/glyphs/file-text.svg" alt="" style="width:60%; height:60%;"></div>
-      <div class="ic" title="folder"><img src="../assets/glyphs/folder.svg" alt="" style="width:60%; height:60%;"></div>
-      <div class="ic" title="folder-open"><img src="../assets/glyphs/folder-open.svg" alt="" style="width:60%; height:60%;"></div>
-      <div class="ic" title="code"><img src="../assets/glyphs/code.svg" alt="" style="width:60%; height:60%;"></div>
-      <div class="ic" title="circle-check"><img src="../assets/glyphs/circle-check.svg" alt="" style="width:60%; height:60%;"></div>
-      <div class="ic" title="circle-alert"><img src="../assets/glyphs/circle-alert.svg" alt="" style="width:60%; height:60%;"></div>
-      <div class="ic" title="circle-x"><img src="../assets/glyphs/circle-x.svg" alt="" style="width:60%; height:60%;"></div>
-      <div class="ic" title="info"><img src="../assets/glyphs/info.svg" alt="" style="width:60%; height:60%;"></div>
-      <div class="ic" title="sun"><img src="../assets/glyphs/sun.svg" alt="" style="width:60%; height:60%;"></div>
-      <div class="ic" title="moon"><img src="../assets/glyphs/moon.svg" alt="" style="width:60%; height:60%;"></div>
-      <div class="ic" title="palette"><img src="../assets/glyphs/palette.svg" alt="" style="width:60%; height:60%;"></div>
-      <div class="ic" title="eye"><img src="../assets/glyphs/eye.svg" alt="" style="width:60%; height:60%;"></div>
-      <div class="ic" title="paint-bucket"><img src="../assets/glyphs/paint-bucket.svg" alt="" style="width:60%; height:60%;"></div>
-      <div class="ic" title="sparkles"><img src="../assets/glyphs/sparkles.svg" alt="" style="width:60%; height:60%;"></div>
-    </div>
-  </div>
+      <!-- Recolor test -->
+      <div class="card">
+        <h3>Recolor test <span class="tag">currentColor</span></h3>
+        <p class="desc">
+          The same icon (<code>settings</code>) on each flavor's canvas, picking
+          up the foreground token. Below: same icon on Midnight, tinted with
+          each variant's accent — variants reflavor icons for free.
+        </p>
 
-  <!-- Recolor test -->
-  <div class="card">
-    <h3>Recolor test <span class="tag">currentColor</span></h3>
-    <p class="desc">
-      The same icon (<code>settings</code>) on each flavor's canvas, picking up
-      the foreground token. Below: same icon on Midnight, tinted with each
-      variant's accent — variants reflavor icons for free.
-    </p>
-
-    <!-- These need inline SVGs to actually inherit currentColor through
+        <!-- These need inline SVGs to actually inherit currentColor through
          a CSS color cascade. Inlining a smaller subset here. -->
-    <div class="flavors">
-      <div class="swatch mid"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg></div>
-      <div class="swatch twi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg></div>
-      <div class="swatch dwn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg></div>
-      <div class="swatch noon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg></div>
+        <div class="flavors">
+          <div class="swatch mid">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path
+                d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"
+              />
+              <circle cx="12" cy="12" r="3" />
+            </svg>
+          </div>
+          <div class="swatch twi">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path
+                d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"
+              />
+              <circle cx="12" cy="12" r="3" />
+            </svg>
+          </div>
+          <div class="swatch dwn">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path
+                d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"
+              />
+              <circle cx="12" cy="12" r="3" />
+            </svg>
+          </div>
+          <div class="swatch noon">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path
+                d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"
+              />
+              <circle cx="12" cy="12" r="3" />
+            </svg>
+          </div>
+        </div>
+
+        <div class="accents">
+          <div class="swatch acc-red">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="m9 18 6-6-6-6" />
+            </svg>
+          </div>
+          <div class="swatch acc-orange">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="m9 18 6-6-6-6" />
+            </svg>
+          </div>
+          <div class="swatch acc-yellow">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="m9 18 6-6-6-6" />
+            </svg>
+          </div>
+          <div class="swatch acc-green">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="m9 18 6-6-6-6" />
+            </svg>
+          </div>
+          <div class="swatch acc-blue">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="m9 18 6-6-6-6" />
+            </svg>
+          </div>
+          <div class="swatch acc-purple">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="m9 18 6-6-6-6" />
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- Layer A + B recommendations -->
+      <div class="card" style="grid-column: 1 / -1">
+        <h3>
+          Per-layer recommendations
+          <span class="tag">don't redo this research</span>
+        </h3>
+        <p class="desc">
+          Vivid Life Theme does not ship its own icon themes. Ports recommend
+          the sets below.
+        </p>
+        <table class="layer-table">
+          <thead>
+            <tr>
+              <th>Layer</th>
+              <th>Where</th>
+              <th>Recommended</th>
+              <th>License</th>
+              <th>Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><b>C</b> — Inline UI</td>
+              <td>Buttons, menus, toolbars (web, app, anywhere)</td>
+              <td>
+                <span class="pill pill-prim">Lucide</span>
+                <span class="mono">~1500</span>
+              </td>
+              <td>ISC</td>
+              <td>
+                Reflavors via <code>currentColor</code>.
+                <span class="pill pill-alt">Tabler ~5800</span> if you need
+                rarer glyphs.
+              </td>
+            </tr>
+            <tr>
+              <td><b>B</b> — IDE file-tree</td>
+              <td>VS Code</td>
+              <td><span class="pill pill-prim">Material Icon Theme</span></td>
+              <td>MIT</td>
+              <td>Don't recolor file icons — they encode file <i>type</i>.</td>
+            </tr>
+            <tr>
+              <td></td>
+              <td>Helix / Neovim</td>
+              <td>
+                <span class="pill pill-prim">Nerd Font glyphs</span> via
+                Atkinson Mono Nerd Font
+              </td>
+              <td>OFL</td>
+              <td>
+                Helix reads terminal font; Neovim via
+                <code>nvim-web-devicons</code>.
+              </td>
+            </tr>
+            <tr>
+              <td></td>
+              <td>JetBrains IDEs</td>
+              <td>Built-in</td>
+              <td>—</td>
+              <td>Not user-configurable.</td>
+            </tr>
+            <tr>
+              <td><b>A</b> — OS / GTK</td>
+              <td>Xubuntu, GTK desktops, file manager, app launcher</td>
+              <td>
+                <span class="pill pill-prim">Papirus</span>
+                <span class="mono">~7000</span>
+              </td>
+              <td>GPL-3.0</td>
+              <td>
+                Built-in <code>papirus-folders</code> CLI tints folder accents.
+                Recolor folders to match variant; leave everything else as-is.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
-
-    <div class="accents">
-      <div class="swatch acc-red"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></div>
-      <div class="swatch acc-orange"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></div>
-      <div class="swatch acc-yellow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></div>
-      <div class="swatch acc-green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></div>
-      <div class="swatch acc-blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></div>
-      <div class="swatch acc-purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg></div>
-    </div>
-  </div>
-
-  <!-- Layer A + B recommendations -->
-  <div class="card" style="grid-column: 1 / -1;">
-    <h3>Per-layer recommendations <span class="tag">don't redo this research</span></h3>
-    <p class="desc">Vivid Life does not ship its own icon themes. Ports recommend the sets below.</p>
-    <table class="layer-table">
-      <thead>
-        <tr><th>Layer</th><th>Where</th><th>Recommended</th><th>License</th><th>Notes</th></tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td><b>C</b> — Inline UI</td>
-          <td>Buttons, menus, toolbars (web, app, anywhere)</td>
-          <td><span class="pill pill-prim">Lucide</span> <span class="mono">~1500</span></td>
-          <td>ISC</td>
-          <td>Reflavors via <code>currentColor</code>. <span class="pill pill-alt">Tabler ~5800</span> if you need rarer glyphs.</td>
-        </tr>
-        <tr>
-          <td><b>B</b> — IDE file-tree</td>
-          <td>VS Code</td>
-          <td><span class="pill pill-prim">Material Icon Theme</span></td>
-          <td>MIT</td>
-          <td>Don't recolor file icons — they encode file <i>type</i>.</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>Helix / Neovim</td>
-          <td><span class="pill pill-prim">Nerd Font glyphs</span> via Atkinson Mono Nerd Font</td>
-          <td>OFL</td>
-          <td>Helix reads terminal font; Neovim via <code>nvim-web-devicons</code>.</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>JetBrains IDEs</td>
-          <td>Built-in</td>
-          <td>—</td>
-          <td>Not user-configurable.</td>
-        </tr>
-        <tr>
-          <td><b>A</b> — OS / GTK</td>
-          <td>Xubuntu, GTK desktops, file manager, app launcher</td>
-          <td><span class="pill pill-prim">Papirus</span> <span class="mono">~7000</span></td>
-          <td>GPL-3.0</td>
-          <td>Built-in <code>papirus-folders</code> CLI tints folder accents. Recolor folders to match variant; leave everything else as-is.</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
-</div>
-</body>
+  </body>
 </html>

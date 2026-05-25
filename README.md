@@ -236,7 +236,7 @@ fonts/
 assets/
   logo.svg                      Primary mark (4 flavor bands × 6-wedge pinwheel)
   logo-{midnight,…,noon}.svg    Per-flavor variants (single bg + pinwheel)
-  wordmark.svg                  Mark + "Vivid Life" lockup
+  wordmark.svg                  Mark + "Vivid Life Theme" lockup
   icon-{16,…,256}.png           Primary mark, 6 sizes
   icon-{flavor}-{16,…,256}.png  Per-flavor mark, 4 flavors × 6 sizes
 preview/                        Design-system reference cards (open locally)
@@ -320,7 +320,7 @@ as `/vivid-life-theme`. See `handoff/README.md` for details.
 
 ## Iconography
 
-Vivid Life does not ship its own icon themes. Building a complete set
+Vivid Life Theme does not ship its own icon themes. Building a complete set
 for IDE + OS + apps would be ~5000+ glyphs of work for a generation-
 behind result. Instead the system recommends best-in-class existing
 sets per layer; ports document the recommendation and pull from CDN /
