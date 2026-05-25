@@ -207,9 +207,11 @@ caption · label · code · code_sm · blockquote`
 
 Both generators are deterministic — same input → byte-identical output.
 `build-tokens.mjs` runs WCAG checks (every variant accent vs flavor bg).
-Both scripts accept `--check` to fail CI when the committed outputs
-(`tokens.json`, `dist/tokens.js`, `colors_and_type.css`) drift from
-`tokens.json5`.
+All build scripts accept `--check` to fail CI when their outputs drift
+from `tokens.json5`. `tools/build-previews.mjs --check` additionally
+validates that every `var(--…)` reference and relative URL in
+`preview/*.html` still resolves — catches token renames that would
+silently break the reference cards. `npm run check` runs all three.
 
 **Adding a new token:** edit `tokens.json5`, run both scripts. Both
 `tokens.json` and `colors_and_type.css` regenerate; nothing is

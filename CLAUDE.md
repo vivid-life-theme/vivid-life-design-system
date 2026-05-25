@@ -15,7 +15,7 @@ Foundation for a 4-flavor × 6-variant = 24-theme color system. Source of truth 
 | `.gitignore` | Git ignore patterns                                                  |
 | `handoff/README.md` | How downstream ports use the handoff artifacts                       |
 | `handoff/SKILL.md` | Port-distribution skill — copied into a port's `.claude/skills/`     |
-| `package.json` | TODO: add description                                                |
+| `package.json` | npm manifest: exports, files, scripts (build/check/test)             |
 | `scripts/sync-config-table.sh` | Syncs Key Config Files table with filesystem                         |
 | `tokens.json` | Generated — resolved flat token map; consumed by downstream ports    |
 
@@ -25,6 +25,7 @@ Foundation for a 4-flavor × 6-variant = 24-theme color system. Source of truth 
 - `node tools/build-tokens.mjs --check` — verify `tokens.json` + `dist/tokens.js` are in sync (CI mode, exits non-zero on drift)
 - `node tools/build-css.mjs` — generate `colors_and_type.css` from `tokens.json5`
 - `node tools/build-css.mjs --check` — verify CSS is in sync (CI mode, exits non-zero on drift)
+- `node tools/build-previews.mjs --check` — validate every `var(--…)` and relative URL in `preview/*.html` resolves
 
 Run both build commands after any change to `tokens.json5`.
 
