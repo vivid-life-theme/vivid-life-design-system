@@ -206,8 +206,10 @@ caption · label · code · code_sm · blockquote`
 ```
 
 Both generators are deterministic — same input → byte-identical output.
-`build-tokens.mjs` runs WCAG checks (every variant accent vs flavor bg);
-`build-css.mjs` accepts `--check` to fail CI if the CSS is out of sync.
+`build-tokens.mjs` runs WCAG checks (every variant accent vs flavor bg).
+Both scripts accept `--check` to fail CI when the committed outputs
+(`tokens.json`, `dist/tokens.js`, `colors_and_type.css`) drift from
+`tokens.json5`.
 
 **Adding a new token:** edit `tokens.json5`, run both scripts. Both
 `tokens.json` and `colors_and_type.css` regenerate; nothing is
