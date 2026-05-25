@@ -1,0 +1,106 @@
+<?xml version="1.0"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 300" role="img" aria-label="Accent-shade table: 6 hues x 4 flavors, all WCAG AA">
+  <title>Accent-shade table: 6 hues x 4 flavors, all WCAG AA</title>
+
+  <!-- header -->
+  <rect x="0" y="0" width="80" height="36" fill="#171717"/>
+  <rect x="80" y="0" width="130" height="36" fill="#171717"/>
+  <text x="145" y="26" text-anchor="middle" font-family="ui-sans-serif,system-ui,-apple-system,sans-serif" font-size="13" font-weight="700" fill="#f5f5f5">Midnight</text>
+  <rect x="210" y="0" width="130" height="36" fill="#404040"/>
+  <text x="275" y="26" text-anchor="middle" font-family="ui-sans-serif,system-ui,-apple-system,sans-serif" font-size="13" font-weight="700" fill="#f5f5f5">Twilight</text>
+  <rect x="340" y="0" width="130" height="36" fill="#d4d4d4"/>
+  <text x="405" y="26" text-anchor="middle" font-family="ui-sans-serif,system-ui,-apple-system,sans-serif" font-size="13" font-weight="700" fill="#171717">Dawn</text>
+  <rect x="470" y="0" width="130" height="36" fill="#f5f5f5"/>
+  <text x="535" y="26" text-anchor="middle" font-family="ui-sans-serif,system-ui,-apple-system,sans-serif" font-size="13" font-weight="700" fill="#171717">Noon</text>
+  <!-- hue rows -->
+  <!-- Red -->
+  <rect x="0" y="36" width="80" height="44" fill="#171717"/>
+  <text x="40" y="62" text-anchor="middle" font-family="ui-sans-serif,system-ui,-apple-system,sans-serif" font-size="12" font-weight="700" fill="#d4d4d4">Red</text>
+  <rect x="80" y="36" width="130" height="44" fill="#ef4444"/>
+  <text x="145" y="53" text-anchor="middle" font-family="ui-sans-serif,system-ui,-apple-system,sans-serif" font-size="13" font-weight="700" fill="#171717">500</text>
+  <text x="145" y="73" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="9" fill="#171717">#ef4444</text>
+  <rect x="210" y="36" width="130" height="44" fill="#fca5a5"/>
+  <text x="275" y="53" text-anchor="middle" font-family="ui-sans-serif,system-ui,-apple-system,sans-serif" font-size="13" font-weight="700" fill="#171717">300</text>
+  <text x="275" y="73" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="9" fill="#171717">#fca5a5</text>
+  <rect x="340" y="36" width="130" height="44" fill="#7f1d1d"/>
+  <text x="405" y="53" text-anchor="middle" font-family="ui-sans-serif,system-ui,-apple-system,sans-serif" font-size="13" font-weight="700" fill="#f5f5f5">900</text>
+  <text x="405" y="73" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="9" fill="#f5f5f5">#7f1d1d</text>
+  <rect x="470" y="36" width="130" height="44" fill="#b91c1c"/>
+  <text x="535" y="53" text-anchor="middle" font-family="ui-sans-serif,system-ui,-apple-system,sans-serif" font-size="13" font-weight="700" fill="#f5f5f5">700</text>
+  <text x="535" y="73" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="9" fill="#f5f5f5">#b91c1c</text>
+  <!-- Orange -->
+  <rect x="0" y="80" width="80" height="44" fill="#171717"/>
+  <text x="40" y="106" text-anchor="middle" font-family="ui-sans-serif,system-ui,-apple-system,sans-serif" font-size="12" font-weight="700" fill="#d4d4d4">Orange</text>
+  <rect x="80" y="80" width="130" height="44" fill="#f97316"/>
+  <text x="145" y="97" text-anchor="middle" font-family="ui-sans-serif,system-ui,-apple-system,sans-serif" font-size="13" font-weight="700" fill="#171717">500</text>
+  <text x="145" y="117" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="9" fill="#171717">#f97316</text>
+  <rect x="210" y="80" width="130" height="44" fill="#fdba74"/>
+  <text x="275" y="97" text-anchor="middle" font-family="ui-sans-serif,system-ui,-apple-system,sans-serif" font-size="13" font-weight="700" fill="#171717">300</text>
+  <text x="275" y="117" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="9" fill="#171717">#fdba74</text>
+  <rect x="340" y="80" width="130" height="44" fill="#7c2d12"/>
+  <text x="405" y="97" text-anchor="middle" font-family="ui-sans-serif,system-ui,-apple-system,sans-serif" font-size="13" font-weight="700" fill="#f5f5f5">900</text>
+  <text x="405" y="117" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="9" fill="#f5f5f5">#7c2d12</text>
+  <rect x="470" y="80" width="130" height="44" fill="#c2410c"/>
+  <text x="535" y="97" text-anchor="middle" font-family="ui-sans-serif,system-ui,-apple-system,sans-serif" font-size="13" font-weight="700" fill="#f5f5f5">700</text>
+  <text x="535" y="117" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="9" fill="#f5f5f5">#c2410c</text>
+  <!-- Yellow -->
+  <rect x="0" y="124" width="80" height="44" fill="#171717"/>
+  <text x="40" y="150" text-anchor="middle" font-family="ui-sans-serif,system-ui,-apple-system,sans-serif" font-size="12" font-weight="700" fill="#d4d4d4">Yellow</text>
+  <rect x="80" y="124" width="130" height="44" fill="#eab308"/>
+  <text x="145" y="141" text-anchor="middle" font-family="ui-sans-serif,system-ui,-apple-system,sans-serif" font-size="13" font-weight="700" fill="#171717">500</text>
+  <text x="145" y="161" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="9" fill="#171717">#eab308</text>
+  <rect x="210" y="124" width="130" height="44" fill="#eab308"/>
+  <text x="275" y="141" text-anchor="middle" font-family="ui-sans-serif,system-ui,-apple-system,sans-serif" font-size="13" font-weight="700" fill="#171717">500</text>
+  <text x="275" y="161" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="9" fill="#171717">#eab308</text>
+  <rect x="340" y="124" width="130" height="44" fill="#713f12"/>
+  <text x="405" y="141" text-anchor="middle" font-family="ui-sans-serif,system-ui,-apple-system,sans-serif" font-size="13" font-weight="700" fill="#f5f5f5">900</text>
+  <text x="405" y="161" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="9" fill="#f5f5f5">#713f12</text>
+  <rect x="470" y="124" width="130" height="44" fill="#713f12"/>
+  <text x="535" y="141" text-anchor="middle" font-family="ui-sans-serif,system-ui,-apple-system,sans-serif" font-size="13" font-weight="700" fill="#f5f5f5">900</text>
+  <text x="535" y="161" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="9" fill="#f5f5f5">#713f12</text>
+  <!-- Green -->
+  <rect x="0" y="168" width="80" height="44" fill="#171717"/>
+  <text x="40" y="194" text-anchor="middle" font-family="ui-sans-serif,system-ui,-apple-system,sans-serif" font-size="12" font-weight="700" fill="#d4d4d4">Green</text>
+  <rect x="80" y="168" width="130" height="44" fill="#84cc16"/>
+  <text x="145" y="185" text-anchor="middle" font-family="ui-sans-serif,system-ui,-apple-system,sans-serif" font-size="13" font-weight="700" fill="#171717">500</text>
+  <text x="145" y="205" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="9" fill="#171717">#84cc16</text>
+  <rect x="210" y="168" width="130" height="44" fill="#84cc16"/>
+  <text x="275" y="185" text-anchor="middle" font-family="ui-sans-serif,system-ui,-apple-system,sans-serif" font-size="13" font-weight="700" fill="#171717">500</text>
+  <text x="275" y="205" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="9" fill="#171717">#84cc16</text>
+  <rect x="340" y="168" width="130" height="44" fill="#365314"/>
+  <text x="405" y="185" text-anchor="middle" font-family="ui-sans-serif,system-ui,-apple-system,sans-serif" font-size="13" font-weight="700" fill="#f5f5f5">900</text>
+  <text x="405" y="205" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="9" fill="#f5f5f5">#365314</text>
+  <rect x="470" y="168" width="130" height="44" fill="#365314"/>
+  <text x="535" y="185" text-anchor="middle" font-family="ui-sans-serif,system-ui,-apple-system,sans-serif" font-size="13" font-weight="700" fill="#f5f5f5">900</text>
+  <text x="535" y="205" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="9" fill="#f5f5f5">#365314</text>
+  <!-- Blue -->
+  <rect x="0" y="212" width="80" height="44" fill="#171717"/>
+  <text x="40" y="238" text-anchor="middle" font-family="ui-sans-serif,system-ui,-apple-system,sans-serif" font-size="12" font-weight="700" fill="#d4d4d4">Blue</text>
+  <rect x="80" y="212" width="130" height="44" fill="#93c5fd"/>
+  <text x="145" y="229" text-anchor="middle" font-family="ui-sans-serif,system-ui,-apple-system,sans-serif" font-size="13" font-weight="700" fill="#171717">300</text>
+  <text x="145" y="249" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="9" fill="#171717">#93c5fd</text>
+  <rect x="210" y="212" width="130" height="44" fill="#93c5fd"/>
+  <text x="275" y="229" text-anchor="middle" font-family="ui-sans-serif,system-ui,-apple-system,sans-serif" font-size="13" font-weight="700" fill="#171717">300</text>
+  <text x="275" y="249" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="9" fill="#171717">#93c5fd</text>
+  <rect x="340" y="212" width="130" height="44" fill="#1d4ed8"/>
+  <text x="405" y="229" text-anchor="middle" font-family="ui-sans-serif,system-ui,-apple-system,sans-serif" font-size="13" font-weight="700" fill="#f5f5f5">700</text>
+  <text x="405" y="249" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="9" fill="#f5f5f5">#1d4ed8</text>
+  <rect x="470" y="212" width="130" height="44" fill="#1d4ed8"/>
+  <text x="535" y="229" text-anchor="middle" font-family="ui-sans-serif,system-ui,-apple-system,sans-serif" font-size="13" font-weight="700" fill="#f5f5f5">700</text>
+  <text x="535" y="249" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="9" fill="#f5f5f5">#1d4ed8</text>
+  <!-- Purple -->
+  <rect x="0" y="256" width="80" height="44" fill="#171717"/>
+  <text x="40" y="282" text-anchor="middle" font-family="ui-sans-serif,system-ui,-apple-system,sans-serif" font-size="12" font-weight="700" fill="#d4d4d4">Purple</text>
+  <rect x="80" y="256" width="130" height="44" fill="#d8b4fe"/>
+  <text x="145" y="273" text-anchor="middle" font-family="ui-sans-serif,system-ui,-apple-system,sans-serif" font-size="13" font-weight="700" fill="#171717">300</text>
+  <text x="145" y="293" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="9" fill="#171717">#d8b4fe</text>
+  <rect x="210" y="256" width="130" height="44" fill="#d8b4fe"/>
+  <text x="275" y="273" text-anchor="middle" font-family="ui-sans-serif,system-ui,-apple-system,sans-serif" font-size="13" font-weight="700" fill="#171717">300</text>
+  <text x="275" y="293" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="9" fill="#171717">#d8b4fe</text>
+  <rect x="340" y="256" width="130" height="44" fill="#7e22ce"/>
+  <text x="405" y="273" text-anchor="middle" font-family="ui-sans-serif,system-ui,-apple-system,sans-serif" font-size="13" font-weight="700" fill="#f5f5f5">700</text>
+  <text x="405" y="293" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="9" fill="#f5f5f5">#7e22ce</text>
+  <rect x="470" y="256" width="130" height="44" fill="#7e22ce"/>
+  <text x="535" y="273" text-anchor="middle" font-family="ui-sans-serif,system-ui,-apple-system,sans-serif" font-size="13" font-weight="700" fill="#f5f5f5">700</text>
+  <text x="535" y="293" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="9" fill="#f5f5f5">#7e22ce</text>
+</svg>

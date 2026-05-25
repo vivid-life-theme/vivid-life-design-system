@@ -123,12 +123,9 @@ default syntax-token map.
 
 Each flavor uses one of the **outer four** grey shades as its canvas:
 
-| Flavor       | Canvas    | Mood                     |
-| ------------ | --------- | ------------------------ |
-| **Midnight** | `#171717` | Deep dark, OLED-friendly |
-| **Twilight** | `#404040` | Classic dark             |
-| **Dawn**     | `#d4d4d4` | Soft, overcast light     |
-| **Noon**     | `#f5f5f5` | Crisp, high-key light    |
+<p align="center">
+  <img src="assets/flavors-table.svg" alt="4 flavors: Midnight, Twilight, Dawn, Noon" />
+</p>
 
 `#737373` was rejected as a background — it fails WCAG AA against any
 foreground option. It still appears as `--vl-fg-subtle` (comments) on
@@ -155,14 +152,9 @@ For each (flavor, hue) the shade is auto-picked:
 
 Resolved table (all 24 combinations ≥ 4.5 : 1 WCAG AA):
 
-|            | Midnight | Twilight | Dawn | Noon |
-| ---------- | -------- | -------- | ---- | ---- |
-| **Red**    | 500      | 300      | 900  | 700  |
-| **Orange** | 500      | 300      | 900  | 700  |
-| **Yellow** | 500      | 500      | 900  | 900  |
-| **Green**  | 500      | 500      | 900  | 900  |
-| **Blue**   | 300      | 300      | 700  | 700  |
-| **Purple** | 300      | 300      | 700  | 700  |
+<p align="center">
+  <img src="assets/accent-shade-table.svg" alt="Accent-shade table: 6 hues x 4 flavors, all WCAG AA" />
+</p>
 
 The accent-shade table is verified by `tools/build-tokens.mjs` on every
 build. Any change that drops a combination below 4.5:1 prints a warning.
