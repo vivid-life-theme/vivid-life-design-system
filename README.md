@@ -50,6 +50,29 @@ re-reads.
 
 ---
 
+## Contents
+
+- [Features](#features)
+- [Preview](#preview)
+- [The system at a glance](#the-system-at-a-glance)
+  - [Source palette](#source-palette)
+  - [4 flavors](#4-flavors--4-syntax-color-schemes)
+  - [6 accent variants](#6-accent-variants-per-flavor)
+  - [Accent-shade ruleset](#accent-shade-ruleset)
+  - [`--vl-accent-on`](#--vl-accent-on)
+  - [Syntax token map](#syntax-token-map-per-flavor)
+- [Typography](#typography)
+- [Build flow](#build-flow)
+- [Files](#files)
+- [Naming convention](#naming-convention)
+- [For downstream ports](#for-downstream-ports)
+- [Brand mark](#brand-mark)
+- [Iconography](#iconography)
+- [Caveats](#caveats)
+- [Provenance](#provenance)
+
+---
+
 ## Features
 
 - **24 themes** — 4 flavors (Midnight · Twilight · Dawn · Noon) × 6 accent variants (Red · Orange · Yellow · Green · Blue · Purple), all WCAG AA
@@ -354,36 +377,7 @@ as `/vivid-life-theme`. See `handoff/README.md` for details.
 
 ---
 
-## Iconography
-
-Vivid Life Theme does not ship its own icon themes. Building a complete set
-for IDE + OS + apps would be ~5000+ glyphs of work for a generation-
-behind result. Instead the system recommends best-in-class existing
-sets per layer; ports document the recommendation and pull from CDN /
-package manager.
-
-| Layer                                  | Where it shows                      | Recommendation                                                                                                                                           | License |
-| -------------------------------------- | ----------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
-| **C** — Inline UI glyphs               | Buttons, menus, toolbars (web, app) | [**Lucide**](https://lucide.dev) (~1500), via `currentColor`                                                                                             | ISC     |
-| **B** — IDE file-tree (VS Code)        | Sidebar file icons                  | [**Material Icon Theme**](https://marketplace.visualstudio.com/items?itemName=PKief.material-icon-theme)                                                 | MIT     |
-| **B** — IDE file-tree (Helix / Neovim) | Modal-editor file icons             | [**Atkinson Mono Nerd Font**](https://www.nerdfonts.com/font-downloads) + native plugin                                                                  | OFL     |
-| **B** — IDE file-tree (JetBrains)      | Sidebar file icons                  | Built-in (not user-configurable)                                                                                                                         | —       |
-| **A** — OS / GTK desktop               | File manager, taskbar, launcher     | [**Papirus**](https://github.com/PapirusIconTheme/papirus-icon-theme) (~7000) + [`papirus-folders`](https://github.com/PapirusIconTheme/papirus-folders) | GPL-3.0 |
-
-**Don't recolor file icons.** They encode the file _type_, which has its
-own visual language users learn across apps. Recolor only folder icons
-(where the target supports it) and the chrome around the icon.
-
-**Lucide alternative:** if you need rarer glyphs not in Lucide's set,
-swap to [**Tabler Icons**](https://tabler.io/icons) (MIT, ~5800 unique glyphs). Tabler mixes
-outline and filled styles, so plan for the design decision per icon.
-
-The design system bundles a small Lucide subset in `assets/glyphs/`
-for its own previews and the future marketing site. Apps should pull
-Lucide directly from CDN / npm — the bundled set is not a substitute.
-
-See `preview/03-iconography.html` for the live spec and
-`tokens.json5 → iconography` for the machine-readable version.
+## Brand mark
 
 `assets/logo.svg` — the primary mark.
 
@@ -418,6 +412,39 @@ these when the surrounding context is already "in" one specific flavor:
 Light flavors (Dawn, Noon) get a hairline frame for legibility on
 similar light surfaces; dark flavors don't need it. PNG renders are at
 `assets/icon-{flavor}-{16,32,48,128,180,256}.png`.
+
+---
+
+## Iconography
+
+Vivid Life Theme does not ship its own icon themes. Building a complete set
+for IDE + OS + apps would be ~5000+ glyphs of work for a generation-
+behind result. Instead the system recommends best-in-class existing
+sets per layer; ports document the recommendation and pull from CDN /
+package manager.
+
+| Layer                                  | Where it shows                      | Recommendation                                                                                                                                           | License |
+| -------------------------------------- | ----------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
+| **C** — Inline UI glyphs               | Buttons, menus, toolbars (web, app) | [**Lucide**](https://lucide.dev) (~1500), via `currentColor`                                                                                             | ISC     |
+| **B** — IDE file-tree (VS Code)        | Sidebar file icons                  | [**Material Icon Theme**](https://marketplace.visualstudio.com/items?itemName=PKief.material-icon-theme)                                                 | MIT     |
+| **B** — IDE file-tree (Helix / Neovim) | Modal-editor file icons             | [**Atkinson Mono Nerd Font**](https://www.nerdfonts.com/font-downloads) + native plugin                                                                  | OFL     |
+| **B** — IDE file-tree (JetBrains)      | Sidebar file icons                  | Built-in (not user-configurable)                                                                                                                         | —       |
+| **A** — OS / GTK desktop               | File manager, taskbar, launcher     | [**Papirus**](https://github.com/PapirusIconTheme/papirus-icon-theme) (~7000) + [`papirus-folders`](https://github.com/PapirusIconTheme/papirus-folders) | GPL-3.0 |
+
+**Don't recolor file icons.** They encode the file _type_, which has its
+own visual language users learn across apps. Recolor only folder icons
+(where the target supports it) and the chrome around the icon.
+
+**Lucide alternative:** if you need rarer glyphs not in Lucide's set,
+swap to [**Tabler Icons**](https://tabler.io/icons) (MIT, ~5800 unique glyphs). Tabler mixes
+outline and filled styles, so plan for the design decision per icon.
+
+The design system bundles a small Lucide subset in `assets/glyphs/`
+for its own previews and the future marketing site. Apps should pull
+Lucide directly from CDN / npm — the bundled set is not a substitute.
+
+See `preview/03-iconography.html` for the live spec and
+`tokens.json5 → iconography` for the machine-readable version.
 
 ---
 
