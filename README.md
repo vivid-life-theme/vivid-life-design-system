@@ -237,27 +237,28 @@ assets/
   wordmark.svg                  Mark + "Vivid Life" lockup
   icon-{16,…,256}.png           Primary mark, 6 sizes
   icon-{flavor}-{16,…,256}.png  Per-flavor mark, 4 flavors × 6 sizes
-preview/                        Design-system reference cards
+preview/                        Design-system reference cards (open locally)
   _syntax.css                   Shared chrome for syntax cards
-  _logo-*.png                   Local copies of icon renders
-  00-palette.html               35 swatches (7 × 5)
-  01-flavors.html               4 flavors side-by-side
-  02-syntax-reference.html      TS/JSX sample across all flavors
-  03-accent-matrix.html         24-variant accent grid
-  04-syntax-python.html         Python stress test
-  05-syntax-rust.html           Rust stress test
-  06-syntax-css.html            CSS stress test
-  07-syntax-markdown.html       Markdown stress test
-  08-syntax-shell.html          Shell stress test
-  11-logo.html                  Primary mark — size ladder + surface tests
-  12-ansi-terminal.html         Reference: terminal output, cyan in use
-  13-typography.html            Type families + 11-style scale
-  14-kitchen-sink.html          ★ Live foundation PoC — all 24 themes
-  15-flavor-logos.html          Per-flavor logo variants
+  01-kitchen-sink.html          ★ Live foundation PoC — all 24 themes
+  02-typography.html            Type families + 11-style scale
+  03-iconography.html           Icon system reference + recommendations
+  04-ansi-terminal.html         Terminal / ANSI color reference, cyan in use
+  05-syntax-reference.html      TS/JSX syntax stress test across flavors
+  06-syntax-shell.html          Shell syntax stress test
 handoff/                        Artifacts for downstream ports (not active here)
   SKILL.md                      Claude Code skill — copy into a port's .claude/skills/
   README.md                     How to use the handoff artifacts
 ```
+
+The preview pages are static HTML — clone the repo and open them in a
+browser, or set up GitHub Pages and swap these paths for rendered URLs.
+
+- [Kitchen sink](preview/01-kitchen-sink.html) — every component across all 24 themes (start here)
+- [Typography](preview/02-typography.html) — type families + 11-style scale
+- [Iconography](preview/03-iconography.html) — icon system + recommendations
+- [ANSI terminal](preview/04-ansi-terminal.html) — terminal colors, cyan in use
+- [Syntax — TS/JSX](preview/05-syntax-reference.html) — language syntax across flavors
+- [Syntax — Shell](preview/06-syntax-shell.html) — shell-specific syntax
 
 ---
 
@@ -343,7 +344,7 @@ The design system bundles a small Lucide subset in `assets/glyphs/`
 for its own previews and the future marketing site. Apps should pull
 Lucide directly from CDN / npm — the bundled set is not a substitute.
 
-See `preview/16-iconography.html` for the live spec and
+See `preview/03-iconography.html` for the live spec and
 `tokens.json5 → iconography` for the machine-readable version.
 
 `assets/logo.svg` — the primary mark.

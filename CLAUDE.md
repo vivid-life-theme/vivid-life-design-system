@@ -6,18 +6,18 @@ Foundation for a 4-flavor × 6-variant = 24-theme color system. Source of truth 
 
 | File | Purpose |
 |------|---------|
-| `.claudeignore` | Paths excluded from Claude Code indexing                              |
-| `.claude/learnings.md` | Tagged + dated observations recalled at the start of each skill run   |
-| `.claude/settings.json` | Permissions, hooks, environment variables                             |
-| `.githooks/pre-commit` | Keeps Key Config Files table in sync before each commit               |
-| `.github/workflows/claude-code-review.yml` | Auto-reviews every PR when opened or updated                          |
-| `.github/workflows/claude.yml` | Responds to @claude mentions in issues and PRs                        |
-| `.gitignore` | Git ignore patterns                                                   |
-| `handoff/README.md` | How downstream ports use the handoff artifacts                        |
-| `handoff/SKILL.md` | Port-distribution skill — copied into a port's `.claude/skills/`      |
-| `package.json` | TODO: add description |
-| `scripts/sync-config-table.sh` | Syncs Key Config Files table with filesystem                          |
-| `tokens.json` | Generated — resolved flat token map; consumed by downstream ports     |
+| `.claudeignore` | Paths excluded from Claude Code indexing                             |
+| `.claude/learnings.md` | Tagged + dated observations recalled at the start of each skill run  |
+| `.claude/settings.json` | Permissions, hooks, environment variables                            |
+| `.githooks/pre-commit` | Keeps Key Config Files table in sync before each commit              |
+| `.github/workflows/claude-code-review.yml` | Auto-reviews every PR when opened or updated                         |
+| `.github/workflows/claude.yml` | Responds to @claude mentions in issues and PRs                       |
+| `.gitignore` | Git ignore patterns                                                  |
+| `handoff/README.md` | How downstream ports use the handoff artifacts                       |
+| `handoff/SKILL.md` | Port-distribution skill — copied into a port's `.claude/skills/`     |
+| `package.json` | TODO: add description                                                |
+| `scripts/sync-config-table.sh` | Syncs Key Config Files table with filesystem                         |
+| `tokens.json` | Generated — resolved flat token map; consumed by downstream ports    |
 
 ## Commands
 
@@ -46,7 +46,7 @@ colors_and_type.css  ← generated CSS (do not hand-edit)
 tools/               Build scripts with WCAG checking
 fonts/               Atkinson Hyperlegible Next + Mono (OFL-1.1)
 assets/              Logo SVGs, wordmark, icon PNGs
-preview/             HTML reference cards (14-kitchen-sink.html is canonical)
+preview/             HTML reference cards (01-kitchen-sink.html is canonical)
 ```
 
 ## Conventions
