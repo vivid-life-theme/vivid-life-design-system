@@ -50,23 +50,15 @@ re-reads.
 
 ---
 
-## Status (May 2026)
+## Features
 
-|     | Item                                                                  |
-| --- | --------------------------------------------------------------------- |
-| ✅  | Source palette analyzed (7 hues × 5 shades + cyan extension)          |
-| ✅  | 4 flavors: Midnight · Twilight · Dawn · Noon                          |
-| ✅  | 6 accent variants per flavor — **24 themes**, all WCAG AA verified    |
-| ✅  | Accent-shade ruleset (`tools/build-tokens.mjs` warns on regression)   |
-| ✅  | Syntax token map: 11 core + 15 extended slots                         |
-| ✅  | UI tokens: surfaces · text · borders · states · semantic · accent-on  |
-| ✅  | Typography — Atkinson Hyperlegible Next + Mono (OFL-1.1, local files) |
-| ✅  | Spacing · radii · shadows · motion                                    |
-| ✅  | Brand mark + wordmark + icon set (16/32/48/128/180/256)               |
-| ✅  | Multi-language syntax stress tests (TS/Python/Rust/CSS/MD/Shell)      |
-| ✅  | Kitchen-sink reference page (live across all 24 themes)               |
-| ⏳  | First downstream port — extracted to its own repo                     |
-| ⏳  | Future ports: GTK, website, …                                         |
+- **24 themes** — 4 flavors (Midnight · Twilight · Dawn · Noon) × 6 accent variants (Red · Orange · Yellow · Green · Blue · Purple), all WCAG AA
+- **Syntax token map** — 11 core slots + 15 extended, stable shape across all flavors
+- **UI tokens** — surfaces, text, borders, interactive states, semantic roles, accent-on
+- **Typography** — [Atkinson Hyperlegible Next + Mono](https://www.brailleinstitute.org/freefont) (OFL-1.1, locally bundled)
+- **Spacing · radii · shadows · motion** — complete foundation token set
+- **Brand assets** — logo, wordmark, icon set at 6 sizes
+- **Reference cards** — kitchen sink + 5 preview pages, live across all 24 themes
 
 ---
 
