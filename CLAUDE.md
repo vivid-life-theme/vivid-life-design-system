@@ -6,18 +6,18 @@ Foundation for a 4-flavor × 6-variant = 24-theme color system. Source of truth 
 
 | File | Purpose |
 |------|---------|
-| `.claudeignore` | Paths excluded from Claude Code indexing                                |
-| `.claude/learnings.md` | Tagged + dated observations recalled at the start of each skill run     |
-| `.claude/settings.json` | Permissions, hooks, environment variables                               |
-| `.githooks/pre-commit` | Keeps Key Config Files table in sync before each commit                 |
-| `.github/workflows/claude-code-review.yml` | Auto-reviews every PR when opened or updated                            |
-| `.github/workflows/claude.yml` | Responds to @claude mentions in issues and PRs                          |
-| `.gitignore` | Git ignore patterns                                                     |
-| `handoff/README.md` | How downstream ports use the handoff artifacts                          |
-| `handoff/SKILL.md` | Port-distribution skill — copied into a port's `.claude/skills/`        |
-| `package.json` | npm manifest: exports, files, scripts (build/check/test)                |
-| `scripts/sync-config-table.sh` | Syncs Key Config Files table with filesystem                            |
-| `tokens.json` | Generated — resolved flat token map; consumed by downstream ports       |
+| `.claudeignore` | Paths excluded from Claude Code indexing                                 |
+| `.claude/learnings.md` | Tagged + dated observations recalled at the start of each skill run      |
+| `.claude/settings.json` | Permissions, hooks, environment variables                                |
+| `.githooks/pre-commit` | Keeps Key Config Files table in sync before each commit                  |
+| `.github/workflows/claude-code-review.yml` | Auto-reviews every PR when opened or updated                             |
+| `.github/workflows/claude.yml` | Responds to @claude mentions in issues and PRs                           |
+| `.gitignore` | Git ignore patterns                                                      |
+| `handoff/README.md` | How downstream ports use the handoff artifacts                           |
+| `handoff/SKILL.md` | Port-distribution skill — copied into a port's `.claude/skills/`         |
+| `package.json` | npm manifest: exports, files, scripts (build/check/test)                 |
+| `scripts/sync-config-table.sh` | Syncs Key Config Files table with filesystem                             |
+| `tokens.json` | Generated — resolved flat token map; consumed by downstream ports        |
 
 ## Commands
 

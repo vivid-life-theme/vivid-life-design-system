@@ -46,6 +46,7 @@
         display: flex;
         align-items: center;
         gap: 20px;
+        -webkit-backdrop-filter: blur(8px);
         backdrop-filter: blur(8px);
       }
       .ks-wm {
@@ -750,38 +751,88 @@
 
         <div class="ks-sw" style="margin-left: auto">
           <span class="lbl">Flavor</span>
-          <button class="ks-pill" data-f="midnight" aria-pressed="false">
+          <button
+            type="button"
+            class="ks-pill"
+            data-f="midnight"
+            aria-pressed="false"
+          >
             Midnight
           </button>
-          <button class="ks-pill" data-f="twilight" aria-pressed="false">
+          <button
+            type="button"
+            class="ks-pill"
+            data-f="twilight"
+            aria-pressed="false"
+          >
             Twilight
           </button>
-          <button class="ks-pill" data-f="dawn" aria-pressed="false">
+          <button
+            type="button"
+            class="ks-pill"
+            data-f="dawn"
+            aria-pressed="false"
+          >
             Dawn
           </button>
-          <button class="ks-pill" data-f="noon" aria-pressed="false">
+          <button
+            type="button"
+            class="ks-pill"
+            data-f="noon"
+            aria-pressed="false"
+          >
             Noon
           </button>
         </div>
 
         <div class="ks-sw">
           <span class="lbl">Variant</span>
-          <button class="ks-pill ks-vpill" data-v="red" aria-pressed="false">
+          <button
+            type="button"
+            class="ks-pill ks-vpill"
+            data-v="red"
+            aria-pressed="false"
+          >
             <span class="dot" style="background: #ef4444"></span>Red
           </button>
-          <button class="ks-pill ks-vpill" data-v="orange" aria-pressed="false">
+          <button
+            type="button"
+            class="ks-pill ks-vpill"
+            data-v="orange"
+            aria-pressed="false"
+          >
             <span class="dot" style="background: #f97316"></span>Orange
           </button>
-          <button class="ks-pill ks-vpill" data-v="yellow" aria-pressed="false">
+          <button
+            type="button"
+            class="ks-pill ks-vpill"
+            data-v="yellow"
+            aria-pressed="false"
+          >
             <span class="dot" style="background: #eab308"></span>Yellow
           </button>
-          <button class="ks-pill ks-vpill" data-v="green" aria-pressed="false">
+          <button
+            type="button"
+            class="ks-pill ks-vpill"
+            data-v="green"
+            aria-pressed="false"
+          >
             <span class="dot" style="background: #84cc16"></span>Green
           </button>
-          <button class="ks-pill ks-vpill" data-v="blue" aria-pressed="false">
+          <button
+            type="button"
+            class="ks-pill ks-vpill"
+            data-v="blue"
+            aria-pressed="false"
+          >
             <span class="dot" style="background: #3b82f6"></span>Blue
           </button>
-          <button class="ks-pill ks-vpill" data-v="purple" aria-pressed="false">
+          <button
+            type="button"
+            class="ks-pill ks-vpill"
+            data-v="purple"
+            aria-pressed="false"
+          >
             <span class="dot" style="background: #a855f7"></span>Purple
           </button>
         </div>
@@ -886,24 +937,34 @@
           <div class="h">Active</div>
 
           <div class="rh">Primary</div>
-          <button class="btn btn-primary">Save changes</button>
-          <button class="btn btn-primary hover">Save changes</button>
-          <button class="btn btn-primary active">Save changes</button>
+          <button type="button" class="btn btn-primary">Save changes</button>
+          <button type="button" class="btn btn-primary hover">
+            Save changes
+          </button>
+          <button type="button" class="btn btn-primary active">
+            Save changes
+          </button>
 
           <div class="rh">Secondary</div>
-          <button class="btn btn-secondary">Cancel</button>
-          <button class="btn btn-secondary hover">Cancel</button>
-          <button class="btn btn-secondary active">Cancel</button>
+          <button type="button" class="btn btn-secondary">Cancel</button>
+          <button type="button" class="btn btn-secondary hover">Cancel</button>
+          <button type="button" class="btn btn-secondary active">Cancel</button>
 
           <div class="rh">Ghost</div>
-          <button class="btn btn-ghost">Skip</button>
-          <button class="btn btn-ghost hover">Skip</button>
-          <button class="btn btn-ghost active">Skip</button>
+          <button type="button" class="btn btn-ghost">Skip</button>
+          <button type="button" class="btn btn-ghost hover">Skip</button>
+          <button type="button" class="btn btn-ghost active">Skip</button>
 
           <div class="rh" style="color: var(--vl-fg-disabled)">Disabled</div>
-          <button class="btn btn-primary disabled" disabled>Save</button>
-          <button class="btn btn-secondary disabled" disabled>Cancel</button>
-          <button class="btn btn-ghost disabled" disabled>Skip</button>
+          <button type="button" class="btn btn-primary disabled" disabled>
+            Save
+          </button>
+          <button type="button" class="btn btn-secondary disabled" disabled>
+            Cancel
+          </button>
+          <button type="button" class="btn btn-ghost disabled" disabled>
+            Skip
+          </button>
         </div>
 
         <!-- ─── FORM ─── -->
