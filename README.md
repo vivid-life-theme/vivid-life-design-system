@@ -227,23 +227,23 @@ file's "shape" reads the same whether you're in Midnight or Noon.
 
 ## Typography
 
-| Role                         | Family                         | License | Source                              |
-| ---------------------------- | ------------------------------ | ------- | ----------------------------------- |
-| **Sans** (UI, body, display) | **Atkinson Hyperlegible Next** | OFL-1.1 | Braille Institute (locally bundled) |
-| **Mono** (code, terminal)    | **Atkinson Hyperlegible Mono** | OFL-1.1 | Braille Institute (locally bundled) |
+| Role                         | Family                         | License | Source                                                                           |
+| ---------------------------- | ------------------------------ | ------- | -------------------------------------------------------------------------------- |
+| **Sans** (UI, body, display) | **Atkinson Hyperlegible Next** | OFL-1.1 | [Braille Institute](https://www.brailleinstitute.org/freefont) (locally bundled) |
+| **Mono** (code, terminal)    | **Atkinson Hyperlegible Mono** | OFL-1.1 | [Braille Institute](https://www.brailleinstitute.org/freefont) (locally bundled) |
 
 Atkinson Hyperlegible was designed by the Braille Institute for readers
 with low vision. The family ships only Sans + Mono — no serif. We don't
 pair a third-party serif: brand consistency wins over completeness.
 
-**Mono stack:** `Atkinson Hyperlegible Mono` → `Cascadia Code` →
+**Mono stack:** `Atkinson Hyperlegible Mono` → [`Cascadia Code`](https://github.com/microsoft/cascadia-code) →
 `Cascadia Mono` → `ui-monospace` → … The fallback keeps respect for
 locally-installed coding fonts.
 
 **Nerd Font variant** (`Atkinson Hyperlegible Mono Nerd Font`) is a
 port-side asset, not bundled here. Terminal ports should recommend
 downloading it from https://www.nerdfonts.com/font-downloads so
-icon-using prompts like Starship and Powerlevel10k render correctly.
+icon-using prompts like [Starship](https://starship.rs) and [Powerlevel10k](https://github.com/romkatv/powerlevel10k) render correctly.
 
 **Type scale** (11 styles, defined in `tokens.json5 → typography.scale`):
 `display_xl · display_lg · display_md · heading · body · body_sm ·
@@ -392,20 +392,20 @@ behind result. Instead the system recommends best-in-class existing
 sets per layer; ports document the recommendation and pull from CDN /
 package manager.
 
-| Layer                                  | Where it shows                      | Recommendation                              | License |
-| -------------------------------------- | ----------------------------------- | ------------------------------------------- | ------- |
-| **C** — Inline UI glyphs               | Buttons, menus, toolbars (web, app) | **Lucide** (~1500), via `currentColor`      | ISC     |
-| **B** — IDE file-tree (VS Code)        | Sidebar file icons                  | **Material Icon Theme**                     | MIT     |
-| **B** — IDE file-tree (Helix / Neovim) | Modal-editor file icons             | **Atkinson Mono Nerd Font** + native plugin | OFL     |
-| **B** — IDE file-tree (JetBrains)      | Sidebar file icons                  | Built-in (not user-configurable)            | —       |
-| **A** — OS / GTK desktop               | File manager, taskbar, launcher     | **Papirus** (~7000) + `papirus-folders`     | GPL-3.0 |
+| Layer                                  | Where it shows                      | Recommendation                                                                                                                                           | License |
+| -------------------------------------- | ----------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
+| **C** — Inline UI glyphs               | Buttons, menus, toolbars (web, app) | [**Lucide**](https://lucide.dev) (~1500), via `currentColor`                                                                                             | ISC     |
+| **B** — IDE file-tree (VS Code)        | Sidebar file icons                  | [**Material Icon Theme**](https://marketplace.visualstudio.com/items?itemName=PKief.material-icon-theme)                                                 | MIT     |
+| **B** — IDE file-tree (Helix / Neovim) | Modal-editor file icons             | [**Atkinson Mono Nerd Font**](https://www.nerdfonts.com/font-downloads) + native plugin                                                                  | OFL     |
+| **B** — IDE file-tree (JetBrains)      | Sidebar file icons                  | Built-in (not user-configurable)                                                                                                                         | —       |
+| **A** — OS / GTK desktop               | File manager, taskbar, launcher     | [**Papirus**](https://github.com/PapirusIconTheme/papirus-icon-theme) (~7000) + [`papirus-folders`](https://github.com/PapirusIconTheme/papirus-folders) | GPL-3.0 |
 
 **Don't recolor file icons.** They encode the file _type_, which has its
 own visual language users learn across apps. Recolor only folder icons
 (where the target supports it) and the chrome around the icon.
 
 **Lucide alternative:** if you need rarer glyphs not in Lucide's set,
-swap to **Tabler Icons** (MIT, ~5800 unique glyphs). Tabler mixes
+swap to [**Tabler Icons**](https://tabler.io/icons) (MIT, ~5800 unique glyphs). Tabler mixes
 outline and filled styles, so plan for the design decision per icon.
 
 The design system bundles a small Lucide subset in `assets/glyphs/`
