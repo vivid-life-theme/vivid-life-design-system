@@ -1,0 +1,53 @@
+{
+  "name": "vivid-life-theme",
+  "version": "0.2.0",
+  "description": "A multi-flavor color scheme system. 4 flavors × 6 variants = 24 themes. WCAG AA verified.",
+  "license": "MIT",
+  "author": "Michael van Laar",
+  "homepage": "https://github.com/vivid-life-theme/vivid-life-design-system",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vivid-life-theme/vivid-life-design-system.git"
+  },
+  "bugs": {
+    "url": "https://github.com/vivid-life-theme/vivid-life-design-system/issues"
+  },
+  "keywords": [
+    "design-system",
+    "design-tokens",
+    "color-scheme",
+    "theme",
+    "wcag",
+    "accessibility"
+  ],
+  "type": "module",
+  "main": "./dist/tokens.js",
+  "exports": {
+    ".": "./dist/tokens.js",
+    "./tokens.json": "./tokens.json",
+    "./css": "./colors_and_type.css",
+    "./fonts/*": "./fonts/*",
+    "./assets/*": "./assets/*",
+    "./tools/build-tokens": "./tools/build-tokens.mjs"
+  },
+  "files": [
+    "tokens.json5",
+    "tokens.json",
+    "dist/",
+    "colors_and_type.css",
+    "fonts/",
+    "assets/",
+    "tools/",
+    "handoff/",
+    "LICENSE",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "node tools/build-tokens.mjs && node tools/build-css.mjs",
+    "check": "node tools/build-tokens.mjs --check && node tools/build-css.mjs --check",
+    "test": "node tools/build-tokens.mjs --test"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
