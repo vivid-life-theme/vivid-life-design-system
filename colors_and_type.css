@@ -4,6 +4,9 @@
    AUTO-GENERATED from tokens.json5 by tools/build-css.mjs.
    DO NOT EDIT BY HAND — your changes will be overwritten.
 
+   Source palette: https://farben.van-laar.de/
+   Underlying ramps: Tailwind v3 defaults (900 / 700 / 500 / 300 / 100).
+
    Apply by adding two classes to a container:
      <body class="vl-midnight variant-purple"> … </body>
 
@@ -146,58 +149,58 @@
 /* ── Flavor: Midnight (dark, bg #171717) ── */
 .vl-midnight {
   /* surface */
-  --vl-bg               : #171717;
-  --vl-bg-soft          : #404040;
-  --vl-bg-sunk          : #0a0a0a;
-  --vl-bg-overlay       : #404040;
-  --vl-bg-scrim         : #000000cc;
+  --vl-bg                 : #171717;
+  --vl-bg-soft            : #404040;
+  --vl-bg-sunk            : #0a0a0a;
+  --vl-bg-overlay         : #404040;
+  --vl-bg-scrim           : #000000cc;
   /* text */
-  --vl-fg               : #f5f5f5;
-  --vl-fg-muted         : #d4d4d4;
-  --vl-fg-subtle        : #737373;
-  --vl-fg-disabled      : #525252;
+  --vl-fg                 : #f5f5f5;
+  --vl-fg-muted           : #d4d4d4;
+  --vl-fg-subtle          : #737373;
+  --vl-fg-disabled        : #525252;
   /* border */
-  --vl-border-subtle    : #262626;
-  --vl-border           : #404040;
-  --vl-border-strong    : #737373;
+  --vl-border-subtle      : #262626;
+  --vl-border             : #404040;
+  --vl-border-strong      : #737373;
   /* state */
-  --vl-state-hover      : #ffffff14;
-  --vl-state-active     : #ffffff1f;
-  --vl-state-selection  : #2a2f3a;
+  --vl-state-hover        : #ffffff14;
+  --vl-state-active       : #ffffff1f;
+  --vl-state-selection    : #2a2f3a;
   /* semantic */
-  --vl-semantic-success : #bef264;
-  --vl-semantic-warning : #fde047;
-  --vl-semantic-danger  : #fca5a5;
-  --vl-semantic-info    : #93c5fd;
+  --vl-semantic-success   : #bef264;
+  --vl-semantic-warning   : #fde047;
+  --vl-semantic-danger    : #fca5a5;
+  --vl-semantic-info      : #93c5fd;
   /* syntax */
-  --syn-comment         : #737373;
-  --syn-keyword         : #d8b4fe;
-  --syn-string          : #84cc16;
-  --syn-number          : #f97316;
-  --syn-function        : #93c5fd;
-  --syn-type            : #eab308;
-  --syn-constant        : #f97316;
-  --syn-tag             : #93c5fd;
-  --syn-attr            : #eab308;
-  --syn-regex           : #ef4444;
-  --syn-punct           : #d4d4d4;
-  /* ansi (terminal) */
-  --vl-ansi-black       : #0a0a0a;
-  --vl-ansi-red         : #ef4444;
-  --vl-ansi-green       : #84cc16;
-  --vl-ansi-yellow      : #eab308;
-  --vl-ansi-blue        : #93c5fd;
-  --vl-ansi-magenta     : #d8b4fe;
-  --vl-ansi-cyan        : #06b6d4;
-  --vl-ansi-white       : #d4d4d4;
-  --vl-ansi-bright-black: #404040;
-  --vl-ansi-bright-red  : #fca5a5;
-  --vl-ansi-bright-green: #bef264;
-  --vl-ansi-bright-yellow: #fde047;
-  --vl-ansi-bright-blue : #93c5fd;
+  --syn-comment           : #737373;
+  --syn-keyword           : #d8b4fe;
+  --syn-string            : #84cc16;
+  --syn-number            : #f97316;
+  --syn-function          : #93c5fd;
+  --syn-type              : #eab308;
+  --syn-constant          : #f97316;
+  --syn-tag               : #93c5fd;
+  --syn-attr              : #eab308;
+  --syn-regex             : #ef4444;
+  --syn-punct             : #d4d4d4;
+  /* ansi */
+  --vl-ansi-black         : #0a0a0a;
+  --vl-ansi-red           : #ef4444;
+  --vl-ansi-green         : #84cc16;
+  --vl-ansi-yellow        : #eab308;
+  --vl-ansi-blue          : #93c5fd;
+  --vl-ansi-magenta       : #d8b4fe;
+  --vl-ansi-cyan          : #06b6d4;
+  --vl-ansi-white         : #d4d4d4;
+  --vl-ansi-bright-black  : #404040;
+  --vl-ansi-bright-red    : #fca5a5;
+  --vl-ansi-bright-green  : #bef264;
+  --vl-ansi-bright-yellow : #fde047;
+  --vl-ansi-bright-blue   : #93c5fd;
   --vl-ansi-bright-magenta: #d8b4fe;
-  --vl-ansi-bright-cyan : #67e8f9;
-  --vl-ansi-bright-white: #f5f5f5;
+  --vl-ansi-bright-cyan   : #67e8f9;
+  --vl-ansi-bright-white  : #f5f5f5;
 
   /* text color for use on top of --vl-accent */
   --vl-accent-on: #171717;
@@ -206,58 +209,58 @@
 /* ── Flavor: Twilight (dark, bg #404040) ── */
 .vl-twilight {
   /* surface */
-  --vl-bg               : #404040;
-  --vl-bg-soft          : #525252;
-  --vl-bg-sunk          : #171717;
-  --vl-bg-overlay       : #525252;
-  --vl-bg-scrim         : #000000bb;
+  --vl-bg                 : #404040;
+  --vl-bg-soft            : #525252;
+  --vl-bg-sunk            : #171717;
+  --vl-bg-overlay         : #525252;
+  --vl-bg-scrim           : #000000bb;
   /* text */
-  --vl-fg               : #f5f5f5;
-  --vl-fg-muted         : #d4d4d4;
-  --vl-fg-subtle        : #a3a3a3;
-  --vl-fg-disabled      : #737373;
+  --vl-fg                 : #f5f5f5;
+  --vl-fg-muted           : #d4d4d4;
+  --vl-fg-subtle          : #a3a3a3;
+  --vl-fg-disabled        : #737373;
   /* border */
-  --vl-border-subtle    : #525252;
-  --vl-border           : #171717;
-  --vl-border-strong    : #0a0a0a;
+  --vl-border-subtle      : #525252;
+  --vl-border             : #171717;
+  --vl-border-strong      : #0a0a0a;
   /* state */
-  --vl-state-hover      : #ffffff14;
-  --vl-state-active     : #ffffff1f;
-  --vl-state-selection  : #5b5b5b;
+  --vl-state-hover        : #ffffff14;
+  --vl-state-active       : #ffffff1f;
+  --vl-state-selection    : #5b5b5b;
   /* semantic */
-  --vl-semantic-success : #bef264;
-  --vl-semantic-warning : #eab308;
-  --vl-semantic-danger  : #fca5a5;
-  --vl-semantic-info    : #93c5fd;
+  --vl-semantic-success   : #bef264;
+  --vl-semantic-warning   : #eab308;
+  --vl-semantic-danger    : #fca5a5;
+  --vl-semantic-info      : #93c5fd;
   /* syntax */
-  --syn-comment         : #a3a3a3;
-  --syn-keyword         : #d8b4fe;
-  --syn-string          : #84cc16;
-  --syn-number          : #fdba74;
-  --syn-function        : #93c5fd;
-  --syn-type            : #eab308;
-  --syn-constant        : #fdba74;
-  --syn-tag             : #93c5fd;
-  --syn-attr            : #eab308;
-  --syn-regex           : #fca5a5;
-  --syn-punct           : #d4d4d4;
-  /* ansi (terminal) */
-  --vl-ansi-black       : #171717;
-  --vl-ansi-red         : #fca5a5;
-  --vl-ansi-green       : #84cc16;
-  --vl-ansi-yellow      : #eab308;
-  --vl-ansi-blue        : #93c5fd;
-  --vl-ansi-magenta     : #d8b4fe;
-  --vl-ansi-cyan        : #06b6d4;
-  --vl-ansi-white       : #d4d4d4;
-  --vl-ansi-bright-black: #737373;
-  --vl-ansi-bright-red  : #fca5a5;
-  --vl-ansi-bright-green: #bef264;
-  --vl-ansi-bright-yellow: #fde047;
-  --vl-ansi-bright-blue : #93c5fd;
+  --syn-comment           : #a3a3a3;
+  --syn-keyword           : #d8b4fe;
+  --syn-string            : #84cc16;
+  --syn-number            : #fdba74;
+  --syn-function          : #93c5fd;
+  --syn-type              : #eab308;
+  --syn-constant          : #fdba74;
+  --syn-tag               : #93c5fd;
+  --syn-attr              : #eab308;
+  --syn-regex             : #fca5a5;
+  --syn-punct             : #d4d4d4;
+  /* ansi */
+  --vl-ansi-black         : #171717;
+  --vl-ansi-red           : #fca5a5;
+  --vl-ansi-green         : #84cc16;
+  --vl-ansi-yellow        : #eab308;
+  --vl-ansi-blue          : #93c5fd;
+  --vl-ansi-magenta       : #d8b4fe;
+  --vl-ansi-cyan          : #06b6d4;
+  --vl-ansi-white         : #d4d4d4;
+  --vl-ansi-bright-black  : #737373;
+  --vl-ansi-bright-red    : #fca5a5;
+  --vl-ansi-bright-green  : #bef264;
+  --vl-ansi-bright-yellow : #fde047;
+  --vl-ansi-bright-blue   : #93c5fd;
   --vl-ansi-bright-magenta: #d8b4fe;
-  --vl-ansi-bright-cyan : #67e8f9;
-  --vl-ansi-bright-white: #f5f5f5;
+  --vl-ansi-bright-cyan   : #67e8f9;
+  --vl-ansi-bright-white  : #f5f5f5;
 
   /* text color for use on top of --vl-accent */
   --vl-accent-on: #171717;
@@ -266,58 +269,58 @@
 /* ── Flavor: Dawn (light, bg #d4d4d4) ── */
 .vl-dawn {
   /* surface */
-  --vl-bg               : #d4d4d4;
-  --vl-bg-soft          : #f5f5f5;
-  --vl-bg-sunk          : #bdbdbd;
-  --vl-bg-overlay       : #f5f5f5;
-  --vl-bg-scrim         : #17171788;
+  --vl-bg                 : #d4d4d4;
+  --vl-bg-soft            : #f5f5f5;
+  --vl-bg-sunk            : #bdbdbd;
+  --vl-bg-overlay         : #f5f5f5;
+  --vl-bg-scrim           : #17171788;
   /* text */
-  --vl-fg               : #171717;
-  --vl-fg-muted         : #404040;
-  --vl-fg-subtle        : #525252;
-  --vl-fg-disabled      : #737373;
+  --vl-fg                 : #171717;
+  --vl-fg-muted           : #404040;
+  --vl-fg-subtle          : #525252;
+  --vl-fg-disabled        : #737373;
   /* border */
-  --vl-border-subtle    : #bdbdbd;
-  --vl-border           : #a3a3a3;
-  --vl-border-strong    : #404040;
+  --vl-border-subtle      : #bdbdbd;
+  --vl-border             : #a3a3a3;
+  --vl-border-strong      : #404040;
   /* state */
-  --vl-state-hover      : #0000000d;
-  --vl-state-active     : #00000014;
-  --vl-state-selection  : #bdbdbd;
+  --vl-state-hover        : #0000000d;
+  --vl-state-active       : #00000014;
+  --vl-state-selection    : #bdbdbd;
   /* semantic */
-  --vl-semantic-success : #4d7c0f;
-  --vl-semantic-warning : #a16207;
-  --vl-semantic-danger  : #b91c1c;
-  --vl-semantic-info    : #1d4ed8;
+  --vl-semantic-success   : #4d7c0f;
+  --vl-semantic-warning   : #a16207;
+  --vl-semantic-danger    : #b91c1c;
+  --vl-semantic-info      : #1d4ed8;
   /* syntax */
-  --syn-comment         : #525252;
-  --syn-keyword         : #7e22ce;
-  --syn-string          : #365314;
-  --syn-number          : #c2410c;
-  --syn-function        : #1d4ed8;
-  --syn-type            : #713f12;
-  --syn-constant        : #c2410c;
-  --syn-tag             : #1d4ed8;
-  --syn-attr            : #713f12;
-  --syn-regex           : #b91c1c;
-  --syn-punct           : #404040;
-  /* ansi (terminal) */
-  --vl-ansi-black       : #171717;
-  --vl-ansi-red         : #b91c1c;
-  --vl-ansi-green       : #4d7c0f;
-  --vl-ansi-yellow      : #a16207;
-  --vl-ansi-blue        : #1d4ed8;
-  --vl-ansi-magenta     : #7e22ce;
-  --vl-ansi-cyan        : #0e7490;
-  --vl-ansi-white       : #d4d4d4;
-  --vl-ansi-bright-black: #737373;
-  --vl-ansi-bright-red  : #7f1d1d;
-  --vl-ansi-bright-green: #365314;
-  --vl-ansi-bright-yellow: #713f12;
-  --vl-ansi-bright-blue : #1e3a8a;
+  --syn-comment           : #525252;
+  --syn-keyword           : #7e22ce;
+  --syn-string            : #365314;
+  --syn-number            : #c2410c;
+  --syn-function          : #1d4ed8;
+  --syn-type              : #713f12;
+  --syn-constant          : #c2410c;
+  --syn-tag               : #1d4ed8;
+  --syn-attr              : #713f12;
+  --syn-regex             : #b91c1c;
+  --syn-punct             : #404040;
+  /* ansi */
+  --vl-ansi-black         : #171717;
+  --vl-ansi-red           : #b91c1c;
+  --vl-ansi-green         : #4d7c0f;
+  --vl-ansi-yellow        : #a16207;
+  --vl-ansi-blue          : #1d4ed8;
+  --vl-ansi-magenta       : #7e22ce;
+  --vl-ansi-cyan          : #0e7490;
+  --vl-ansi-white         : #d4d4d4;
+  --vl-ansi-bright-black  : #737373;
+  --vl-ansi-bright-red    : #7f1d1d;
+  --vl-ansi-bright-green  : #365314;
+  --vl-ansi-bright-yellow : #713f12;
+  --vl-ansi-bright-blue   : #1e3a8a;
   --vl-ansi-bright-magenta: #581c87;
-  --vl-ansi-bright-cyan : #164e63;
-  --vl-ansi-bright-white: #f5f5f5;
+  --vl-ansi-bright-cyan   : #164e63;
+  --vl-ansi-bright-white  : #f5f5f5;
 
   /* text color for use on top of --vl-accent */
   --vl-accent-on: #f5f5f5;
@@ -326,58 +329,58 @@
 /* ── Flavor: Noon (light, bg #f5f5f5) ── */
 .vl-noon {
   /* surface */
-  --vl-bg               : #f5f5f5;
-  --vl-bg-soft          : #ffffff;
-  --vl-bg-sunk          : #d4d4d4;
-  --vl-bg-overlay       : #ffffff;
-  --vl-bg-scrim         : #17171788;
+  --vl-bg                 : #f5f5f5;
+  --vl-bg-soft            : #ffffff;
+  --vl-bg-sunk            : #d4d4d4;
+  --vl-bg-overlay         : #ffffff;
+  --vl-bg-scrim           : #17171788;
   /* text */
-  --vl-fg               : #171717;
-  --vl-fg-muted         : #404040;
-  --vl-fg-subtle        : #525252;
-  --vl-fg-disabled      : #737373;
+  --vl-fg                 : #171717;
+  --vl-fg-muted           : #404040;
+  --vl-fg-subtle          : #525252;
+  --vl-fg-disabled        : #737373;
   /* border */
-  --vl-border-subtle    : #e5e5e5;
-  --vl-border           : #d4d4d4;
-  --vl-border-strong    : #737373;
+  --vl-border-subtle      : #e5e5e5;
+  --vl-border             : #d4d4d4;
+  --vl-border-strong      : #737373;
   /* state */
-  --vl-state-hover      : #0000000d;
-  --vl-state-active     : #00000014;
-  --vl-state-selection  : #e5e5e5;
+  --vl-state-hover        : #0000000d;
+  --vl-state-active       : #00000014;
+  --vl-state-selection    : #e5e5e5;
   /* semantic */
-  --vl-semantic-success : #4d7c0f;
-  --vl-semantic-warning : #a16207;
-  --vl-semantic-danger  : #b91c1c;
-  --vl-semantic-info    : #1d4ed8;
+  --vl-semantic-success   : #4d7c0f;
+  --vl-semantic-warning   : #a16207;
+  --vl-semantic-danger    : #b91c1c;
+  --vl-semantic-info      : #1d4ed8;
   /* syntax */
-  --syn-comment         : #525252;
-  --syn-keyword         : #7e22ce;
-  --syn-string          : #365314;
-  --syn-number          : #c2410c;
-  --syn-function        : #1d4ed8;
-  --syn-type            : #713f12;
-  --syn-constant        : #c2410c;
-  --syn-tag             : #1d4ed8;
-  --syn-attr            : #713f12;
-  --syn-regex           : #b91c1c;
-  --syn-punct           : #404040;
-  /* ansi (terminal) */
-  --vl-ansi-black       : #171717;
-  --vl-ansi-red         : #b91c1c;
-  --vl-ansi-green       : #4d7c0f;
-  --vl-ansi-yellow      : #a16207;
-  --vl-ansi-blue        : #1d4ed8;
-  --vl-ansi-magenta     : #7e22ce;
-  --vl-ansi-cyan        : #0e7490;
-  --vl-ansi-white       : #404040;
-  --vl-ansi-bright-black: #737373;
-  --vl-ansi-bright-red  : #7f1d1d;
-  --vl-ansi-bright-green: #365314;
-  --vl-ansi-bright-yellow: #713f12;
-  --vl-ansi-bright-blue : #1e3a8a;
+  --syn-comment           : #525252;
+  --syn-keyword           : #7e22ce;
+  --syn-string            : #365314;
+  --syn-number            : #c2410c;
+  --syn-function          : #1d4ed8;
+  --syn-type              : #713f12;
+  --syn-constant          : #c2410c;
+  --syn-tag               : #1d4ed8;
+  --syn-attr              : #713f12;
+  --syn-regex             : #b91c1c;
+  --syn-punct             : #404040;
+  /* ansi */
+  --vl-ansi-black         : #171717;
+  --vl-ansi-red           : #b91c1c;
+  --vl-ansi-green         : #4d7c0f;
+  --vl-ansi-yellow        : #a16207;
+  --vl-ansi-blue          : #1d4ed8;
+  --vl-ansi-magenta       : #7e22ce;
+  --vl-ansi-cyan          : #0e7490;
+  --vl-ansi-white         : #404040;
+  --vl-ansi-bright-black  : #737373;
+  --vl-ansi-bright-red    : #7f1d1d;
+  --vl-ansi-bright-green  : #365314;
+  --vl-ansi-bright-yellow : #713f12;
+  --vl-ansi-bright-blue   : #1e3a8a;
   --vl-ansi-bright-magenta: #581c87;
-  --vl-ansi-bright-cyan : #164e63;
-  --vl-ansi-bright-white: #d4d4d4;
+  --vl-ansi-bright-cyan   : #164e63;
+  --vl-ansi-bright-white  : #d4d4d4;
 
   /* text color for use on top of --vl-accent */
   --vl-accent-on: #f5f5f5;
