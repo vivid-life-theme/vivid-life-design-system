@@ -37,6 +37,58 @@ project. **If a port needs a color, type, or spacing value not defined
 here, that's a foundation gap** — fix it here, regenerate, and the port
 re-reads.
 
+<br />
+
+<table align="center" cellspacing="0" cellpadding="0">
+  <tr>
+    <td width="120" align="center" bgcolor="#171717"><font color="#d4d4d4"><b>Midnight</b></font></td>
+    <td width="120" align="center" bgcolor="#404040"><font color="#d4d4d4"><b>Twilight</b></font></td>
+    <td width="120" align="center" bgcolor="#d4d4d4"><font color="#404040"><b>Dawn</b></font></td>
+    <td width="120" align="center" bgcolor="#f5f5f5"><font color="#404040"><b>Noon</b></font></td>
+  </tr>
+</table>
+
+<table align="center" cellspacing="2" cellpadding="0">
+  <tr>
+    <td width="120" height="24" bgcolor="#ef4444"></td>
+    <td width="120" height="24" bgcolor="#fca5a5"></td>
+    <td width="120" height="24" bgcolor="#7f1d1d"></td>
+    <td width="120" height="24" bgcolor="#b91c1c"></td>
+  </tr>
+  <tr>
+    <td width="120" height="24" bgcolor="#f97316"></td>
+    <td width="120" height="24" bgcolor="#fdba74"></td>
+    <td width="120" height="24" bgcolor="#7c2d12"></td>
+    <td width="120" height="24" bgcolor="#c2410c"></td>
+  </tr>
+  <tr>
+    <td width="120" height="24" bgcolor="#eab308"></td>
+    <td width="120" height="24" bgcolor="#eab308"></td>
+    <td width="120" height="24" bgcolor="#713f12"></td>
+    <td width="120" height="24" bgcolor="#713f12"></td>
+  </tr>
+  <tr>
+    <td width="120" height="24" bgcolor="#84cc16"></td>
+    <td width="120" height="24" bgcolor="#84cc16"></td>
+    <td width="120" height="24" bgcolor="#365314"></td>
+    <td width="120" height="24" bgcolor="#365314"></td>
+  </tr>
+  <tr>
+    <td width="120" height="24" bgcolor="#93c5fd"></td>
+    <td width="120" height="24" bgcolor="#93c5fd"></td>
+    <td width="120" height="24" bgcolor="#1d4ed8"></td>
+    <td width="120" height="24" bgcolor="#1d4ed8"></td>
+  </tr>
+  <tr>
+    <td width="120" height="24" bgcolor="#d8b4fe"></td>
+    <td width="120" height="24" bgcolor="#d8b4fe"></td>
+    <td width="120" height="24" bgcolor="#7e22ce"></td>
+    <td width="120" height="24" bgcolor="#7e22ce"></td>
+  </tr>
+</table>
+
+<p align="center"><sub>4 flavors × 6 variants = 24 themes · all WCAG AA</sub></p>
+
 ---
 
 ## Status (May 2026)
