@@ -38,11 +38,15 @@ done
 if [[ -f "$ROOT/DESIGN.md" ]]; then
   config_files+=("DESIGN.md")
 fi
-if [[ -f "$ROOT/SKILL.md" ]]; then
-  config_files+=("SKILL.md")
-fi
 if [[ -f "$ROOT/.claudeignore" ]]; then
   config_files+=(".claudeignore")
+fi
+
+# handoff/ — port-distribution artifacts
+if [[ -d "$ROOT/handoff" ]]; then
+  while IFS= read -r -d '' f; do
+    config_files+=("handoff/$(basename "$f")")
+  done < <(find "$ROOT/handoff" -maxdepth 1 -type f -print0 2>/dev/null | sort -z)
 fi
 
 # .claude/ direct children (skip subdirectories like skills/)

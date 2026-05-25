@@ -1,7 +1,6 @@
 ---
 name: vivid-life-theme
 description: Use this skill to design or build artifacts (slides, prototypes, websites, app mocks) using the Vivid Life Theme — a multi-flavor color-scheme system with 4 flavors × 6 variants = 24 themes, plus type, spacing, and component foundations. All values are WCAG AA verified.
-user-invocable: true
 ---
 
 # Vivid Life Theme — designer's skill
@@ -65,7 +64,7 @@ unhyped language. No emoji. No corporate boilerplate. Examples:
 - When listing the four flavors, keep them in time order (Midnight first
   or last; never alphabetical).
 - Capitalize variant names: **Red · Orange · Yellow · Green · Blue ·
-  Purple**. Cyan is *not* a variant.
+  Purple**. Cyan is _not_ a variant.
 
 ## If the user invokes this skill without further guidance
 

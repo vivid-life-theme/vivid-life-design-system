@@ -252,6 +252,9 @@ preview/                        Design-system reference cards
   13-typography.html            Type families + 11-style scale
   14-kitchen-sink.html          ★ Live foundation PoC — all 24 themes
   15-flavor-logos.html          Per-flavor logo variants
+handoff/                        Artifacts for downstream ports (not active here)
+  SKILL.md                      Claude Code skill — copy into a port's .claude/skills/
+  README.md                     How to use the handoff artifacts
 ```
 
 ---
@@ -300,6 +303,13 @@ vivid-life-<target>/
 
 Bring the foundation in as either a git submodule, npm dep, or a
 hand-copied snapshot — your call.
+
+### Claude Code skill (optional)
+
+`handoff/SKILL.md` is a ready-made Claude Code skill that teaches an AI
+assistant in your port how to consume the foundation. Copy it into your
+port at `.claude/skills/vivid-life-theme/SKILL.md` to make it invocable
+as `/vivid-life-theme`. See `handoff/README.md` for details.
 
 ---
 
