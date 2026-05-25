@@ -44,9 +44,9 @@
   <text x="420" y="160" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="9" fill="#171717">#fde047</text>
   <rect x="480" y="120" width="120" height="48" fill="#fef9c3"/>
   <text x="540" y="160" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="9" fill="#171717">#fef9c3</text>
-  <!-- Green * -->
+  <!-- Green * -->
   <rect x="0" y="168" width="120" height="48" fill="#365314"/>
-  <text x="7" y="183" font-family="ui-sans-serif,system-ui,-apple-system,sans-serif" font-size="11" font-weight="700" fill="white">Green *</text>
+  <text x="7" y="183" font-family="ui-sans-serif,system-ui,-apple-system,sans-serif" font-size="11" font-weight="700" fill="white">Green *</text>
   <text x="60" y="208" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="9" fill="white">#365314</text>
   <rect x="120" y="168" width="120" height="48" fill="#4d7c0f"/>
   <text x="180" y="208" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="9" fill="white">#4d7c0f</text>
@@ -93,7 +93,7 @@
   <rect x="480" y="312" width="120" height="48" fill="#f5f5f5"/>
   <text x="540" y="352" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="9" fill="#171717">#f5f5f5</text>
   <!-- footnote + gap -->
-  <text x=”3” y=”375” font-family=”ui-sans-serif,system-ui,-apple-system,sans-serif” font-size=”11” fill=”#737373”>* Tailwind calls this hue “lime” · ↓ specialty extension, not a variant</text>
+  <text x="3" y="375" font-family="ui-sans-serif,system-ui,-apple-system,sans-serif" font-size="11" fill="#737373">* Tailwind calls this hue "lime" · ↓ specialty extension, not a variant</text>
   <!-- Cyan (extension) -->
   <rect x="0" y="382" width="120" height="32" fill="#164e63"/>
   <text x="7" y="397" font-family="ui-sans-serif,system-ui,-apple-system,sans-serif" font-size="11" font-weight="700" fill="white">Cyan</text>
