@@ -1,5 +1,8 @@
 <p align="center">
-  <img src="assets/wordmark.svg" height="48" alt="Vivid Life Theme" />
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/wordmark-dark.svg" />
+    <img src="assets/wordmark.svg" height="48" alt="Vivid Life Theme" />
+  </picture>
 </p>
 <p align="center">
   <img src="https://img.shields.io/badge/license-MIT-blue" alt="License: MIT" />
