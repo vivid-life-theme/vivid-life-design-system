@@ -111,6 +111,48 @@ re-reads.
 
 ---
 
+## Preview
+
+<table align="center">
+  <tr>
+    <td align="center">
+      <img
+        src="assets/screenshots/kitchen-sink-midnight.png"
+        width="380"
+        alt="Midnight · Purple"
+      /><br /><sub>Midnight · Purple</sub>
+    </td>
+    <td align="center">
+      <img
+        src="assets/screenshots/kitchen-sink-twilight.png"
+        width="380"
+        alt="Twilight · Yellow"
+      /><br /><sub>Twilight · Yellow</sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <img
+        src="assets/screenshots/kitchen-sink-dawn.png"
+        width="380"
+        alt="Dawn · Blue"
+      /><br /><sub>Dawn · Blue</sub>
+    </td>
+    <td align="center">
+      <img
+        src="assets/screenshots/kitchen-sink-noon.png"
+        width="380"
+        alt="Noon · Red"
+      /><br /><sub>Noon · Red</sub>
+    </td>
+  </tr>
+</table>
+
+> Open [`preview/01-kitchen-sink.html`](preview/01-kitchen-sink.html) locally to
+> interact with all 24 themes.
+
+---
+
 ## The system at a glance
 
 ### Source palette
