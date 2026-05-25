@@ -1,3 +1,5 @@
 dist/
 fonts/
 preview/
+assets/*.png
+assets/screenshots/
