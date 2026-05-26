@@ -5,8 +5,7 @@ description: Use this skill to design or build artifacts (slides, prototypes, we
 
 # Vivid Life Theme — designer's skill
 
-Read `README.md` for the full system overview, then explore the other files
-listed below before producing anything.
+Fetch the foundation data, then produce the artifact.
 
 ## What this is
 
@@ -14,16 +13,22 @@ A **foundation** for theming. Not itself a theme for any one app. Whatever
 you build (slide deck, marketing site, app mock, throwaway prototype,
 production code) should consume the tokens defined here.
 
-## Files to read, in order
+## Step 1 — Fetch foundation data
 
-1. `README.md` — the system at a glance
-2. `tokens.json5` — single source of truth (palette, flavors, variants,
-   syntax map, typography, spacing, radii, shadows, motion)
-3. `colors_and_type.css` — CSS implementation of all tokens
-4. `preview/14-kitchen-sink.html` — every UI token live across all 24
-   themes (open it; click the flavor/variant pills)
+Fetch these two files before producing anything:
 
-## How to use, in three patterns
+1. **Token data** — the machine-readable contract (palette, flavors, variants,
+   syntax map, typography, spacing, radii, shadows, motion):
+   `https://raw.githubusercontent.com/vivid-life-theme/vivid-life-design-system/main/tokens.json`
+
+2. **System overview** — architecture, naming conventions, downstream-ports guide:
+   `https://raw.githubusercontent.com/vivid-life-theme/vivid-life-design-system/main/README.md`
+
+If the foundation is already mounted locally (git submodule, npm dep, or copied
+snapshot), read `<foundation-path>/tokens.json` and `<foundation-path>/README.md`
+instead of fetching remotely.
+
+## Step 2 — Build using one of three patterns
 
 ### Pattern A — Static visual artifact (slides, marketing, throwaway)
 
@@ -51,7 +56,7 @@ production code) should consume the tokens defined here.
 1. Pull `colors_and_type.css` into your app's CSS pipeline.
 2. Toggle flavor + variant via two classes on `<html>` or `<body>`.
 3. Persist user choice in `localStorage`; default to Midnight + Purple.
-4. Refer to `preview/14-kitchen-sink.html` for the canonical look of
+4. Refer to `preview/01-kitchen-sink.html` for the canonical look of
    every component state (buttons, inputs, toasts, tabs, modal, app chrome).
 
 ## Brand voice (light)
