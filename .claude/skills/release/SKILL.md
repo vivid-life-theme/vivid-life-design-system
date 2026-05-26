@@ -163,3 +163,10 @@ To delete a tag (e.g. to re-cut the same version after fixing a workflow):
 git tag -d vX.Y.Z
 git push --delete origin vX.Y.Z
 ```
+
+To recreate and re-push the tag, use a **signed annotated tag** — `tag.gpgsign=true` is set globally on this machine and lightweight tags will fail on push with "keine Tag-Beschreibung?":
+
+```bash
+git tag -s vX.Y.Z <commit-sha> -m "vX.Y.Z"
+git push origin vX.Y.Z
+```
