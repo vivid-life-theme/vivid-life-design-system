@@ -1,180 +1,368 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-<meta charset="utf-8">
-<title>VL — ANSI terminal palette (with cyan)</title>
-<link rel="stylesheet" href="../colors_and_type.css">
-<style>
-  html, body { margin: 0; padding: 0; background: #fafafa; font-family: var(--vl-font-sans); }
-  .wrap { padding: 12px 14px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  <head>
+    <meta charset="utf-8" />
+    <title>VL — ANSI terminal palette (with cyan)</title>
+    <link rel="stylesheet" href="../colors_and_type.css" />
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        background: #fafafa;
+        font-family: var(--vl-font-sans);
+      }
+      .wrap {
+        padding: 12px 14px;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+      }
 
-  .card { border-radius: 9px; overflow: hidden; box-shadow: 0 0 0 1px rgba(0,0,0,0.08); background: var(--vl-bg); color: var(--vl-fg); }
-  .head {
-    padding: 6px 12px; background: var(--vl-bg-sunk); color: var(--vl-fg);
-    border-bottom: 1px solid var(--vl-border);
-    display: flex; align-items: baseline; justify-content: space-between;
-    font-size: 11px; font-family: var(--vl-font-sans);
-  }
-  .head .name { font-weight: 600; letter-spacing: 0.01em; }
-  .head .meta { font-family: var(--vl-font-mono); font-size: 9.5px; color: var(--vl-fg-subtle); }
+      .card {
+        border-radius: 9px;
+        overflow: hidden;
+        box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.08);
+        background: var(--vl-bg);
+        color: var(--vl-fg);
+      }
+      .head {
+        padding: 6px 12px;
+        background: var(--vl-bg-sunk);
+        color: var(--vl-fg);
+        border-bottom: 1px solid var(--vl-border);
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        font-size: 11px;
+        font-family: var(--vl-font-sans);
+      }
+      .head .name {
+        font-weight: 600;
+        letter-spacing: 0.01em;
+      }
+      .head .meta {
+        font-family: var(--vl-font-mono);
+        font-size: 9.5px;
+        color: var(--vl-fg-subtle);
+      }
 
-  .term {
-    padding: 9px 12px 12px;
-    font-family: var(--vl-font-mono);
-    font-size: 11px;
-    line-height: 1.45;
-  }
-  .term .prompt { color: var(--vl-fg-muted); }
-  .term .row { white-space: pre; }
-  .term .out  { color: var(--vl-fg-muted); }
-  .term .sep  { height: 4px; }
+      .term {
+        padding: 9px 12px 12px;
+        font-family: var(--vl-font-mono);
+        font-size: 11px;
+        line-height: 1.45;
+      }
+      .term .prompt {
+        color: var(--vl-fg-muted);
+      }
+      .term .row {
+        white-space: pre;
+      }
+      .term .out {
+        color: var(--vl-fg-muted);
+      }
+      .term .sep {
+        height: 4px;
+      }
 
-  /* Per-flavor ANSI colors. Mirror vscode/build.mjs flavors[*].ansi. */
+      /* Per-flavor ANSI colors. Mirror vscode/build.mjs flavors[*].ansi. */
 
-  .vl-midnight .c-blk  { color: #0a0a0a; }
-  .vl-midnight .c-red  { color: #ef4444; }
-  .vl-midnight .c-grn  { color: #84cc16; }
-  .vl-midnight .c-ylw  { color: #eab308; }
-  .vl-midnight .c-blu  { color: #93c5fd; }
-  .vl-midnight .c-mag  { color: #d8b4fe; }
-  .vl-midnight .c-cyn  { color: #06b6d4; font-weight: 600; }
-  .vl-midnight .c-wht  { color: #d4d4d4; }
-  .vl-midnight .c-bcyn { color: #67e8f9; font-weight: 600; }
+      .vl-midnight .c-blk {
+        color: #0a0a0a;
+      }
+      .vl-midnight .c-red {
+        color: #ef4444;
+      }
+      .vl-midnight .c-grn {
+        color: #84cc16;
+      }
+      .vl-midnight .c-ylw {
+        color: #eab308;
+      }
+      .vl-midnight .c-blu {
+        color: #93c5fd;
+      }
+      .vl-midnight .c-mag {
+        color: #d8b4fe;
+      }
+      .vl-midnight .c-cyn {
+        color: #06b6d4;
+        font-weight: 600;
+      }
+      .vl-midnight .c-wht {
+        color: #d4d4d4;
+      }
+      .vl-midnight .c-bcyn {
+        color: #67e8f9;
+        font-weight: 600;
+      }
 
-  .vl-twilight .c-blk  { color: #171717; }
-  .vl-twilight .c-red  { color: #fca5a5; }
-  .vl-twilight .c-grn  { color: #84cc16; }
-  .vl-twilight .c-ylw  { color: #eab308; }
-  .vl-twilight .c-blu  { color: #93c5fd; }
-  .vl-twilight .c-mag  { color: #d8b4fe; }
-  .vl-twilight .c-cyn  { color: #06b6d4; font-weight: 600; }
-  .vl-twilight .c-wht  { color: #d4d4d4; }
-  .vl-twilight .c-bcyn { color: #67e8f9; font-weight: 600; }
+      .vl-twilight .c-blk {
+        color: #171717;
+      }
+      .vl-twilight .c-red {
+        color: #fca5a5;
+      }
+      .vl-twilight .c-grn {
+        color: #84cc16;
+      }
+      .vl-twilight .c-ylw {
+        color: #eab308;
+      }
+      .vl-twilight .c-blu {
+        color: #93c5fd;
+      }
+      .vl-twilight .c-mag {
+        color: #d8b4fe;
+      }
+      .vl-twilight .c-cyn {
+        color: #06b6d4;
+        font-weight: 600;
+      }
+      .vl-twilight .c-wht {
+        color: #d4d4d4;
+      }
+      .vl-twilight .c-bcyn {
+        color: #67e8f9;
+        font-weight: 600;
+      }
 
-  .vl-dawn .c-blk  { color: #171717; }
-  .vl-dawn .c-red  { color: #b91c1c; }
-  .vl-dawn .c-grn  { color: #4d7c0f; }
-  .vl-dawn .c-ylw  { color: #a16207; }
-  .vl-dawn .c-blu  { color: #1d4ed8; }
-  .vl-dawn .c-mag  { color: #7e22ce; }
-  .vl-dawn .c-cyn  { color: #0e7490; font-weight: 600; }
-  .vl-dawn .c-wht  { color: #404040; }
-  .vl-dawn .c-bcyn { color: #164e63; font-weight: 600; }
+      .vl-dawn .c-blk {
+        color: #171717;
+      }
+      .vl-dawn .c-red {
+        color: #b91c1c;
+      }
+      .vl-dawn .c-grn {
+        color: #4d7c0f;
+      }
+      .vl-dawn .c-ylw {
+        color: #a16207;
+      }
+      .vl-dawn .c-blu {
+        color: #1d4ed8;
+      }
+      .vl-dawn .c-mag {
+        color: #7e22ce;
+      }
+      .vl-dawn .c-cyn {
+        color: #0e7490;
+        font-weight: 600;
+      }
+      .vl-dawn .c-wht {
+        color: #404040;
+      }
+      .vl-dawn .c-bcyn {
+        color: #164e63;
+        font-weight: 600;
+      }
 
-  .vl-noon .c-blk  { color: #171717; }
-  .vl-noon .c-red  { color: #b91c1c; }
-  .vl-noon .c-grn  { color: #4d7c0f; }
-  .vl-noon .c-ylw  { color: #a16207; }
-  .vl-noon .c-blu  { color: #1d4ed8; }
-  .vl-noon .c-mag  { color: #7e22ce; }
-  .vl-noon .c-cyn  { color: #0e7490; font-weight: 600; }
-  .vl-noon .c-wht  { color: #404040; }
-  .vl-noon .c-bcyn { color: #164e63; font-weight: 600; }
+      .vl-noon .c-blk {
+        color: #171717;
+      }
+      .vl-noon .c-red {
+        color: #b91c1c;
+      }
+      .vl-noon .c-grn {
+        color: #4d7c0f;
+      }
+      .vl-noon .c-ylw {
+        color: #a16207;
+      }
+      .vl-noon .c-blu {
+        color: #1d4ed8;
+      }
+      .vl-noon .c-mag {
+        color: #7e22ce;
+      }
+      .vl-noon .c-cyn {
+        color: #0e7490;
+        font-weight: 600;
+      }
+      .vl-noon .c-wht {
+        color: #404040;
+      }
+      .vl-noon .c-bcyn {
+        color: #164e63;
+        font-weight: 600;
+      }
 
-  /* swatch strip showing the 8 normal ANSI colors */
-  .strip { display: flex; gap: 0; margin-top: 8px; border-radius: 4px; overflow: hidden; }
-  .strip .sw { flex: 1; height: 12px; }
-</style>
-</head>
-<body>
-<div class="wrap">
+      /* swatch strip showing the 8 normal ANSI colors */
+      .strip {
+        display: flex;
+        gap: 0;
+        margin-top: 8px;
+        border-radius: 4px;
+        overflow: hidden;
+      }
+      .strip .sw {
+        flex: 1;
+        height: 12px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="card vl-midnight">
+        <div class="head">
+          <span class="name">Midnight</span
+          ><span class="meta">cyan: cyan-500 · bright: cyan-300</span>
+        </div>
+        <div class="term">
+          <div class="row"><span class="prompt">$ </span>ls --color</div>
+          <div class="row">
+            <span class="c-cyn">src/</span>
+            <span class="c-cyn">themes/</span> README.md build.mjs
+            <span class="c-cyn">node_modules/</span>
+          </div>
+          <div class="sep"></div>
+          <div class="row"><span class="prompt">$ </span>git diff</div>
+          <div class="row">
+            <span class="c-ylw">diff --git</span> a/build.mjs b/build.mjs
+          </div>
+          <div class="row">
+            <span class="c-cyn">@@ -42,7 +42,7 @@</span>
+            <span class="c-mag">function buildTheme</span>(fn, vn) {
+          </div>
+          <div class="row">
+            <span class="c-red">- cyan: palette.blue[500],</span>
+          </div>
+          <div class="row">
+            <span class="c-grn">+ cyan: palette.cyan[500],</span>
+          </div>
+          <div class="strip">
+            <div class="sw" style="background: #0a0a0a"></div>
+            <div class="sw" style="background: #ef4444"></div>
+            <div class="sw" style="background: #84cc16"></div>
+            <div class="sw" style="background: #eab308"></div>
+            <div class="sw" style="background: #93c5fd"></div>
+            <div class="sw" style="background: #d8b4fe"></div>
+            <div class="sw" style="background: #06b6d4"></div>
+            <div class="sw" style="background: #d4d4d4"></div>
+          </div>
+        </div>
+      </div>
 
-  <div class="card vl-midnight">
-    <div class="head"><span class="name">Midnight</span><span class="meta">cyan: cyan-500 · bright: cyan-300</span></div>
-    <div class="term">
-      <div class="row"><span class="prompt">$ </span>ls --color</div>
-      <div class="row"><span class="c-cyn">src/</span>  <span class="c-cyn">themes/</span>  README.md  build.mjs  <span class="c-cyn">node_modules/</span></div>
-      <div class="sep"></div>
-      <div class="row"><span class="prompt">$ </span>git diff</div>
-      <div class="row"><span class="c-ylw">diff --git</span> a/build.mjs b/build.mjs</div>
-      <div class="row"><span class="c-cyn">@@ -42,7 +42,7 @@</span> <span class="c-mag">function buildTheme</span>(fn, vn) {</div>
-      <div class="row"><span class="c-red">- cyan: palette.blue[500],</span></div>
-      <div class="row"><span class="c-grn">+ cyan: palette.cyan[500],</span></div>
-      <div class="strip">
-        <div class="sw" style="background:#0a0a0a"></div>
-        <div class="sw" style="background:#ef4444"></div>
-        <div class="sw" style="background:#84cc16"></div>
-        <div class="sw" style="background:#eab308"></div>
-        <div class="sw" style="background:#93c5fd"></div>
-        <div class="sw" style="background:#d8b4fe"></div>
-        <div class="sw" style="background:#06b6d4"></div>
-        <div class="sw" style="background:#d4d4d4"></div>
+      <div class="card vl-twilight">
+        <div class="head">
+          <span class="name">Twilight</span
+          ><span class="meta">cyan: cyan-500 · bright: cyan-300</span>
+        </div>
+        <div class="term">
+          <div class="row"><span class="prompt">$ </span>ls --color</div>
+          <div class="row">
+            <span class="c-cyn">src/</span>
+            <span class="c-cyn">themes/</span> README.md build.mjs
+            <span class="c-cyn">node_modules/</span>
+          </div>
+          <div class="sep"></div>
+          <div class="row"><span class="prompt">$ </span>git diff</div>
+          <div class="row">
+            <span class="c-ylw">diff --git</span> a/build.mjs b/build.mjs
+          </div>
+          <div class="row">
+            <span class="c-cyn">@@ -42,7 +42,7 @@</span>
+            <span class="c-mag">function buildTheme</span>(fn, vn) {
+          </div>
+          <div class="row">
+            <span class="c-red">- cyan: palette.blue[500],</span>
+          </div>
+          <div class="row">
+            <span class="c-grn">+ cyan: palette.cyan[500],</span>
+          </div>
+          <div class="strip">
+            <div class="sw" style="background: #171717"></div>
+            <div class="sw" style="background: #fca5a5"></div>
+            <div class="sw" style="background: #84cc16"></div>
+            <div class="sw" style="background: #eab308"></div>
+            <div class="sw" style="background: #93c5fd"></div>
+            <div class="sw" style="background: #d8b4fe"></div>
+            <div class="sw" style="background: #06b6d4"></div>
+            <div class="sw" style="background: #d4d4d4"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card vl-dawn">
+        <div class="head">
+          <span class="name">Dawn</span
+          ><span class="meta">cyan: cyan-700 · bright: cyan-900</span>
+        </div>
+        <div class="term">
+          <div class="row"><span class="prompt">$ </span>ls --color</div>
+          <div class="row">
+            <span class="c-cyn">src/</span>
+            <span class="c-cyn">themes/</span> README.md build.mjs
+            <span class="c-cyn">node_modules/</span>
+          </div>
+          <div class="sep"></div>
+          <div class="row"><span class="prompt">$ </span>git diff</div>
+          <div class="row">
+            <span class="c-ylw">diff --git</span> a/build.mjs b/build.mjs
+          </div>
+          <div class="row">
+            <span class="c-cyn">@@ -42,7 +42,7 @@</span>
+            <span class="c-mag">function buildTheme</span>(fn, vn) {
+          </div>
+          <div class="row">
+            <span class="c-red">- cyan: palette.blue[500],</span>
+          </div>
+          <div class="row">
+            <span class="c-grn">+ cyan: palette.cyan[500],</span>
+          </div>
+          <div class="strip">
+            <div class="sw" style="background: #171717"></div>
+            <div class="sw" style="background: #b91c1c"></div>
+            <div class="sw" style="background: #4d7c0f"></div>
+            <div class="sw" style="background: #a16207"></div>
+            <div class="sw" style="background: #1d4ed8"></div>
+            <div class="sw" style="background: #7e22ce"></div>
+            <div class="sw" style="background: #0e7490"></div>
+            <div class="sw" style="background: #404040"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card vl-noon">
+        <div class="head">
+          <span class="name">Noon</span
+          ><span class="meta">cyan: cyan-700 · bright: cyan-900</span>
+        </div>
+        <div class="term">
+          <div class="row"><span class="prompt">$ </span>ls --color</div>
+          <div class="row">
+            <span class="c-cyn">src/</span>
+            <span class="c-cyn">themes/</span> README.md build.mjs
+            <span class="c-cyn">node_modules/</span>
+          </div>
+          <div class="sep"></div>
+          <div class="row"><span class="prompt">$ </span>git diff</div>
+          <div class="row">
+            <span class="c-ylw">diff --git</span> a/build.mjs b/build.mjs
+          </div>
+          <div class="row">
+            <span class="c-cyn">@@ -42,7 +42,7 @@</span>
+            <span class="c-mag">function buildTheme</span>(fn, vn) {
+          </div>
+          <div class="row">
+            <span class="c-red">- cyan: palette.blue[500],</span>
+          </div>
+          <div class="row">
+            <span class="c-grn">+ cyan: palette.cyan[500],</span>
+          </div>
+          <div class="strip">
+            <div class="sw" style="background: #171717"></div>
+            <div class="sw" style="background: #b91c1c"></div>
+            <div class="sw" style="background: #4d7c0f"></div>
+            <div class="sw" style="background: #a16207"></div>
+            <div class="sw" style="background: #1d4ed8"></div>
+            <div class="sw" style="background: #7e22ce"></div>
+            <div class="sw" style="background: #0e7490"></div>
+            <div class="sw" style="background: #404040"></div>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-
-  <div class="card vl-twilight">
-    <div class="head"><span class="name">Twilight</span><span class="meta">cyan: cyan-500 · bright: cyan-300</span></div>
-    <div class="term">
-      <div class="row"><span class="prompt">$ </span>ls --color</div>
-      <div class="row"><span class="c-cyn">src/</span>  <span class="c-cyn">themes/</span>  README.md  build.mjs  <span class="c-cyn">node_modules/</span></div>
-      <div class="sep"></div>
-      <div class="row"><span class="prompt">$ </span>git diff</div>
-      <div class="row"><span class="c-ylw">diff --git</span> a/build.mjs b/build.mjs</div>
-      <div class="row"><span class="c-cyn">@@ -42,7 +42,7 @@</span> <span class="c-mag">function buildTheme</span>(fn, vn) {</div>
-      <div class="row"><span class="c-red">- cyan: palette.blue[500],</span></div>
-      <div class="row"><span class="c-grn">+ cyan: palette.cyan[500],</span></div>
-      <div class="strip">
-        <div class="sw" style="background:#171717"></div>
-        <div class="sw" style="background:#fca5a5"></div>
-        <div class="sw" style="background:#84cc16"></div>
-        <div class="sw" style="background:#eab308"></div>
-        <div class="sw" style="background:#93c5fd"></div>
-        <div class="sw" style="background:#d8b4fe"></div>
-        <div class="sw" style="background:#06b6d4"></div>
-        <div class="sw" style="background:#d4d4d4"></div>
-      </div>
-    </div>
-  </div>
-
-  <div class="card vl-dawn">
-    <div class="head"><span class="name">Dawn</span><span class="meta">cyan: cyan-700 · bright: cyan-900</span></div>
-    <div class="term">
-      <div class="row"><span class="prompt">$ </span>ls --color</div>
-      <div class="row"><span class="c-cyn">src/</span>  <span class="c-cyn">themes/</span>  README.md  build.mjs  <span class="c-cyn">node_modules/</span></div>
-      <div class="sep"></div>
-      <div class="row"><span class="prompt">$ </span>git diff</div>
-      <div class="row"><span class="c-ylw">diff --git</span> a/build.mjs b/build.mjs</div>
-      <div class="row"><span class="c-cyn">@@ -42,7 +42,7 @@</span> <span class="c-mag">function buildTheme</span>(fn, vn) {</div>
-      <div class="row"><span class="c-red">- cyan: palette.blue[500],</span></div>
-      <div class="row"><span class="c-grn">+ cyan: palette.cyan[500],</span></div>
-      <div class="strip">
-        <div class="sw" style="background:#171717"></div>
-        <div class="sw" style="background:#b91c1c"></div>
-        <div class="sw" style="background:#4d7c0f"></div>
-        <div class="sw" style="background:#a16207"></div>
-        <div class="sw" style="background:#1d4ed8"></div>
-        <div class="sw" style="background:#7e22ce"></div>
-        <div class="sw" style="background:#0e7490"></div>
-        <div class="sw" style="background:#404040"></div>
-      </div>
-    </div>
-  </div>
-
-  <div class="card vl-noon">
-    <div class="head"><span class="name">Noon</span><span class="meta">cyan: cyan-700 · bright: cyan-900</span></div>
-    <div class="term">
-      <div class="row"><span class="prompt">$ </span>ls --color</div>
-      <div class="row"><span class="c-cyn">src/</span>  <span class="c-cyn">themes/</span>  README.md  build.mjs  <span class="c-cyn">node_modules/</span></div>
-      <div class="sep"></div>
-      <div class="row"><span class="prompt">$ </span>git diff</div>
-      <div class="row"><span class="c-ylw">diff --git</span> a/build.mjs b/build.mjs</div>
-      <div class="row"><span class="c-cyn">@@ -42,7 +42,7 @@</span> <span class="c-mag">function buildTheme</span>(fn, vn) {</div>
-      <div class="row"><span class="c-red">- cyan: palette.blue[500],</span></div>
-      <div class="row"><span class="c-grn">+ cyan: palette.cyan[500],</span></div>
-      <div class="strip">
-        <div class="sw" style="background:#171717"></div>
-        <div class="sw" style="background:#b91c1c"></div>
-        <div class="sw" style="background:#4d7c0f"></div>
-        <div class="sw" style="background:#a16207"></div>
-        <div class="sw" style="background:#1d4ed8"></div>
-        <div class="sw" style="background:#7e22ce"></div>
-        <div class="sw" style="background:#0e7490"></div>
-        <div class="sw" style="background:#404040"></div>
-      </div>
-    </div>
-  </div>
-
-</div>
-</body>
+  </body>
 </html>

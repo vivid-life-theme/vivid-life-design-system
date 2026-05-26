@@ -9,7 +9,7 @@ Foundation for a 4-flavor × 6-variant = 24-theme color system. Source of truth 
 | `.claudeignore` | Paths excluded from Claude Code indexing                             |
 | `.claude/learnings.md` | Accumulated corrections and workarounds; read by cc-config-optimize  |
 | `.claude/settings.json` | Permissions, hooks, environment variables                            |
-| `.claude/skills/release/SKILL.md` | TODO: add description |
+| `.claude/skills/release/SKILL.md` | TODO: add description                                                |
 | `.editorconfig` | Locks indent / EOL / final newline across editors                    |
 | `.githooks/pre-commit` | Keeps Key Config Files table in sync before each commit              |
 | `.github/workflows/claude-code-review.yml` | Auto-reviews every PR when opened or updated                         |

@@ -3,7 +3,13 @@
    Used by preview/04..08-syntax-*.html. Each card is a 2×2 grid
    of (flavor, code sample) — same code, 4 flavors. */
 
-html, body { margin: 0; padding: 0; background: #fafafa; font-family: var(--vl-font-sans); }
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background: #fafafa;
+  font-family: var(--vl-font-sans);
+}
 
 .syn-wrap {
   padding: 12px 14px;
@@ -15,7 +21,7 @@ html, body { margin: 0; padding: 0; background: #fafafa; font-family: var(--vl-f
 .syn-card {
   border-radius: 9px;
   overflow: hidden;
-  box-shadow: 0 0 0 1px rgba(0,0,0,0.08);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.08);
 }
 
 .syn-head {
@@ -29,8 +35,15 @@ html, body { margin: 0; padding: 0; background: #fafafa; font-family: var(--vl-f
   font-size: 11px;
   font-family: var(--vl-font-sans);
 }
-.syn-head .name { font-weight: 600; letter-spacing: 0.01em; }
-.syn-head .meta { font-family: var(--vl-font-mono); font-size: 9.5px; color: var(--vl-fg-subtle); }
+.syn-head .name {
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+.syn-head .meta {
+  font-family: var(--vl-font-mono);
+  font-size: 9.5px;
+  color: var(--vl-fg-subtle);
+}
 
 .syn-code {
   background: var(--vl-bg);
@@ -45,31 +58,92 @@ html, body { margin: 0; padding: 0; background: #fafafa; font-family: var(--vl-f
 }
 
 /* Token color classes */
-.syn-code .com   { color: var(--syn-comment);   font-style: italic; }
-.syn-code .kw    { color: var(--syn-keyword);   }
-.syn-code .str   { color: var(--syn-string);    }
-.syn-code .num   { color: var(--syn-number);    }
-.syn-code .fn    { color: var(--syn-function);  }
-.syn-code .ty    { color: var(--syn-type);      }
-.syn-code .co    { color: var(--syn-constant);  }
-.syn-code .re    { color: var(--syn-regex);     }
-.syn-code .pu    { color: var(--syn-punct);     }
-.syn-code .tag   { color: var(--syn-tag);       }
-.syn-code .attr  { color: var(--syn-attr);      }
-.syn-code .v     { color: var(--syn-variable);  }
-.syn-code .prm   { color: var(--syn-parameter); font-style: italic; }
-.syn-code .prop  { color: var(--syn-property);  }
-.syn-code .op    { color: var(--syn-operator);  }
-.syn-code .bi    { color: var(--syn-builtin);   }
-.syn-code .ns    { color: var(--syn-namespace); }
-.syn-code .dec   { color: var(--syn-decorator); }
-.syn-code .mac   { color: var(--syn-macro);     }
-.syn-code .life  { color: var(--syn-lifetime);  }
-.syn-code .h1    { color: var(--syn-heading);   font-weight: 700; }
-.syn-code .em    { font-style: italic; }
-.syn-code .stg   { font-weight: 700; }
-.syn-code .link  { color: var(--syn-link); text-decoration: underline; }
-.syn-code .sel   { color: var(--syn-selector);  }
-.syn-code .unit  { color: var(--syn-unit);      }
-.syn-code .hex   { color: var(--syn-hex);       }
-.syn-code .sh    { color: var(--syn-shebang); font-style: italic; }
+.syn-code .com {
+  color: var(--syn-comment);
+  font-style: italic;
+}
+.syn-code .kw {
+  color: var(--syn-keyword);
+}
+.syn-code .str {
+  color: var(--syn-string);
+}
+.syn-code .num {
+  color: var(--syn-number);
+}
+.syn-code .fn {
+  color: var(--syn-function);
+}
+.syn-code .ty {
+  color: var(--syn-type);
+}
+.syn-code .co {
+  color: var(--syn-constant);
+}
+.syn-code .re {
+  color: var(--syn-regex);
+}
+.syn-code .pu {
+  color: var(--syn-punct);
+}
+.syn-code .tag {
+  color: var(--syn-tag);
+}
+.syn-code .attr {
+  color: var(--syn-attr);
+}
+.syn-code .v {
+  color: var(--syn-variable);
+}
+.syn-code .prm {
+  color: var(--syn-parameter);
+  font-style: italic;
+}
+.syn-code .prop {
+  color: var(--syn-property);
+}
+.syn-code .op {
+  color: var(--syn-operator);
+}
+.syn-code .bi {
+  color: var(--syn-builtin);
+}
+.syn-code .ns {
+  color: var(--syn-namespace);
+}
+.syn-code .dec {
+  color: var(--syn-decorator);
+}
+.syn-code .mac {
+  color: var(--syn-macro);
+}
+.syn-code .life {
+  color: var(--syn-lifetime);
+}
+.syn-code .h1 {
+  color: var(--syn-heading);
+  font-weight: 700;
+}
+.syn-code .em {
+  font-style: italic;
+}
+.syn-code .stg {
+  font-weight: 700;
+}
+.syn-code .link {
+  color: var(--syn-link);
+  text-decoration: underline;
+}
+.syn-code .sel {
+  color: var(--syn-selector);
+}
+.syn-code .unit {
+  color: var(--syn-unit);
+}
+.syn-code .hex {
+  color: var(--syn-hex);
+}
+.syn-code .sh {
+  color: var(--syn-shebang);
+  font-style: italic;
+}

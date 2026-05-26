@@ -18,6 +18,20 @@
       "Bash(npm run test)"
     ]
   },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "jq -r '.tool_input.file_path' | { read -r f; prettier --write --ignore-unknown \"$f\"; } 2>/dev/null || true",
+            "statusMessage": "Formatting with Prettier..."
+          }
+        ]
+      }
+    ]
+  },
   "env": {
     "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "50",
     "MAX_THINKING_TOKENS": "10000",
