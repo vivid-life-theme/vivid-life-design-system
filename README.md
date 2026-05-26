@@ -6,15 +6,10 @@
   Design System
 </p>
 <p align="center">
-  <img src="https://img.shields.io/badge/license-MIT-blue" alt="License: MIT" />
-  <img
-    src="https://img.shields.io/badge/WCAG-AA%20%E2%9C%93-22c55e"
-    alt="WCAG AA"
-  />
-  <img
-    src="https://img.shields.io/badge/dependencies-none-737373"
-    alt="No dependencies"
-  />
+  <img src="https://img.shields.io/badge/WCAG-AA%20%E2%9C%93-22c55e" alt="WCAG AA" />
+  <img src="https://img.shields.io/badge/license-MIT-3b82f6" alt="License: MIT" />
+  <img src="https://img.shields.io/npm/v/%40vivid-life-theme%2Fdesign-system?color=a855f7&label=npm" alt="npm" />
+  <img src="https://img.shields.io/badge/dependencies-none-737373" alt="No dependencies" />
 </p>
 
 > A multi-flavor color scheme system. 4 flavors × 6 variants = 24 themes. WCAG AA verified.
