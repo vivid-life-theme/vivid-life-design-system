@@ -1,17 +1,23 @@
 {
   "name": "vivid-life-theme",
-  "version": "0.2.0",
+  "displayName": "Vivid Life Theme – Design System",
   "description": "A multi-flavor color scheme system. 4 flavors × 6 variants = 24 themes. WCAG AA verified.",
+  "version": "0.2.0",
   "license": "MIT",
-  "author": "Michael van Laar",
+  "author": {
+    "name": "Michael van Laar",
+    "email": "michael@van-laar.de"
+  },
   "homepage": "https://github.com/vivid-life-theme/vivid-life-design-system",
+  "publisher": "MichaelvanLaar",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/vivid-life-theme/vivid-life-design-system.git"
+    "url": "https://github.com/vivid-life-theme/vivid-life-design-system"
   },
   "bugs": {
     "url": "https://github.com/vivid-life-theme/vivid-life-design-system/issues"
   },
+  "icon": "assets/icon-256.png",
   "keywords": [
     "design-system",
     "design-tokens",

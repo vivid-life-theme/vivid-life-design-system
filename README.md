@@ -2,7 +2,8 @@
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="assets/wordmark-dark.svg" />
     <img src="assets/wordmark.svg" height="48" alt="Vivid Life Theme" />
-  </picture>
+  </picture><br>
+  Design System
 </p>
 <p align="center">
   <img src="https://img.shields.io/badge/license-MIT-blue" alt="License: MIT" />
@@ -16,7 +17,7 @@
   />
 </p>
 
-> A multi-flavor color-scheme system
+> A multi-flavor color scheme system. 4 flavors × 6 variants = 24 themes. WCAG AA verified.
 
 This repository is the **foundation** for a family of themes. It is not
 itself a theme for any one app. Downstream projects — VS Code, GTK,
@@ -52,21 +53,24 @@ re-reads.
 
 ## Contents
 
+- [Contents](#contents)
 - [Features](#features)
 - [Preview](#preview)
 - [The system at a glance](#the-system-at-a-glance)
   - [Source palette](#source-palette)
-  - [4 flavors](#4-flavors--4-syntax-color-schemes)
-  - [6 accent variants](#6-accent-variants-per-flavor)
+  - [4 flavors (= 4 syntax color schemes)](#4-flavors--4-syntax-color-schemes)
+  - [6 accent variants (per flavor)](#6-accent-variants-per-flavor)
   - [Accent-shade ruleset](#accent-shade-ruleset)
   - [`--vl-accent-on`](#--vl-accent-on)
-  - [Syntax token map](#syntax-token-map-per-flavor)
+  - [Syntax token map (per flavor)](#syntax-token-map-per-flavor)
 - [Typography](#typography)
 - [Build flow](#build-flow)
 - [Files](#files)
 - [Naming convention](#naming-convention)
 - [For downstream ports](#for-downstream-ports)
+  - [Claude Code skill (optional)](#claude-code-skill-optional)
 - [Brand mark](#brand-mark)
+  - [Per-flavor variants](#per-flavor-variants)
 - [Iconography](#iconography)
 - [Caveats](#caveats)
 - [Provenance](#provenance)
