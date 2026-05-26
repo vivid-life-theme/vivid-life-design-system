@@ -1,5 +1,5 @@
 {
-  "name": "vivid-life-theme",
+  "name": "vivid-life-design-system",
   "displayName": "Vivid Life Theme – Design System",
   "description": "A multi-flavor color scheme system. 4 flavors × 6 variants = 24 themes. WCAG AA verified.",
   "version": "0.2.0",
@@ -9,7 +9,7 @@
     "email": "michael@van-laar.de"
   },
   "homepage": "https://github.com/vivid-life-theme/vivid-life-design-system",
-  "publisher": "MichaelvanLaar",
+  "publisher": "vivid-life-theme",
   "repository": {
     "type": "git",
     "url": "https://github.com/vivid-life-theme/vivid-life-design-system"
