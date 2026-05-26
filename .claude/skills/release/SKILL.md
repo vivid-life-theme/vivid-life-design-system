@@ -1,6 +1,6 @@
 ---
 name: release
-description: Use when publishing a new version of @vivid-life-theme/design-system to npm — covers semver determination, CHANGELOG update, version bump, npm publish via CI or manual, GitHub release creation, and post-release verification.
+description: Use when publishing a new version of @vivid-life-theme/design-system to npm — covers change analysis, semver suggestion, CHANGELOG update, version bump, npm publish via CI or manual, GitHub release creation, and post-release verification.
 ---
 
 # Release — @vivid-life-theme/design-system
@@ -14,7 +14,18 @@ Step-by-step guide for publishing a new version to npm.
 - [ ] `npm run check` — all outputs in sync with tokens.json5 (exits non-zero on drift)
 - [ ] `npm pack --dry-run` — confirm package contents match the `files` array; no sensitive files
 
-## 2 — Determine version (semver)
+## 2 — Analyze changes and propose version
+
+Find the last release tag and show what has changed since then:
+
+```bash
+git describe --tags --abbrev=0          # last tag, e.g. v0.2.0
+git log v0.2.0..HEAD --oneline          # commits since that tag
+```
+
+If no tags exist yet, use `git log --oneline` (all commits = initial release).
+
+Categorize each commit against the semver rules:
 
 | Bump  | When                                                                        |
 | ----- | --------------------------------------------------------------------------- |
@@ -22,9 +33,15 @@ Step-by-step guide for publishing a new version to npm.
 | Minor | New token, new variant, new flavor — additive and backward compatible       |
 | Major | ⚠️ Token renamed or removed — breaks any downstream port that references it |
 
+**Present your proposed version to the user with a short rationale** — e.g.:
+
+> "Since the last release the changes are all additive (two new tokens, one WCAG fix), so I'm proposing **0.3.0** (minor bump). Confirm, or tell me a different number."
+
+Wait for the user to confirm or override before proceeding.
+
 ## 3 — Update CHANGELOG.md
 
-**Do this BEFORE running `npm version`.**
+**Do this BEFORE running `npm version`.** Use the confirmed version number.
 
 - Move all items from `[Unreleased]` to a new `## [X.Y.Z] - YYYY-MM-DD` section
 - Categories: Added · Changed · Fixed · Removed
@@ -46,13 +63,13 @@ git add CHANGELOG.md README.md   # and any other modified docs
 git commit -m "📝 docs: update changelog for vX.Y.Z"
 ```
 
-## 6 — Bump version
+## 6 — Bump version and tag
 
 ```bash
-npm version patch   # or minor / major
+npm version patch   # or minor / major — must match what was confirmed in step 2
 ```
 
-This updates package.json, creates a commit ("X.Y.Z"), and creates the git tag "vX.Y.Z".
+This updates package.json, creates a commit, and creates the git tag `vX.Y.Z`.
 
 ## 7 — Publish to npm
 
@@ -73,6 +90,10 @@ ls .github/workflows/publish.yml
   After publishing, configure the npm OIDC Trusted Publisher on
   https://www.npmjs.com/package/@vivid-life-theme/design-system so future releases
   are automated.
+
+**First-publish note:** OIDC Trusted Publisher requires the package to already exist on npm.
+For the very first release, either publish manually (above) or add `NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}`
+to the publish step and configure an `NPM_TOKEN` secret in the GitHub repo.
 
 ## 8 — Push to GitHub
 
