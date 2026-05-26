@@ -14,6 +14,21 @@ ports must update any hard-coded token references before regenerating.
 
 ---
 
+## [0.2.1] - 2026-05-26
+
+### Fixed
+
+- Semantic colors (`--vl-success`, `--vl-warning`, `--vl-error`, `--vl-info`) are now WCAG AA compliant on all four flavor surfaces
+
+### Changed
+
+- Added Prettier pre-commit hook; reformatted codebase with default settings
+- Harmonized README badges with organization profile
+- Added `npm install` command to downstream-ports documentation
+- Documented `publish.yml` workflow in CLAUDE.md config table
+
+---
+
 ## [0.2.0] - 2026-05-26
 
 Initial npm release. The token system existed before this version; this is
@@ -33,5 +48,6 @@ the first release published to the registry.
 
 ---
 
-[unreleased]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.2.0...HEAD
+[unreleased]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.2.1...HEAD
+[0.2.1]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/vivid-life-theme/vivid-life-design-system/releases/tag/v0.2.0
