@@ -1,3 +1,7 @@
+# Build tools — contain SVG-generating template literals; reformatting
+# corrupts embedded attribute delimiters.
+tools/*.mjs
+
 # Generated files — produced deterministically by tools/build-*.mjs.
 # Letting any formatter touch these will cause `npm run check` to report
 # drift on the next CI run.

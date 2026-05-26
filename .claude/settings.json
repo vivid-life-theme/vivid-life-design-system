@@ -15,7 +15,12 @@
       "Bash(node tools/build-previews.mjs*)",
       "Bash(npm run build)",
       "Bash(npm run check)",
-      "Bash(npm run test)"
+      "Bash(npm run test)",
+      "Bash(npm pack*)",
+      "Bash(npm view*)",
+      "Bash(git describe*)",
+      "Bash(git log*)",
+      "Bash(gh run*)"
     ]
   },
   "hooks": {
