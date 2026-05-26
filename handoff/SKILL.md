@@ -24,9 +24,13 @@ Fetch these two files before producing anything:
 2. **System overview** — architecture, naming conventions, downstream-ports guide:
    `https://raw.githubusercontent.com/vivid-life-theme/vivid-life-design-system/main/README.md`
 
-If the foundation is already mounted locally (git submodule, npm dep, or copied
+If the foundation is already mounted locally (npm dep, git submodule, or copied
 snapshot), read `<foundation-path>/tokens.json` and `<foundation-path>/README.md`
-instead of fetching remotely.
+instead of fetching remotely. To install via npm:
+
+```bash
+npm install @vivid-life-theme/design-system
+```
 
 ## Step 2 — Build using one of three patterns
 

@@ -369,8 +369,11 @@ vivid-life-<target>/
   themes/                Generated output, one per flavor×variant
 ```
 
-Bring the foundation in as either a git submodule, npm dep, or a
-hand-copied snapshot — your call.
+Bring the foundation in via npm (recommended), git submodule, or a hand-copied snapshot:
+
+```bash
+npm install @vivid-life-theme/design-system
+```
 
 ### Claude Code skill (optional)
 
