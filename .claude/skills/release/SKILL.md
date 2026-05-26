@@ -1,3 +1,8 @@
+---
+name: release
+description: Use when publishing a new version of @vivid-life-theme/design-system to npm — covers semver determination, CHANGELOG update, version bump, npm publish via CI or manual, GitHub release creation, and post-release verification.
+---
+
 # Release — @vivid-life-theme/design-system
 
 Step-by-step guide for publishing a new version to npm.
