@@ -229,9 +229,9 @@
   --vl-state-selection    : #5b5b5b;
   /* semantic */
   --vl-semantic-success   : #bef264;
-  --vl-semantic-warning   : #eab308;
-  --vl-semantic-danger    : #fca5a5;
-  --vl-semantic-info      : #93c5fd;
+  --vl-semantic-warning   : #fef9c3;
+  --vl-semantic-danger    : #fee2e2;
+  --vl-semantic-info      : #dbeafe;
   /* syntax */
   --syn-comment           : #a3a3a3;
   --syn-keyword           : #d8b4fe;
@@ -288,10 +288,10 @@
   --vl-state-active       : #00000014;
   --vl-state-selection    : #bdbdbd;
   /* semantic */
-  --vl-semantic-success   : #4d7c0f;
-  --vl-semantic-warning   : #a16207;
-  --vl-semantic-danger    : #b91c1c;
-  --vl-semantic-info      : #1d4ed8;
+  --vl-semantic-success   : #365314;
+  --vl-semantic-warning   : #713f12;
+  --vl-semantic-danger    : #7f1d1d;
+  --vl-semantic-info      : #1e3a8a;
   /* syntax */
   --syn-comment           : #525252;
   --syn-keyword           : #7e22ce;
@@ -348,10 +348,10 @@
   --vl-state-active       : #00000014;
   --vl-state-selection    : #e5e5e5;
   /* semantic */
-  --vl-semantic-success   : #4d7c0f;
-  --vl-semantic-warning   : #a16207;
-  --vl-semantic-danger    : #b91c1c;
-  --vl-semantic-info      : #1d4ed8;
+  --vl-semantic-success   : #365314;
+  --vl-semantic-warning   : #713f12;
+  --vl-semantic-danger    : #7f1d1d;
+  --vl-semantic-info      : #1e3a8a;
   /* syntax */
   --syn-comment           : #525252;
   --syn-keyword           : #7e22ce;

@@ -203,9 +203,9 @@ export default {
       },
       "semantic": {
         "success": "#bef264",
-        "warning": "#eab308",
-        "danger": "#fca5a5",
-        "info": "#93c5fd"
+        "warning": "#fef9c3",
+        "danger": "#fee2e2",
+        "info": "#dbeafe"
       },
       "syntax": {
         "comment": "#a3a3a3",
@@ -266,10 +266,10 @@ export default {
         "selection": "#bdbdbd"
       },
       "semantic": {
-        "success": "#4d7c0f",
-        "warning": "#a16207",
-        "danger": "#b91c1c",
-        "info": "#1d4ed8"
+        "success": "#365314",
+        "warning": "#713f12",
+        "danger": "#7f1d1d",
+        "info": "#1e3a8a"
       },
       "syntax": {
         "comment": "#525252",
@@ -330,10 +330,10 @@ export default {
         "selection": "#e5e5e5"
       },
       "semantic": {
-        "success": "#4d7c0f",
-        "warning": "#a16207",
-        "danger": "#b91c1c",
-        "info": "#1d4ed8"
+        "success": "#365314",
+        "warning": "#713f12",
+        "danger": "#7f1d1d",
+        "info": "#1e3a8a"
       },
       "syntax": {
         "comment": "#525252",

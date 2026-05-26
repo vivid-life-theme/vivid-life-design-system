@@ -258,9 +258,9 @@
       },
       semantic: {
         success: "$palette.green.300",
-        warning: "$palette.yellow.500",
-        danger: "$palette.red.300",
-        info: "$palette.blue.300",
+        warning: "$palette.yellow.100",
+        danger: "$palette.red.100",
+        info: "$palette.blue.100",
       },
       syntax: {
         comment: "#a3a3a3",
@@ -323,10 +323,10 @@
         selection: "#bdbdbd",
       },
       semantic: {
-        success: "$palette.green.700",
-        warning: "$palette.yellow.700",
-        danger: "$palette.red.700",
-        info: "$palette.blue.700",
+        success: "$palette.green.900",
+        warning: "$palette.yellow.900",
+        danger: "$palette.red.900",
+        info: "$palette.blue.900",
       },
       syntax: {
         comment: "#525252",
@@ -389,10 +389,10 @@
         selection: "#e5e5e5",
       },
       semantic: {
-        success: "$palette.green.700",
-        warning: "$palette.yellow.700",
-        danger: "$palette.red.700",
-        info: "$palette.blue.700",
+        success: "$palette.green.900",
+        warning: "$palette.yellow.900",
+        danger: "$palette.red.900",
+        info: "$palette.blue.900",
       },
       syntax: {
         comment: "#525252",

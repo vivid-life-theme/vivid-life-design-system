@@ -337,6 +337,20 @@ function check(tokens) {
         );
       }
     }
+    // Semantic colors must be readable (≥4.5:1) on every surface token.
+    const semanticSurfaces = Object.entries(f.surface).filter(
+      ([k]) => k !== "bg_scrim",
+    );
+    for (const [role, color] of Object.entries(f.semantic)) {
+      for (const [sName, sColor] of semanticSurfaces) {
+        const r = contrast(color, sColor);
+        if (r < 4.5) {
+          warns.push(
+            `✗ ${fName}.semantic.${role} (${color}) on ${sName} (${sColor}): ${r.toFixed(2)}:1`,
+          );
+        }
+      }
+    }
   }
   return warns;
 }
