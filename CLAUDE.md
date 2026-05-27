@@ -6,22 +6,22 @@ Foundation for a 4-flavor × 6-variant = 24-theme color system. Source of truth 
 
 | File | Purpose |
 |------|---------|
-| `.claudeignore` | Paths excluded from Claude Code indexing                                        |
-| `.claude/learnings.md` | TODO: add description   |
-| `.claude/settings.json` | Permissions, hooks, environment variables                                       |
-| `.claude/skills/release/SKILL.md` | Full release pipeline — changelog, version bump, CI publish, GitHub release     |
-| `.editorconfig` | Locks indent / EOL / final newline across editors                               |
-| `.githooks/pre-commit` | Keeps Key Config Files table in sync before each commit                         |
-| `.github/workflows/claude-code-review.yml` | Auto-reviews every PR when opened or updated                                    |
-| `.github/workflows/claude.yml` | Responds to @claude mentions in issues and PRs                                  |
-| `.github/workflows/publish.yml` | Publishes to npm on any `v*` tag push via OIDC (no token needed)                |
-| `.gitignore` | Git ignore patterns                                                             |
-| `handoff/README.md` | How downstream ports use the handoff artifacts                                  |
-| `handoff/SKILL.md` | Port-distribution skill — copied into a port's `.claude/skills/`                |
-| `package.json` | npm manifest: exports, files, scripts (build/check/test)                        |
-| `.prettierignore` | Protects generated outputs from any formatter on save                           |
-| `scripts/sync-config-table.sh` | Syncs Key Config Files table with filesystem                                    |
-| `tokens.json` | Generated — resolved flat token map; consumed by downstream ports               |
+| `.claudeignore` | Paths excluded from Claude Code indexing                                         |
+| `.claude/learnings.md` | TODO: add description    |
+| `.claude/settings.json` | Permissions, hooks, environment variables                                        |
+| `.claude/skills/release/SKILL.md` | Full release pipeline — changelog, version bump, CI publish, GitHub release      |
+| `.editorconfig` | Locks indent / EOL / final newline across editors                                |
+| `.githooks/pre-commit` | Keeps Key Config Files table in sync before each commit                          |
+| `.github/workflows/claude-code-review.yml` | Auto-reviews every PR when opened or updated                                     |
+| `.github/workflows/claude.yml` | Responds to @claude mentions in issues and PRs                                   |
+| `.github/workflows/publish.yml` | Publishes to npm on any `v*` tag push via OIDC (no token needed)                 |
+| `.gitignore` | Git ignore patterns                                                              |
+| `handoff/README.md` | How downstream ports use the handoff artifacts                                   |
+| `handoff/SKILL.md` | Port-distribution skill — copied into a port's `.claude/skills/`                 |
+| `package.json` | npm manifest: exports, files, scripts (build/check/test)                         |
+| `.prettierignore` | Protects generated outputs from any formatter on save                            |
+| `scripts/sync-config-table.sh` | Syncs Key Config Files table with filesystem                                     |
+| `tokens.json` | Generated — resolved flat token map; consumed by downstream ports                |
 
 ## Commands
 
