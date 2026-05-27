@@ -75,7 +75,7 @@ re-reads.
 ## Features
 
 - **24 themes** — 4 flavors (Midnight · Twilight · Dawn · Noon) × 6 accent variants (Red · Orange · Yellow · Green · Blue · Purple), all WCAG AA
-- **Syntax token map** — 11 core slots + 15 extended, stable shape across all flavors
+- **Syntax token map** — 12 core slots + 23 extended, stable shape across all flavors
 - **UI tokens** — surfaces, text, borders, interactive states, semantic roles, accent-on
 - **Typography** — [Atkinson Hyperlegible Next + Mono](https://www.brailleinstitute.org/freefont) (OFL-1.1, locally bundled)
 - **Spacing · radii · shadows · motion** — complete foundation token set
@@ -193,24 +193,37 @@ button's label). The rule is delightfully clean:
 
 Defined in `tokens.json5` and emitted to CSS as `--syn-*`.
 
-| Token      | Hue family   |
-| ---------- | ------------ |
-| `comment`  | gray (muted) |
-| `keyword`  | purple       |
-| `string`   | green        |
-| `number`   | orange       |
-| `function` | blue         |
-| `type`     | yellow       |
-| `constant` | orange       |
-| `tag`      | blue         |
-| `attr`     | yellow       |
-| `regex`    | red          |
-| `punct`    | gray         |
+| Token       | Hue family      |
+| ----------- | --------------- |
+| `comment`   | gray (muted)    |
+| `keyword`   | purple          |
+| `string`    | green           |
+| `number`    | orange          |
+| `function`  | blue            |
+| `parameter` | orange (italic) |
+| `type`      | yellow          |
+| `constant`  | orange          |
+| `tag`       | blue            |
+| `attr`      | green           |
+| `regex`     | red             |
+| `punct`     | gray            |
 
-**15 extended tokens** (`variable`, `parameter`, `property`, `operator`,
-`builtin`, `namespace`, `decorator`, `macro`, `lifetime`, `heading`,
-`link`, `selector`, `unit`, `hex`, `shebang`) default-resolve to one of
-the 11 core slots. Ports may override individual entries.
+**23 extended tokens** map each logical name to either a string
+shorthand (a core slot or text/semantic alias) or a
+`{ color?, style? }` object — supporting font-style hints
+(`italic`, `bold`, `underline`) alongside color targets:
+
+- _Repurposed:_ `variable`, `parameter`, `property`, `decorator`
+- _Unchanged:_ `operator`, `builtin`, `namespace`, `macro`, `lifetime`,
+  `heading`, `link`, `selector`, `unit`, `hex`, `shebang`
+- _New:_ `lang_var` (this/self/super), `emphasis` (tinted italic),
+  `strong` (tinted bold), `invalid`, `invalid_deprecated`,
+  `doc_keyword`, `doc_type`, `doc_param`
+
+Color targets may resolve to one of the 12 core slots, a text alias
+(`fg`, `fg_muted`, `fg_subtle`, `fg_disabled`), or a semantic alias
+(`semantic.success | .warning | .danger | .info`). Ports may override
+individual entries.
 
 The token-to-hue mapping is intentionally stable across flavors so a
 file's "shape" reads the same whether you're in Midnight or Noon.

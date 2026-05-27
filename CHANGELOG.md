@@ -14,6 +14,32 @@ ports must update any hard-coded token references before regenerating.
 
 ---
 
+## [0.3.0] - 2026-05-27
+
+Resolves [#2](https://github.com/vivid-life-theme/vivid-life-design-system/issues/2) — syntax-highlighting semantics restructure observed against established themes (Dracula).
+
+### Added
+
+- ⚠️ New core syntax slot: `parameter` (emits `--syn-parameter` per flavor, italic via extended map). Total core slots: 11 → 12.
+- New extended-map entries: `lang_var` (this/self/super), `emphasis` (tinted italic), `strong` (tinted bold), `invalid`, `invalid_deprecated`, `doc_keyword`, `doc_type`, `doc_param`.
+- New `scope_recommendations` block in `tokens.json5` — machine-readable TextMate-scope guidance for ports (covers issue #2 items 5, 6, 9).
+- Markdown / asciidoc / rst `emphasis` and `strong` now ship with both color and style (yellow + italic, orange + bold respectively), matching the Dracula tinted-emphasis pattern.
+
+### Changed
+
+- ⚠️ `attr` slot color reassigned in all four flavors: was yellow (collided with `type`), now green family (`green.300` on dark, `green.700` on light). Ports that rendered against `--syn-attr` will now show green instead of yellow.
+- ⚠️ `decorator` extended-map target changed from `type` → `function`. Decorators are call-site annotations, not type declarations.
+- ⚠️ `property` extended-map target changed from `tag` → `fg`. `obj.foo` now reads as a plain identifier rather than colliding with function/tag blue.
+- `syntax_tokens.extended` map shape expanded: entries may now be either a string (color target shorthand) or an object `{ color?, style? }`. Short string form remains valid (back-compat).
+- Extended-map target vocabulary expanded: `fg_muted`, `fg_subtle`, `fg_disabled`, `semantic.success|warning|danger|info` are valid targets alongside core-slot names.
+
+### Notes for ports
+
+- Item 6 (`variable.other.constant.{js,ts,tsx}` should fall through to `fg`, not `constant`) is a port-side TextMate-scope concern. See `scope_recommendations.fg_fallthrough_jsts` in `tokens.json` for the recommended scope list.
+- The new `parameter` slot's italic styling is delivered via `syntax_tokens.extended.parameter.style` — ports that resolve only `flavors.*.syntax.parameter` get the color, but must read the extended map for the italic.
+
+---
+
 ## [0.2.1] - 2026-05-26
 
 ### Fixed

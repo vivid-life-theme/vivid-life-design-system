@@ -14,12 +14,12 @@
 // String values that begin with "$" are REFERENCES, resolved by the
 // build script:  "$palette.red.500" → "#ef4444"
 //
-// Version 0.2.0 · May 2026
+// Version 0.3.0 · May 2026
 // ════════════════════════════════════════════════════════════════════
 {
   meta: {
     name: "Vivid Life Theme",
-    version: "0.2.0",
+    version: "0.3.0",
     description: "A multi-flavor color scheme system. 4 flavors × 6 variants = 24 themes.",
     source_palette: "https://farben.van-laar.de/",
     inspiration: ["https://catppuccin.com/", "https://draculatheme.com/"],
@@ -159,7 +159,7 @@
   //   border   — border weights
   //   state    — interaction states (hover/active/disabled) as alpha overlays
   //   semantic — success/warning/danger/info
-  //   syntax   — the 11 core syntax token colors
+  //   syntax   — the 12 core syntax token colors
   //   ansi     — full 16-color terminal ANSI palette
 
   flavors: {
@@ -202,10 +202,11 @@
         string: "$palette.green.500",
         number: "$palette.orange.500",
         function: "$palette.blue.300",
+        parameter: "$palette.orange.300", // NEW (issue #2 item 2) — italic via extended map
         type: "$palette.yellow.500",
         constant: "$palette.orange.500",
         tag: "$palette.blue.300",
-        attr: "$palette.yellow.500",
+        attr: "$palette.green.300", // was yellow.500 (issue #2 item 3)
         regex: "$palette.red.500",
         punct: "$palette.gray.300",
       },
@@ -268,10 +269,11 @@
         string: "$palette.green.500",
         number: "$palette.orange.300",
         function: "$palette.blue.300",
+        parameter: "$palette.orange.500", // NEW — deeper than number.300 (only available split on this bg)
         type: "$palette.yellow.500",
         constant: "$palette.orange.300",
         tag: "$palette.blue.300",
-        attr: "$palette.yellow.500",
+        attr: "$palette.green.300", // was yellow.500
         regex: "$palette.red.300",
         punct: "$palette.gray.300",
       },
@@ -334,10 +336,11 @@
         string: "$palette.green.900",
         number: "$palette.orange.700",
         function: "$palette.blue.700",
+        parameter: "$palette.orange.900", // NEW
         type: "$palette.yellow.900",
         constant: "$palette.orange.700",
         tag: "$palette.blue.700",
-        attr: "$palette.yellow.900",
+        attr: "$palette.green.700", // was yellow.900
         regex: "$palette.red.700",
         punct: "$palette.gray.700",
       },
@@ -400,10 +403,11 @@
         string: "$palette.green.900",
         number: "$palette.orange.700",
         function: "$palette.blue.700",
+        parameter: "$palette.orange.900", // NEW
         type: "$palette.yellow.900",
         constant: "$palette.orange.700",
         tag: "$palette.blue.700",
-        attr: "$palette.yellow.900",
+        attr: "$palette.green.700", // was yellow.900
         regex: "$palette.red.700",
         punct: "$palette.gray.700",
       },
@@ -644,9 +648,23 @@
   // ────────────────────────────────────────────────────────────────
   //   10.  SYNTAX TOKEN MAP  —  logical → concrete
   // ────────────────────────────────────────────────────────────────
-  // The 11 "core" tokens are defined directly on each flavor (see
-  // flavors.*.syntax). The 15 "extended" tokens fall back to one of
-  // the core slots — a port may override individual entries.
+  // The 12 "core" tokens are defined directly on each flavor (see
+  // flavors.*.syntax) and emit as `--syn-<name>` CSS variables.
+  //
+  // Extended tokens map a logical name to either:
+  //   • a string shorthand — resolves to { color: <string> }
+  //   • { color?, style? } — color target + optional font-style array
+  //
+  // `color` target vocabulary:
+  //   • core slot name (comment, keyword, …, parameter, …, punct)
+  //   • fg, fg_muted, fg_subtle, fg_disabled  (→ flavors.*.text.*)
+  //   • semantic.success | .warning | .danger | .info  (→ flavors.*.semantic.*)
+  //
+  // `style` values: "italic" | "bold" | "underline"
+  // A missing `color` means style-only (inherits host text color).
+  //
+  // Ports do their own resolution at build time; the foundation
+  // ships this map as metadata.
 
   syntax_tokens: {
     core: [
@@ -655,6 +673,7 @@
       "string",
       "number",
       "function",
+      "parameter",
       "type",
       "constant",
       "tag",
@@ -663,13 +682,16 @@
       "punct",
     ],
     extended: {
-      variable: "fg", // plain identifiers — uses text.fg
-      parameter: "fg", // also italic in supported ports
-      property: "tag", // obj.prop, css property
+      // ── Repurposed (issue #2, items 1, 2, 4) ─────────────────
+      variable: "fg",
+      parameter: { color: "parameter", style: ["italic"] },
+      property: "fg", // obj.foo, css property — was → "tag"
+      decorator: "function", // @foo, #[attr] — was → "type"
+
+      // ── Unchanged ────────────────────────────────────────────
       operator: "keyword", // +, -, =, =>, |
       builtin: "function", // print, len, console.log
       namespace: "type", // module / namespace paths
-      decorator: "type", // @foo, #[attr]
       macro: "function", // println!, vec!
       lifetime: "constant", // Rust 'a, 'static
       heading: "keyword", // markdown # ## ###
@@ -678,11 +700,59 @@
       unit: "number", // css 16px, 200ms
       hex: "string", // css #fff, #abc123
       shebang: "comment", // #!/usr/bin/env bash
+
+      // ── New (items 5, 7, 8, 9, 10) ───────────────────────────
+      lang_var: { color: "constant", style: ["italic"] }, // this/self/super (item 5)
+      emphasis: { color: "type", style: ["italic"] }, // markup.italic + markdown/rst/asciidoc emphasis
+      strong: { color: "number", style: ["bold"] }, // markup.bold + markdown/rst/asciidoc strong
+      invalid: { color: "semantic.danger", style: ["italic", "underline"] },
+      invalid_deprecated: {
+        color: "fg",
+        style: ["italic", "underline"],
+      },
+      doc_keyword: "keyword", // JSDoc @param, @returns, etc.
+      doc_type: { color: "type", style: ["italic"] },
+      doc_param: { color: "parameter", style: ["italic"] },
     },
   },
 
   // ────────────────────────────────────────────────────────────────
-  //   11.  ICONOGRAPHY  —  what to use, per layer
+  //   11.  SCOPE RECOMMENDATIONS  —  TextMate scope → logical slot
+  // ────────────────────────────────────────────────────────────────
+  // Per-slot lists of TextMate scopes that ports SHOULD map to that
+  // slot when generating editor themes. Optional — ports may extend
+  // or override based on their target's grammar coverage.
+  //
+  // These resolve the issue #2 cases that depend on consistent
+  // TextMate-scope handling across ports (items 5, 6, 9).
+
+  scope_recommendations: {
+    // Item 5 — language-level pronouns (not function calls)
+    lang_var: [
+      "variable.language.this",
+      "variable.language.self",
+      "variable.language.super",
+    ],
+
+    // Item 9 — JSDoc / doc-comment children
+    doc_keyword: ["comment.block.documentation keyword"],
+    doc_type: ["comment.block.documentation entity.name.type"],
+    doc_param: ["comment.block.documentation variable"],
+
+    // Item 6 — in JS/TS, `const x = …` is the default declaration form
+    // and should NOT inherit the `constant` color (which would colour
+    // every const noisily). Map these scopes through to `fg` (i.e.
+    // plain identifier). The language-server `variable.readonly`
+    // semantic token should still get the `constant` slot.
+    fg_fallthrough_jsts: [
+      "variable.other.constant.js",
+      "variable.other.constant.ts",
+      "variable.other.constant.tsx",
+    ],
+  },
+
+  // ────────────────────────────────────────────────────────────────
+  //   12.  ICONOGRAPHY  —  what to use, per layer
   // ────────────────────────────────────────────────────────────────
   // Vivid Life Theme does NOT ship its own icon set. Building one for an
   // IDE + OS + apps would be ~5000 glyphs of work for a generation-
