@@ -145,28 +145,8 @@ Add a downstream-ports note at the end of the release body if this release conta
 
 ## Rollback
 
-**Always preferred — deprecate, then ship a fix:**
+See `docs/release-recovery.md` for deprecation, unpublish, tag deletion, and signed-tag recreation steps.
 
-```bash
-npm deprecate @vivid-life-theme/design-system@X.Y.Z "Breaking bug — upgrade to X.Y.Z+1"
-```
+## Feedback
 
-**Within 72 hours only — unpublish:**
-
-```bash
-npm unpublish @vivid-life-theme/design-system@X.Y.Z
-```
-
-To delete a tag (e.g. to re-cut the same version after fixing a workflow):
-
-```bash
-git tag -d vX.Y.Z
-git push --delete origin vX.Y.Z
-```
-
-To recreate and re-push the tag, use a **signed annotated tag** — `tag.gpgsign=true` is set globally on this machine and lightweight tags will fail on push with "keine Tag-Beschreibung?":
-
-```bash
-git tag -s vX.Y.Z <commit-sha> -m "vX.Y.Z"
-git push origin vX.Y.Z
-```
+Did this release go smoothly? If anything went wrong or was unexpected, share it here — I'll log a correction to `.claude/learnings.md` so the next session doesn't repeat it.

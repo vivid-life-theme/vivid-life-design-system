@@ -1,4 +1,5 @@
 dist/
+tokens.json
 fonts/
 preview/
 assets/*.png
