@@ -178,10 +178,11 @@
   --syn-string            : #84cc16;
   --syn-number            : #f97316;
   --syn-function          : #93c5fd;
+  --syn-parameter         : #fdba74;
   --syn-type              : #eab308;
   --syn-constant          : #f97316;
   --syn-tag               : #93c5fd;
-  --syn-attr              : #eab308;
+  --syn-attr              : #bef264;
   --syn-regex             : #ef4444;
   --syn-punct             : #d4d4d4;
   /* ansi */
@@ -238,10 +239,11 @@
   --syn-string            : #84cc16;
   --syn-number            : #fdba74;
   --syn-function          : #93c5fd;
+  --syn-parameter         : #f97316;
   --syn-type              : #eab308;
   --syn-constant          : #fdba74;
   --syn-tag               : #93c5fd;
-  --syn-attr              : #eab308;
+  --syn-attr              : #bef264;
   --syn-regex             : #fca5a5;
   --syn-punct             : #d4d4d4;
   /* ansi */
@@ -298,10 +300,11 @@
   --syn-string            : #365314;
   --syn-number            : #c2410c;
   --syn-function          : #1d4ed8;
+  --syn-parameter         : #7c2d12;
   --syn-type              : #713f12;
   --syn-constant          : #c2410c;
   --syn-tag               : #1d4ed8;
-  --syn-attr              : #713f12;
+  --syn-attr              : #4d7c0f;
   --syn-regex             : #b91c1c;
   --syn-punct             : #404040;
   /* ansi */
@@ -358,10 +361,11 @@
   --syn-string            : #365314;
   --syn-number            : #c2410c;
   --syn-function          : #1d4ed8;
+  --syn-parameter         : #7c2d12;
   --syn-type              : #713f12;
   --syn-constant          : #c2410c;
   --syn-tag               : #1d4ed8;
-  --syn-attr              : #713f12;
+  --syn-attr              : #4d7c0f;
   --syn-regex             : #b91c1c;
   --syn-punct             : #404040;
   /* ansi */
