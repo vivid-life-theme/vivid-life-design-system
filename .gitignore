@@ -4,3 +4,6 @@
 
 # Brainstorming session artifacts
 .superpowers/
+
+# Headroom — machine-local session cache and learnings
+.headroom/
