@@ -4,3 +4,4 @@ fonts/
 preview/
 assets/*.png
 assets/screenshots/
+.superpowers/
