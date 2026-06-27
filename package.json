@@ -1,7 +1,7 @@
 {
   "name": "@vivid-life-theme/design-system",
   "description": "A multi-flavor color scheme system. 4 flavors × 6 variants = 24 themes. WCAG AA verified.",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "license": "MIT",
   "author": {
     "name": "Michael van Laar",
