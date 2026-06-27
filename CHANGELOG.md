@@ -14,6 +14,37 @@ ports must update any hard-coded token references before regenerating.
 
 ---
 
+## [0.4.0] - 2026-06-27
+
+IDE port guidance: semantic tokens, workbench color roles, and comprehensive
+scope recommendations sourced from syntax-highlighting best practices.
+
+### Added
+
+- New `semantic_token_recommendations` section in `tokens.json5` / `tokens.json` —
+  maps all 23 LSP semantic token types and 10 modifiers to design-system slots.
+  Ports should define `semanticTokenColors` alongside `tokenColors`; semantic rules
+  take precedence when a language server is active.
+- New `workbench_color_roles` section — maps severity signals (error/warning/info/
+  success), git decorations, diff editor alpha values, and bracket-pair colorization
+  cycle to design-system tokens. Use `alphaOver()` from `tools/build-tokens.mjs` to
+  bake diff background hex values at port build time.
+- `scope_recommendations` expanded from 5 to 37 entries — all 12 core slots and all
+  25 extended tokens now have canonical TextMate scope lists for VS Code `tokenColors`.
+- New extended tokens: `event` (named events/signals → `function`) and `label`
+  (goto/break labels → `fg` italic).
+
+### Fixed
+
+- `decorator` extended token: was plain `"function"`, now `{ color: "function",
+style: ["italic"] }` — decorators are meta-layer annotations, not runtime calls.
+- `builtin` extended token: was plain `"function"`, now `{ color: "function",
+style: ["italic"] }` — built-ins are provided, not authored ("not yours").
+- `heading` extended token: was plain `"keyword"`, now `{ color: "keyword",
+style: ["bold"] }` — headings are structural anchors; bold is the right signal.
+
+---
+
 ## [0.3.0] - 2026-05-27
 
 Resolves [#2](https://github.com/vivid-life-theme/vivid-life-design-system/issues/2) — syntax-highlighting semantics restructure observed against established themes (Dracula).
@@ -74,6 +105,8 @@ the first release published to the registry.
 
 ---
 
-[unreleased]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.2.1...HEAD
+[unreleased]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.4.0...HEAD
+[0.4.0]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.3.0...v0.4.0
+[0.3.0]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.2.1...v0.3.0
 [0.2.1]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/vivid-life-theme/vivid-life-design-system/releases/tag/v0.2.0
