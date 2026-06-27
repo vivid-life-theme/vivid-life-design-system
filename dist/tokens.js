@@ -577,13 +577,28 @@ export default {
         ]
       },
       "property": "fg",
-      "decorator": "function",
+      "decorator": {
+        "color": "function",
+        "style": [
+          "italic"
+        ]
+      },
       "operator": "keyword",
-      "builtin": "function",
+      "builtin": {
+        "color": "function",
+        "style": [
+          "italic"
+        ]
+      },
       "namespace": "type",
       "macro": "function",
       "lifetime": "constant",
-      "heading": "keyword",
+      "heading": {
+        "color": "keyword",
+        "style": [
+          "bold"
+        ]
+      },
       "link": "tag",
       "selector": "tag",
       "unit": "number",
@@ -633,10 +648,143 @@ export default {
         "style": [
           "italic"
         ]
+      },
+      "event": "function",
+      "label": {
+        "color": "fg",
+        "style": [
+          "italic"
+        ]
       }
     }
   },
   "scope_recommendations": {
+    "comment": [
+      "comment",
+      "comment.line",
+      "comment.block"
+    ],
+    "keyword": [
+      "keyword.control",
+      "keyword.other",
+      "storage.type",
+      "storage.modifier"
+    ],
+    "string": [
+      "string",
+      "string.quoted",
+      "string.template"
+    ],
+    "number": [
+      "constant.numeric",
+      "constant.language"
+    ],
+    "function": [
+      "entity.name.function",
+      "support.function"
+    ],
+    "parameter": [
+      "variable.parameter"
+    ],
+    "type": [
+      "entity.name.type",
+      "entity.name.class",
+      "support.class",
+      "support.type"
+    ],
+    "constant": [
+      "constant.other"
+    ],
+    "tag": [
+      "entity.name.tag"
+    ],
+    "attr": [
+      "entity.other.attribute-name"
+    ],
+    "regex": [
+      "string.regexp"
+    ],
+    "punct": [
+      "punctuation"
+    ],
+    "variable": [
+      "variable.other.readwrite",
+      "variable.other"
+    ],
+    "property": [
+      "variable.other.property",
+      "variable.other.member",
+      "support.type.property-name"
+    ],
+    "decorator": [
+      "entity.name.function.decorator",
+      "meta.decorator entity.name.function",
+      "punctuation.decorator"
+    ],
+    "operator": [
+      "keyword.operator"
+    ],
+    "builtin": [
+      "support.function.builtin",
+      "support.class.builtin",
+      "support.variable.builtin"
+    ],
+    "namespace": [
+      "entity.name.namespace",
+      "entity.name.module"
+    ],
+    "macro": [
+      "entity.name.function.macro",
+      "support.function.macro"
+    ],
+    "lifetime": [
+      "storage.modifier.lifetime.rust",
+      "entity.name.lifetime.rust"
+    ],
+    "heading": [
+      "markup.heading",
+      "entity.name.section",
+      "punctuation.definition.heading"
+    ],
+    "link": [
+      "markup.underline.link",
+      "string.other.link"
+    ],
+    "selector": [
+      "entity.other.pseudo-class",
+      "entity.other.pseudo-element",
+      "meta.selector entity.other.attribute-name"
+    ],
+    "unit": [
+      "keyword.other.unit"
+    ],
+    "hex": [
+      "constant.other.color",
+      "constant.other.color.rgb-value.css"
+    ],
+    "shebang": [
+      "comment.line.shebang"
+    ],
+    "emphasis": [
+      "markup.italic"
+    ],
+    "strong": [
+      "markup.bold"
+    ],
+    "invalid": [
+      "invalid.illegal"
+    ],
+    "invalid_deprecated": [
+      "invalid.deprecated"
+    ],
+    "event": [
+      "variable.other.event",
+      "support.type.event"
+    ],
+    "label": [
+      "entity.name.label",
+      "variable.label"
+    ],
     "lang_var": [
       "variable.language.this",
       "variable.language.self",
@@ -656,6 +804,120 @@ export default {
       "variable.other.constant.ts",
       "variable.other.constant.tsx"
     ]
+  },
+  "semantic_token_recommendations": {
+    "types": {
+      "namespace": "type",
+      "class": "type",
+      "enum": "type",
+      "interface": "type",
+      "struct": "type",
+      "typeParameter": "parameter",
+      "type": "type",
+      "parameter": {
+        "color": "parameter",
+        "style": [
+          "italic"
+        ]
+      },
+      "variable": "fg",
+      "property": "fg",
+      "enumMember": "constant",
+      "decorator": {
+        "color": "function",
+        "style": [
+          "italic"
+        ]
+      },
+      "event": "function",
+      "function": "function",
+      "method": "function",
+      "macro": "function",
+      "label": {
+        "color": "fg",
+        "style": [
+          "italic"
+        ]
+      },
+      "comment": {
+        "color": "comment",
+        "style": [
+          "italic"
+        ]
+      },
+      "string": "string",
+      "keyword": "keyword",
+      "number": "number",
+      "regexp": "regex",
+      "operator": "keyword"
+    },
+    "modifiers": {
+      "declaration": "none",
+      "definition": "none",
+      "readonly": {
+        "color": "constant"
+      },
+      "static": "none",
+      "deprecated": {
+        "style": [
+          "italic",
+          "underline"
+        ]
+      },
+      "abstract": {
+        "style": [
+          "italic"
+        ]
+      },
+      "async": "none",
+      "modification": {
+        "color": "number"
+      },
+      "documentation": {
+        "color": "comment"
+      },
+      "defaultLibrary": {
+        "style": [
+          "italic"
+        ]
+      }
+    }
+  },
+  "workbench_color_roles": {
+    "signals": {
+      "error": "semantic.danger",
+      "warning": "semantic.warning",
+      "info": "semantic.info",
+      "hint": "semantic.info",
+      "success": "semantic.success"
+    },
+    "git": {
+      "added": "semantic.success",
+      "modified": "semantic.info",
+      "deleted": "semantic.danger",
+      "untracked": "semantic.success",
+      "ignored": "comment",
+      "conflicting": "semantic.warning"
+    },
+    "diff": {
+      "inserted_color": "semantic.success",
+      "removed_color": "semantic.danger",
+      "inserted_line_alpha": 0.1,
+      "inserted_gutter_alpha": 0.2,
+      "inserted_text_alpha": 0.25,
+      "removed_line_alpha": 0.1,
+      "removed_gutter_alpha": 0.2,
+      "removed_text_alpha": 0.35
+    },
+    "bracket_pairs": [
+      "fg",
+      "regex",
+      "number",
+      "type",
+      "string",
+      "function"
+    ],
+    "bracket_unexpected": "semantic.danger"
   },
   "iconography": {
     "inline_ui": {

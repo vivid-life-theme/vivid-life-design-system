@@ -208,7 +208,7 @@ Defined in `tokens.json5` and emitted to CSS as `--syn-*`.
 | `regex`     | red             |
 | `punct`     | gray            |
 
-**23 extended tokens** map each logical name to either a string
+**25 extended tokens** map each logical name to either a string
 shorthand (a core slot or text/semantic alias) or a
 `{ color?, style? }` object — supporting font-style hints
 (`italic`, `bold`, `underline`) alongside color targets:
@@ -218,7 +218,7 @@ shorthand (a core slot or text/semantic alias) or a
   `heading`, `link`, `selector`, `unit`, `hex`, `shebang`
 - _New:_ `lang_var` (this/self/super), `emphasis` (tinted italic),
   `strong` (tinted bold), `invalid`, `invalid_deprecated`,
-  `doc_keyword`, `doc_type`, `doc_param`
+  `doc_keyword`, `doc_type`, `doc_param`, `event`, `label`
 
 Color targets may resolve to one of the 12 core slots, a text alias
 (`fg`, `fg_muted`, `fg_subtle`, `fg_disabled`), or a semantic alias

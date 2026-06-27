@@ -682,37 +682,36 @@
       "punct",
     ],
     extended: {
-      // ── Repurposed (issue #2, items 1, 2, 4) ─────────────────
+      // ── Repurposed ────────────────────────────────────────────
       variable: "fg",
       parameter: { color: "parameter", style: ["italic"] },
       property: "fg", // obj.foo, css property — was → "tag"
-      decorator: "function", // @foo, #[attr] — was → "type"
+      decorator: { color: "function", style: ["italic"] }, // @foo, #[attr] — meta layer
 
       // ── Unchanged ────────────────────────────────────────────
       operator: "keyword", // +, -, =, =>, |
-      builtin: "function", // print, len, console.log
+      builtin: { color: "function", style: ["italic"] }, // print, len, console.log — "not yours"
       namespace: "type", // module / namespace paths
       macro: "function", // println!, vec!
       lifetime: "constant", // Rust 'a, 'static
-      heading: "keyword", // markdown # ## ###
+      heading: { color: "keyword", style: ["bold"] }, // markdown # ## ### — structural anchor
       link: "tag", // markdown [text](url)
       selector: "tag", // css .foo, :root
       unit: "number", // css 16px, 200ms
       hex: "string", // css #fff, #abc123
       shebang: "comment", // #!/usr/bin/env bash
 
-      // ── New (items 5, 7, 8, 9, 10) ───────────────────────────
-      lang_var: { color: "constant", style: ["italic"] }, // this/self/super (item 5)
+      // ── New ───────────────────────────────────────────────────
+      lang_var: { color: "constant", style: ["italic"] }, // this/self/super — language-provided
       emphasis: { color: "type", style: ["italic"] }, // markup.italic + markdown/rst/asciidoc emphasis
       strong: { color: "number", style: ["bold"] }, // markup.bold + markdown/rst/asciidoc strong
       invalid: { color: "semantic.danger", style: ["italic", "underline"] },
-      invalid_deprecated: {
-        color: "fg",
-        style: ["italic", "underline"],
-      },
+      invalid_deprecated: { color: "fg", style: ["italic", "underline"] },
       doc_keyword: "keyword", // JSDoc @param, @returns, etc.
       doc_type: { color: "type", style: ["italic"] },
       doc_param: { color: "parameter", style: ["italic"] },
+      event: "function", // named event/signal (onClick, onError) — treat like a function
+      label: { color: "fg", style: ["italic"] }, // goto/break label — rare, mark as unusual
     },
   },
 
@@ -720,30 +719,105 @@
   //   11.  SCOPE RECOMMENDATIONS  —  TextMate scope → logical slot
   // ────────────────────────────────────────────────────────────────
   // Per-slot lists of TextMate scopes that ports SHOULD map to that
-  // slot when generating editor themes. Optional — ports may extend
+  // slot when generating tokenColors rules. Optional — ports may extend
   // or override based on their target's grammar coverage.
-  //
-  // These resolve the issue #2 cases that depend on consistent
-  // TextMate-scope handling across ports (items 5, 6, 9).
 
   scope_recommendations: {
-    // Item 5 — language-level pronouns (not function calls)
+    // Per-slot TextMate scope lists. Ports SHOULD map these scopes to
+    // the named slot when generating tokenColors rules. Lists are ordered
+    // from most specific (prefer) to most general (fallback).
+    // Use VS Code "Developer: Inspect Editor Tokens and Scopes" to
+    // confirm the exact scope stack for any token before writing a rule.
+
+    // ── Core tokens ───────────────────────────────────────────────────
+    comment: ["comment", "comment.line", "comment.block"],
+    keyword: [
+      "keyword.control",
+      "keyword.other",
+      "storage.type",
+      "storage.modifier",
+    ],
+    string: ["string", "string.quoted", "string.template"],
+    number: [
+      "constant.numeric",
+      "constant.language", // true, false, null, undefined
+    ],
+    function: ["entity.name.function", "support.function"],
+    parameter: ["variable.parameter"],
+    type: [
+      "entity.name.type",
+      "entity.name.class",
+      "support.class",
+      "support.type",
+    ],
+    constant: [
+      "constant.other",
+      // NOTE: variable.other.constant.{js,ts,tsx} → fg; see fg_fallthrough_jsts
+    ],
+    tag: ["entity.name.tag"],
+    attr: ["entity.other.attribute-name"],
+    regex: ["string.regexp"],
+    punct: ["punctuation"],
+
+    // ── Extended tokens ───────────────────────────────────────────────
+    variable: ["variable.other.readwrite", "variable.other"],
+    property: [
+      "variable.other.property",
+      "variable.other.member",
+      "support.type.property-name",
+    ],
+    decorator: [
+      "entity.name.function.decorator",
+      "meta.decorator entity.name.function",
+      "punctuation.decorator",
+    ],
+    operator: ["keyword.operator"],
+    builtin: [
+      "support.function.builtin",
+      "support.class.builtin",
+      "support.variable.builtin",
+    ],
+    namespace: ["entity.name.namespace", "entity.name.module"],
+    macro: ["entity.name.function.macro", "support.function.macro"],
+    lifetime: ["storage.modifier.lifetime.rust", "entity.name.lifetime.rust"],
+    heading: [
+      "markup.heading",
+      "entity.name.section",
+      "punctuation.definition.heading",
+    ],
+    link: ["markup.underline.link", "string.other.link"],
+    selector: [
+      "entity.other.pseudo-class",
+      "entity.other.pseudo-element",
+      "meta.selector entity.other.attribute-name",
+    ],
+    unit: ["keyword.other.unit"],
+    hex: ["constant.other.color", "constant.other.color.rgb-value.css"],
+    shebang: ["comment.line.shebang"],
+    emphasis: ["markup.italic"],
+    strong: ["markup.bold"],
+    invalid: ["invalid.illegal"],
+    invalid_deprecated: ["invalid.deprecated"],
+    event: ["variable.other.event", "support.type.event"],
+    label: ["entity.name.label", "variable.label"],
+
+    // ── Specific overrides ────────────────────────────────────────────
+    // language-level pronouns (not function calls)
     lang_var: [
       "variable.language.this",
       "variable.language.self",
       "variable.language.super",
     ],
 
-    // Item 9 — JSDoc / doc-comment children
+    // JSDoc / doc-comment children
     doc_keyword: ["comment.block.documentation keyword"],
     doc_type: ["comment.block.documentation entity.name.type"],
     doc_param: ["comment.block.documentation variable"],
 
-    // Item 6 — in JS/TS, `const x = …` is the default declaration form
-    // and should NOT inherit the `constant` color (which would colour
-    // every const noisily). Map these scopes through to `fg` (i.e.
-    // plain identifier). The language-server `variable.readonly`
-    // semantic token should still get the `constant` slot.
+    // In JS/TS, `const x = …` is the default declaration form and should
+    // NOT inherit the `constant` color (that would color every const noisily).
+    // Map these scopes to `fg`. The language-server `variable.readonly`
+    // semantic token should still resolve to the `constant` slot.
     fg_fallthrough_jsts: [
       "variable.other.constant.js",
       "variable.other.constant.ts",
@@ -752,7 +826,122 @@
   },
 
   // ────────────────────────────────────────────────────────────────
-  //   12.  ICONOGRAPHY  —  what to use, per layer
+  //   12.  SEMANTIC TOKEN RECOMMENDATIONS
+  //         VS Code LSP semantic token types → design system slots
+  // ────────────────────────────────────────────────────────────────
+  // Define semanticTokenColors entries alongside tokenColors.
+  // When a semantic rule and a TextMate rule conflict, semantic wins.
+  // Selector syntax: (tokenType)(.modifier)*(:language)?
+  //   "variable"           all variables, any language
+  //   "*.readonly"         all readonly tokens, any type
+  //   "class:java"         classes in Java only
+  //   "variable.readonly"  read-only variables, any language
+
+  semantic_token_recommendations: {
+    // ── 24 standard token types ───────────────────────────────────────
+    // Color targets reference the same slot names as syntax_tokens.extended.
+    // Ports resolve each slot to the per-flavor hex at build time.
+    types: {
+      namespace: "type",
+      class: "type",
+      enum: "type",
+      interface: "type",
+      struct: "type",
+      typeParameter: "parameter", // generic <T> — orange; distinct from concrete type
+      type: "type",
+      parameter: { color: "parameter", style: ["italic"] },
+      variable: "fg",
+      property: "fg",
+      enumMember: "constant",
+      decorator: { color: "function", style: ["italic"] },
+      event: "function",
+      function: "function",
+      method: "function",
+      macro: "function",
+      label: { color: "fg", style: ["italic"] },
+      comment: { color: "comment", style: ["italic"] },
+      string: "string",
+      keyword: "keyword",
+      number: "number",
+      regexp: "regex",
+      operator: "keyword",
+    },
+
+    // ── 11 semantic token modifiers ───────────────────────────────────
+    // A modifier overrides ONLY the specified properties; all other
+    // properties inherit from the base type mapping above.
+    // Use selector "*.modifier" in semanticTokenColors for global rules.
+    // "none" = no additional style beyond the base type.
+    modifiers: {
+      declaration: "none",
+      definition: "none",
+      readonly: { color: "constant" }, // treat as a named constant
+      static: "none",
+      deprecated: { style: ["italic", "underline"] },
+      abstract: { style: ["italic"] }, // marks incomplete / virtual
+      async: "none",
+      modification: { color: "number" }, // orange — aligns with diff-modified
+      documentation: { color: "comment" },
+      defaultLibrary: { style: ["italic"] }, // "not yours"
+    },
+  },
+
+  // ────────────────────────────────────────────────────────────────
+  //   13.  WORKBENCH COLOR ROLES  —  UI chrome / editor chrome
+  // ────────────────────────────────────────────────────────────────
+  // Maps design-system tokens to VS Code workbench color categories.
+  // Use the SAME hue for each severity role everywhere it appears:
+  // squiggles, gutter, overview ruler, status bar, minimap, panel.
+  //
+  // Alpha compositing for diff / overlay backgrounds:
+  //   use alphaOver(color, flavor_bg, alpha) from tools/build-tokens.mjs
+  //   to bake a concrete hex value at port build time.
+
+  workbench_color_roles: {
+    // ── Signals (error / warning / info / success) ────────────────────
+    signals: {
+      error: "semantic.danger",
+      warning: "semantic.warning",
+      info: "semantic.info",
+      hint: "semantic.info",
+      success: "semantic.success",
+    },
+
+    // ── Git decorations ───────────────────────────────────────────────
+    // Apply identically to: gitDecoration.*, editorGutter.*,
+    // editorOverviewRuler.*, minimapGutter.*, diffEditor.*
+    git: {
+      added: "semantic.success",
+      modified: "semantic.info",
+      deleted: "semantic.danger",
+      untracked: "semantic.success",
+      ignored: "comment",
+      conflicting: "semantic.warning",
+    },
+
+    // ── Diff editor ───────────────────────────────────────────────────
+    // Alpha values are composited over the flavor's surface.bg.
+    // Bake: alphaOver(tokens.flavors[f].semantic[role], tokens.flavors[f].surface.bg, alpha)
+    diff: {
+      inserted_color: "semantic.success",
+      removed_color: "semantic.danger",
+      inserted_line_alpha: 0.1,
+      inserted_gutter_alpha: 0.2,
+      inserted_text_alpha: 0.25,
+      removed_line_alpha: 0.1,
+      removed_gutter_alpha: 0.2,
+      removed_text_alpha: 0.35,
+    },
+
+    // ── Bracket pair colorization ─────────────────────────────────────
+    // Cycle these design-system slots in level order.
+    // Resolve each slot to the per-flavor hex at port build time.
+    bracket_pairs: ["fg", "regex", "number", "type", "string", "function"],
+    bracket_unexpected: "semantic.danger",
+  },
+
+  // ────────────────────────────────────────────────────────────────
+  //   14.  ICONOGRAPHY  —  what to use, per layer
   // ────────────────────────────────────────────────────────────────
   // Vivid Life Theme does NOT ship its own icon set. Building one for an
   // IDE + OS + apps would be ~5000 glyphs of work for a generation-
