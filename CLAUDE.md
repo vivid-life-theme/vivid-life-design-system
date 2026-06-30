@@ -39,19 +39,6 @@ Always run `npm run build` after any change to `tokens.json5`. Underlying script
 
 @handoff/SKILL.md **Read when:** explaining how downstream ports should consume the foundation, or when working on the handoff workflow itself.
 
-## Structure
-
-```
-tokens.json5         ← single source of truth (edit this)
-tokens.json          ← generated (do not hand-edit)
-dist/tokens.js       ← generated ES module (do not hand-edit)
-colors_and_type.css  ← generated CSS (do not hand-edit)
-tools/               Build scripts with WCAG checking
-fonts/               Atkinson Hyperlegible Next + Mono (OFL-1.1)
-assets/              Logo SVGs, wordmark, icon PNGs
-preview/             HTML reference cards (01-kitchen-sink.html is canonical)
-```
-
 ## Conventions
 
 - `tokens.json5` is the only file you hand-edit; all outputs are generated.
@@ -59,16 +46,6 @@ preview/             HTML reference cards (01-kitchen-sink.html is canonical)
 - Flavor order in any listing: Midnight → Twilight → Dawn → Noon.
 - Cyan is not a variant — it exists only for ANSI/diff-hunk protocol uses.
 - Don't add a serif typeface; the brand uses Atkinson Hyperlegible (sans + mono only).
-
-## Setup (per clone)
-
-Run once after cloning to activate the pre-commit hook:
-
-```bash
-git config core.hooksPath .githooks
-```
-
-Without this, gitleaks scanning and the config-table sync don't run.
 
 ## Don't
 

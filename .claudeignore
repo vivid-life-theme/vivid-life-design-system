@@ -3,4 +3,6 @@ tokens.json
 fonts/
 preview/
 assets/*.png
+assets/*.svg
 assets/screenshots/
+handoff/
