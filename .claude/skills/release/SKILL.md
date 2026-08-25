@@ -1,6 +1,7 @@
 ---
 name: release
 description: Use when publishing a new version of @vivid-life-theme/design-system to npm. Invoke any time the user mentions releasing, publishing, cutting a release, bumping the version, shipping a new version, or tagging — even if they phrase it casually ("ready to release", "let's ship 0.3", "bump to minor"). Covers the full pipeline: change analysis, semver recommendation with explicit user confirmation, CHANGELOG update, version bump, CI publish via OIDC, GitHub release creation, and post-release verification.
+disable-model-invocation: true
 ---
 
 # Release — @vivid-life-theme/design-system
