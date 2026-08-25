@@ -3,5 +3,7 @@ tokens.json
 fonts/
 preview/
 assets/*.png
+assets/*.svg
 assets/screenshots/
 .superpowers/
+handoff/

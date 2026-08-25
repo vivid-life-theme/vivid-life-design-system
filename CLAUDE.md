@@ -6,21 +6,21 @@ Foundation for a 4-flavor × 6-variant = 24-theme color system. Source of truth 
 
 | File | Purpose |
 |------|---------|
-| `.claudeignore` | Paths excluded from Claude Code indexing                                       |
-| `.claude/settings.json` | Permissions, hooks, environment variables                                      |
-| `.claude/skills/release/SKILL.md` | Full release pipeline — changelog, version bump, CI publish, GitHub release    |
-| `.editorconfig` | Locks indent / EOL / final newline across editors                              |
-| `.githooks/pre-commit` | Keeps Key Config Files table in sync before each commit                        |
-| `.github/workflows/claude-code-review.yml` | Auto-reviews every PR when opened or updated                                   |
-| `.github/workflows/claude.yml` | Responds to @claude mentions in issues and PRs                                 |
-| `.github/workflows/publish.yml` | Publishes to npm on any `v*` tag push via OIDC (no token needed)               |
-| `.gitignore` | Git ignore patterns                                                            |
-| `handoff/README.md` | How downstream ports use the handoff artifacts                                 |
-| `handoff/SKILL.md` | Port-distribution skill — copied into a port's `.claude/skills/`               |
-| `package.json` | npm manifest: exports, files, scripts (build/check/test)                       |
-| `.prettierignore` | Protects generated outputs from any formatter on save                          |
-| `scripts/sync-config-table.sh` | Syncs Key Config Files table with filesystem                                   |
-| `tokens.json` | Generated — resolved flat token map; consumed by downstream ports              |
+| `.claudeignore` | Paths excluded from Claude Code indexing                                     |
+| `.claude/settings.json` | Permissions, hooks, environment variables                                    |
+| `.claude/skills/release/SKILL.md` | Full release pipeline — changelog, version bump, CI publish, GitHub release  |
+| `.editorconfig` | Locks indent / EOL / final newline across editors                            |
+| `.githooks/pre-commit` | Keeps Key Config Files table in sync before each commit                      |
+| `.github/workflows/claude-code-review.yml` | Auto-reviews every PR when opened or updated                                 |
+| `.github/workflows/claude.yml` | Responds to @claude mentions in issues and PRs                               |
+| `.github/workflows/publish.yml` | Publishes to npm on any `v*` tag push via OIDC (no token needed)             |
+| `.gitignore` | Git ignore patterns                                                          |
+| `handoff/README.md` | How downstream ports use the handoff artifacts                               |
+| `handoff/SKILL.md` | Port-distribution skill — copied into a port's `.claude/skills/`             |
+| `package.json` | npm manifest: exports, files, scripts (build/check/test)                     |
+| `.prettierignore` | Protects generated outputs from any formatter on save                        |
+| `scripts/sync-config-table.sh` | Syncs Key Config Files table with filesystem                                 |
+| `tokens.json` | Generated — resolved flat token map; consumed by downstream ports            |
 
 ## Commands
 
@@ -38,19 +38,6 @@ Always run `npm run build` after any change to `tokens.json5`. Underlying script
 
 @handoff/SKILL.md **Read when:** explaining how downstream ports should consume the foundation, or when working on the handoff workflow itself.
 
-## Structure
-
-```
-tokens.json5         ← single source of truth (edit this)
-tokens.json          ← generated (do not hand-edit)
-dist/tokens.js       ← generated ES module (do not hand-edit)
-colors_and_type.css  ← generated CSS (do not hand-edit)
-tools/               Build scripts with WCAG checking
-fonts/               Atkinson Hyperlegible Next + Mono (OFL-1.1)
-assets/              Logo SVGs, wordmark, icon PNGs
-preview/             HTML reference cards (01-kitchen-sink.html is canonical)
-```
-
 ## Conventions
 
 - `tokens.json5` is the only file you hand-edit; all outputs are generated.
@@ -58,16 +45,6 @@ preview/             HTML reference cards (01-kitchen-sink.html is canonical)
 - Flavor order in any listing: Midnight → Twilight → Dawn → Noon.
 - Cyan is not a variant — it exists only for ANSI/diff-hunk protocol uses.
 - Don't add a serif typeface; the brand uses Atkinson Hyperlegible (sans + mono only).
-
-## Setup (per clone)
-
-Run once after cloning to activate the pre-commit hook:
-
-```bash
-git config core.hooksPath .githooks
-```
-
-Without this, gitleaks scanning and the config-table sync don't run.
 
 ## Don't
 
@@ -86,11 +63,22 @@ summary to .claude/learnings.md. Don't modify CLAUDE.md directly.
 When compacting, preserve: list of modified files, current test status, open TODOs, and key decisions made.
 
 <!-- headroom:learn:start -->
+
 ## Headroom Learned Patterns
-*Auto-generated by `headroom learn` on 2026-06-27 — do not edit manually*
+
+_Auto-generated by `headroom learn` on 2026-06-27 — do not edit manually_
+
+### Git Workflow
+
+_~400 tokens/session saved_
+
+- Before invoking `commit-push-pr` (or any push flow), run `git fetch && git status` to check for upstream divergence. If remote has new commits, merge/rebase before making local edits — otherwise the git pull inside the skill will abort with 'local changes would be overwritten'.
+- Do NOT use `git stash drop` in auto mode — the auto-mode classifier blocks it as irreversible local destruction. Use `git stash pop` (apply + drop atomically) instead, or ask the user to drop the stash manually.
 
 ### Related Repositories
-*~9,000 tokens/session saved*
+
+_~9,000 tokens/session saved_
+
 - Design tokens are in `tokens.json5` (NOT `tokens.json`) at the design-system root; query values via inline `node -e` scripts rather than reading the raw file.
 - For targeted token lookups, prefer `grep -n <pattern> tokens.json5` over reading the full file — the file is read 8+ times per session when grep would suffice for most lookups.
 

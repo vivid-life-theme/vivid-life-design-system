@@ -24,6 +24,12 @@
       "Bash(npm view*)",
       "Bash(git describe*)",
       "Bash(git log*)",
+      "Bash(git fetch*)",
+      "Bash(git diff*)",
+      "Bash(git show*)",
+      "Bash(git tag*)",
+      "Bash(git branch*)",
+      "Bash(git status*)",
       "Bash(gh run*)"
     ]
   },
