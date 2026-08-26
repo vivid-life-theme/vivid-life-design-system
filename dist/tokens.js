@@ -116,6 +116,7 @@ export default {
       "type": "dark",
       "surface": {
         "bg": "#171717",
+        "bg_inset": "#434f60",
         "bg_soft": "#404040",
         "bg_sunk": "#0a0a0a",
         "bg_overlay": "#404040",
@@ -181,6 +182,7 @@ export default {
       "type": "dark",
       "surface": {
         "bg": "#404040",
+        "bg_inset": "#647287",
         "bg_soft": "#525252",
         "bg_sunk": "#171717",
         "bg_overlay": "#525252",
@@ -246,6 +248,7 @@ export default {
       "type": "light",
       "surface": {
         "bg": "#d4d4d4",
+        "bg_inset": "#788ba5",
         "bg_soft": "#f5f5f5",
         "bg_sunk": "#bdbdbd",
         "bg_overlay": "#f5f5f5",
@@ -311,6 +314,7 @@ export default {
       "type": "light",
       "surface": {
         "bg": "#f5f5f5",
+        "bg_inset": "#91a0b6",
         "bg_soft": "#ffffff",
         "bg_sunk": "#d4d4d4",
         "bg_overlay": "#ffffff",

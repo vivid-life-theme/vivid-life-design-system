@@ -477,6 +477,16 @@ See `preview/03-iconography.html` for the live spec and
   `color-mix` (25% accent + 75% bg). Requires a recent browser
   (color-mix is in all 2023+ browsers). Ports targeting older
   environments should bake selection in at build time.
+- **`surface.bg_inset`** is for docked structural chrome — sidebar,
+  bottom panel, integrated terminal, status bar — as one visual group,
+  distinct from the editor/content canvas (`bg`). It's a fixed,
+  low-saturation cool-slate tint, the same hue family on every flavor,
+  deliberately _not_ derived from `--vl-accent` (so it doesn't shift
+  per variant and doesn't compete with syntax/ANSI hues). It is
+  **exempt** from the semantic-vs-surface WCAG gate that other surface
+  tokens satisfy — success/warning/danger/info banners render on `bg`
+  or `bg_soft`, never directly on `bg_inset`. Ports should not stack
+  alert/badge components on it without re-checking contrast.
 
 ---
 

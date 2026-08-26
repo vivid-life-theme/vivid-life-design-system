@@ -154,7 +154,7 @@
   //   4.  FLAVORS  —  the 4 base themes
   // ────────────────────────────────────────────────────────────────
   // Each flavor defines:
-  //   surface  — background layers (bg / lifted / sunk / overlay / scrim)
+  //   surface  — background layers (bg / inset / lifted / sunk / overlay / scrim)
   //   text     — foreground layers
   //   border   — border weights
   //   state    — interaction states (hover/active/disabled) as alpha overlays
@@ -169,6 +169,7 @@
       type: "dark",
       surface: {
         bg: "$palette.gray.900", // #171717
+        bg_inset: "#434f60", // docked structural chrome (sidebar/panel/terminal/status bar) — fixed cool-slate tint, NOT a variant/accent color; see README § surface hierarchy. Exempt from the semantic-vs-surface WCAG gate (banners render on bg/bg_soft, never on bg_inset).
         bg_soft: "$palette.gray.700", // lifted panels
         bg_sunk: "#0a0a0a", // slightly below canvas — outside strict palette
         bg_overlay: "$palette.gray.700", // floating menus, dropdowns
@@ -236,6 +237,7 @@
       type: "dark",
       surface: {
         bg: "$palette.gray.700", // #404040
+        bg_inset: "#647287", // docked structural chrome (sidebar/panel/terminal/status bar) — fixed cool-slate tint, NOT a variant/accent color; see README § surface hierarchy. Exempt from the semantic-vs-surface WCAG gate (banners render on bg/bg_soft, never on bg_inset).
         bg_soft: "#525252", // neutral-600; lifted
         bg_sunk: "$palette.gray.900", // deeper recess
         bg_overlay: "#525252",
@@ -303,6 +305,7 @@
       type: "light",
       surface: {
         bg: "$palette.gray.300", // #d4d4d4
+        bg_inset: "#788ba5", // docked structural chrome (sidebar/panel/terminal/status bar) — fixed cool-slate tint, NOT a variant/accent color; see README § surface hierarchy. Exempt from the semantic-vs-surface WCAG gate (banners render on bg/bg_soft, never on bg_inset).
         bg_soft: "$palette.gray.100", // lifted
         bg_sunk: "#bdbdbd", // outside strict palette
         bg_overlay: "$palette.gray.100",
@@ -370,6 +373,7 @@
       type: "light",
       surface: {
         bg: "$palette.gray.100", // #f5f5f5
+        bg_inset: "#91a0b6", // docked structural chrome (sidebar/panel/terminal/status bar) — fixed cool-slate tint, NOT a variant/accent color; see README § surface hierarchy. Exempt from the semantic-vs-surface WCAG gate (banners render on bg/bg_soft, never on bg_inset).
         bg_soft: "#ffffff",
         bg_sunk: "$palette.gray.300",
         bg_overlay: "#ffffff",

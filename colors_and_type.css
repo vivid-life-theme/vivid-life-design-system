@@ -150,6 +150,7 @@
 .vl-midnight {
   /* surface */
   --vl-bg                 : #171717;
+  --vl-bg-inset           : #434f60;
   --vl-bg-soft            : #404040;
   --vl-bg-sunk            : #0a0a0a;
   --vl-bg-overlay         : #404040;
@@ -211,6 +212,7 @@
 .vl-twilight {
   /* surface */
   --vl-bg                 : #404040;
+  --vl-bg-inset           : #647287;
   --vl-bg-soft            : #525252;
   --vl-bg-sunk            : #171717;
   --vl-bg-overlay         : #525252;
@@ -272,6 +274,7 @@
 .vl-dawn {
   /* surface */
   --vl-bg                 : #d4d4d4;
+  --vl-bg-inset           : #788ba5;
   --vl-bg-soft            : #f5f5f5;
   --vl-bg-sunk            : #bdbdbd;
   --vl-bg-overlay         : #f5f5f5;
@@ -333,6 +336,7 @@
 .vl-noon {
   /* surface */
   --vl-bg                 : #f5f5f5;
+  --vl-bg-inset           : #91a0b6;
   --vl-bg-soft            : #ffffff;
   --vl-bg-sunk            : #d4d4d4;
   --vl-bg-overlay         : #ffffff;

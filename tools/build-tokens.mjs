@@ -337,9 +337,11 @@ function check(tokens) {
         );
       }
     }
-    // Semantic colors must be readable (≥4.5:1) on every surface token.
+    // Semantic colors must be readable (≥4.5:1) on every surface token
+    // except bg_scrim (a translucent overlay, not a fill) and bg_inset
+    // (docked structural chrome — banners render on bg/bg_soft, never here).
     const semanticSurfaces = Object.entries(f.surface).filter(
-      ([k]) => k !== "bg_scrim",
+      ([k]) => k !== "bg_scrim" && k !== "bg_inset",
     );
     for (const [role, color] of Object.entries(f.semantic)) {
       for (const [sName, sColor] of semanticSurfaces) {
