@@ -95,7 +95,7 @@ This updates package.json, creates a commit (`v0.3.0`), and creates the git tag 
 git push && git push --tags
 ```
 
-The publish workflow (`.github/workflows/publish.yml`) fires automatically on any `v*` tag push and runs `npm publish --provenance --access public` via OIDC — no token needed.
+The publish workflow (`.github/workflows/publish-to-npm.yml`) fires automatically on any `v*` tag push and runs `npm publish --provenance --access public` via OIDC — no token needed.
 
 Watch the workflow run at:
 https://github.com/vivid-life-theme/vivid-life-design-system/actions
