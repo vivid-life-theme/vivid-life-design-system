@@ -14,6 +14,27 @@ ports must update any hard-coded token references before regenerating.
 
 ---
 
+## [0.5.0] - 2026-08-26
+
+New surface token for docked structural chrome (sidebar, panel, terminal,
+status bar), so ports can visually separate it from the editor canvas
+instead of the two reading as the same background.
+
+### Added
+
+- New `surface.bg_inset` token, one per flavor — a fixed, low-saturation
+  cool-slate tint (not accent-derived, so it doesn't shift per variant and
+  doesn't compete with syntax/ANSI hues). Exempt from the semantic-vs-surface
+  WCAG gate: alert/banner colors keep rendering on `bg`/`bg_soft`, never
+  directly on `bg_inset` — see README § Caveats.
+
+### Changed
+
+- `tools/build-tokens.mjs` — the semantic-vs-surface contrast check now
+  excludes `bg_inset` alongside `bg_scrim`.
+
+---
+
 ## [0.4.0] - 2026-06-27
 
 IDE port guidance: semantic tokens, workbench color roles, and comprehensive
@@ -105,7 +126,8 @@ the first release published to the registry.
 
 ---
 
-[unreleased]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.4.0...HEAD
+[unreleased]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.5.0...HEAD
+[0.5.0]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.2.1...v0.3.0
 [0.2.1]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.2.0...v0.2.1
