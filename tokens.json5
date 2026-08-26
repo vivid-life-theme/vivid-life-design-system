@@ -174,6 +174,7 @@
         bg_sunk: "#0a0a0a", // slightly below canvas — outside strict palette
         bg_overlay: "$palette.gray.700", // floating menus, dropdowns
         bg_scrim: "#000000cc", // modal backdrop (80% black)
+        bg_terminal: "$flavors.midnight.surface.bg_sunk", // verified ≥4.5:1 vs every ansi.* color except ansi.black (intentional reverse-video anchor, == this value); see issue #5
       },
       text: {
         fg: "$palette.gray.100",
@@ -220,7 +221,7 @@
         magenta: "$palette.purple.300",
         cyan: "$palette.cyan.500",
         white: "$palette.gray.300",
-        bright_black: "$palette.gray.700",
+        bright_black: "#878787", // was $palette.gray.700 (#404040) — that shade only cleared 1.9:1 against bg_sunk/bg_terminal; #878787 clears 5.5:1. Dedicated literal (not a palette ref) so it doesn't move borders/text that also reference gray.700. See issue #5.
         bright_red: "$palette.red.300",
         bright_green: "$palette.green.300",
         bright_yellow: "$palette.yellow.300",
@@ -242,6 +243,7 @@
         bg_sunk: "$palette.gray.900", // deeper recess
         bg_overlay: "#525252",
         bg_scrim: "#000000bb",
+        bg_terminal: "$flavors.twilight.surface.bg_sunk", // verified ≥4.5:1 vs every ansi.* color except ansi.black (intentional reverse-video anchor, == this value); see issue #5
       },
       text: {
         fg: "$palette.gray.100",
@@ -288,7 +290,7 @@
         magenta: "$palette.purple.300",
         cyan: "$palette.cyan.500",
         white: "$palette.gray.300",
-        bright_black: "$palette.gray.500",
+        bright_black: "#878787", // was $palette.gray.500 (#737373) — that shade only cleared 3.8:1 against bg_sunk/bg_terminal; #878787 clears 5.0:1. Dedicated literal (not a palette ref) so it doesn't move borders/text/comment that also reference gray.500. See issue #5.
         bright_red: "$palette.red.300",
         bright_green: "$palette.green.300",
         bright_yellow: "$palette.yellow.300",
@@ -310,6 +312,7 @@
         bg_sunk: "#bdbdbd", // outside strict palette
         bg_overlay: "$palette.gray.100",
         bg_scrim: "#17171788",
+        bg_terminal: "$flavors.dawn.surface.bg_soft", // verified ≥4.5:1 vs every ansi.* color except ansi.white and ansi.bright_white (intentional reverse-video anchors — bright_white == this value); see issue #5
       },
       text: {
         fg: "$palette.gray.900",
@@ -356,7 +359,7 @@
         magenta: "$palette.purple.700",
         cyan: "$palette.cyan.700",
         white: "$palette.gray.300",
-        bright_black: "$palette.gray.500",
+        bright_black: "#656565", // was $palette.gray.500 (#737373) — that shade only cleared 4.35:1 against bg_soft/bg_terminal (below AA); #656565 clears 5.3:1. Dedicated literal (not a palette ref) so it doesn't move borders/state that also reference gray.500. See issue #5.
         bright_red: "$palette.red.900",
         bright_green: "$palette.green.900",
         bright_yellow: "$palette.yellow.900",
@@ -378,6 +381,7 @@
         bg_sunk: "$palette.gray.300",
         bg_overlay: "#ffffff",
         bg_scrim: "#17171788",
+        bg_terminal: "$flavors.noon.surface.bg_soft", // verified ≥4.5:1 vs every ansi.* color except ansi.bright_white (intentional reverse-video anchor); bright_black already clears 4.7:1 unchanged. See issue #5
       },
       text: {
         fg: "$palette.gray.900",
