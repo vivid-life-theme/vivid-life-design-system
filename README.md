@@ -365,6 +365,10 @@ site):
    `syntax_tokens.extended.{token}`.
 4. **If you need a value not in tokens**, open an issue / PR against
    this repo. Don't paper over it port-side.
+5. **For a terminal-emulator background** (VS Code's `terminal.background`
+   and equivalents), use `surface.bg_terminal`, not `bg`/`bg_sunk`/`bg_soft`
+   directly. It's the only surface tier verified against all 16 `ansi.*`
+   colors per flavor — see the `bg_terminal` caveat below.
 
 A port repo should look like:
 
@@ -487,6 +491,23 @@ See `preview/03-iconography.html` for the live spec and
   tokens satisfy — success/warning/danger/info banners render on `bg`
   or `bg_soft`, never directly on `bg_inset`. Ports should not stack
   alert/badge components on it without re-checking contrast.
+- **`surface.bg_terminal`** is the only surface tier verified to clear
+  4.5:1 against every `ansi.*` color per flavor (`bg`, `bg_sunk`,
+  `bg_soft`, and `bg_overlay` each collide with at least one `ansi.*`
+  color, exactly or in contrast, on at least one flavor — see
+  [issue #5](https://github.com/vivid-life-theme/vivid-life-design-system/issues/5)
+  for the full analysis). It's an alias to `bg_sunk` on dark flavors and
+  to `bg_soft` on light flavors — not a new hue, just the existing tier
+  that the math works out for once `ansi.bright_black` (dawn/midnight/
+  twilight) got a dedicated value instead of reusing a palette gray shade
+  that was too close to it. One or two `ansi.*` slots per flavor are
+  deliberately exempt from the 4.5:1 gate: `ansi.black` on dark flavors;
+  `ansi.bright_white` on light flavors (both dawn and noon); and, on dawn
+  specifically, `ansi.white` too (it already sat close to `bg_soft` before
+  this change). These sit intentionally close to (or exactly at)
+  `bg_terminal` — that's the conventional reverse-video / "invisible"
+  slot every real terminal color scheme leaves near-background, not a
+  defect.
 
 ---
 

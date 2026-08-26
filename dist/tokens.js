@@ -2,7 +2,7 @@
 export default {
   "meta": {
     "name": "Vivid Life Theme",
-    "version": "0.3.0",
+    "version": "0.6.0",
     "description": "A multi-flavor color scheme system. 4 flavors × 6 variants = 24 themes.",
     "source_palette": "https://farben.van-laar.de/",
     "inspiration": [
@@ -120,7 +120,8 @@ export default {
         "bg_soft": "#404040",
         "bg_sunk": "#0a0a0a",
         "bg_overlay": "#404040",
-        "bg_scrim": "#000000cc"
+        "bg_scrim": "#000000cc",
+        "bg_terminal": "#0a0a0a"
       },
       "text": {
         "fg": "#f5f5f5",
@@ -167,7 +168,7 @@ export default {
         "magenta": "#d8b4fe",
         "cyan": "#06b6d4",
         "white": "#d4d4d4",
-        "bright_black": "#404040",
+        "bright_black": "#878787",
         "bright_red": "#fca5a5",
         "bright_green": "#bef264",
         "bright_yellow": "#fde047",
@@ -186,7 +187,8 @@ export default {
         "bg_soft": "#525252",
         "bg_sunk": "#171717",
         "bg_overlay": "#525252",
-        "bg_scrim": "#000000bb"
+        "bg_scrim": "#000000bb",
+        "bg_terminal": "#171717"
       },
       "text": {
         "fg": "#f5f5f5",
@@ -233,7 +235,7 @@ export default {
         "magenta": "#d8b4fe",
         "cyan": "#06b6d4",
         "white": "#d4d4d4",
-        "bright_black": "#737373",
+        "bright_black": "#878787",
         "bright_red": "#fca5a5",
         "bright_green": "#bef264",
         "bright_yellow": "#fde047",
@@ -252,7 +254,8 @@ export default {
         "bg_soft": "#f5f5f5",
         "bg_sunk": "#bdbdbd",
         "bg_overlay": "#f5f5f5",
-        "bg_scrim": "#17171788"
+        "bg_scrim": "#17171788",
+        "bg_terminal": "#f5f5f5"
       },
       "text": {
         "fg": "#171717",
@@ -299,7 +302,7 @@ export default {
         "magenta": "#7e22ce",
         "cyan": "#0e7490",
         "white": "#d4d4d4",
-        "bright_black": "#737373",
+        "bright_black": "#656565",
         "bright_red": "#7f1d1d",
         "bright_green": "#365314",
         "bright_yellow": "#713f12",
@@ -318,7 +321,8 @@ export default {
         "bg_soft": "#ffffff",
         "bg_sunk": "#d4d4d4",
         "bg_overlay": "#ffffff",
-        "bg_scrim": "#17171788"
+        "bg_scrim": "#17171788",
+        "bg_terminal": "#ffffff"
       },
       "text": {
         "fg": "#171717",
