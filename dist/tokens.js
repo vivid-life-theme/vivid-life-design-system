@@ -182,7 +182,7 @@ export default {
       "type": "dark",
       "surface": {
         "bg": "#404040",
-        "bg_inset": "#647287",
+        "bg_inset": "#627084",
         "bg_soft": "#525252",
         "bg_sunk": "#171717",
         "bg_overlay": "#525252",

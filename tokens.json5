@@ -237,7 +237,7 @@
       type: "dark",
       surface: {
         bg: "$palette.gray.700", // #404040
-        bg_inset: "#647287", // docked structural chrome (sidebar/panel/terminal/status bar) — fixed cool-slate tint, NOT a variant/accent color; see README § surface hierarchy. Exempt from the semantic-vs-surface WCAG gate (banners render on bg/bg_soft, never on bg_inset).
+        bg_inset: "#627084", // docked structural chrome (sidebar/panel/terminal/status bar) — fixed cool-slate tint, NOT a variant/accent color; see README § surface hierarchy. Exempt from the semantic-vs-surface WCAG gate (banners render on bg/bg_soft, never on bg_inset).
         bg_soft: "#525252", // neutral-600; lifted
         bg_sunk: "$palette.gray.900", // deeper recess
         bg_overlay: "#525252",
