@@ -14,12 +14,12 @@
 // String values that begin with "$" are REFERENCES, resolved by the
 // build script:  "$palette.red.500" → "#ef4444"
 //
-// Version 0.3.0 · May 2026
+// Version 0.6.0 · August 2026
 // ════════════════════════════════════════════════════════════════════
 {
   meta: {
     name: "Vivid Life Theme",
-    version: "0.3.0",
+    version: "0.6.0",
     description: "A multi-flavor color scheme system. 4 flavors × 6 variants = 24 themes.",
     source_palette: "https://farben.van-laar.de/",
     inspiration: ["https://catppuccin.com/", "https://draculatheme.com/"],

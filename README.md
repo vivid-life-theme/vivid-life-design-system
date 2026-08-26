@@ -500,11 +500,14 @@ See `preview/03-iconography.html` for the live spec and
   to `bg_soft` on light flavors — not a new hue, just the existing tier
   that the math works out for once `ansi.bright_black` (dawn/midnight/
   twilight) got a dedicated value instead of reusing a palette gray shade
-  that was too close to it. One `ansi.*` slot per flavor is deliberately
-  exempt: `ansi.black` on dark flavors and `ansi.bright_white` on light
-  flavors sit intentionally close to (or exactly at) `bg_terminal` —
-  that's the conventional reverse-video / "invisible" slot every real
-  terminal color scheme leaves near-background, not a defect.
+  that was too close to it. One or two `ansi.*` slots per flavor are
+  deliberately exempt from the 4.5:1 gate: `ansi.black` on dark flavors;
+  `ansi.bright_white` on light flavors (both dawn and noon); and, on dawn
+  specifically, `ansi.white` too (it already sat close to `bg_soft` before
+  this change). These sit intentionally close to (or exactly at)
+  `bg_terminal` — that's the conventional reverse-video / "invisible"
+  slot every real terminal color scheme leaves near-background, not a
+  defect.
 
 ---
 

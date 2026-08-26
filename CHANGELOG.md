@@ -23,11 +23,12 @@ terminal-emulator backgrounds now have a verified-safe surface token.
 
 - New `surface.bg_terminal` token, one per flavor — the first surface tier
   proven (by exhaustive contrast check, not just hex equality) to clear
-  4.5:1 against every `ansi.*` color on that flavor, except the one slot
+  4.5:1 against every `ansi.*` color on that flavor, except the slot(s)
   every real terminal scheme leaves near-invisible against its background
-  by convention (`ansi.black` on dark flavors, `ansi.bright_white` on
-  light flavors). It's an alias — `bg_sunk` on midnight/twilight, `bg_soft`
-  on dawn/noon — not a new hue.
+  by convention: `ansi.black` on dark flavors; `ansi.bright_white` on
+  light flavors; and, on dawn specifically, `ansi.white` too (already
+  close to `bg_soft` before this change). It's an alias — `bg_sunk` on
+  midnight/twilight, `bg_soft` on dawn/noon — not a new hue.
 
 ### Changed
 
@@ -153,7 +154,8 @@ the first release published to the registry.
 
 ---
 
-[unreleased]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.5.0...HEAD
+[unreleased]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.6.0...HEAD
+[0.6.0]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.5.0...v0.6.0
 [0.5.0]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.2.1...v0.3.0
