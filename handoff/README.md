@@ -4,7 +4,7 @@ Artifacts intended for downstream ports — not active in this repo.
 
 ## SKILL.md
 
-A Claude Code skill that teaches an AI assistant in a **downstream port project** (e.g. `vivid-life-vscode`, `vivid-life-gtk`, the future marketing site) how to consume the foundation defined here.
+A Claude Code skill that teaches an AI assistant in a **downstream port project** (e.g. `vivid-life-vs-code`, `vivid-life-gtk`, the future marketing site) how to consume the foundation defined here.
 
 ### How a port uses it
 
