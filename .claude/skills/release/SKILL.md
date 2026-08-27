@@ -97,8 +97,7 @@ git push && git push --tags
 
 The publish workflow (`.github/workflows/publish-to-npm.yml`) fires automatically on any `v*` tag push and runs `npm publish --provenance --access public` via OIDC — no token needed.
 
-Watch the workflow run at:
-https://github.com/vivid-life-theme/vivid-life-design-system/actions
+Watch the workflow run at: https://github.com/vivid-life-theme/vivid-life-design-system/actions
 
 > **Manual publish** — required for the very first release (OIDC needs the package to exist on npm first), or as a fallback if CI is broken:
 >

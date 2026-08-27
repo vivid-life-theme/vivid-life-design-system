@@ -11,10 +11,7 @@ A Claude Code skill that teaches an AI assistant in a **downstream port project*
 1. Copy this file into the port at `.claude/skills/vivid-life-theme/SKILL.md`.
 2. Open Claude Code in the port and invoke `/vivid-life-theme`.
 
-The skill fetches `tokens.json` and `README.md` directly from the GitHub repository,
-so it works in a brand-new port project with no local copy of the foundation required.
-If the foundation is already mounted locally (npm dep, git submodule, or snapshot),
-the skill falls back to reading local paths automatically. To install via npm:
+The skill fetches `tokens.json` and `README.md` directly from the GitHub repository, so it works in a brand-new port project with no local copy of the foundation required. If the foundation is already mounted locally (npm dep, git submodule, or snapshot), the skill falls back to reading local paths automatically. To install via npm:
 
 ```bash
 npm install @vivid-life-theme/design-system

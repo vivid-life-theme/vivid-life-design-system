@@ -2,11 +2,9 @@
 
 All notable changes to `@vivid-life-theme/design-system` are documented here.
 
-Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
-Versioning: [Semantic Versioning](https://semver.org/).
+Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [Semantic Versioning](https://semver.org/).
 
-**Breaking changes** (token renames / removals) are marked ⚠️ — downstream
-ports must update any hard-coded token references before regenerating.
+**Breaking changes** (token renames / removals) are marked ⚠️ — downstream ports must update any hard-coded token references before regenerating.
 
 ---
 
@@ -16,81 +14,48 @@ ports must update any hard-coded token references before regenerating.
 
 ## [0.6.0] - 2026-08-26
 
-Closes [#5](https://github.com/vivid-life-theme/vivid-life-design-system/issues/5):
-terminal-emulator backgrounds now have a verified-safe surface token.
+Closes [#5](https://github.com/vivid-life-theme/vivid-life-design-system/issues/5): terminal-emulator backgrounds now have a verified-safe surface token.
 
 ### Added
 
-- New `surface.bg_terminal` token, one per flavor — the first surface tier
-  proven (by exhaustive contrast check, not just hex equality) to clear
-  4.5:1 against every `ansi.*` color on that flavor, except the slot(s)
-  every real terminal scheme leaves near-invisible against its background
-  by convention: `ansi.black` on dark flavors; `ansi.bright_white` on
-  light flavors; and, on dawn specifically, `ansi.white` too (already
-  close to `bg_soft` before this change). It's an alias — `bg_sunk` on
-  midnight/twilight, `bg_soft` on dawn/noon — not a new hue.
+- New `surface.bg_terminal` token, one per flavor — the first surface tier proven (by exhaustive contrast check, not just hex equality) to clear 4.5:1 against every `ansi.*` color on that flavor, except the slot(s) every real terminal scheme leaves near-invisible against its background by convention: `ansi.black` on dark flavors; `ansi.bright_white` on light flavors; and, on dawn specifically, `ansi.white` too (already close to `bg_soft` before this change). It's an alias — `bg_sunk` on midnight/twilight, `bg_soft` on dawn/noon — not a new hue.
 
 ### Changed
 
-- `ansi.bright_black` on `midnight`, `twilight`, and `dawn` — was a
-  `$palette.gray.*` reference that only cleared 1.9–4.4:1 against the
-  flavor's now-designated `bg_terminal`. Replaced with a dedicated literal
-  value (`#878787` for midnight/twilight, `#656565` for dawn) chosen to
-  clear ≥4.9:1, without moving the shared `gray.500`/`gray.700` steps used
-  elsewhere (borders, muted text, other surfaces). `noon`'s
-  `ansi.bright_black` already cleared AA (4.7:1) and is unchanged.
+- `ansi.bright_black` on `midnight`, `twilight`, and `dawn` — was a `$palette.gray.*` reference that only cleared 1.9–4.4:1 against the flavor's now-designated `bg_terminal`. Replaced with a dedicated literal value (`#878787` for midnight/twilight, `#656565` for dawn) chosen to clear ≥4.9:1, without moving the shared `gray.500`/`gray.700` steps used elsewhere (borders, muted text, other surfaces). `noon`'s `ansi.bright_black` already cleared AA (4.7:1) and is unchanged.
 
 ---
 
 ## [0.5.0] - 2026-08-26
 
-New surface token for docked structural chrome (sidebar, panel, terminal,
-status bar), so ports can visually separate it from the editor canvas
-instead of the two reading as the same background.
+New surface token for docked structural chrome (sidebar, panel, terminal, status bar), so ports can visually separate it from the editor canvas instead of the two reading as the same background.
 
 ### Added
 
-- New `surface.bg_inset` token, one per flavor — a fixed, low-saturation
-  cool-slate tint (not accent-derived, so it doesn't shift per variant and
-  doesn't compete with syntax/ANSI hues). Exempt from the semantic-vs-surface
-  WCAG gate: alert/banner colors keep rendering on `bg`/`bg_soft`, never
-  directly on `bg_inset` — see README § Caveats.
+- New `surface.bg_inset` token, one per flavor — a fixed, low-saturation cool-slate tint (not accent-derived, so it doesn't shift per variant and doesn't compete with syntax/ANSI hues). Exempt from the semantic-vs-surface WCAG gate: alert/banner colors keep rendering on `bg`/`bg_soft`, never directly on `bg_inset` — see README § Caveats.
 
 ### Changed
 
-- `tools/build-tokens.mjs` — the semantic-vs-surface contrast check now
-  excludes `bg_inset` alongside `bg_scrim`.
+- `tools/build-tokens.mjs` — the semantic-vs-surface contrast check now excludes `bg_inset` alongside `bg_scrim`.
 
 ---
 
 ## [0.4.0] - 2026-06-27
 
-IDE port guidance: semantic tokens, workbench color roles, and comprehensive
-scope recommendations sourced from syntax-highlighting best practices.
+IDE port guidance: semantic tokens, workbench color roles, and comprehensive scope recommendations sourced from syntax-highlighting best practices.
 
 ### Added
 
-- New `semantic_token_recommendations` section in `tokens.json5` / `tokens.json` —
-  maps all 23 LSP semantic token types and 10 modifiers to design-system slots.
-  Ports should define `semanticTokenColors` alongside `tokenColors`; semantic rules
-  take precedence when a language server is active.
-- New `workbench_color_roles` section — maps severity signals (error/warning/info/
-  success), git decorations, diff editor alpha values, and bracket-pair colorization
-  cycle to design-system tokens. Use `alphaOver()` from `tools/build-tokens.mjs` to
-  bake diff background hex values at port build time.
-- `scope_recommendations` expanded from 5 to 37 entries — all 12 core slots and all
-  25 extended tokens now have canonical TextMate scope lists for VS Code `tokenColors`.
-- New extended tokens: `event` (named events/signals → `function`) and `label`
-  (goto/break labels → `fg` italic).
+- New `semantic_token_recommendations` section in `tokens.json5` / `tokens.json` — maps all 23 LSP semantic token types and 10 modifiers to design-system slots. Ports should define `semanticTokenColors` alongside `tokenColors`; semantic rules take precedence when a language server is active.
+- New `workbench_color_roles` section — maps severity signals (error/warning/info/success), git decorations, diff editor alpha values, and bracket-pair colorization cycle to design-system tokens. Use `alphaOver()` from `tools/build-tokens.mjs` to bake diff background hex values at port build time.
+- `scope_recommendations` expanded from 5 to 37 entries — all 12 core slots and all 25 extended tokens now have canonical TextMate scope lists for VS Code `tokenColors`.
+- New extended tokens: `event` (named events/signals → `function`) and `label` (goto/break labels → `fg` italic).
 
 ### Fixed
 
-- `decorator` extended token: was plain `"function"`, now `{ color: "function",
-style: ["italic"] }` — decorators are meta-layer annotations, not runtime calls.
-- `builtin` extended token: was plain `"function"`, now `{ color: "function",
-style: ["italic"] }` — built-ins are provided, not authored ("not yours").
-- `heading` extended token: was plain `"keyword"`, now `{ color: "keyword",
-style: ["bold"] }` — headings are structural anchors; bold is the right signal.
+- `decorator` extended token: was plain `"function"`, now `{ color: "function", style: ["italic"] }` — decorators are meta-layer annotations, not runtime calls.
+- `builtin` extended token: was plain `"function"`, now `{ color: "function", style: ["italic"] }` — built-ins are provided, not authored ("not yours").
+- `heading` extended token: was plain `"keyword"`, now `{ color: "keyword", style: ["bold"] }` — headings are structural anchors; bold is the right signal.
 
 ---
 
@@ -137,8 +102,7 @@ Resolves [#2](https://github.com/vivid-life-theme/vivid-life-design-system/issue
 
 ## [0.2.0] - 2026-05-26
 
-Initial npm release. The token system existed before this version; this is
-the first release published to the registry.
+Initial npm release. The token system existed before this version; this is the first release published to the registry.
 
 ### Added
 
@@ -154,10 +118,4 @@ the first release published to the registry.
 
 ---
 
-[unreleased]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.6.0...HEAD
-[0.6.0]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.5.0...v0.6.0
-[0.5.0]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.4.0...v0.5.0
-[0.4.0]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.3.0...v0.4.0
-[0.3.0]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.2.1...v0.3.0
-[0.2.1]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.2.0...v0.2.1
-[0.2.0]: https://github.com/vivid-life-theme/vivid-life-design-system/releases/tag/v0.2.0
+[unreleased]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.6.0...HEAD [0.6.0]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.5.0...v0.6.0 [0.5.0]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.4.0...v0.5.0 [0.4.0]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.3.0...v0.4.0 [0.3.0]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.2.1...v0.3.0 [0.2.1]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.2.0...v0.2.1 [0.2.0]: https://github.com/vivid-life-theme/vivid-life-design-system/releases/tag/v0.2.0

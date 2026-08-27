@@ -59,8 +59,7 @@ Always run `npm run build` after any change to `tokens.json5`. Underlying script
 
 ## Learnings
 
-When the user corrects a mistake or points out a recurring issue, append a one-line
-summary to .claude/learnings.md. Don't modify CLAUDE.md directly.
+When the user corrects a mistake or points out a recurring issue, append a one-line summary to .claude/learnings.md. Don't modify CLAUDE.md directly.
 
 ## Compact Instructions
 
