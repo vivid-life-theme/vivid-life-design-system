@@ -1,0 +1,39 @@
+name: CI
+
+# Runs the token/CSS/preview integrity checks and the color-math self-tests.
+# Until now `npm run check` ran only in publish-to-npm.yml, i.e. on a `v*`
+# tag — so drift in the generated outputs (tokens.json, dist/tokens.js,
+# colors_and_type.css) surfaced at release time, after the version bump and
+# changelog were already written. This moves that signal to the PR.
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # package.json declares engines.node ">=18"; exercise the range so
+        # that claim stays true for downstream ports.
+        node: ["18", "20", "22"]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+
+      # No dependencies to install — the build tools are plain Node.js.
+      - run: npm run test
+      - run: npm run check
