@@ -51,40 +51,47 @@
 }
 
 
-/* ── Base palette — 7 hues × 5 shades + cyan extension ─────────── */
+/* ── Base palette — 7 hues × 6 shades + cyan extension ─────────── */
 
 :root {
   --vl-red-900        : #7f1d1d;
+  --vl-red-800        : #991b1b;
   --vl-red-700        : #b91c1c;
   --vl-red-500        : #ef4444;
   --vl-red-300        : #fca5a5;
   --vl-red-100        : #fee2e2;
   --vl-orange-900     : #7c2d12;
+  --vl-orange-800     : #9a3412;
   --vl-orange-700     : #c2410c;
   --vl-orange-500     : #f97316;
   --vl-orange-300     : #fdba74;
   --vl-orange-100     : #ffedd5;
   --vl-yellow-900     : #713f12;
+  --vl-yellow-800     : #854d0e;
   --vl-yellow-700     : #a16207;
   --vl-yellow-500     : #eab308;
   --vl-yellow-300     : #fde047;
   --vl-yellow-100     : #fef9c3;
   --vl-green-900      : #365314;
+  --vl-green-800      : #3f6212;
   --vl-green-700      : #4d7c0f;
   --vl-green-500      : #84cc16;
   --vl-green-300      : #bef264;
   --vl-green-100      : #ecfccb;
   --vl-blue-900       : #1e3a8a;
+  --vl-blue-800       : #1e40af;
   --vl-blue-700       : #1d4ed8;
   --vl-blue-500       : #3b82f6;
   --vl-blue-300       : #93c5fd;
   --vl-blue-100       : #dbeafe;
   --vl-purple-900     : #581c87;
+  --vl-purple-800     : #6b21a8;
   --vl-purple-700     : #7e22ce;
   --vl-purple-500     : #a855f7;
   --vl-purple-300     : #d8b4fe;
   --vl-purple-100     : #f3e8ff;
   --vl-gray-900       : #171717;
+  --vl-gray-800       : #262626;
   --vl-gray-700       : #404040;
   --vl-gray-500       : #737373;
   --vl-gray-300       : #d4d4d4;
@@ -92,6 +99,7 @@
 
   /* extension hue — protocol/convention-required cyan only */
   --vl-cyan-900       : #164e63;
+  --vl-cyan-800       : #155e75;
   --vl-cyan-700       : #0e7490;
   --vl-cyan-500       : #06b6d4;
   --vl-cyan-300       : #67e8f9;
@@ -218,7 +226,7 @@
   --vl-bg-sunk            : #171717;
   --vl-bg-overlay         : #525252;
   --vl-bg-scrim           : #000000bb;
-  --vl-bg-terminal        : #171717;
+  --vl-bg-terminal        : #333333;
   /* text */
   --vl-fg                 : #f5f5f5;
   --vl-fg-muted           : #d4d4d4;
@@ -253,19 +261,19 @@
   /* ansi */
   --vl-ansi-black         : #171717;
   --vl-ansi-red           : #fca5a5;
-  --vl-ansi-green         : #84cc16;
-  --vl-ansi-yellow        : #eab308;
+  --vl-ansi-green         : #bef264;
+  --vl-ansi-yellow        : #fde047;
   --vl-ansi-blue          : #93c5fd;
   --vl-ansi-magenta       : #d8b4fe;
-  --vl-ansi-cyan          : #06b6d4;
+  --vl-ansi-cyan          : #67e8f9;
   --vl-ansi-white         : #d4d4d4;
-  --vl-ansi-bright-black  : #878787;
-  --vl-ansi-bright-red    : #fca5a5;
-  --vl-ansi-bright-green  : #bef264;
-  --vl-ansi-bright-yellow : #fde047;
-  --vl-ansi-bright-blue   : #93c5fd;
-  --vl-ansi-bright-magenta: #d8b4fe;
-  --vl-ansi-bright-cyan   : #67e8f9;
+  --vl-ansi-bright-black  : #a3a3a3;
+  --vl-ansi-bright-red    : #fee2e2;
+  --vl-ansi-bright-green  : #ecfccb;
+  --vl-ansi-bright-yellow : #fef9c3;
+  --vl-ansi-bright-blue   : #dbeafe;
+  --vl-ansi-bright-magenta: #f3e8ff;
+  --vl-ansi-bright-cyan   : #cffafe;
   --vl-ansi-bright-white  : #f5f5f5;
 
   /* text color for use on top of --vl-accent */
@@ -281,7 +289,7 @@
   --vl-bg-sunk            : #bdbdbd;
   --vl-bg-overlay         : #f5f5f5;
   --vl-bg-scrim           : #17171788;
-  --vl-bg-terminal        : #f5f5f5;
+  --vl-bg-terminal        : #d4d4d4;
   /* text */
   --vl-fg                 : #171717;
   --vl-fg-muted           : #404040;
@@ -315,14 +323,14 @@
   --syn-punct             : #404040;
   /* ansi */
   --vl-ansi-black         : #171717;
-  --vl-ansi-red           : #b91c1c;
-  --vl-ansi-green         : #4d7c0f;
-  --vl-ansi-yellow        : #a16207;
-  --vl-ansi-blue          : #1d4ed8;
-  --vl-ansi-magenta       : #7e22ce;
-  --vl-ansi-cyan          : #0e7490;
+  --vl-ansi-red           : #991b1b;
+  --vl-ansi-green         : #3f6212;
+  --vl-ansi-yellow        : #854d0e;
+  --vl-ansi-blue          : #1e40af;
+  --vl-ansi-magenta       : #6b21a8;
+  --vl-ansi-cyan          : #155e75;
   --vl-ansi-white         : #d4d4d4;
-  --vl-ansi-bright-black  : #656565;
+  --vl-ansi-bright-black  : #525252;
   --vl-ansi-bright-red    : #7f1d1d;
   --vl-ansi-bright-green  : #365314;
   --vl-ansi-bright-yellow : #713f12;

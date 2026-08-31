@@ -28,13 +28,21 @@
   // ────────────────────────────────────────────────────────────────
   //   1.  PALETTE  —  the atomic colors
   // ────────────────────────────────────────────────────────────────
-  // 7 hues × 5 shades, drawn from Tailwind v3 defaults.
+  // 7 hues × 6 shades, drawn from Tailwind v3 defaults.
   // The user's palette source calls them: Rot, Orange, Gelb, Grün,
   // Blau, Purpur, Grau. We use English everywhere downstream.
+  //
+  // The 800 tier was added for the light-flavor ANSI normal set (see
+  // ansi_shade): on a light bg_terminal the 700 tier can't clear
+  // 4.5:1, and 900 is already taken by the bright set — 800 is the
+  // only rung that lets normal and bright stay distinct. It is a
+  // Tailwind v3 default like every other shade here; adding it moved
+  // no existing value. See issue #7.
 
   palette: {
     red: {
       900: "#7f1d1d",
+      800: "#991b1b",
       700: "#b91c1c",
       500: "#ef4444",
       300: "#fca5a5",
@@ -42,6 +50,7 @@
     },
     orange: {
       900: "#7c2d12",
+      800: "#9a3412",
       700: "#c2410c",
       500: "#f97316",
       300: "#fdba74",
@@ -49,6 +58,7 @@
     },
     yellow: {
       900: "#713f12",
+      800: "#854d0e",
       700: "#a16207",
       500: "#eab308",
       300: "#fde047",
@@ -56,6 +66,7 @@
     },
     green: {
       900: "#365314",
+      800: "#3f6212",
       700: "#4d7c0f",
       500: "#84cc16",
       300: "#bef264",
@@ -63,6 +74,7 @@
     },
     blue: {
       900: "#1e3a8a",
+      800: "#1e40af",
       700: "#1d4ed8",
       500: "#3b82f6",
       300: "#93c5fd",
@@ -70,6 +82,7 @@
     },
     purple: {
       900: "#581c87",
+      800: "#6b21a8",
       700: "#7e22ce",
       500: "#a855f7",
       300: "#d8b4fe",
@@ -77,6 +90,7 @@
     },
     gray: {
       900: "#171717",
+      800: "#262626",
       700: "#404040",
       500: "#737373",
       300: "#d4d4d4",
@@ -89,6 +103,7 @@
     // the default syntax token map.
     cyan: {
       900: "#164e63",
+      800: "#155e75",
       700: "#0e7490",
       500: "#06b6d4",
       300: "#67e8f9",
@@ -151,6 +166,141 @@
   },
 
   // ────────────────────────────────────────────────────────────────
+  //   3b. ANSI-SHADE RULESET  —  flavor × ansi hue → normal / bright
+  // ────────────────────────────────────────────────────────────────
+  // The terminal counterpart of accent_shade: the same "step out from
+  // the background" rule, resolved against `surface.bg_terminal`
+  // instead of `surface.bg`.
+  //
+  // Why this exists (issue #7). The 16-color ANSI palette used to be a
+  // 2-set system inside a 4-flavor design system — one dark set shared
+  // by Midnight and Twilight, one light set shared by Dawn and Noon.
+  // Embedded ports hid that, because the editor canvas beside the
+  // terminal panel carried the flavor identity. A standalone terminal
+  // emulator has no editor pane: bg_terminal plus these 12 slots ARE
+  // the whole theme, and Midnight/Twilight differed in 2 of 16 slots
+  // (Dawn/Noon in 3, all of them neutrals). Each flavor now sits on
+  // its own rung, which is also what frees bg_terminal to spread apart
+  // — see the bg_terminal comments in each flavor below.
+  //
+  // ANSI hue names are NOT variant hues: ANSI has `magenta` and `cyan`,
+  // the variant axis has `orange` and `purple`. ansi_hues maps the ANSI
+  // slot name onto the palette hue it draws from. The four neutral
+  // slots (black / white / bright_black / bright_white) are not shade-
+  // driven and stay literal in each flavor's `ansi` block.
+  //
+  // tools/build-tokens.mjs verifies on every build that the resolved
+  // flavors.*.ansi entries match this table, and that every ansi.*
+  // color clears 4.5:1 against its flavor's bg_terminal — except the
+  // slots listed in ansi_exempt.
+
+  ansi_hues: {
+    red: "red",
+    green: "green",
+    yellow: "yellow",
+    blue: "blue",
+    magenta: "purple",
+    cyan: "cyan",
+  },
+
+  ansi_shade: {
+    // Vivid 500 normals; 300 brights. blue/magenta have no 500 rung that
+    // clears a near-black bg, so they sit at 300 in both rows — a
+    // pre-existing duplicate pair, left as-is by issue #7.
+    midnight: {
+      normal: {
+        red: 500,
+        green: 500,
+        yellow: 500,
+        blue: 300,
+        magenta: 300,
+        cyan: 500,
+      },
+      bright: {
+        red: 300,
+        green: 300,
+        yellow: 300,
+        blue: 300,
+        magenta: 300,
+        cyan: 300,
+      },
+    },
+    // One rung lighter than Midnight in both rows: pastel normals, washed
+    // brights. This is what makes Twilight legible as its own flavor in a
+    // standalone emulator, and what lets bg_terminal rise to #333333.
+    twilight: {
+      normal: {
+        red: 300,
+        green: 300,
+        yellow: 300,
+        blue: 300,
+        magenta: 300,
+        cyan: 300,
+      },
+      bright: {
+        red: 100,
+        green: 100,
+        yellow: 100,
+        blue: 100,
+        magenta: 100,
+        cyan: 100,
+      },
+    },
+    // 800 normals: the 700 rung can't clear 4.5:1 on a #d4d4d4 canvas, and
+    // 900 is taken by the bright row. See palette § 800 tier.
+    dawn: {
+      normal: {
+        red: 800,
+        green: 800,
+        yellow: 800,
+        blue: 800,
+        magenta: 800,
+        cyan: 800,
+      },
+      bright: {
+        red: 900,
+        green: 900,
+        yellow: 900,
+        blue: 900,
+        magenta: 900,
+        cyan: 900,
+      },
+    },
+    // Unchanged — the original light set.
+    noon: {
+      normal: {
+        red: 700,
+        green: 700,
+        yellow: 700,
+        blue: 700,
+        magenta: 700,
+        cyan: 700,
+      },
+      bright: {
+        red: 900,
+        green: 900,
+        yellow: 900,
+        blue: 900,
+        magenta: 900,
+        cyan: 900,
+      },
+    },
+  },
+
+  // Slots deliberately exempt from the 4.5:1-vs-bg_terminal gate: the
+  // conventional reverse-video / "invisible" anchors that every real
+  // terminal color scheme leaves at or near the background. Dark
+  // flavors park `black` there; light flavors park `bright_white`
+  // (and, on Dawn, `white`, which is exactly bg_terminal).
+
+  ansi_exempt: {
+    midnight: ["black"],
+    twilight: ["black"],
+    dawn: ["white", "bright_white"],
+    noon: ["bright_white"],
+  },
+
+  // ────────────────────────────────────────────────────────────────
   //   4.  FLAVORS  —  the 4 base themes
   // ────────────────────────────────────────────────────────────────
   // Each flavor defines:
@@ -174,7 +324,7 @@
         bg_sunk: "#0a0a0a", // slightly below canvas — outside strict palette
         bg_overlay: "$palette.gray.700", // floating menus, dropdowns
         bg_scrim: "#000000cc", // modal backdrop (80% black)
-        bg_terminal: "$flavors.midnight.surface.bg_sunk", // verified ≥4.5:1 vs every ansi.* color except ansi.black (intentional reverse-video anchor, == this value); see issue #5
+        bg_terminal: "$flavors.midnight.surface.bg_sunk", // darkest of the four; anchors the low end of the bg_terminal spread. Clears ≥4.5:1 vs every ansi.* color except ansi.black (reverse-video anchor, == this value). See issues #5, #7.
       },
       text: {
         fg: "$palette.gray.100",
@@ -183,7 +333,7 @@
         fg_disabled: "#525252",
       },
       border: {
-        subtle: "#262626", // neutral-800; below palette
+        subtle: "$palette.gray.800",
         default: "$palette.gray.700",
         strong: "$palette.gray.500",
       },
@@ -243,7 +393,7 @@
         bg_sunk: "$palette.gray.900", // deeper recess
         bg_overlay: "#525252",
         bg_scrim: "#000000bb",
-        bg_terminal: "$flavors.twilight.surface.bg_sunk", // verified ≥4.5:1 vs every ansi.* color except ansi.black (intentional reverse-video anchor, == this value); see issue #5
+        bg_terminal: "#333333", // was bg_sunk (#171717), only ΔL* 5.0 from Midnight's — indistinguishable in a standalone terminal emulator, which shows no other surface. #333333 is ΔL* 18.5 from Midnight, matching the editor-bg spread that already reads as flavor identity, while staying below bg (#404040) so the embedded terminal panel keeps its layer. Outside the strict palette, like bg_sunk on Midnight. See issue #7.
       },
       text: {
         fg: "$palette.gray.100",
@@ -284,19 +434,19 @@
       ansi: {
         black: "$palette.gray.900",
         red: "$palette.red.300",
-        green: "$palette.green.500",
-        yellow: "$palette.yellow.500",
+        green: "$palette.green.300",
+        yellow: "$palette.yellow.300",
         blue: "$palette.blue.300",
         magenta: "$palette.purple.300",
-        cyan: "$palette.cyan.500",
+        cyan: "$palette.cyan.300",
         white: "$palette.gray.300",
-        bright_black: "#878787", // was $palette.gray.500 (#737373) — that shade only cleared 3.8:1 against bg_sunk/bg_terminal; #878787 clears 5.0:1. Dedicated literal (not a palette ref) so it doesn't move borders/text/comment that also reference gray.500. See issue #5.
-        bright_red: "$palette.red.300",
-        bright_green: "$palette.green.300",
-        bright_yellow: "$palette.yellow.300",
-        bright_blue: "$palette.blue.300",
-        bright_magenta: "$palette.purple.300",
-        bright_cyan: "$palette.cyan.300",
+        bright_black: "#a3a3a3", // was #878787 — that literal cleared 5.0:1 against the old bg_terminal (#171717) but only 3.5:1 against #333333. #a3a3a3 clears 5.0:1 and is already this flavor's fg_subtle / comment value. See issues #5, #7.
+        bright_red: "$palette.red.100",
+        bright_green: "$palette.green.100",
+        bright_yellow: "$palette.yellow.100",
+        bright_blue: "$palette.blue.100",
+        bright_magenta: "$palette.purple.100",
+        bright_cyan: "$palette.cyan.100",
         bright_white: "$palette.gray.100",
       },
     },
@@ -312,7 +462,7 @@
         bg_sunk: "#bdbdbd", // outside strict palette
         bg_overlay: "$palette.gray.100",
         bg_scrim: "#17171788",
-        bg_terminal: "$flavors.dawn.surface.bg_soft", // verified ≥4.5:1 vs every ansi.* color except ansi.white and ansi.bright_white (intentional reverse-video anchors — bright_white == this value); see issue #5
+        bg_terminal: "$flavors.dawn.surface.bg", // was bg_soft (#f5f5f5), only ΔL* 3.5 from Noon's — indistinguishable in a standalone terminal emulator. Dropping to the flavor canvas (#d4d4d4) gives ΔL* 15.1 from Noon and inherits the accent-shade table's own contrast guarantee for free, since this IS the surface that table is verified against. Cost: in embedded ports the terminal panel no longer differs from the editor canvas by fill — the panel is read from its bg_inset chrome and border instead. See issue #7.
       },
       text: {
         fg: "$palette.gray.900",
@@ -352,14 +502,14 @@
       },
       ansi: {
         black: "$palette.gray.900",
-        red: "$palette.red.700",
-        green: "$palette.green.700",
-        yellow: "$palette.yellow.700",
-        blue: "$palette.blue.700",
-        magenta: "$palette.purple.700",
-        cyan: "$palette.cyan.700",
-        white: "$palette.gray.300",
-        bright_black: "#656565", // was $palette.gray.500 (#737373) — that shade only cleared 4.35:1 against bg_soft/bg_terminal (below AA); #656565 clears 5.3:1. Dedicated literal (not a palette ref) so it doesn't move borders/state that also reference gray.500. See issue #5.
+        red: "$palette.red.800",
+        green: "$palette.green.800",
+        yellow: "$palette.yellow.800",
+        blue: "$palette.blue.800",
+        magenta: "$palette.purple.800",
+        cyan: "$palette.cyan.800",
+        white: "$palette.gray.300", // == bg_terminal: the reverse-video anchor on this flavor
+        bright_black: "#525252", // was #656565 — that literal cleared 5.3:1 against the old bg_terminal (#f5f5f5) but only 3.9:1 against #d4d4d4. #525252 clears 5.3:1 and is already this flavor's fg_subtle / comment value. See issues #5, #7.
         bright_red: "$palette.red.900",
         bright_green: "$palette.green.900",
         bright_yellow: "$palette.yellow.900",

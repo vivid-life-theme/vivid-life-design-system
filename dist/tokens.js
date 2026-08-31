@@ -16,6 +16,7 @@ export default {
       "300": "#fca5a5",
       "500": "#ef4444",
       "700": "#b91c1c",
+      "800": "#991b1b",
       "900": "#7f1d1d"
     },
     "orange": {
@@ -23,6 +24,7 @@ export default {
       "300": "#fdba74",
       "500": "#f97316",
       "700": "#c2410c",
+      "800": "#9a3412",
       "900": "#7c2d12"
     },
     "yellow": {
@@ -30,6 +32,7 @@ export default {
       "300": "#fde047",
       "500": "#eab308",
       "700": "#a16207",
+      "800": "#854d0e",
       "900": "#713f12"
     },
     "green": {
@@ -37,6 +40,7 @@ export default {
       "300": "#bef264",
       "500": "#84cc16",
       "700": "#4d7c0f",
+      "800": "#3f6212",
       "900": "#365314"
     },
     "blue": {
@@ -44,6 +48,7 @@ export default {
       "300": "#93c5fd",
       "500": "#3b82f6",
       "700": "#1d4ed8",
+      "800": "#1e40af",
       "900": "#1e3a8a"
     },
     "purple": {
@@ -51,6 +56,7 @@ export default {
       "300": "#d8b4fe",
       "500": "#a855f7",
       "700": "#7e22ce",
+      "800": "#6b21a8",
       "900": "#581c87"
     },
     "gray": {
@@ -58,6 +64,7 @@ export default {
       "300": "#d4d4d4",
       "500": "#737373",
       "700": "#404040",
+      "800": "#262626",
       "900": "#171717"
     },
     "cyan": {
@@ -65,6 +72,7 @@ export default {
       "300": "#67e8f9",
       "500": "#06b6d4",
       "700": "#0e7490",
+      "800": "#155e75",
       "900": "#164e63"
     }
   },
@@ -109,6 +117,103 @@ export default {
       "blue": 700,
       "purple": 700
     }
+  },
+  "ansi_hues": {
+    "red": "red",
+    "green": "green",
+    "yellow": "yellow",
+    "blue": "blue",
+    "magenta": "purple",
+    "cyan": "cyan"
+  },
+  "ansi_shade": {
+    "midnight": {
+      "normal": {
+        "red": 500,
+        "green": 500,
+        "yellow": 500,
+        "blue": 300,
+        "magenta": 300,
+        "cyan": 500
+      },
+      "bright": {
+        "red": 300,
+        "green": 300,
+        "yellow": 300,
+        "blue": 300,
+        "magenta": 300,
+        "cyan": 300
+      }
+    },
+    "twilight": {
+      "normal": {
+        "red": 300,
+        "green": 300,
+        "yellow": 300,
+        "blue": 300,
+        "magenta": 300,
+        "cyan": 300
+      },
+      "bright": {
+        "red": 100,
+        "green": 100,
+        "yellow": 100,
+        "blue": 100,
+        "magenta": 100,
+        "cyan": 100
+      }
+    },
+    "dawn": {
+      "normal": {
+        "red": 800,
+        "green": 800,
+        "yellow": 800,
+        "blue": 800,
+        "magenta": 800,
+        "cyan": 800
+      },
+      "bright": {
+        "red": 900,
+        "green": 900,
+        "yellow": 900,
+        "blue": 900,
+        "magenta": 900,
+        "cyan": 900
+      }
+    },
+    "noon": {
+      "normal": {
+        "red": 700,
+        "green": 700,
+        "yellow": 700,
+        "blue": 700,
+        "magenta": 700,
+        "cyan": 700
+      },
+      "bright": {
+        "red": 900,
+        "green": 900,
+        "yellow": 900,
+        "blue": 900,
+        "magenta": 900,
+        "cyan": 900
+      }
+    }
+  },
+  "ansi_exempt": {
+    "midnight": [
+      "black"
+    ],
+    "twilight": [
+      "black"
+    ],
+    "dawn": [
+      "white",
+      "bright_white"
+    ],
+    "noon": [
+      "bright_white"
+    ]
   },
   "flavors": {
     "midnight": {
@@ -188,7 +293,7 @@ export default {
         "bg_sunk": "#171717",
         "bg_overlay": "#525252",
         "bg_scrim": "#000000bb",
-        "bg_terminal": "#171717"
+        "bg_terminal": "#333333"
       },
       "text": {
         "fg": "#f5f5f5",
@@ -229,19 +334,19 @@ export default {
       "ansi": {
         "black": "#171717",
         "red": "#fca5a5",
-        "green": "#84cc16",
-        "yellow": "#eab308",
+        "green": "#bef264",
+        "yellow": "#fde047",
         "blue": "#93c5fd",
         "magenta": "#d8b4fe",
-        "cyan": "#06b6d4",
+        "cyan": "#67e8f9",
         "white": "#d4d4d4",
-        "bright_black": "#878787",
-        "bright_red": "#fca5a5",
-        "bright_green": "#bef264",
-        "bright_yellow": "#fde047",
-        "bright_blue": "#93c5fd",
-        "bright_magenta": "#d8b4fe",
-        "bright_cyan": "#67e8f9",
+        "bright_black": "#a3a3a3",
+        "bright_red": "#fee2e2",
+        "bright_green": "#ecfccb",
+        "bright_yellow": "#fef9c3",
+        "bright_blue": "#dbeafe",
+        "bright_magenta": "#f3e8ff",
+        "bright_cyan": "#cffafe",
         "bright_white": "#f5f5f5"
       }
     },
@@ -255,7 +360,7 @@ export default {
         "bg_sunk": "#bdbdbd",
         "bg_overlay": "#f5f5f5",
         "bg_scrim": "#17171788",
-        "bg_terminal": "#f5f5f5"
+        "bg_terminal": "#d4d4d4"
       },
       "text": {
         "fg": "#171717",
@@ -295,14 +400,14 @@ export default {
       },
       "ansi": {
         "black": "#171717",
-        "red": "#b91c1c",
-        "green": "#4d7c0f",
-        "yellow": "#a16207",
-        "blue": "#1d4ed8",
-        "magenta": "#7e22ce",
-        "cyan": "#0e7490",
+        "red": "#991b1b",
+        "green": "#3f6212",
+        "yellow": "#854d0e",
+        "blue": "#1e40af",
+        "magenta": "#6b21a8",
+        "cyan": "#155e75",
         "white": "#d4d4d4",
-        "bright_black": "#656565",
+        "bright_black": "#525252",
         "bright_red": "#7f1d1d",
         "bright_green": "#365314",
         "bright_yellow": "#713f12",
