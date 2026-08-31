@@ -10,6 +10,27 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ## [Unreleased]
 
+Closes [#7](https://github.com/vivid-life-theme/vivid-life-design-system/issues/7): the four flavors are now distinguishable in a standalone terminal emulator.
+
+`bg_terminal`'s two dark values sat ΔL\* 5.0 apart and its two light values ΔL\* 3.5 apart — invisible in a port that shows no other surface. The cause ran deeper than one token: the 16-color ANSI palette was a 2-set system (one dark set shared by Midnight and Twilight, one light set shared by Dawn and Noon), so the pairs differed in 2 and 3 of 16 slots respectively. Giving each flavor its own shade rung fixes the palette and frees `bg_terminal` to spread to ΔL\* 18.5 / 15.1 — at or above the editor-canvas spread that already reads as flavor identity. No contrast guarantee was relaxed: every `ansi.*` slot still clears 4.5:1 against its flavor's `bg_terminal`, minus the same reverse-video anchors as before.
+
+### Added
+
+- **`800` palette tier** for all 7 hues plus the cyan extension — Tailwind v3 defaults (`#991b1b`, `#9a3412`, `#854d0e`, `#3f6212`, `#1e40af`, `#6b21a8`, `#262626`, `#155e75`). Purely additive: no existing palette value moved. It exists because Dawn's ANSI normal set needs a rung that clears 4.5:1 on a `#d4d4d4` canvas while leaving `900` free for the bright set.
+- **`ansi_shade`, `ansi_hues`, `ansi_exempt`** — the terminal counterpart of `accent_shade`: flavor × ANSI hue → normal / bright shade, resolved against `surface.bg_terminal`. `ansi_hues` maps ANSI slot names (`magenta`, `cyan`) onto palette hues; `ansi_exempt` lists the reverse-video anchors excused from the contrast gate.
+- **CI gate for the ANSI palette** in `tools/build-tokens.mjs`. Nothing checked the 16-color set before — the "verified ≥4.5:1" claims from #5 were hand-computed and would have gone stale silently on the next shade edit. The build now fails if any `flavors.*.ansi` entry drifts from `ansi_shade`, or if any non-exempt `ansi.*` color drops below 4.5:1 against its flavor's `bg_terminal`.
+
+### Changed
+
+- **`twilight.surface.bg_terminal`** `#171717` → `#333333`. A dedicated literal between `bg_sunk` and `bg`, so the embedded terminal panel keeps a fill distinct from the editor canvas (`#404040`) while the standalone case gains ΔL\* 18.5 from Midnight.
+- **`dawn.surface.bg_terminal`** `#f5f5f5` → `#d4d4d4` (now `bg`, was `bg_soft`). Inherits the accent-shade table's own contrast guarantee, since this is the surface that table is verified against. Trade-off: on Dawn the embedded terminal panel no longer differs from the editor canvas by fill — it reads from its `bg_inset` chrome and border instead. Dawn's ANSI can't go lighter than `#d2d2d2` without dropping below AA, and everything above that collides with Noon.
+- **`twilight.ansi`** — chromatic normals `500` → `300`, brights `300` → `100`. Twilight is now the pastel dark flavor to Midnight's vivid one, and its `bright_*` slots stop duplicating their normal counterparts.
+- **`dawn.ansi`** — chromatic normals `700` → `800`. Brights stay at `900`.
+- **`twilight.ansi.bright_black`** `#878787` → `#a3a3a3`, and **`dawn.ansi.bright_black`** `#656565` → `#525252`. The #5 literals were tuned to the old `bg_terminal` values and cleared only 3.5:1 / 3.9:1 against the new ones. Both replacements are values the flavor already uses for `fg_subtle` / `syntax.comment`, and both clear 5.0:1+.
+- **`midnight.border.subtle`** is now `$palette.gray.800` instead of the literal `#262626` — same color, but no longer "below palette" now that the `800` tier exists.
+
+Ports that read `flavors[flavor].ansi` and `surface.bg_terminal` from the token data pick all of this up on a rebuild. Ports that hard-coded terminal colors need to re-read.
+
 ---
 
 ## [0.6.0] - 2026-08-26

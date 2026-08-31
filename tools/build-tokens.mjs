@@ -337,6 +337,45 @@ function check(tokens) {
         );
       }
     }
+    // ANSI slots must match the ansi_shade ruleset, and must clear
+    // 4.5:1 against this flavor's bg_terminal — the one surface a
+    // standalone terminal emulator shows. Both checks exist because
+    // nothing else gates the 16-color palette: before issue #7 the
+    // "verified ≥4.5:1" claims in tokens.json5 were hand-computed and
+    // would have gone stale silently on the next shade edit.
+    const bgTerm = f.surface.bg_terminal;
+    const exempt = new Set(tokens.ansi_exempt?.[fName] ?? []);
+    for (const [slot, hue] of Object.entries(tokens.ansi_hues)) {
+      for (const [row, name] of [
+        ["normal", slot],
+        ["bright", `bright_${slot}`],
+      ]) {
+        const shade = tokens.ansi_shade?.[fName]?.[row]?.[slot];
+        const expected = tokens.palette[hue][shade];
+        if (f.ansi[name] !== expected) {
+          warns.push(
+            `✗ ${fName}.ansi.${name} is ${f.ansi[name]}, but ansi_shade says ${hue}-${shade} (${expected})`,
+          );
+        }
+      }
+    }
+    for (const slot of exempt) {
+      if (!(slot in f.ansi)) {
+        warns.push(
+          `✗ ${fName}: ansi_exempt lists "${slot}", which is not an ansi slot`,
+        );
+      }
+    }
+    for (const [slot, color] of Object.entries(f.ansi)) {
+      if (exempt.has(slot)) continue;
+      const r = contrast(color, bgTerm);
+      if (r < 4.5) {
+        warns.push(
+          `✗ ${fName}.ansi.${slot} (${color}) on bg_terminal (${bgTerm}): ${r.toFixed(2)}:1`,
+        );
+      }
+    }
+
     // Semantic colors must be readable (≥4.5:1) on every surface token
     // except bg_scrim (a translucent overlay, not a fill) and bg_inset
     // (docked structural chrome — banners render on bg/bg_soft, never here).
@@ -483,6 +522,7 @@ async function main() {
   console.log(
     "✓ All (flavor, variant) selections remain readable for body text.",
   );
+  console.log("✓ All ansi.* slots match ansi_shade and clear AA on bg_terminal.");
 }
 
 // Only run the CLI when invoked directly (not when imported as a module).

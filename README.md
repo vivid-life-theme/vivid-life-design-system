@@ -52,6 +52,7 @@ Every port is its own GitHub repo and (potentially) its own Claude Code project.
   - [Accent-shade ruleset](#accent-shade-ruleset)
   - [`--vl-accent-on`](#--vl-accent-on)
   - [Syntax token map (per flavor)](#syntax-token-map-per-flavor)
+  - [ANSI palette (per flavor)](#ansi-palette-per-flavor)
 - [Typography](#typography)
 - [Build flow](#build-flow)
 - [Files](#files)
@@ -123,11 +124,13 @@ Every port is its own GitHub repo and (potentially) its own Claude Code project.
 
 ### Source palette
 
-Seven hues, five shades each — Tailwind v3 defaults at `900 / 700 / 500 / 300 / 100`:
+Seven hues, six shades each — Tailwind v3 defaults at `900 / 800 / 700 / 500 / 300 / 100`:
 
 <p align="center">
-  <img src="assets/palette.svg" alt="Source palette: 7 hues × 5 shades (900–100) plus Cyan extension" />
+  <img src="assets/palette.svg" alt="Source palette: 7 hues × 6 shades (900–100) plus Cyan extension" />
 </p>
+
+The `800` tier exists for one job: the light-flavor ANSI normal set (see [ANSI palette](#ansi-palette-per-flavor)). On a light `bg_terminal` the `700` tier can't clear 4.5:1 and `900` is already spoken for by the bright set, so `800` is the only rung that keeps normal and bright distinct. It's a Tailwind v3 default like every other shade here — adding it moved no existing value.
 
 Cyan is reserved for places where the protocol or convention _explicitly_ requires cyan — terminal ANSI `cyan` / `bright-cyan`, diff hunk headers (per `git diff` tradition). Not in the 6-hue variant axis; not in the default syntax-token map.
 
@@ -196,6 +199,25 @@ Defined in `tokens.json5` and emitted to CSS as `--syn-*`.
 Color targets may resolve to one of the 12 core slots, a text alias (`fg`, `fg_muted`, `fg_subtle`, `fg_disabled`), or a semantic alias (`semantic.success | .warning | .danger | .info`). Ports may override individual entries.
 
 The token-to-hue mapping is intentionally stable across flavors so a file's "shape" reads the same whether you're in Midnight or Noon.
+
+### ANSI palette (per flavor)
+
+The 16-color terminal palette is **not** stable across flavors — it's the one place where each flavor deliberately diverges. `ansi_shade` is the terminal counterpart of the accent-shade ruleset: the same "step out from the background" rule, resolved against `surface.bg_terminal` instead of `surface.bg`.
+
+| Flavor   | `bg_terminal` | normal    | bright |
+| -------- | ------------- | --------- | ------ |
+| Midnight | `#0a0a0a`     | 500 †     | 300    |
+| Twilight | `#333333`     | 300       | 100    |
+| Dawn     | `#d4d4d4`     | 800       | 900    |
+| Noon     | `#ffffff`     | 700       | 900    |
+
+† Midnight's `blue` and `magenta` sit at 300 in both rows — no 500 rung clears a near-black background for those two hues.
+
+Why per-flavor: an editor port hides the difference, because the canvas beside the terminal panel carries the flavor identity. A **standalone terminal emulator has no editor pane** — `bg_terminal` plus these 12 slots are the entire theme. Before this ruleset the ANSI palette was a 2-set system (one dark set shared by Midnight and Twilight, one light set shared by Dawn and Noon), so Midnight and Twilight differed in 2 of 16 slots (`black` and `red`) and Dawn and Noon in 3 (all neutrals). Giving each flavor its own rung is also what frees `bg_terminal` to spread apart: the pairs went from ΔL\* 5.0 / 3.5 to **ΔL\* 18.5 / 15.1**, at or above the editor-canvas spread that already reads as flavor identity.
+
+ANSI hue names are not variant hues — ANSI has `magenta` and `cyan` where the variant axis has `orange` and `purple`. `ansi_hues` maps each ANSI slot onto the palette hue it draws from. The four neutral slots (`black` / `white` / `bright_black` / `bright_white`) are not shade-driven and stay literal per flavor.
+
+`tools/build-tokens.mjs` gates both halves on every build: the resolved `flavors.*.ansi` entries must match `ansi_shade`, and every `ansi.*` color must clear 4.5:1 against its flavor's `bg_terminal`, minus the reverse-video anchors listed in `ansi_exempt`.
 
 ---
 
@@ -308,6 +330,7 @@ If you're building a port (a VS Code extension, a GTK theme, a marketing site):
 3. **Use the syntax map** from `flavors[flavor].syntax` directly for any editor port. Extended tokens fall back per `syntax_tokens.extended.{token}`.
 4. **If you need a value not in tokens**, open an issue / PR against this repo. Don't paper over it port-side.
 5. **For a terminal-emulator background** (VS Code's `terminal.background` and equivalents), use `surface.bg_terminal`, not `bg`/`bg_sunk`/`bg_soft` directly. It's the only surface tier verified against all 16 `ansi.*` colors per flavor — see the `bg_terminal` caveat below.
+6. **For a standalone terminal port** (xfce4-terminal, Windows Terminal, Alacritty, …), take the whole 16-color set from `flavors[flavor].ansi` — it is flavor-specific, not shared within the dark or light pair. Don't substitute a syntax or accent color for an ANSI slot, and don't reuse one flavor's ANSI block for its pair partner. See [ANSI palette](#ansi-palette-per-flavor).
 
 A port repo should look like:
 
@@ -384,11 +407,12 @@ See `preview/03-iconography.html` for the live spec and `tokens.json5 → iconog
 
 ## Caveats
 
-- **`bgSunk`** on Midnight (`#0a0a0a`) and Dawn (`#bdbdbd`), and `--vl-fg-subtle` on Twilight (`#a3a3a3`) are _outside_ the strict 35-swatch palette — needed for surface depth and comment readability respectively. Documented choices, not bugs.
+- **`bgSunk`** on Midnight (`#0a0a0a`) and Dawn (`#bdbdbd`), and `--vl-fg-subtle` on Twilight (`#a3a3a3`) are _outside_ the strict 42-swatch palette — needed for surface depth and comment readability respectively. Documented choices, not bugs.
 - **CONTENT FUNDAMENTALS** / tone-of-voice guidelines are deliberately scoped out for now — themes don't ship copy, so the only writing surface is per-port release notes and the future website. Will revisit when the website exists.
 - **Selection color** is derived from `--vl-accent` via runtime `color-mix` (25% accent + 75% bg). Requires a recent browser (color-mix is in all 2023+ browsers). Ports targeting older environments should bake selection in at build time.
 - **`surface.bg_inset`** is for docked structural chrome — sidebar, bottom panel, integrated terminal, status bar — as one visual group, distinct from the editor/content canvas (`bg`). It's a fixed, low-saturation cool-slate tint, the same hue family on every flavor, deliberately _not_ derived from `--vl-accent` (so it doesn't shift per variant and doesn't compete with syntax/ANSI hues). It is **exempt** from the semantic-vs-surface WCAG gate that other surface tokens satisfy — success/warning/danger/info banners render on `bg` or `bg_soft`, never directly on `bg_inset`. Ports should not stack alert/badge components on it without re-checking contrast.
-- **`surface.bg_terminal`** is the only surface tier verified to clear 4.5:1 against every `ansi.*` color per flavor (`bg`, `bg_sunk`, `bg_soft`, and `bg_overlay` each collide with at least one `ansi.*` color, exactly or in contrast, on at least one flavor — see [issue #5](https://github.com/vivid-life-theme/vivid-life-design-system/issues/5) for the full analysis). It's an alias to `bg_sunk` on dark flavors and to `bg_soft` on light flavors — not a new hue, just the existing tier that the math works out for once `ansi.bright_black` (dawn/midnight/twilight) got a dedicated value instead of reusing a palette gray shade that was too close to it. One or two `ansi.*` slots per flavor are deliberately exempt from the 4.5:1 gate: `ansi.black` on dark flavors; `ansi.bright_white` on light flavors (both dawn and noon); and, on dawn specifically, `ansi.white` too (it already sat close to `bg_soft` before this change). These sit intentionally close to (or exactly at) `bg_terminal` — that's the conventional reverse-video / "invisible" slot every real terminal color scheme leaves near-background, not a defect.
+- **`surface.bg_terminal`** is the only surface tier verified to clear 4.5:1 against every `ansi.*` color per flavor (`bg`, `bg_sunk`, `bg_soft`, and `bg_overlay` each collide with at least one `ansi.*` color, exactly or in contrast, on at least one flavor — see [issue #5](https://github.com/vivid-life-theme/vivid-life-design-system/issues/5) for the full analysis). Its four values are `#0a0a0a` (midnight, = `bg_sunk`), `#333333` (twilight, a dedicated literal between `bg_sunk` and `bg`), `#d4d4d4` (dawn, = `bg`) and `#ffffff` (noon, = `bg_soft`) — chosen in [issue #7](https://github.com/vivid-life-theme/vivid-life-design-system/issues/7) to be far enough apart that a standalone terminal emulator, which shows no other surface, can still tell the flavors apart. One or two `ansi.*` slots per flavor are deliberately exempt from the 4.5:1 gate: `ansi.black` on dark flavors; `ansi.bright_white` on light flavors (both dawn and noon); and, on dawn specifically, `ansi.white` too (it is exactly `bg_terminal`). These sit intentionally close to (or exactly at) `bg_terminal` — that's the conventional reverse-video / "invisible" slot every real terminal color scheme leaves near-background, not a defect.
+- **Dawn's terminal panel has no fill of its own.** `bg_terminal` on dawn is the flavor canvas (`bg`), so in an _embedded_ port (VS Code's panel, an IDE's integrated terminal) the terminal reads as a distinct region from its `bg_inset` chrome and border rather than from a different background fill. This is the one cost of the issue #7 spread: dawn's ANSI normal set can't go lighter than `#d2d2d2` without dropping below AA, and every value above that collides with noon. The other three flavors keep a terminal fill distinct from their canvas.
 
 ---
 

@@ -185,7 +185,7 @@ function fontFaceBlock(typography) {
 
 function paletteBlock(palette) {
   const lines = [
-    `\n/* ── Base palette — 7 hues × 5 shades + cyan extension ─────────── */\n`,
+    `\n/* ── Base palette — 7 hues × 6 shades + cyan extension ─────────── */\n`,
   ];
   lines.push(":root {");
   for (const [hue, shades] of Object.entries(palette)) {
@@ -194,7 +194,7 @@ function paletteBlock(palette) {
       lines.push(
         `\n  /* extension hue — protocol/convention-required cyan only */`,
       );
-    for (const shade of [900, 700, 500, 300, 100]) {
+    for (const shade of [900, 800, 700, 500, 300, 100]) {
       const val = shades[shade];
       if (!val) continue;
       const name = `--vl-${hue}-${shade}`.padEnd(20);
