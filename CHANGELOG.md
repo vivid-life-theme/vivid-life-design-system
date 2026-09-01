@@ -10,15 +10,28 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ## [Unreleased]
 
+---
+
+## [0.7.0] - 2026-09-01
+
 Closes [#7](https://github.com/vivid-life-theme/vivid-life-design-system/issues/7): the four flavors are now distinguishable in a standalone terminal emulator.
 
 `bg_terminal`'s two dark values sat ΔL\* 5.0 apart and its two light values ΔL\* 3.5 apart — invisible in a port that shows no other surface. The cause ran deeper than one token: the 16-color ANSI palette was a 2-set system (one dark set shared by Midnight and Twilight, one light set shared by Dawn and Noon), so the pairs differed in 2 and 3 of 16 slots respectively. Giving each flavor its own shade rung fixes the palette and frees `bg_terminal` to spread to ΔL\* 18.5 / 15.1 — at or above the editor-canvas spread that already reads as flavor identity. No contrast guarantee was relaxed: every `ansi.*` slot still clears 4.5:1 against its flavor's `bg_terminal`, minus the same reverse-video anchors as before.
+
+Also closes [#9](https://github.com/vivid-life-theme/vivid-life-design-system/issues/9): `flavors.*.syntax` and `flavors.*.semantic` are derived rather than hand-authored.
+
+Both were pure hue + shade lookups — 16 values per flavor, 64 across the four — and the README already stated that the hue half never varies by flavor. It was nonetheless re-typed in each flavor block, with nothing gating that the four stayed in agreement. They now follow the same shape `accent_shade` and `ansi_shade` already use: one shared hue map plus a per-flavor shade row.
+
+The win is not a smaller value count (a flavor's 16 authored colors become 15 shade numbers). It is that the hue map is now declared **once** instead of being re-implied four times, so cross-flavor hue drift is structurally impossible rather than hand-checked, and the per-slot decision shrinks from "pick a hue and a shade" to "pick a shade". **No token value changed** by the syntax/semantic refactor itself — `colors_and_type.css` is byte-identical to the pre-refactor state and the `flavors` subtree of `tokens.json` is unchanged down to key order.
 
 ### Added
 
 - **`800` palette tier** for all 7 hues plus the cyan extension — Tailwind v3 defaults (`#991b1b`, `#9a3412`, `#854d0e`, `#3f6212`, `#1e40af`, `#6b21a8`, `#262626`, `#155e75`). Purely additive: no existing palette value moved. It exists because Dawn's ANSI normal set needs a rung that clears 4.5:1 on a `#d4d4d4` canvas while leaving `900` free for the bright set.
 - **`ansi_shade`, `ansi_hues`, `ansi_exempt`** — the terminal counterpart of `accent_shade`: flavor × ANSI hue → normal / bright shade, resolved against `surface.bg_terminal`. `ansi_hues` maps ANSI slot names (`magenta`, `cyan`) onto palette hues; `ansi_exempt` lists the reverse-video anchors excused from the contrast gate.
-- **CI gate for the ANSI palette** in `tools/build-tokens.mjs`. Nothing checked the 16-color set before — the "verified ≥4.5:1" claims from #5 were hand-computed and would have gone stale silently on the next shade edit. The build now fails if any `flavors.*.ansi` entry drifts from `ansi_shade`, or if any non-exempt `ansi.*` color drops below 4.5:1 against its flavor's `bg_terminal`.
+- **`syntax_hues` + `syntax_shade`** — flavor × syntax slot → shade. Keyed by slot rather than hue, because `number`/`parameter` (both orange) and `string`/`attr` (both green) share a hue but not a rung. `comment` is not shade-driven: its hue entry is the text-ramp alias `fg_subtle`, which is where comment grey already lived on all four flavors (two of them sit on values deliberately outside the palette).
+- **`semantic_hues` + `semantic_shade`** — flavor × role → shade, same shape, four roles.
+- **`expandShadeTables(tokens)`**, exported from `tools/build-tokens.mjs` and applied inside `loadTokens()`. Ports using `loadTokens` see the derived groups exactly as before; ports reading `tokens.json` see no change at all.
+- **CI gates in `tools/build-tokens.mjs`** for all three shade rulesets: the ANSI gate fails the build if any `flavors.*.ansi` entry drifts from `ansi_shade`, or if any non-exempt `ansi.*` color drops below 4.5:1 against its flavor's `bg_terminal`; the syntax/semantic gates fail on a shade entry for a slot that resolves from the text ramp instead, a shade entry for a slot its hue map no longer has, or a `syntax_tokens.core` slot missing from `syntax_hues`. Nothing checked the 16-color ANSI set before — the "verified ≥4.5:1" claims from #5 were hand-computed and would have gone stale silently on the next shade edit.
 
 ### Changed
 
@@ -29,20 +42,7 @@ Closes [#7](https://github.com/vivid-life-theme/vivid-life-design-system/issues/
 - **`twilight.ansi.bright_black`** `#878787` → `#a3a3a3`, and **`dawn.ansi.bright_black`** `#656565` → `#525252`. The #5 literals were tuned to the old `bg_terminal` values and cleared only 3.5:1 / 3.9:1 against the new ones. Both replacements are values the flavor already uses for `fg_subtle` / `syntax.comment`, and both clear 5.0:1+.
 - **`midnight.border.subtle`** is now `$palette.gray.800` instead of the literal `#262626` — same color, but no longer "below palette" now that the `800` tier exists.
 
-Ports that read `flavors[flavor].ansi` and `surface.bg_terminal` from the token data pick all of this up on a rebuild. Ports that hard-coded terminal colors need to re-read.
-
-Also closes [#9](https://github.com/vivid-life-theme/vivid-life-design-system/issues/9): `flavors.*.syntax` and `flavors.*.semantic` are derived rather than hand-authored.
-
-Both were pure hue + shade lookups — 16 values per flavor, 64 across the four — and the README already stated that the hue half never varies by flavor. It was nonetheless re-typed in each flavor block, with nothing gating that the four stayed in agreement. They now follow the same shape `accent_shade` and `ansi_shade` already use: one shared hue map plus a per-flavor shade row.
-
-The win is not a smaller value count (a flavor's 16 authored colors become 15 shade numbers). It is that the hue map is now declared **once** instead of being re-implied four times, so cross-flavor hue drift is structurally impossible rather than hand-checked, and the per-slot decision shrinks from "pick a hue and a shade" to "pick a shade". **No token value changed** — `colors_and_type.css` is byte-identical and the `flavors` subtree of `tokens.json` is unchanged down to key order.
-
-### Added
-
-- **`syntax_hues` + `syntax_shade`** — flavor × syntax slot → shade. Keyed by slot rather than hue, because `number`/`parameter` (both orange) and `string`/`attr` (both green) share a hue but not a rung. `comment` is not shade-driven: its hue entry is the text-ramp alias `fg_subtle`, which is where comment grey already lived on all four flavors (two of them sit on values deliberately outside the palette).
-- **`semantic_hues` + `semantic_shade`** — flavor × role → shade, same shape, four roles.
-- **Gate arms in `tools/build-tokens.mjs`** for both tables: a shade entry for a slot that resolves from the text ramp, or for a slot the hue map no longer has, fails the build; so does a `syntax_tokens.core` slot missing from `syntax_hues`. A palette-hue slot with no shade throws during resolution.
-- **`expandShadeTables(tokens)`**, exported from `tools/build-tokens.mjs` and applied inside `loadTokens()`. Ports using `loadTokens` see the derived groups exactly as before; ports reading `tokens.json` see no change at all.
+Ports that read `flavors[flavor].ansi` and `surface.bg_terminal` from the token data pick this up on a rebuild. Ports that hard-coded terminal colors need to re-read.
 
 ---
 
@@ -152,4 +152,4 @@ Initial npm release. The token system existed before this version; this is the f
 
 ---
 
-[unreleased]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.6.0...HEAD [0.6.0]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.5.0...v0.6.0 [0.5.0]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.4.0...v0.5.0 [0.4.0]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.3.0...v0.4.0 [0.3.0]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.2.1...v0.3.0 [0.2.1]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.2.0...v0.2.1 [0.2.0]: https://github.com/vivid-life-theme/vivid-life-design-system/releases/tag/v0.2.0
+[unreleased]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.7.0...HEAD [0.7.0]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.6.0...v0.7.0 [0.6.0]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.5.0...v0.6.0 [0.5.0]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.4.0...v0.5.0 [0.4.0]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.3.0...v0.4.0 [0.3.0]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.2.1...v0.3.0 [0.2.1]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.2.0...v0.2.1 [0.2.0]: https://github.com/vivid-life-theme/vivid-life-design-system/releases/tag/v0.2.0
