@@ -173,11 +173,11 @@ The readable text color for use _on_ `--vl-accent` (e.g. a primary button's labe
 
 ### Syntax token map (per flavor)
 
-Defined in `tokens.json5` and emitted to CSS as `--syn-*`.
+Defined in `tokens.json5` as `syntax_hues` + `syntax_shade`, resolved at build time, and emitted to CSS as `--syn-*`.
 
 | Token       | Hue family      |
 | ----------- | --------------- |
-| `comment`   | gray (muted)    |
+| `comment`   | `text.fg_subtle` |
 | `keyword`   | purple          |
 | `string`    | green           |
 | `number`    | orange          |
@@ -198,7 +198,11 @@ Defined in `tokens.json5` and emitted to CSS as `--syn-*`.
 
 Color targets may resolve to one of the 12 core slots, a text alias (`fg`, `fg_muted`, `fg_subtle`, `fg_disabled`), or a semantic alias (`semantic.success | .warning | .danger | .info`). Ports may override individual entries.
 
-The token-to-hue mapping is intentionally stable across flavors so a file's "shape" reads the same whether you're in Midnight or Noon.
+The token-to-hue mapping is intentionally stable across flavors so a file's "shape" reads the same whether you're in Midnight or Noon. That stability is what makes the block derivable: `syntax_hues` is the one shared map above, and a flavor contributes only which rung of each hue it picks (`syntax_shade`). `flavors.*.syntax` is generated, not hand-authored — the same pattern as [`accent_shade`](#accent-shade-ruleset) and [`ansi_shade`](#ansi-palette-per-flavor).
+
+Two slot pairs share a hue but not a rung — `number`/`parameter` (orange) and `string`/`attr` (green) — so the table is keyed by slot rather than by hue. `comment` is the one slot that isn't shade-driven: its hue entry is the text-ramp alias `fg_subtle`, where comment grey lives on all four flavors (Twilight's `#a3a3a3` and Dawn/Noon's `#525252` sit outside the palette on purpose — see [Caveats](#caveats)).
+
+`flavors.*.semantic` works the same way, via `semantic_hues` + `semantic_shade`: four roles with a fixed hue each (green = success, yellow = warning, red = danger, blue = info) and a per-flavor rung. `tools/build-tokens.mjs` fails the build if either table gains a shade for a slot that resolves from the text ramp, loses a slot that `syntax_tokens.core` still lists, or names a hue/shade pair the palette doesn't have.
 
 ### ANSI palette (per flavor)
 

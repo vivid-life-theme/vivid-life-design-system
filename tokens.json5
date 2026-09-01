@@ -301,6 +301,125 @@
   },
 
   // ────────────────────────────────────────────────────────────────
+  //   3c. SYNTAX-SHADE RULESET  —  flavor × syntax slot → shade
+  // ────────────────────────────────────────────────────────────────
+  // The third instance of the accent_shade pattern (issue #9). The
+  // README already states that the syntax hue map is intentionally
+  // identical across flavors, so a file's "shape" reads the same in
+  // Midnight and in Noon — that shared map is `syntax_hues`, and the
+  // only thing a flavor contributes is which rung of each hue it
+  // picks. Before this, all 48 values were hand-authored inside the
+  // four flavor blocks; `flavors.*.syntax` is now derived.
+  //
+  // Two slots share a hue but not a rung on purpose — `number` vs
+  // `parameter` (both orange) and `string` vs `attr` (both green) —
+  // so the table is keyed by slot, not by hue, exactly like ansi_shade.
+  //
+  // `comment` is the one slot that is not shade-driven: it maps to the
+  // text-ramp alias `fg_subtle`, which is where comment grey has always
+  // lived (two flavors sit on #a3a3a3 / #525252, deliberately outside
+  // the palette — see the caveats in README). A slot whose hue is a
+  // text alias must NOT appear in the shade rows below; a slot whose
+  // hue is a palette hue must. tools/build-tokens.mjs gates that.
+
+  syntax_hues: {
+    comment: "fg_subtle", // text-ramp alias, not a palette hue
+    keyword: "purple",
+    string: "green",
+    number: "orange",
+    function: "blue",
+    parameter: "orange",
+    type: "yellow",
+    constant: "orange",
+    tag: "blue",
+    attr: "green",
+    regex: "red",
+    punct: "gray",
+  },
+
+  syntax_shade: {
+    midnight: {
+      keyword: 300,
+      string: 500,
+      number: 500,
+      function: 300,
+      parameter: 300, // NEW (issue #2 item 2) — italic via extended map
+      type: 500,
+      constant: 500,
+      tag: 300,
+      attr: 300, // was yellow.500 (issue #2 item 3)
+      regex: 500,
+      punct: 300,
+    },
+    twilight: {
+      keyword: 300,
+      string: 500,
+      number: 300,
+      function: 300,
+      parameter: 500, // NEW — deeper than number.300 (only available split on this bg)
+      type: 500,
+      constant: 300,
+      tag: 300,
+      attr: 300, // was yellow.500
+      regex: 300,
+      punct: 300,
+    },
+    dawn: {
+      keyword: 700,
+      string: 900,
+      number: 700,
+      function: 700,
+      parameter: 900, // NEW
+      type: 900,
+      constant: 700,
+      tag: 700,
+      attr: 700, // was yellow.900
+      regex: 700,
+      punct: 700,
+    },
+    noon: {
+      keyword: 700,
+      string: 900,
+      number: 700,
+      function: 700,
+      parameter: 900, // NEW
+      type: 900,
+      constant: 700,
+      tag: 700,
+      attr: 700, // was yellow.900
+      regex: 700,
+      punct: 700,
+    },
+  },
+
+  // ────────────────────────────────────────────────────────────────
+  //   3d. SEMANTIC-SHADE RULESET  —  flavor × role → shade
+  // ────────────────────────────────────────────────────────────────
+  // Same shape, four roles. The hue per role is fixed by convention
+  // (green = success, red = danger …) and never varies by flavor;
+  // only the rung does. `flavors.*.semantic` is derived from this.
+  //
+  // Every resolved value must clear 4.5:1 against every surface tier
+  // except bg_scrim and bg_inset — that gate already exists in
+  // tools/build-tokens.mjs and is unchanged by this table.
+
+  semantic_hues: {
+    success: "green",
+    warning: "yellow",
+    danger: "red",
+    info: "blue",
+  },
+
+  semantic_shade: {
+    midnight: { success: 300, warning: 300, danger: 300, info: 300 },
+    // Twilight's #404040 canvas needs a rung lighter than Midnight's
+    // for three of the four; green.300 already clears it.
+    twilight: { success: 300, warning: 100, danger: 100, info: 100 },
+    dawn: { success: 900, warning: 900, danger: 900, info: 900 },
+    noon: { success: 900, warning: 900, danger: 900, info: 900 },
+  },
+
+  // ────────────────────────────────────────────────────────────────
   //   4.  FLAVORS  —  the 4 base themes
   // ────────────────────────────────────────────────────────────────
   // Each flavor defines:
@@ -308,9 +427,11 @@
   //   text     — foreground layers
   //   border   — border weights
   //   state    — interaction states (hover/active/disabled) as alpha overlays
-  //   semantic — success/warning/danger/info
-  //   syntax   — the 12 core syntax token colors
   //   ansi     — full 16-color terminal ANSI palette
+  //
+  // `semantic` and `syntax` are NOT authored here — they are derived
+  // from semantic_shade / syntax_shade above (§ 3c, 3d) and appear in
+  // the emitted tokens.json between `state` and `ansi`.
 
   flavors: {
     // ─── MIDNIGHT (deep dark, OLED-friendly) ───
@@ -341,26 +462,6 @@
         hover: "#ffffff14", // 8% white overlay
         active: "#ffffff1f", // 12% white overlay
         selection: "#2a2f3a",
-      },
-      semantic: {
-        success: "$palette.green.300",
-        warning: "$palette.yellow.300",
-        danger: "$palette.red.300",
-        info: "$palette.blue.300",
-      },
-      syntax: {
-        comment: "$palette.gray.500",
-        keyword: "$palette.purple.300",
-        string: "$palette.green.500",
-        number: "$palette.orange.500",
-        function: "$palette.blue.300",
-        parameter: "$palette.orange.300", // NEW (issue #2 item 2) — italic via extended map
-        type: "$palette.yellow.500",
-        constant: "$palette.orange.500",
-        tag: "$palette.blue.300",
-        attr: "$palette.green.300", // was yellow.500 (issue #2 item 3)
-        regex: "$palette.red.500",
-        punct: "$palette.gray.300",
       },
       ansi: {
         black: "#0a0a0a",
@@ -411,26 +512,6 @@
         active: "#ffffff1f",
         selection: "#5b5b5b",
       },
-      semantic: {
-        success: "$palette.green.300",
-        warning: "$palette.yellow.100",
-        danger: "$palette.red.100",
-        info: "$palette.blue.100",
-      },
-      syntax: {
-        comment: "#a3a3a3",
-        keyword: "$palette.purple.300",
-        string: "$palette.green.500",
-        number: "$palette.orange.300",
-        function: "$palette.blue.300",
-        parameter: "$palette.orange.500", // NEW — deeper than number.300 (only available split on this bg)
-        type: "$palette.yellow.500",
-        constant: "$palette.orange.300",
-        tag: "$palette.blue.300",
-        attr: "$palette.green.300", // was yellow.500
-        regex: "$palette.red.300",
-        punct: "$palette.gray.300",
-      },
       ansi: {
         black: "$palette.gray.900",
         red: "$palette.red.300",
@@ -480,26 +561,6 @@
         active: "#00000014", // 8% black overlay
         selection: "#bdbdbd",
       },
-      semantic: {
-        success: "$palette.green.900",
-        warning: "$palette.yellow.900",
-        danger: "$palette.red.900",
-        info: "$palette.blue.900",
-      },
-      syntax: {
-        comment: "#525252",
-        keyword: "$palette.purple.700",
-        string: "$palette.green.900",
-        number: "$palette.orange.700",
-        function: "$palette.blue.700",
-        parameter: "$palette.orange.900", // NEW
-        type: "$palette.yellow.900",
-        constant: "$palette.orange.700",
-        tag: "$palette.blue.700",
-        attr: "$palette.green.700", // was yellow.900
-        regex: "$palette.red.700",
-        punct: "$palette.gray.700",
-      },
       ansi: {
         black: "$palette.gray.900",
         red: "$palette.red.800",
@@ -548,26 +609,6 @@
         hover: "#0000000d",
         active: "#00000014",
         selection: "#e5e5e5",
-      },
-      semantic: {
-        success: "$palette.green.900",
-        warning: "$palette.yellow.900",
-        danger: "$palette.red.900",
-        info: "$palette.blue.900",
-      },
-      syntax: {
-        comment: "#525252",
-        keyword: "$palette.purple.700",
-        string: "$palette.green.900",
-        number: "$palette.orange.700",
-        function: "$palette.blue.700",
-        parameter: "$palette.orange.900", // NEW
-        type: "$palette.yellow.900",
-        constant: "$palette.orange.700",
-        tag: "$palette.blue.700",
-        attr: "$palette.green.700", // was yellow.900
-        regex: "$palette.red.700",
-        punct: "$palette.gray.700",
       },
       ansi: {
         black: "$palette.gray.900",

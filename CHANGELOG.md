@@ -31,6 +31,19 @@ Closes [#7](https://github.com/vivid-life-theme/vivid-life-design-system/issues/
 
 Ports that read `flavors[flavor].ansi` and `surface.bg_terminal` from the token data pick all of this up on a rebuild. Ports that hard-coded terminal colors need to re-read.
 
+Also closes [#9](https://github.com/vivid-life-theme/vivid-life-design-system/issues/9): `flavors.*.syntax` and `flavors.*.semantic` are derived rather than hand-authored.
+
+Both were pure hue + shade lookups — 16 values per flavor, 64 across the four — and the README already stated that the hue half never varies by flavor. It was nonetheless re-typed in each flavor block, with nothing gating that the four stayed in agreement. They now follow the same shape `accent_shade` and `ansi_shade` already use: one shared hue map plus a per-flavor shade row.
+
+The win is not a smaller value count (a flavor's 16 authored colors become 15 shade numbers). It is that the hue map is now declared **once** instead of being re-implied four times, so cross-flavor hue drift is structurally impossible rather than hand-checked, and the per-slot decision shrinks from "pick a hue and a shade" to "pick a shade". **No token value changed** — `colors_and_type.css` is byte-identical and the `flavors` subtree of `tokens.json` is unchanged down to key order.
+
+### Added
+
+- **`syntax_hues` + `syntax_shade`** — flavor × syntax slot → shade. Keyed by slot rather than hue, because `number`/`parameter` (both orange) and `string`/`attr` (both green) share a hue but not a rung. `comment` is not shade-driven: its hue entry is the text-ramp alias `fg_subtle`, which is where comment grey already lived on all four flavors (two of them sit on values deliberately outside the palette).
+- **`semantic_hues` + `semantic_shade`** — flavor × role → shade, same shape, four roles.
+- **Gate arms in `tools/build-tokens.mjs`** for both tables: a shade entry for a slot that resolves from the text ramp, or for a slot the hue map no longer has, fails the build; so does a `syntax_tokens.core` slot missing from `syntax_hues`. A palette-hue slot with no shade throws during resolution.
+- **`expandShadeTables(tokens)`**, exported from `tools/build-tokens.mjs` and applied inside `loadTokens()`. Ports using `loadTokens` see the derived groups exactly as before; ports reading `tokens.json` see no change at all.
+
 ---
 
 ## [0.6.0] - 2026-08-26

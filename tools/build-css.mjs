@@ -21,6 +21,7 @@
  */
 
 import { readFile, writeFile } from "node:fs/promises";
+import { expandShadeTables } from "./build-tokens.mjs";
 import { fileURLToPath } from "node:url";
 import { dirname, join, resolve, relative } from "node:path";
 
@@ -364,7 +365,7 @@ async function main() {
 
   const src = await readFile(join(ROOT, "tokens.json5"), "utf8");
   const parsed = JSON.parse(json5ToJson(src));
-  const tokens = resolveRefs(parsed, parsed);
+  const tokens = expandShadeTables(resolveRefs(parsed, parsed));
 
   const cssPath = join(ROOT, "colors_and_type.css");
   const css = buildCss(tokens);
