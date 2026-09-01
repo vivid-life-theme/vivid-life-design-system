@@ -9,11 +9,13 @@
  *       node tools/build-tokens.mjs --check   → exit 1 if outputs would change
  *     Reads `tokens.json5` and emits:
  *       tokens.json     — flat JSON with all $palette.x.y refs resolved
+ *                         and the derived token groups filled in
  *       dist/tokens.js  — ES module that exports the resolved object
  *     Then runs WCAG checks against every accent / syntax token.
  *
  * 2.  Library — imported by downstream ports:
- *       import { loadTokens, mix, alphaOver, contrast } from
+ *       import { loadTokens, expandShadeTables, mix, alphaOver,
+ *                contrast } from
  *         'vivid-life-theme/tools/build-tokens.mjs';
  *     Color-math helpers are centralised here so a GTK port and a
  *     VS Code port can't drift from each other or from the web.
@@ -287,6 +289,67 @@ export function resolveRefs(node, root) {
 }
 
 /**
+ * Fill in the token groups that are derived rather than authored:
+ * `flavors.*.semantic` from `semantic_shade`, `flavors.*.syntax` from
+ * `syntax_shade` (issue #9). Both are the same shape as `ansi_shade` —
+ * one shared hue map plus a per-flavor shade row.
+ *
+ * A slot whose hue names a palette hue resolves to `palette[hue][shade]`.
+ * A slot whose hue names an entry of the flavor's own `text` ramp (only
+ * `syntax.comment` today, → `fg_subtle`) resolves to that instead and
+ * carries no shade.
+ *
+ * Mutates and returns `tokens`. Runs after `resolveRefs`, so `palette`
+ * and `text` already hold literal hexes. Key order follows the hue maps,
+ * and the derived groups are reinserted between `state` and `ansi` so
+ * the emitted flavor shape is unchanged.
+ */
+export function expandShadeTables(tokens) {
+  const groups = [
+    ["semantic", tokens.semantic_hues, tokens.semantic_shade],
+    ["syntax", tokens.syntax_hues, tokens.syntax_shade],
+  ];
+
+  for (const [fName, f] of Object.entries(tokens.flavors)) {
+    for (const [group, hues, shades] of groups) {
+      const out = {};
+      for (const [slot, hue] of Object.entries(hues)) {
+        if (hue in f.text) {
+          out[slot] = f.text[hue];
+          continue;
+        }
+        const shade = shades?.[fName]?.[slot];
+        const hex = tokens.palette?.[hue]?.[shade];
+        if (!hex) {
+          throw new Error(
+            `${group}_shade: no palette entry for ${fName}.${slot} → ${hue}-${shade}`,
+          );
+        }
+        out[slot] = hex;
+      }
+      f[group] = out;
+    }
+    // Reinsert in authored order so tokens.json keeps its shape.
+    const order = [
+      "label",
+      "type",
+      "surface",
+      "text",
+      "border",
+      "state",
+      "semantic",
+      "syntax",
+      "ansi",
+    ];
+    const rebuilt = {};
+    for (const k of order) if (k in f) rebuilt[k] = f[k];
+    for (const k of Object.keys(f)) if (!(k in rebuilt)) rebuilt[k] = f[k];
+    tokens.flavors[fName] = rebuilt;
+  }
+  return tokens;
+}
+
+/**
  * Convenience for downstream ports: load + parse + resolve in one call.
  *
  *   const tokens = await loadTokens();  // defaults to ../tokens.json5
@@ -297,7 +360,7 @@ export function resolveRefs(node, root) {
 export async function loadTokens(path = join(ROOT, "tokens.json5")) {
   const src = await readFile(path, "utf8");
   const parsed = JSON.parse(json5ToJson(src));
-  return resolveRefs(parsed, parsed);
+  return expandShadeTables(resolveRefs(parsed, parsed));
 }
 
 /* =====================================================================
@@ -376,6 +439,33 @@ function check(tokens) {
       }
     }
 
+    // The derived groups must cover their hue map exactly once per
+    // flavor: a palette-hue slot needs a shade row entry, a text-alias
+    // slot must not have one. expandShadeTables() throws on the missing
+    // half, so what is left to catch here is the surplus — a stale shade
+    // entry for a slot that resolves from the text ramp, or one for a
+    // slot the hue map no longer has.
+    for (const [group, hues, shades] of [
+      ["semantic", tokens.semantic_hues, tokens.semantic_shade],
+      ["syntax", tokens.syntax_hues, tokens.syntax_shade],
+    ]) {
+      const row = shades?.[fName] ?? {};
+      for (const [slot, hue] of Object.entries(hues)) {
+        if (hue in f.text && slot in row) {
+          warns.push(
+            `✗ ${group}_shade.${fName}.${slot} is set, but ${slot} resolves from text.${hue} and takes no shade`,
+          );
+        }
+      }
+      for (const slot of Object.keys(row)) {
+        if (!(slot in hues)) {
+          warns.push(
+            `✗ ${group}_shade.${fName}.${slot} has no entry in ${group}_hues`,
+          );
+        }
+      }
+    }
+
     // Semantic colors must be readable (≥4.5:1) on every surface token
     // except bg_scrim (a translucent overlay, not a fill) and bg_inset
     // (docked structural chrome — banners render on bg/bg_soft, never here).
@@ -391,6 +481,17 @@ function check(tokens) {
           );
         }
       }
+    }
+  }
+
+  // The 12 core slots are the contract ports build against, so the hue
+  // map has to stay in lockstep with syntax_tokens.core. Flavor-
+  // independent, hence outside the loop above.
+  for (const slot of tokens.syntax_tokens.core) {
+    if (!(slot in tokens.syntax_hues)) {
+      warns.push(
+        `✗ syntax_tokens.core lists "${slot}", missing from syntax_hues`,
+      );
     }
   }
   return warns;
@@ -523,6 +624,7 @@ async function main() {
     "✓ All (flavor, variant) selections remain readable for body text.",
   );
   console.log("✓ All ansi.* slots match ansi_shade and clear AA on bg_terminal.");
+  console.log("✓ syntax and semantic resolve cleanly from their shade rulesets.");
 }
 
 // Only run the CLI when invoked directly (not when imported as a module).

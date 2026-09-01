@@ -215,6 +215,106 @@ export default {
       "bright_white"
     ]
   },
+  "syntax_hues": {
+    "comment": "fg_subtle",
+    "keyword": "purple",
+    "string": "green",
+    "number": "orange",
+    "function": "blue",
+    "parameter": "orange",
+    "type": "yellow",
+    "constant": "orange",
+    "tag": "blue",
+    "attr": "green",
+    "regex": "red",
+    "punct": "gray"
+  },
+  "syntax_shade": {
+    "midnight": {
+      "keyword": 300,
+      "string": 500,
+      "number": 500,
+      "function": 300,
+      "parameter": 300,
+      "type": 500,
+      "constant": 500,
+      "tag": 300,
+      "attr": 300,
+      "regex": 500,
+      "punct": 300
+    },
+    "twilight": {
+      "keyword": 300,
+      "string": 500,
+      "number": 300,
+      "function": 300,
+      "parameter": 500,
+      "type": 500,
+      "constant": 300,
+      "tag": 300,
+      "attr": 300,
+      "regex": 300,
+      "punct": 300
+    },
+    "dawn": {
+      "keyword": 700,
+      "string": 900,
+      "number": 700,
+      "function": 700,
+      "parameter": 900,
+      "type": 900,
+      "constant": 700,
+      "tag": 700,
+      "attr": 700,
+      "regex": 700,
+      "punct": 700
+    },
+    "noon": {
+      "keyword": 700,
+      "string": 900,
+      "number": 700,
+      "function": 700,
+      "parameter": 900,
+      "type": 900,
+      "constant": 700,
+      "tag": 700,
+      "attr": 700,
+      "regex": 700,
+      "punct": 700
+    }
+  },
+  "semantic_hues": {
+    "success": "green",
+    "warning": "yellow",
+    "danger": "red",
+    "info": "blue"
+  },
+  "semantic_shade": {
+    "midnight": {
+      "success": 300,
+      "warning": 300,
+      "danger": 300,
+      "info": 300
+    },
+    "twilight": {
+      "success": 300,
+      "warning": 100,
+      "danger": 100,
+      "info": 100
+    },
+    "dawn": {
+      "success": 900,
+      "warning": 900,
+      "danger": 900,
+      "info": 900
+    },
+    "noon": {
+      "success": 900,
+      "warning": 900,
+      "danger": 900,
+      "info": 900
+    }
+  },
   "flavors": {
     "midnight": {
       "label": "Midnight",
