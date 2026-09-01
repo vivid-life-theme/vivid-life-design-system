@@ -37,3 +37,16 @@ jobs:
       # No dependencies to install — the build tools are plain Node.js.
       - run: npm run test
       - run: npm run check
+
+  # Single, stable status-check name for branch protection to require.
+  # Protection matches checks by name, so requiring the matrix legs directly
+  # ("verify (18)", …) would wedge every PR the moment the matrix changes —
+  # a required check that never reports blocks the PR forever. Requiring this
+  # job instead lets the matrix change freely underneath it.
+  ci:
+    needs: verify
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fail unless every matrix leg succeeded
+        run: '[ "${{ needs.verify.result }}" = "success" ]'
