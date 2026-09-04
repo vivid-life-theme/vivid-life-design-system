@@ -12,6 +12,12 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ---
 
+## [0.8.0] - 2026-09-04
+
+### Added
+
+- **Five window-button glyphs** in the vendored Lucide subset (`assets/glyphs/`): `chevron-up` (shade), `square` (maximize), `copy` (restore, maximize-toggled), `pin` (stick) and `pin-off` (unstick, stick-toggled). Path data is Lucide 1.40.0 verbatim, ISC-licensed. They complete the nine-glyph set an Xfwm4 window-title-button port needs — `menu`, `minus`, `x` and `chevron-down` were already vendored — so the port draws from the subset rather than hand-encoding path data. Additive only: no token, build or packaging change, and `assets/glyphs/` was already covered by the `files` array and the `./assets/*` exports entry (27 glyph files → 32).
+
 ## [0.7.0] - 2026-09-01
 
 Closes [#7](https://github.com/vivid-life-theme/vivid-life-design-system/issues/7): the four flavors are now distinguishable in a standalone terminal emulator.
@@ -152,4 +158,4 @@ Initial npm release. The token system existed before this version; this is the f
 
 ---
 
-[unreleased]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.7.0...HEAD [0.7.0]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.6.0...v0.7.0 [0.6.0]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.5.0...v0.6.0 [0.5.0]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.4.0...v0.5.0 [0.4.0]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.3.0...v0.4.0 [0.3.0]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.2.1...v0.3.0 [0.2.1]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.2.0...v0.2.1 [0.2.0]: https://github.com/vivid-life-theme/vivid-life-design-system/releases/tag/v0.2.0
+[unreleased]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.8.0...HEAD [0.8.0]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.7.0...v0.8.0 [0.7.0]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.6.0...v0.7.0 [0.6.0]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.5.0...v0.6.0 [0.5.0]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.4.0...v0.5.0 [0.4.0]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.3.0...v0.4.0 [0.3.0]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.2.1...v0.3.0 [0.2.1]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.2.0...v0.2.1 [0.2.0]: https://github.com/vivid-life-theme/vivid-life-design-system/releases/tag/v0.2.0
