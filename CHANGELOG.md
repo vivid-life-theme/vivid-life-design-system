@@ -10,6 +10,25 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ## [Unreleased]
 
+Closes [#14](https://github.com/vivid-life-theme/vivid-life-design-system/issues/14): selected tabs get an accent wash, and the foundation gets the token that was missing behind the question.
+
+The kitchen sink held two treatments for the same state — tabs used an underline alone, while the app sidebar's active row used `color-mix(in srgb, var(--vl-accent) 18%, transparent)` plus a 3px accent bar. So a port mirroring "the" canonical selected pattern was picking one of two, and the wash percentage lived as a literal in a preview file rather than in the tokens. That's a foundation gap by the README's own rule 4, not a port-side bug.
+
+### Added
+
+- **`accent_mix`** (`tokens.json5` § 3e) — the two accent-derived tints that can't be authored per flavor, because they depend on the variant: `selection` (25% over `bg`) and `selected` (18% over `transparent`). `tools/build-css.mjs` now reads both from here instead of hard-coding 25%, so the recipe lives with the tokens. Emitted into `tokens.json` and `dist/tokens.js`, so ports read the percentages rather than copying them.
+- **`--vl-state-selected`** — the selected-item wash, emitted in the variant block beside `--vl-selection`. Translucent on purpose: a selected row may sit on `bg`, `bg_soft` or `bg_inset`, and the tint composites over whichever it lands on.
+- **`selectedWash({ surface, accent, mixPct })`**, exported from `tools/build-tokens.mjs` next to `selection()` / `hoverOver()` / `activeOver()`, for ports that bake values at build time. Native toolkits mostly lack `color-mix` — GTK3/4 CSS has `alpha()` and `mix()` but not `color-mix()`.
+- **`accent_mix.selected.surfaces`** — the surfaces the wash is sanctioned for (`bg`, `bg_soft`, `bg_sunk`, `bg_overlay`, `bg_terminal`). A translucent tint composites over whatever it lands on, so the contract has to name those surfaces rather than leave a port to guess. `bg_inset` is deliberately excluded: Twilight's `#627084` is already at 4.62:1 for `fg` before any tint, so no percentage clears AA there — a port putting selected rows on it should use the accent bar plus a `state.hover` / `state.active` overlay instead.
+- **CI gate for the wash** — `text.fg` must clear 4.5:1 on the resolved tint for all 24 (flavor, variant) combinations on **every** sanctioned surface, not just the canvas (worst case 5.20:1, Twilight/orange on `bg_soft`). On the canvas `text.fg_muted` must clear it too, and that is what pins 18%: Twilight sits at 4.81:1 and fails at 20%. Plus a structural check that `accent_mix` is well-formed and that every named surface exists on every flavor. Two `selectedWash` cases added to the self-test.
+
+### Changed
+
+- **Selected tabs in `preview/01-kitchen-sink.html`** now carry `--vl-state-selected` behind the existing underline and `--vl-fg` label (the sidebar's rows sit on `bg_sunk`; both are sanctioned surfaces). The underline stays load-bearing — at 18% the tint reaches only 1.21:1 against `bg` at worst (midnight/red), well below the 3:1 WCAG 1.4.11 asks of a standalone non-text indicator. The wash reinforces; it never signals alone.
+- **The app sidebar's active row** reads `--vl-state-selected` instead of its hard-coded literal. Same rendered value, so nothing there moves visually.
+
+No token value changed and no existing CSS variable was renamed or removed; `--vl-state-selected` is purely additive. The only visual difference anywhere is selected tabs gaining a tint.
+
 ---
 
 ## [0.8.0] - 2026-09-04

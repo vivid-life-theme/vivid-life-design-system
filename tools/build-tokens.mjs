@@ -150,6 +150,27 @@ export function selection({ bg, accent, mixPct = 0.25 } = {}) {
 }
 
 /**
+ * Selected-item wash for a (surface, variant) combo.
+ * Equivalent to `color-mix(in srgb, var(--vl-accent) 18%, transparent)`
+ * composited over `surface` — a translucent tint mixes to the same
+ * value as an opaque mix against whatever sits behind it.
+ *
+ * Unlike `selection()`, which always lands on the flavor canvas, this
+ * one takes the surface explicitly: a selected row can sit on `bg`,
+ * `bg_soft` or `bg_inset`, and the wash reads differently on each.
+ *
+ *   selectedWash({ surface: '#171717', accent: '#d8b4fe' })  → '#3a3341'
+ *
+ * The wash reinforces a selection signal; it never carries one alone.
+ * Keep the underline / accent bar beside it. See issue #14.
+ */
+export function selectedWash({ surface, accent, mixPct = 0.18 } = {}) {
+  if (!surface || !accent)
+    throw new Error("selectedWash: surface and accent required");
+  return mix(accent, surface, mixPct);
+}
+
+/**
  * Hover overlay baked against a known bg.
  *   hoverOver({ flavor: 'dark', bg: '#171717' })  → '#2a2a2a'
  *   hoverOver({ flavor: 'light', bg: '#f5f5f5' }) → '#e9e9e9'
@@ -369,6 +390,35 @@ export async function loadTokens(path = join(ROOT, "tokens.json5")) {
 
 function check(tokens) {
   const warns = [];
+  // accent_mix drives two emitted color-mix recipes; a missing or
+  // malformed entry would silently fall back to a hard-coded default.
+  for (const name of ["selection", "selected"]) {
+    const entry = tokens.accent_mix?.[name];
+    if (!entry || typeof entry.pct !== "number" || !entry.base) {
+      warns.push(`✗ accent_mix.${name} missing or malformed (need pct + base)`);
+    } else if (!["bg", "transparent"].includes(entry.base)) {
+      warns.push(
+        `✗ accent_mix.${name}.base is "${entry.base}" — expected "bg" or "transparent"`,
+      );
+    }
+  }
+  // A translucent tint composites over whatever it lands on, so its
+  // sanctioned surfaces have to be declared and every one of them gated.
+  const washSurfaces = tokens.accent_mix?.selected?.surfaces;
+  if (!Array.isArray(washSurfaces) || washSurfaces.length === 0) {
+    warns.push(`✗ accent_mix.selected.surfaces missing or empty`);
+  } else {
+    for (const s of washSurfaces) {
+      for (const [fName, f] of Object.entries(tokens.flavors)) {
+        if (!(s in f.surface)) {
+          warns.push(
+            `✗ accent_mix.selected.surfaces lists "${s}", missing from ${fName}.surface`,
+          );
+        }
+      }
+    }
+  }
+  if (warns.length) return warns;
   for (const [fName, f] of Object.entries(tokens.flavors)) {
     const bg = f.surface.bg;
     for (const hue of tokens.variant_hues) {
@@ -390,13 +440,49 @@ function check(tokens) {
       }
     }
     // Also: every (flavor, variant) selection must remain readable.
+    const selPct = tokens.accent_mix.selection.pct / 100;
     for (const hue of tokens.variant_hues) {
       const accent = resolveAccent(tokens, fName, hue);
-      const sel = selection({ bg, accent });
+      const sel = selection({ bg, accent, mixPct: selPct });
       const r = contrast(f.text.fg, sel);
       if (r < 4.5) {
         warns.push(
           `✗ ${fName}/${hue} selection text on ${sel}: ${r.toFixed(2)}:1`,
+        );
+      }
+    }
+    // Same for the selected-item wash (issue #14). The tint is
+    // translucent, so it composites over every surface in
+    // accent_mix.selected.surfaces — gating only `bg` would miss the
+    // surfaces a selected row actually lands on. The label on a
+    // selected row is `fg` by contract (both kitchen-sink patterns set
+    // it), so `fg` is what must clear 4.5:1 everywhere.
+    const washPct = tokens.accent_mix.selected.pct / 100;
+    for (const sName of tokens.accent_mix.selected.surfaces) {
+      const surface = f.surface[sName];
+      for (const hue of tokens.variant_hues) {
+        const accent = resolveAccent(tokens, fName, hue);
+        const wash = selectedWash({ surface, accent, mixPct: washPct });
+        const r = contrast(f.text.fg, wash);
+        if (r < 4.5) {
+          warns.push(
+            `✗ ${fName}/${hue} selected-wash fg on ${sName} (${wash}): ${r.toFixed(2)}:1`,
+          );
+        }
+      }
+    }
+    // On the canvas the wash additionally keeps `fg_muted` readable —
+    // that is the constraint pinning pct at its ceiling (Twilight sits
+    // at 4.81:1 here and fails at 20%). It is not required off-canvas:
+    // no useful percentage achieves it there, and the selected label is
+    // `fg` regardless.
+    for (const hue of tokens.variant_hues) {
+      const accent = resolveAccent(tokens, fName, hue);
+      const wash = selectedWash({ surface: bg, accent, mixPct: washPct });
+      const r = contrast(f.text.fg_muted, wash);
+      if (r < 4.5) {
+        warns.push(
+          `✗ ${fName}/${hue} selected-wash fg_muted on bg (${wash}): ${r.toFixed(2)}:1`,
         );
       }
     }
@@ -513,6 +599,18 @@ function selfTest() {
       "midnight selection (purple)",
     ],
 
+    // selectedWash — issue #14
+    [
+      () => selectedWash({ surface: "#171717", accent: "#d8b4fe" }),
+      "#3a3341",
+      "midnight selected wash (purple) on bg",
+    ],
+    [
+      () => selectedWash({ surface: "#434f60", accent: "#d8b4fe" }),
+      "#5e617c",
+      "midnight selected wash (purple) on bg_inset",
+    ],
+
     // alphaOver
     [
       () => alphaOver("#ffffff", "#171717", 0.08),
@@ -622,6 +720,9 @@ async function main() {
   console.log("\n✓ All accent variants meet WCAG AA against their flavor bg.");
   console.log(
     "✓ All (flavor, variant) selections remain readable for body text.",
+  );
+  console.log(
+    "✓ All (flavor, variant) selected-item washes keep fg at AA on every sanctioned surface.",
   );
   console.log("✓ All ansi.* slots match ansi_shade and clear AA on bg_terminal.");
   console.log("✓ syntax and semantic resolve cleanly from their shade rulesets.");

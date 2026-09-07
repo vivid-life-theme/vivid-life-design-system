@@ -155,8 +155,9 @@ function header() {
      <body class="vl-midnight variant-purple"> … </body>
 
    The flavor class sets the canvas, text, borders, syntax map.
-   The variant class only sets --vl-accent (and --vl-selection, which
-   is derived from --vl-accent via color-mix at runtime).
+   The variant class only sets --vl-accent (plus --vl-selection and
+   --vl-state-selected, both derived from --vl-accent via color-mix
+   at runtime).
    ==================================================================== */
 `;
 }
@@ -306,7 +307,8 @@ function variantBlock(tokens) {
     `\n/* ── Variants — UI accent only (cursor, link, focus ring, fill) ─── */`,
   ];
   lines.push(
-    `/* Selection is derived from --vl-accent via color-mix at runtime. */\n`,
+    `/* Selection and the selected-item wash are derived from --vl-accent
+   via color-mix at runtime. */\n`,
   );
 
   for (const fname of FLAVOR_NAMES) {
@@ -320,12 +322,31 @@ function variantBlock(tokens) {
     lines.push("");
   }
 
-  // Selection tint — color-mix at 25% accent + 75% bg.
-  // Works on dark and light bg without needing per-flavor rules.
-  lines.push(`/* Selection tinted toward accent (25% mix over bg). */`);
+  // Accent-derived tints — percentages and bases come from
+  // tokens.json5 → accent_mix, so the recipe lives with the tokens
+  // rather than in this generator. Both work on dark and light bg
+  // without needing per-flavor rules.
+  const { selection: sel, selected } = tokens.accent_mix;
+  const base = (b) => (b === "bg" ? "var(--vl-bg)" : b);
+  lines.push(`/* Accent-derived tints (percentages: tokens.json5 -> accent_mix).`);
+  lines.push(
+    `   --vl-selection       ${sel.pct}% over ${sel.base} — text selection.`,
+  );
+  lines.push(
+    `   --vl-state-selected  ${selected.pct}% over ${selected.base} — the selected tab / row.`,
+  );
+  lines.push(
+    `                        Reinforces an underline or accent bar; too light`,
+  );
+  lines.push(
+    `                        to be the sole selection signal on its own. */`,
+  );
   lines.push(`[class*="vl-"][class*="variant-"] {`);
   lines.push(
-    `  --vl-selection: color-mix(in srgb, var(--vl-accent) 25%, var(--vl-bg));`,
+    `  --vl-selection: color-mix(in srgb, var(--vl-accent) ${sel.pct}%, ${base(sel.base)});`,
+  );
+  lines.push(
+    `  --vl-state-selected: color-mix(in srgb, var(--vl-accent) ${selected.pct}%, ${base(selected.base)});`,
   );
   lines.push(`}`);
 
