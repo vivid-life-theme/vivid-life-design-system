@@ -85,7 +85,7 @@
       .ks-pill {
         background: var(--vl-bg-soft);
         color: var(--vl-fg-muted);
-        border: 1px solid var(--vl-border);
+        border: 1px solid var(--vl-border-control);
         border-radius: 9999px;
         padding: 4px 10px;
         font-size: 12px;
@@ -194,7 +194,7 @@
       /* ─── Border weights ─── */
       .ks-borders {
         display: grid;
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(4, 1fr);
         gap: 12px;
       }
       .ks-borders > div {
@@ -213,6 +213,9 @@
       }
       .b-strong {
         border: 1px solid var(--vl-border-strong);
+      }
+      .b-control {
+        border: 1px solid var(--vl-border-control);
       }
 
       /* ─── Semantic + accent ─── */
@@ -395,7 +398,7 @@
       .btn-secondary {
         background: var(--vl-bg-soft);
         color: var(--vl-fg);
-        border-color: var(--vl-border);
+        border-color: var(--vl-border-control);
       }
       .btn-secondary.hover,
       .btn-secondary:hover {
@@ -452,7 +455,7 @@
       .ks-area {
         background: var(--vl-bg-soft);
         color: var(--vl-fg);
-        border: 1px solid var(--vl-border);
+        border: 1px solid var(--vl-border-control);
         border-radius: 6px;
         padding: 7px 10px;
         font-family: inherit;
@@ -504,7 +507,7 @@
         height: 18px;
         border-radius: 9999px;
         background: var(--vl-bg-soft);
-        border: 1px solid var(--vl-border);
+        border: 1px solid var(--vl-border-control);
         position: relative;
         cursor: pointer;
         transition: background 120ms;
@@ -907,6 +910,7 @@
           <div class="b-subtle">--vl-border-subtle</div>
           <div class="b-default">--vl-border</div>
           <div class="b-strong">--vl-border-strong</div>
+          <div class="b-control">--vl-border-control</div>
         </div>
 
         <!-- ─── ACCENT + SEMANTIC ─── -->

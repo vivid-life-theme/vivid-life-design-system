@@ -29,6 +29,22 @@ The kitchen sink held two treatments for the same state — tabs used an underli
 
 No token value changed and no existing CSS variable was renamed or removed; `--vl-state-selected` is purely additive. The only visual difference anywhere is selected tabs gaining a tint.
 
+Closes [#15](https://github.com/vivid-life-theme/vivid-life-design-system/issues/15): controls get a boundary that clears WCAG 1.4.11.
+
+A user of the Xfce GTK3 port reported that buttons "have no space around them". Measuring it turned up a systematic gap rather than a port bug: on none of the four flavors could a control be given a 3:1 boundary with the tokens that existed. A `bg_soft` fill on a `bg` canvas peaks at 1.73:1 (Midnight) and bottoms out at 1.09:1 (Noon); `border.default` fails against every surface on every flavor, three of those combinations being the same hex as the surface behind them; `border.strong` tops out at 2.53:1 on Twilight. Only `text.fg_muted` cleared 3:1 everywhere, and a text-weight value as a 1px outline reads as a wireframe. Every toolkit port would have invented its own workaround — the Xfce port already had one precedent, its scrollbar slider on `text.fg_subtle`.
+
+### Added
+
+- **`control_boundary`** (`tokens.json5` § 3f) — the ruleset behind the new token: `min` (3, per WCAG 1.4.11) plus `surfaces`, the four a control actually lands on (`bg`, `bg_soft`, `bg_sunk`, `bg_overlay`). Emitted into `tokens.json` and `dist/tokens.js`, so a port reads the contract rather than rediscovering it. `bg_inset` is deliberately excluded — clearing 3:1 on Twilight's `#627084` would take ≈`#c9c9c9`, the text ramp — the same exemption it already carries from the semantic-vs-surface gate and the selected-item wash; controls on docked chrome take a `bg_soft` fill instead. `bg_scrim` is a backdrop and `bg_terminal` hosts no toolkit controls.
+- **`border.control` / `--vl-border-control`** — the control-boundary outline, per flavor: Midnight `#8f8f8f`, Twilight `#a6a6a6`, Dawn `#636363`, Noon `#737373` (`gray.500`, the one flavor whose rule lands on a value it already had). Each is the grey closest to the surfaces it separates from that still clears 3:1 with headroom, so the line reads as chrome rather than text; all four sit at ≈3.2:1 on their tightest surface. The other three needed a dedicated literal because the palette has no rung in the range the criterion allows.
+- **CI gate for control boundaries** — `tools/build-tokens.mjs` verifies `border.control` against every surface in `control_boundary.surfaces` on all four flavors (16 cells), the way it already verifies the accent-shade table, plus a structural check that the ruleset is well-formed, that every named surface exists on every flavor, and that no flavor is missing `border.control`.
+
+### Changed
+
+- **`preview/01-kitchen-sink.html`** draws its interactive controls — secondary button, text input, select, textarea, toggle, and the flavor/variant pills in the page chrome — with `--vl-border-control` instead of `--vl-border`, and the Borders reference row gained a fourth swatch for it. Dividers, cards, and panel edges keep `--vl-border`: that token's job is unchanged.
+
+No token value changed and no existing CSS variable was renamed or removed; `border.control` is purely additive. The visual difference is the one the issue asked for — control outlines are now visible on every flavor.
+
 ---
 
 ## [0.8.0] - 2026-09-04

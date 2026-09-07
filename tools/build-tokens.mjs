@@ -418,6 +418,30 @@ function check(tokens) {
       }
     }
   }
+  // The control-boundary ruleset (issue #15) has the same shape: a
+  // declared surface list plus a threshold, both meaningless if absent.
+  const cb = tokens.control_boundary;
+  if (!cb || typeof cb.min !== "number") {
+    warns.push(`✗ control_boundary missing or has no numeric min`);
+  }
+  if (!Array.isArray(cb?.surfaces) || cb.surfaces.length === 0) {
+    warns.push(`✗ control_boundary.surfaces missing or empty`);
+  } else {
+    for (const s of cb.surfaces) {
+      for (const [fName, f] of Object.entries(tokens.flavors)) {
+        if (!(s in f.surface)) {
+          warns.push(
+            `✗ control_boundary.surfaces lists "${s}", missing from ${fName}.surface`,
+          );
+        }
+      }
+    }
+  }
+  for (const [fName, f] of Object.entries(tokens.flavors)) {
+    if (!f.border?.control) {
+      warns.push(`✗ ${fName}.border.control missing`);
+    }
+  }
   if (warns.length) return warns;
   for (const [fName, f] of Object.entries(tokens.flavors)) {
     const bg = f.surface.bg;
@@ -486,6 +510,22 @@ function check(tokens) {
         );
       }
     }
+    // Control boundaries: WCAG 1.4.11 (issue #15). `border.control` is
+    // the one token a port can outline a control with and know the
+    // component's boundary is identifiable. It has to hold on every
+    // surface a control lands on, not just the canvas — a dialog button
+    // sits on `bg`, a card button on `bg_soft`, a menu item on
+    // `bg_overlay`, an input well on `bg_sunk`. `bg_inset` is exempt,
+    // for the reason given in tokens.json5 § 3f.
+    for (const sName of tokens.control_boundary.surfaces) {
+      const r = contrast(f.border.control, f.surface[sName]);
+      if (r < tokens.control_boundary.min) {
+        warns.push(
+          `✗ ${fName}.border.control (${f.border.control}) on ${sName} (${f.surface[sName]}): ${r.toFixed(2)}:1`,
+        );
+      }
+    }
+
     // ANSI slots must match the ansi_shade ruleset, and must clear
     // 4.5:1 against this flavor's bg_terminal — the one surface a
     // standalone terminal emulator shows. Both checks exist because
@@ -723,6 +763,9 @@ async function main() {
   );
   console.log(
     "✓ All (flavor, variant) selected-item washes keep fg at AA on every sanctioned surface.",
+  );
+  console.log(
+    "✓ All border.control values clear 3:1 on every control surface (WCAG 1.4.11).",
   );
   console.log("✓ All ansi.* slots match ansi_shade and clear AA on bg_terminal.");
   console.log("✓ syntax and semantic resolve cleanly from their shade rulesets.");

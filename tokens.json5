@@ -481,6 +481,59 @@
   },
 
   // ────────────────────────────────────────────────────────────────
+  //   3f.  CONTROL-BOUNDARY RULESET  —  the 3:1 outline for controls
+  // ────────────────────────────────────────────────────────────────
+  // WCAG 1.4.11 asks 3:1 for the visual information needed to identify
+  // a UI component and its boundary. No pre-existing token pair could
+  // deliver that on any flavor: a `bg_soft` control fill on a `bg`
+  // canvas peaks at 1.73:1 (midnight) and bottoms out at 1.09:1
+  // (noon), and `border.default` fails against every surface — three
+  // of those combinations are literally invisible (identical hex).
+  // Every toolkit port hit this independently and invented its own
+  // workaround, which is exactly the divergence this repo exists to
+  // prevent. See issue #15.
+  //
+  // The fix is a dedicated border weight, `border.control`, authored
+  // per flavor below and gated here. The rule that picks it:
+  //
+  //   Take the grey CLOSEST to the surfaces it has to separate from
+  //   — lighter on dark flavors, darker on light ones — that still
+  //   clears 3:1 against every surface in `surfaces`, with a little
+  //   headroom. All four land at ≈3.2:1 on their tightest surface.
+  //
+  // "Closest" is the whole point: the only existing token that already
+  // cleared 3:1 everywhere was `text.fg_muted`, and a text-weight value
+  // as a 1px control outline reads as a wireframe. This ruleset spends
+  // the minimum contrast the criterion asks for and no more.
+  //
+  // Why a border and not a control fill: a fill that carries the
+  // boundary on its own would have to be #646464 on midnight, #8a8a8a
+  // on twilight, #777777 on dawn and #8e8e8e on noon — a mid-grey
+  // button on a near-white canvas. That changes the visual language of
+  // every flavor. The border keeps `bg_soft` as the control fill and
+  // adds the one line the criterion actually needs.
+
+  control_boundary: {
+    // Minimum contrast a control boundary must clear, per WCAG 1.4.11.
+    min: 3,
+
+    // The surfaces controls actually sit on. tools/build-tokens.mjs
+    // requires `border.control` to clear `min` against every one of
+    // them, on every flavor.
+    //
+    // `bg_inset` is deliberately absent, the same exemption it already
+    // carries from the semantic-vs-surface gate and from
+    // accent_mix.selected.surfaces. Clearing 3:1 on twilight's #627084
+    // would need ≈#c9c9c9 — the text ramp, i.e. the wireframe outcome
+    // this ruleset exists to avoid. A port drawing controls on docked
+    // chrome should give them a `bg_soft` fill (which is on this list)
+    // or rely on `state.hover` / `state.active`, not on a lighter
+    // border. `bg_scrim` is a modal backdrop, not a control surface;
+    // `bg_terminal` hosts no toolkit controls.
+    surfaces: ["bg", "bg_soft", "bg_sunk", "bg_overlay"],
+  },
+
+  // ────────────────────────────────────────────────────────────────
   //   4.  FLAVORS  —  the 4 base themes
   // ────────────────────────────────────────────────────────────────
   // Each flavor defines:
@@ -522,6 +575,7 @@
         subtle: "$palette.gray.800",
         default: "$palette.gray.700",
         strong: "$palette.gray.500",
+        control: "#8f8f8f", // control boundary — 3.21:1 vs bg_soft/bg_overlay (#404040), 5.54:1 vs bg. Dedicated literal: the palette has no rung between gray.500 (#737373, 2.19:1 on bg_soft — fails) and gray.300 (#d4d4d4, 6.99:1 — passes, but it is this flavor's fg_muted, i.e. the wireframe outcome). See § 3f, issue #15.
       },
       state: {
         hover: "#ffffff14", // 8% white overlay
@@ -571,6 +625,7 @@
         subtle: "#525252",
         default: "$palette.gray.900",
         strong: "#0a0a0a",
+        control: "#a6a6a6", // control boundary — 3.21:1 vs bg_soft/bg_overlay (#525252), 4.26:1 vs bg. This flavor's existing borders all run DARKER than the canvas and none can reach 3:1 (border.strong #0a0a0a tops out at 2.53:1), so the boundary has to come from above. See § 3f, issue #15.
       },
       state: {
         hover: "#ffffff14",
@@ -620,6 +675,7 @@
         subtle: "#bdbdbd",
         default: "#a3a3a3",
         strong: "$palette.gray.700",
+        control: "#636363", // control boundary — 3.20:1 vs bg_sunk (#bdbdbd), 4.05:1 vs bg, 5.51:1 vs bg_soft. border.strong (#404040) also clears the gate but is this flavor's fg_muted; #636363 is the lightest value that still passes. See § 3f, issue #15.
       },
       state: {
         hover: "#0000000d", // 5% black overlay
@@ -669,6 +725,7 @@
         subtle: "#e5e5e5",
         default: "$palette.gray.300",
         strong: "$palette.gray.500",
+        control: "$palette.gray.500", // control boundary — 3.20:1 vs bg_sunk (#d4d4d4), 4.35:1 vs bg. The rule lands exactly on gray.500, which this flavor already uses for border.strong; noon is the one flavor that needed no new value. Kept as its own token so ports read the boundary from `control` on all four. See § 3f, issue #15.
       },
       state: {
         hover: "#0000000d",

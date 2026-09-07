@@ -52,6 +52,7 @@ Every port is its own GitHub repo and (potentially) its own Claude Code project.
   - [Accent-shade ruleset](#accent-shade-ruleset)
   - [`--vl-accent-on`](#--vl-accent-on)
   - [Selected-item wash](#selected-item-wash)
+  - [Control boundaries](#control-boundaries)
   - [Syntax token map (per flavor)](#syntax-token-map-per-flavor)
   - [ANSI palette (per flavor)](#ansi-palette-per-flavor)
 - [Typography](#typography)
@@ -198,6 +199,48 @@ A ceiling, not a taste call. On the canvas the wash additionally has to keep `te
 The tint still reads as a distinct region — ΔE76 ≥ 10.8 against plain `bg` on every flavor — and stays clearly apart from `state.hover` (ΔE76 ≥ 7.6), so "hovered" and "selected" don't blur together. It's weakest where the accent hue sits close to the surface beneath it: a blue accent on a cool-slate surface moves far less than a yellow or orange one, which is another reason the shape cue beside it carries the signal.
 
 Background: [issue #14](https://github.com/vivid-life-theme/vivid-life-design-system/issues/14).
+
+### Control boundaries
+
+`border.control` — the outline that gives an interactive control (button, input, select, toggle, menu item) an identifiable boundary. WCAG 1.4.11 asks 3:1 for exactly that, and before [issue #15](https://github.com/vivid-life-theme/vivid-life-design-system/issues/15) **no token pair in this system could deliver it on any flavor.**
+
+A control drawn as `bg_soft` on a `bg` canvas — the natural mapping for a GTK or Qt button — carries almost no boundary from its fill:
+
+| Flavor   | fill      | canvas    | ratio  |
+| -------- | --------- | --------- | ------ |
+| Midnight | `#404040` | `#171717` | 1.73:1 |
+| Twilight | `#525252` | `#404040` | 1.33:1 |
+| Dawn     | `#f5f5f5` | `#d4d4d4` | 1.36:1 |
+| Noon     | `#ffffff` | `#f5f5f5` | 1.09:1 |
+
+And no existing border weight rescued it: `border.default` fails against every surface on every flavor (three combinations are literally invisible — identical hex), and `border.strong` tops out at 2.53:1 on Twilight, whose borders all run _darker_ than its canvas. The only token that already cleared 3:1 everywhere was `text.fg_muted`, and a text-weight value as a 1px outline reads as a wireframe. So every port hit this independently and invented its own workaround — the divergence this repo exists to prevent.
+
+#### The ruleset
+
+> _Take the grey closest to the surfaces it has to separate from — lighter on dark flavors, darker on light ones — that still clears 3:1 against every surface in `control_boundary.surfaces`, with a little headroom._
+
+"Closest" is the whole point: the token spends the minimum contrast the criterion asks for and no more, so the line reads as chrome rather than as text. All four land at ≈3.2:1 on their tightest surface:
+
+| Flavor   | `border.control` | vs `bg` | vs `bg_soft` / `bg_overlay` | vs `bg_sunk` |
+| -------- | ---------------- | ------- | --------------------------- | ------------ |
+| Midnight | `#8f8f8f`        | 5.54    | **3.21**                    | 6.12         |
+| Twilight | `#a6a6a6`        | 4.26    | **3.21**                    | 7.36         |
+| Dawn     | `#636363`        | 4.05    | 5.51                        | **3.20**     |
+| Noon     | `#737373`        | 4.35    | 4.74                        | **3.20**     |
+
+`tools/build-tokens.mjs` verifies all sixteen cells on every build, the same way it verifies the accent-shade table. Noon is the one flavor whose rule lands on an existing value (`gray.500`, already its `border.strong`); the other three needed a dedicated literal, because the palette has no rung in the range the criterion allows.
+
+#### Why a border and not a control fill
+
+A fill that carried the boundary on its own would have to be `#646464` on Midnight, `#8a8a8a` on Twilight, `#777777` on Dawn and `#8e8e8e` on Noon — a mid-grey button on a near-white canvas. That changes the visual language of every flavor to satisfy a criterion a 1px line already satisfies. **Keep `bg_soft` as the control fill and add the outline.**
+
+#### Which surfaces it's gated on
+
+`control_boundary.surfaces` — `bg`, `bg_soft`, `bg_sunk`, `bg_overlay` — the four a control actually lands on: a dialog button on `bg`, a card button on `bg_soft`, a menu item on `bg_overlay`, an input well on `bg_sunk`.
+
+`bg_inset` is **not** on that list, the same exemption it already carries from the semantic-vs-surface gate and from the selected-item wash. Clearing 3:1 on Twilight's `#627084` would take ≈`#c9c9c9` — the text ramp, i.e. the wireframe outcome the ruleset exists to avoid. **A port drawing controls on docked chrome should give them a `bg_soft` fill** (which is gated) rather than a lighter border, or lean on `state.hover` / `state.active`. `bg_scrim` is a modal backdrop and `bg_terminal` hosts no toolkit controls, so neither is gated.
+
+Background: [issue #15](https://github.com/vivid-life-theme/vivid-life-design-system/issues/15).
 
 ### Syntax token map (per flavor)
 
@@ -363,7 +406,8 @@ If you're building a port (a VS Code extension, a GTK theme, a marketing site):
 4. **If you need a value not in tokens**, open an issue / PR against this repo. Don't paper over it port-side.
 5. **For a terminal-emulator background** (VS Code's `terminal.background` and equivalents), use `surface.bg_terminal`, not `bg`/`bg_sunk`/`bg_soft` directly. It's the only surface tier verified against all 16 `ansi.*` colors per flavor — see the `bg_terminal` caveat below.
 6. **For a selected tab / row / sidebar entry**, use `--vl-state-selected` (or bake it with `selectedWash()` from `tools/build-tokens.mjs` — native toolkits mostly lack `color-mix`; GTK3/4 CSS has `alpha()` and `mix()` but not `color-mix()`). Pair it with an underline or accent bar; don't ship the wash as the only selection cue, keep the selected label at `fg`, and only place it on a surface listed in `accent_mix.selected.surfaces` — **not** on `bg_inset`, where no percentage clears AA. See [Selected-item wash](#selected-item-wash).
-7. **For a standalone terminal port** (xfce4-terminal, Windows Terminal, Alacritty, …), take the whole 16-color set from `flavors[flavor].ansi` — it is flavor-specific, not shared within the dark or light pair. Don't substitute a syntax or accent color for an ANSI slot, and don't reuse one flavor's ANSI block for its pair partner. See [ANSI palette](#ansi-palette-per-flavor).
+7. **For any interactive control** (button, input, select, toggle, menu item), draw its boundary with `border.control` — it is the only value gated at the 3:1 WCAG 1.4.11 asks of a component boundary, on every surface in `control_boundary.surfaces`. `border.default` and `border.strong` are dividers and emphasis lines; neither clears 3:1, and on three flavor/surface pairs `border.default` is the same hex as the surface behind it. Don't reach for a control fill instead — see [Control boundaries](#control-boundaries).
+8. **For a standalone terminal port** (xfce4-terminal, Windows Terminal, Alacritty, …), take the whole 16-color set from `flavors[flavor].ansi` — it is flavor-specific, not shared within the dark or light pair. Don't substitute a syntax or accent color for an ANSI slot, and don't reuse one flavor's ANSI block for its pair partner. See [ANSI palette](#ansi-palette-per-flavor).
 
 A port repo should look like:
 
@@ -443,7 +487,7 @@ See `preview/03-iconography.html` for the live spec and `tokens.json5 → iconog
 - **`bgSunk`** on Midnight (`#0a0a0a`) and Dawn (`#bdbdbd`), and `--vl-fg-subtle` on Twilight (`#a3a3a3`) are _outside_ the strict 42-swatch palette — needed for surface depth and comment readability respectively. Documented choices, not bugs.
 - **CONTENT FUNDAMENTALS** / tone-of-voice guidelines are deliberately scoped out for now — themes don't ship copy, so the only writing surface is per-port release notes and the future website. Will revisit when the website exists.
 - **Selection color** is derived from `--vl-accent` via runtime `color-mix` (25% accent + 75% bg). Requires a recent browser (color-mix is in all 2023+ browsers). Ports targeting older environments should bake selection in at build time.
-- **`surface.bg_inset`** is for docked structural chrome — sidebar, bottom panel, integrated terminal, status bar — as one visual group, distinct from the editor/content canvas (`bg`). It's a fixed, low-saturation cool-slate tint, the same hue family on every flavor, deliberately _not_ derived from `--vl-accent` (so it doesn't shift per variant and doesn't compete with syntax/ANSI hues). It is **exempt** from the semantic-vs-surface WCAG gate that other surface tokens satisfy — success/warning/danger/info banners render on `bg` or `bg_soft`, never directly on `bg_inset`. Ports should not stack alert/badge components on it without re-checking contrast.
+- **`surface.bg_inset`** is for docked structural chrome — sidebar, bottom panel, integrated terminal, status bar — as one visual group, distinct from the editor/content canvas (`bg`). It's a fixed, low-saturation cool-slate tint, the same hue family on every flavor, deliberately _not_ derived from `--vl-accent` (so it doesn't shift per variant and doesn't compete with syntax/ANSI hues). It is **exempt** from the semantic-vs-surface WCAG gate that other surface tokens satisfy — success/warning/danger/info banners render on `bg` or `bg_soft`, never directly on `bg_inset`. Ports should not stack alert/badge components on it without re-checking contrast. It is likewise outside the control-boundary gate: no non-text value clears 3:1 on it across all four flavors, so controls on docked chrome take a `bg_soft` fill rather than a lighter outline — see [Control boundaries](#control-boundaries).
 - **`surface.bg_terminal`** is the only surface tier verified to clear 4.5:1 against every `ansi.*` color per flavor (`bg`, `bg_sunk`, `bg_soft`, and `bg_overlay` each collide with at least one `ansi.*` color, exactly or in contrast, on at least one flavor — see [issue #5](https://github.com/vivid-life-theme/vivid-life-design-system/issues/5) for the full analysis). Its four values are `#0a0a0a` (midnight, = `bg_sunk`), `#333333` (twilight, a dedicated literal between `bg_sunk` and `bg`), `#d4d4d4` (dawn, = `bg`) and `#ffffff` (noon, = `bg_soft`) — chosen in [issue #7](https://github.com/vivid-life-theme/vivid-life-design-system/issues/7) to be far enough apart that a standalone terminal emulator, which shows no other surface, can still tell the flavors apart. One or two `ansi.*` slots per flavor are deliberately exempt from the 4.5:1 gate: `ansi.black` on dark flavors; `ansi.bright_white` on light flavors (both dawn and noon); and, on dawn specifically, `ansi.white` too (it is exactly `bg_terminal`). These sit intentionally close to (or exactly at) `bg_terminal` — that's the conventional reverse-video / "invisible" slot every real terminal color scheme leaves near-background, not a defect.
 - **Dawn's terminal panel has no fill of its own.** `bg_terminal` on dawn is the flavor canvas (`bg`), so in an _embedded_ port (VS Code's panel, an IDE's integrated terminal) the terminal reads as a distinct region from its `bg_inset` chrome and border rather than from a different background fill. This is the one cost of the issue #7 spread: dawn's ANSI normal set can't go lighter than `#d2d2d2` without dropping below AA, and every value above that collides with noon. The other three flavors keep a terminal fill distinct from their canvas.
 

@@ -68,6 +68,7 @@ Ask: "What are you building — a static artifact, a theme port, or a production
 - Don't use cyan as a variant. It exists only for ANSI cyan / diff hunk headers / similar protocol uses.
 - Don't draw the brand mark by hand. Copy `assets/logo.svg`.
 - Don't hardcode hex values where a token exists.
+- Don't outline an interactive control with `border.default` or `border.strong` — neither clears the 3:1 WCAG 1.4.11 asks of a component boundary (on some flavors `border.default` is the same hex as the surface behind it). Use `border.control`, keep `bg_soft` as the fill, and on `bg_inset` give the control a `bg_soft` fill instead of a lighter border.
 - Don't let the selected-item wash (`--vl-state-selected`) be the only cue for "this tab / row is selected" — it's too light to clear WCAG 1.4.11 on its own. Pair it with an underline or accent bar. Keep the selected label at `fg` (not `fg_muted`), and only put the wash on a surface in `accent_mix.selected.surfaces` — on `bg_inset` use the accent bar plus a `state.hover` / `state.active` overlay instead.
 
 ## Feedback

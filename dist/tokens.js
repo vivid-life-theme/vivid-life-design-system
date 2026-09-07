@@ -332,6 +332,15 @@ export default {
       ]
     }
   },
+  "control_boundary": {
+    "min": 3,
+    "surfaces": [
+      "bg",
+      "bg_soft",
+      "bg_sunk",
+      "bg_overlay"
+    ]
+  },
   "flavors": {
     "midnight": {
       "label": "Midnight",
@@ -354,7 +363,8 @@ export default {
       "border": {
         "subtle": "#262626",
         "default": "#404040",
-        "strong": "#737373"
+        "strong": "#737373",
+        "control": "#8f8f8f"
       },
       "state": {
         "hover": "#ffffff14",
@@ -421,7 +431,8 @@ export default {
       "border": {
         "subtle": "#525252",
         "default": "#171717",
-        "strong": "#0a0a0a"
+        "strong": "#0a0a0a",
+        "control": "#a6a6a6"
       },
       "state": {
         "hover": "#ffffff14",
@@ -488,7 +499,8 @@ export default {
       "border": {
         "subtle": "#bdbdbd",
         "default": "#a3a3a3",
-        "strong": "#404040"
+        "strong": "#404040",
+        "control": "#636363"
       },
       "state": {
         "hover": "#0000000d",
@@ -555,7 +567,8 @@ export default {
       "border": {
         "subtle": "#e5e5e5",
         "default": "#d4d4d4",
-        "strong": "#737373"
+        "strong": "#737373",
+        "control": "#737373"
       },
       "state": {
         "hover": "#0000000d",
