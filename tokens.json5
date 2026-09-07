@@ -456,7 +456,28 @@
     // still reading as a distinct region (ΔE76 ≥ 10.8 vs plain bg on
     // every flavor) and staying clearly apart from `state.hover`
     // (ΔE76 ≥ 7.6).
-    selected: { pct: 18, base: "transparent" },
+    selected: {
+      pct: 18,
+      base: "transparent",
+
+      // Because the tint is translucent it composites over whichever
+      // surface the row lands on, so the gate has to cover every one of
+      // them, not just the canvas. `surfaces` is that sanctioned list:
+      // tools/build-tokens.mjs requires `text.fg` to clear 4.5:1 on the
+      // resolved tint for all 24 combinations on each entry here.
+      //
+      // `bg_inset` is deliberately absent. Twilight's #627084 sits at
+      // 4.62:1 for `fg` before any tint at all, so no percentage clears
+      // AA there — this is a property of that surface, not of the wash.
+      // It is the same surface the README already exempts from the
+      // semantic-vs-surface gate. A port placing selected rows on
+      // `bg_inset` should carry the accent bar plus a `state.hover` /
+      // `state.active` overlay instead of this wash.
+      //
+      // `bg_scrim` is absent because it's a modal backdrop, not a
+      // surface rows sit on.
+      surfaces: ["bg", "bg_soft", "bg_sunk", "bg_overlay", "bg_terminal"],
+    },
   },
 
   // ────────────────────────────────────────────────────────────────

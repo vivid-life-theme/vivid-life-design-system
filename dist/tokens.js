@@ -322,7 +322,14 @@ export default {
     },
     "selected": {
       "pct": 18,
-      "base": "transparent"
+      "base": "transparent",
+      "surfaces": [
+        "bg",
+        "bg_soft",
+        "bg_sunk",
+        "bg_overlay",
+        "bg_terminal"
+      ]
     }
   },
   "flavors": {
