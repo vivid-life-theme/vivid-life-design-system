@@ -420,6 +420,46 @@
   },
 
   // ────────────────────────────────────────────────────────────────
+  //   3e.  ACCENT MIXES  —  runtime color-mix recipes
+  // ────────────────────────────────────────────────────────────────
+  // Two accent-derived tints that can't be authored per flavor,
+  // because they depend on the *variant* — the flavor blocks below
+  // hold no entry for them. Each is emitted once, in the variant
+  // block, as a CSS `color-mix(in srgb, var(--vl-accent) <pct>%,
+  // <base>)`, and mirrored by a recipe in tools/build-tokens.mjs
+  // (`selection()` / `selectedWash()`) for ports that bake values at
+  // build time instead of resolving them in a browser.
+  //
+  //   base: "bg"          → mixes into the opaque flavor canvas
+  //   base: "transparent" → stays translucent, so it composites over
+  //                         whatever surface the element sits on
+  //                         (bg, bg_soft, bg_inset, …)
+  //
+  // Both percentages are gated in tools/build-tokens.mjs: `text.fg`
+  // must clear 4.5:1 on the resolved tint for all 24 (flavor,
+  // variant) combinations.
+
+  accent_mix: {
+    // Text selection — the ::selection background.
+    selection: { pct: 25, base: "bg" },
+
+    // Selected-item wash — the background of the one tab / row /
+    // sidebar entry that is currently chosen. Deliberately subtle: it
+    // reinforces a selection signal, it never carries one alone. A
+    // tint this light tops out at 1.21:1 against bg (midnight/red),
+    // far below the 3:1 WCAG 1.4.11 asks of a standalone non-text
+    // indicator, so the underline / accent bar beside it stays
+    // load-bearing. See issue #14.
+    //
+    // 18% is the ceiling that keeps `text.fg_muted` above 4.5:1 on
+    // Twilight (4.81:1 at 18%, 4.63:1 at 20%, 4.41:1 at 22%) while
+    // still reading as a distinct region (ΔE76 ≥ 10.8 vs plain bg on
+    // every flavor) and staying clearly apart from `state.hover`
+    // (ΔE76 ≥ 7.6).
+    selected: { pct: 18, base: "transparent" },
+  },
+
+  // ────────────────────────────────────────────────────────────────
   //   4.  FLAVORS  —  the 4 base themes
   // ────────────────────────────────────────────────────────────────
   // Each flavor defines:
@@ -432,6 +472,10 @@
   // `semantic` and `syntax` are NOT authored here — they are derived
   // from semantic_shade / syntax_shade above (§ 3c, 3d) and appear in
   // the emitted tokens.json between `state` and `ansi`.
+  //
+  // The selected-item wash is likewise absent from `state`: it depends
+  // on the variant, not the flavor, so it lives in accent_mix (§ 3e)
+  // and is emitted once as --vl-state-selected.
 
   flavors: {
     // ─── MIDNIGHT (deep dark, OLED-friendly) ───

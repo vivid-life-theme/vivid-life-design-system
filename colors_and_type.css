@@ -11,8 +11,9 @@
      <body class="vl-midnight variant-purple"> … </body>
 
    The flavor class sets the canvas, text, borders, syntax map.
-   The variant class only sets --vl-accent (and --vl-selection, which
-   is derived from --vl-accent via color-mix at runtime).
+   The variant class only sets --vl-accent (plus --vl-selection and
+   --vl-state-selected, both derived from --vl-accent via color-mix
+   at runtime).
    ==================================================================== */
 
 
@@ -407,7 +408,8 @@
 }
 
 /* ── Variants — UI accent only (cursor, link, focus ring, fill) ─── */
-/* Selection is derived from --vl-accent via color-mix at runtime. */
+/* Selection and the selected-item wash are derived from --vl-accent
+   via color-mix at runtime. */
 
 /* Midnight accents */
 .vl-midnight.variant-red     { --vl-accent: #ef4444; }
@@ -441,9 +443,14 @@
 .vl-noon.variant-blue        { --vl-accent: #1d4ed8; }
 .vl-noon.variant-purple      { --vl-accent: #7e22ce; }
 
-/* Selection tinted toward accent (25% mix over bg). */
+/* Accent-derived tints (percentages: tokens.json5 -> accent_mix).
+   --vl-selection       25% over bg — text selection.
+   --vl-state-selected  18% over transparent — the selected tab / row.
+                        Reinforces an underline or accent bar; too light
+                        to be the sole selection signal on its own. */
 [class*="vl-"][class*="variant-"] {
   --vl-selection: color-mix(in srgb, var(--vl-accent) 25%, var(--vl-bg));
+  --vl-state-selected: color-mix(in srgb, var(--vl-accent) 18%, transparent);
 }
 
 /* ── Native ::selection rule, opt-in helper class ───────────────── */

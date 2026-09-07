@@ -551,6 +551,11 @@
       .ks-tab[aria-selected="true"] {
         color: var(--vl-fg);
         border-bottom-color: var(--vl-accent);
+        /* Wash reinforces the underline; the underline still carries
+           the signal on its own. See issue #14. */
+        background: var(--vl-state-selected);
+        border-top-left-radius: var(--vl-radius-sm);
+        border-top-right-radius: var(--vl-radius-sm);
       }
 
       /* ─── Toast / Banner ─── */
@@ -672,7 +677,7 @@
         color: var(--vl-fg);
       }
       .ks-app-side .item.active {
-        background: color-mix(in srgb, var(--vl-accent) 18%, transparent);
+        background: var(--vl-state-selected);
         color: var(--vl-fg);
       }
       .ks-app-side .item.active::before {

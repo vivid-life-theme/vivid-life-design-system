@@ -51,6 +51,7 @@ Every port is its own GitHub repo and (potentially) its own Claude Code project.
   - [6 accent variants (per flavor)](#6-accent-variants-per-flavor)
   - [Accent-shade ruleset](#accent-shade-ruleset)
   - [`--vl-accent-on`](#--vl-accent-on)
+  - [Selected-item wash](#selected-item-wash)
   - [Syntax token map (per flavor)](#syntax-token-map-per-flavor)
   - [ANSI palette (per flavor)](#ansi-palette-per-flavor)
 - [Typography](#typography)
@@ -170,6 +171,25 @@ The readable text color for use _on_ `--vl-accent` (e.g. a primary button's labe
 
 - **Dark flavors** (Midnight, Twilight) → bright accents → **dark text** (`gray-900`)
 - **Light flavors** (Dawn, Noon) → deep accents → **light text** (`gray-100`)
+
+### Selected-item wash
+
+`--vl-state-selected` — the background of the one tab, row, or sidebar entry that is currently chosen. Like `--vl-selection`, it is variant-dependent, so it isn't authored per flavor; both are derived from `--vl-accent` at runtime, with percentages and bases held in `tokens.json5 → accent_mix`:
+
+```css
+--vl-selection: color-mix(in srgb, var(--vl-accent) 25%, var(--vl-bg));
+--vl-state-selected: color-mix(in srgb, var(--vl-accent) 18%, transparent);
+```
+
+The wash stays translucent on purpose — a selected row can sit on `bg`, `bg_soft`, or `bg_inset`, and it composites over whichever one it lands on.
+
+**It reinforces a selection signal; it never carries one alone.** At 18% the tint reaches only 1.21:1 against `bg` at worst (midnight/red), well under the 3:1 WCAG 1.4.11 asks of a non-text indicator that stands on its own. Keep the underline (tabs) or accent bar (sidebar rows) beside it. Pushing the tint to 3:1 means a solid fill, which is a different component and drags `--vl-accent-on` into the label.
+
+18% is a ceiling, not a taste call. `tools/build-tokens.mjs` gates every one of the 24 combinations so both `text.fg` and `text.fg_muted` clear 4.5:1 on the resolved wash; Twilight is the binding flavor at 4.81:1, and it fails at 20%. The tint still reads as a distinct region — ΔE76 ≥ 10.8 against plain `bg` on every flavor — and stays clearly apart from `state.hover` (ΔE76 ≥ 7.6), so "hovered" and "selected" don't blur together.
+
+One caveat: the wash is weakest where the accent hue sits close to the surface beneath it. On `bg_inset` — itself a cool slate — a blue accent gives ΔE76 4.9–7.1, against 8.5–10.6 for yellow or orange. That's why the sidebar's accent bar does more work there than its tint, and why a port placing selected rows on `bg_inset` should keep a shape cue rather than lean on color.
+
+Background: [issue #14](https://github.com/vivid-life-theme/vivid-life-design-system/issues/14).
 
 ### Syntax token map (per flavor)
 
@@ -334,7 +354,8 @@ If you're building a port (a VS Code extension, a GTK theme, a marketing site):
 3. **Use the syntax map** from `flavors[flavor].syntax` directly for any editor port. Extended tokens fall back per `syntax_tokens.extended.{token}`.
 4. **If you need a value not in tokens**, open an issue / PR against this repo. Don't paper over it port-side.
 5. **For a terminal-emulator background** (VS Code's `terminal.background` and equivalents), use `surface.bg_terminal`, not `bg`/`bg_sunk`/`bg_soft` directly. It's the only surface tier verified against all 16 `ansi.*` colors per flavor — see the `bg_terminal` caveat below.
-6. **For a standalone terminal port** (xfce4-terminal, Windows Terminal, Alacritty, …), take the whole 16-color set from `flavors[flavor].ansi` — it is flavor-specific, not shared within the dark or light pair. Don't substitute a syntax or accent color for an ANSI slot, and don't reuse one flavor's ANSI block for its pair partner. See [ANSI palette](#ansi-palette-per-flavor).
+6. **For a selected tab / row / sidebar entry**, use `--vl-state-selected` (or bake it with `selectedWash()` from `tools/build-tokens.mjs` — native toolkits mostly lack `color-mix`; GTK3/4 CSS has `alpha()` and `mix()` but not `color-mix()`). Pair it with an underline or accent bar; don't ship the wash as the only selection cue. See [Selected-item wash](#selected-item-wash).
+7. **For a standalone terminal port** (xfce4-terminal, Windows Terminal, Alacritty, …), take the whole 16-color set from `flavors[flavor].ansi` — it is flavor-specific, not shared within the dark or light pair. Don't substitute a syntax or accent color for an ANSI slot, and don't reuse one flavor's ANSI block for its pair partner. See [ANSI palette](#ansi-palette-per-flavor).
 
 A port repo should look like:
 

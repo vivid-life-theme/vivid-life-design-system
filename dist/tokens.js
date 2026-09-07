@@ -315,6 +315,16 @@ export default {
       "info": 900
     }
   },
+  "accent_mix": {
+    "selection": {
+      "pct": 25,
+      "base": "bg"
+    },
+    "selected": {
+      "pct": 18,
+      "base": "transparent"
+    }
+  },
   "flavors": {
     "midnight": {
       "label": "Midnight",

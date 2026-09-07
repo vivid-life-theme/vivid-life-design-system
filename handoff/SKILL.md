@@ -68,6 +68,7 @@ Ask: "What are you building — a static artifact, a theme port, or a production
 - Don't use cyan as a variant. It exists only for ANSI cyan / diff hunk headers / similar protocol uses.
 - Don't draw the brand mark by hand. Copy `assets/logo.svg`.
 - Don't hardcode hex values where a token exists.
+- Don't let the selected-item wash (`--vl-state-selected`) be the only cue for "this tab / row is selected" — it's too light to clear WCAG 1.4.11 on its own. Pair it with an underline or accent bar.
 
 ## Feedback
 
