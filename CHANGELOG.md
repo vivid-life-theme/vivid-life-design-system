@@ -10,6 +10,10 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ## [Unreleased]
 
+---
+
+## [0.9.0] - 2026-09-07
+
 Closes [#14](https://github.com/vivid-life-theme/vivid-life-design-system/issues/14): selected tabs get an accent wash, and the foundation gets the token that was missing behind the question.
 
 The kitchen sink held two treatments for the same state — tabs used an underline alone, while the app sidebar's active row used `color-mix(in srgb, var(--vl-accent) 18%, transparent)` plus a 3px accent bar. So a port mirroring "the" canonical selected pattern was picking one of two, and the wash percentage lived as a literal in a preview file rather than in the tokens. That's a foundation gap by the README's own rule 4, not a port-side bug.
@@ -193,4 +197,4 @@ Initial npm release. The token system existed before this version; this is the f
 
 ---
 
-[unreleased]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.8.0...HEAD [0.8.0]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.7.0...v0.8.0 [0.7.0]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.6.0...v0.7.0 [0.6.0]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.5.0...v0.6.0 [0.5.0]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.4.0...v0.5.0 [0.4.0]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.3.0...v0.4.0 [0.3.0]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.2.1...v0.3.0 [0.2.1]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.2.0...v0.2.1 [0.2.0]: https://github.com/vivid-life-theme/vivid-life-design-system/releases/tag/v0.2.0
+[unreleased]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.9.0...HEAD [0.9.0]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.8.0...v0.9.0 [0.8.0]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.7.0...v0.8.0 [0.7.0]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.6.0...v0.7.0 [0.6.0]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.5.0...v0.6.0 [0.5.0]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.4.0...v0.5.0 [0.4.0]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.3.0...v0.4.0 [0.3.0]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.2.1...v0.3.0 [0.2.1]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.2.0...v0.2.1 [0.2.0]: https://github.com/vivid-life-theme/vivid-life-design-system/releases/tag/v0.2.0
