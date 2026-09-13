@@ -29,7 +29,7 @@ The first five involve `danger`, `warning` or `success` and are defects. The six
 
 Two directions were measured for every collision (both against the 4.5:1 text floor, since both tokens are used as text).
 
-**Moving the dawn semantics regresses them.** Their current 900 shades clear 4.5:1 on every dawn surface, including `bg_sunk` (danger 5.3, warning 4.6, success 4.6). Dropping to 800 puts all three **below 4.5:1 on `bg_sunk`** — 4.42 / 3.65 / 3.77 — which is the surface text views, lists and entries sit on, i.e. exactly where error text appears.
+**Moving the dawn semantics fails this repo's own gate.** `build-tokens.mjs` already requires every semantic colour to clear 4.5:1 on every surface except `bg_scrim` and `bg_inset`. The current 900 shades do (danger 5.3, warning 4.6, success 4.6 on `bg_sunk`). Dropping to 800 puts all three **below 4.5:1 on `bg_sunk`** — 4.42 / 3.65 / 3.77 — so the build would reject the change outright. That is not a judgment call; it is the existing rule.
 
 **Moving the accents to 800 costs nothing** and improves headroom under this repo's own accent rule (≥ 4.5:1 against `surface.bg`):
 
