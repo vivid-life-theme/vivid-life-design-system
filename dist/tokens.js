@@ -102,18 +102,18 @@ export default {
       "purple": 300
     },
     "dawn": {
-      "red": 900,
+      "red": 800,
       "orange": 900,
-      "yellow": 900,
-      "green": 900,
+      "yellow": 800,
+      "green": 800,
       "blue": 700,
       "purple": 700
     },
     "noon": {
       "red": 700,
       "orange": 700,
-      "yellow": 900,
-      "green": 900,
+      "yellow": 800,
+      "green": 800,
       "blue": 700,
       "purple": 700
     }

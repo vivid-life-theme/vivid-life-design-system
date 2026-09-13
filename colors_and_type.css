@@ -432,18 +432,18 @@
 .vl-twilight.variant-purple  { --vl-accent: #d8b4fe; }
 
 /* Dawn accents */
-.vl-dawn.variant-red         { --vl-accent: #7f1d1d; }
+.vl-dawn.variant-red         { --vl-accent: #991b1b; }
 .vl-dawn.variant-orange      { --vl-accent: #7c2d12; }
-.vl-dawn.variant-yellow      { --vl-accent: #713f12; }
-.vl-dawn.variant-green       { --vl-accent: #365314; }
+.vl-dawn.variant-yellow      { --vl-accent: #854d0e; }
+.vl-dawn.variant-green       { --vl-accent: #3f6212; }
 .vl-dawn.variant-blue        { --vl-accent: #1d4ed8; }
 .vl-dawn.variant-purple      { --vl-accent: #7e22ce; }
 
 /* Noon accents */
 .vl-noon.variant-red         { --vl-accent: #b91c1c; }
 .vl-noon.variant-orange      { --vl-accent: #c2410c; }
-.vl-noon.variant-yellow      { --vl-accent: #713f12; }
-.vl-noon.variant-green       { --vl-accent: #365314; }
+.vl-noon.variant-yellow      { --vl-accent: #854d0e; }
+.vl-noon.variant-green       { --vl-accent: #3f6212; }
 .vl-noon.variant-blue        { --vl-accent: #1d4ed8; }
 .vl-noon.variant-purple      { --vl-accent: #7e22ce; }
 

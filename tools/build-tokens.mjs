@@ -473,6 +473,14 @@ function check(tokens) {
       warns.push(`✗ ${fName}.border.control missing`);
     }
   }
+  // No danger/warning/success token may be the same shade as the accent for
+  // its own hue, or the states the two exist to distinguish are not
+  // distinguishable. Integer comparison; see semanticAccentCollisions.
+  for (const c of semanticAccentCollisions(tokens)) {
+    warns.push(
+      `✗ ${c.flavor}.semantic.${c.role} is ${c.hue}.${c.shade}, the same shade as accent_shade.${c.flavor}.${c.hue} — the two states are indistinguishable`,
+    );
+  }
   if (warns.length) return warns;
   for (const [fName, f] of Object.entries(tokens.flavors)) {
     const bg = f.surface.bg;
