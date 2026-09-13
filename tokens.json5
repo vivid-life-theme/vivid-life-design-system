@@ -124,8 +124,15 @@
   // ────────────────────────────────────────────────────────────────
   // Per the rule: "Pick the shade in the opposite half of the
   // lightness scale from the bg, one step in from the extreme
-  // (300/700) by default. Step further (100/900) only when the hue's
-  // intrinsic luminance is too close to the background."
+  // (300/700) by default. Step further only when the hue's intrinsic
+  // luminance is too close to the background — and step by the
+  // SMALLEST amount that clears: 800 before 900 on the dark side."
+  //
+  // 800 was added to the palette after this rule was first written, so
+  // dawn's warm hues sat at 900 when 800 already cleared. That produced
+  // a collision with semantic_shade (§ 3d), which also uses 900 on
+  // dawn and noon: danger == accent on dawn-red, and so on. The rule
+  // below the table makes that impossible to reintroduce.
   //
   // All 24 combinations clear WCAG 2.1 AA (≥ 4.5 : 1) against their
   // flavor background.
@@ -148,22 +155,29 @@
       purple: 300,
     },
     dawn: {
-      red: 900,
+      red: 800,
       orange: 900,
-      yellow: 900,
-      green: 900,
+      yellow: 800,
+      green: 800,
       blue: 700,
       purple: 700,
     },
     noon: {
       red: 700,
       orange: 700,
-      yellow: 900,
-      green: 900,
+      yellow: 800,
+      green: 800,
       blue: 700,
       purple: 700,
     },
   },
+
+  // INVARIANT (gated in tools/build-tokens.mjs): for every flavor, the
+  // shade of semantic_shade.<flavor>.{danger,warning,success} must differ
+  // from accent_shade.<flavor>.<hue of that role>. Otherwise a destructive
+  // button is the same colour as a suggested one, and error text inside a
+  // selection vanishes at 1.00:1. info is exempt: sharing the primary blue
+  // is conventional and makes nothing unsafe (midnight-blue does this).
 
   // ────────────────────────────────────────────────────────────────
   //   3b. ANSI-SHADE RULESET  —  flavor × ansi hue → normal / bright

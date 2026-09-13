@@ -207,6 +207,47 @@ export function resolveAccent(tokens, flavor, variant) {
   return hex;
 }
 
+/**
+ * Roles whose semantic colour is the same palette shade as the accent for
+ * that role's own hue. Shade-index comparison (string-coerced, so `900`
+ * and `"900"` collide) against the two shade rulesets — no colour math —
+ * so it is exact, not approximate.
+ *
+ * See docs/superpowers/specs/2026-09-13-semantic-accent-collision-design.md.
+ */
+const COLLISION_GATED_ROLES = ["danger", "warning", "success"];
+
+/**
+ * Semantic roles deliberately exempt from the collision gate.
+ *
+ * `info`: sharing the primary blue is the convention across most design
+ * systems and makes nothing unsafe: an info banner that matches the
+ * primary is redundant, whereas a destructive button that matches it is
+ * misleading. Both fixes for the one existing info collision
+ * (midnight-blue) carry a real aesthetic cost, so the rule is stated for
+ * the three roles that must read differently from the primary.
+ *
+ * Every key in `semantic_hues` must appear in exactly one of this list or
+ * `COLLISION_GATED_ROLES` — `check()` enforces that below.
+ */
+const COLLISION_EXEMPT_ROLES = ["info"];
+
+export function semanticAccentCollisions(tokens) {
+  const out = [];
+  for (const [flavor, roles] of Object.entries(tokens.semantic_shade ?? {})) {
+    for (const role of COLLISION_GATED_ROLES) {
+      const hue = tokens.semantic_hues?.[role];
+      const semShade = roles?.[role];
+      const accShade = tokens.accent_shade?.[flavor]?.[hue];
+      if (hue == null || semShade == null || accShade == null) continue;
+      if (String(semShade) === String(accShade)) {
+        out.push({ flavor, role, hue, shade: String(semShade) });
+      }
+    }
+  }
+  return out;
+}
+
 /* =====================================================================
    JSON5 → JSON  (exported, used both by main() and the CSS generator)
    ===================================================================== */
@@ -442,6 +483,36 @@ function check(tokens) {
       warns.push(`✗ ${fName}.border.control missing`);
     }
   }
+  // The collision gate below is an allowlist (COLLISION_GATED_ROLES), so a
+  // role rename or a new semantic_hues entry that lands in neither list
+  // would otherwise silently stop being checked. Keep the two lists in
+  // lockstep with semantic_hues before trusting the gate.
+  for (const role of COLLISION_GATED_ROLES) {
+    if (!(role in (tokens.semantic_hues ?? {}))) {
+      warns.push(
+        `✗ collision gate names role "${role}" but semantic_hues has no such role — the gate is silently not checking it`,
+      );
+    }
+  }
+  for (const key of Object.keys(tokens.semantic_hues ?? {})) {
+    if (
+      !COLLISION_GATED_ROLES.includes(key) &&
+      !COLLISION_EXEMPT_ROLES.includes(key)
+    ) {
+      warns.push(
+        `✗ semantic role "${key}" is neither collision-gated nor explicitly exempt — add it to one list in tools/build-tokens.mjs`,
+      );
+    }
+  }
+  // No danger/warning/success token may be the same shade as the accent for
+  // its own hue, or the states the two exist to distinguish are not
+  // distinguishable. Shade-index comparison (string-coerced, so `900` and
+  // `"900"` collide); see semanticAccentCollisions.
+  for (const c of semanticAccentCollisions(tokens)) {
+    warns.push(
+      `✗ ${c.flavor}.semantic.${c.role} is ${c.hue}.${c.shade}, the same shade as accent_shade.${c.flavor}.${c.hue} — the two states are indistinguishable`,
+    );
+  }
   if (warns.length) return warns;
   for (const [fName, f] of Object.entries(tokens.flavors)) {
     const bg = f.surface.bg;
@@ -674,6 +745,45 @@ function selfTest() {
     // readableOn
     [() => readableOn("#171717"), "#f5f5f5", "readable on midnight"],
     [() => readableOn("#f5f5f5"), "#171717", "readable on noon"],
+
+    // semanticAccentCollisions — a role whose semantic_shade equals the
+    // accent_shade for its own hue is a collision; info is excluded by rule.
+    [
+      () =>
+        semanticAccentCollisions({
+          semantic_hues: {
+            success: "green",
+            warning: "yellow",
+            danger: "red",
+            info: "blue",
+          },
+          semantic_shade: {
+            x: { success: 900, warning: 900, danger: 900, info: 300 },
+          },
+          accent_shade: { x: { red: 900, yellow: 700, green: 700, blue: 300 } },
+        })
+          .map((c) => `${c.flavor}.${c.role}`)
+          .join(","),
+      "x.danger",
+      "collision: danger matches accent, info excluded even when it matches",
+    ],
+    [
+      () =>
+        semanticAccentCollisions({
+          semantic_hues: {
+            success: "green",
+            warning: "yellow",
+            danger: "red",
+            info: "blue",
+          },
+          semantic_shade: {
+            x: { success: 900, warning: 900, danger: 900, info: 900 },
+          },
+          accent_shade: { x: { red: 800, yellow: 800, green: 800, blue: 900 } },
+        }).length,
+      0,
+      "no collision when every gated role differs from its accent",
+    ],
   ];
 
   let pass = 0,
@@ -767,8 +877,12 @@ async function main() {
   console.log(
     "✓ All border.control values clear 3:1 on every control surface (WCAG 1.4.11).",
   );
-  console.log("✓ All ansi.* slots match ansi_shade and clear AA on bg_terminal.");
-  console.log("✓ syntax and semantic resolve cleanly from their shade rulesets.");
+  console.log(
+    "✓ All ansi.* slots match ansi_shade and clear AA on bg_terminal.",
+  );
+  console.log(
+    "✓ syntax and semantic resolve cleanly from their shade rulesets.",
+  );
 }
 
 // Only run the CLI when invoked directly (not when imported as a module).

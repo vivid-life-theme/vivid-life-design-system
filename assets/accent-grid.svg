@@ -15,7 +15,7 @@
   <!-- Red -->
   <rect x="0"   y="36" width="120" height="24" fill="#ef4444"/>
   <rect x="120" y="36" width="120" height="24" fill="#fca5a5"/>
-  <rect x="240" y="36" width="120" height="24" fill="#7f1d1d"/>
+  <rect x="240" y="36" width="120" height="24" fill="#991b1b"/>
   <rect x="360" y="36" width="120" height="24" fill="#b91c1c"/>
 
   <!-- Orange -->
@@ -27,14 +27,14 @@
   <!-- Yellow -->
   <rect x="0"   y="84" width="120" height="24" fill="#eab308"/>
   <rect x="120" y="84" width="120" height="24" fill="#eab308"/>
-  <rect x="240" y="84" width="120" height="24" fill="#713f12"/>
-  <rect x="360" y="84" width="120" height="24" fill="#713f12"/>
+  <rect x="240" y="84" width="120" height="24" fill="#854d0e"/>
+  <rect x="360" y="84" width="120" height="24" fill="#854d0e"/>
 
   <!-- Green -->
   <rect x="0"   y="108" width="120" height="24" fill="#84cc16"/>
   <rect x="120" y="108" width="120" height="24" fill="#84cc16"/>
-  <rect x="240" y="108" width="120" height="24" fill="#365314"/>
-  <rect x="360" y="108" width="120" height="24" fill="#365314"/>
+  <rect x="240" y="108" width="120" height="24" fill="#3f6212"/>
+  <rect x="360" y="108" width="120" height="24" fill="#3f6212"/>
 
   <!-- Blue -->
   <rect x="0"   y="132" width="120" height="24" fill="#93c5fd"/>
