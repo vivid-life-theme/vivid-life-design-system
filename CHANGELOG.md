@@ -10,6 +10,10 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ## [Unreleased]
 
+---
+
+## [0.10.0] - 2026-09-13
+
 Fixes five flavour × variant combinations on which a semantic token was the **same colour** as the accent, found by the Xfce port's phase-4 review ([vivid-life-xfce#3](https://github.com/vivid-life-theme/vivid-life-xfce/pull/3)) and measured here across all 24. Where it happened, the states the two tokens exist to distinguish were not distinguishable: a destructive button read exactly like a suggested one, and error text inside a selected row vanished at 1.00:1.
 
 ### Changed
@@ -208,4 +212,4 @@ Initial npm release. The token system existed before this version; this is the f
 
 ---
 
-[unreleased]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.9.0...HEAD [0.9.0]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.8.0...v0.9.0 [0.8.0]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.7.0...v0.8.0 [0.7.0]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.6.0...v0.7.0 [0.6.0]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.5.0...v0.6.0 [0.5.0]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.4.0...v0.5.0 [0.4.0]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.3.0...v0.4.0 [0.3.0]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.2.1...v0.3.0 [0.2.1]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.2.0...v0.2.1 [0.2.0]: https://github.com/vivid-life-theme/vivid-life-design-system/releases/tag/v0.2.0
+[unreleased]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.10.0...HEAD [0.10.0]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.9.0...v0.10.0 [0.9.0]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.8.0...v0.9.0 [0.8.0]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.7.0...v0.8.0 [0.7.0]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.6.0...v0.7.0 [0.6.0]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.5.0...v0.6.0 [0.5.0]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.4.0...v0.5.0 [0.4.0]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.3.0...v0.4.0 [0.3.0]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.2.1...v0.3.0 [0.2.1]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.2.0...v0.2.1 [0.2.0]: https://github.com/vivid-life-theme/vivid-life-design-system/releases/tag/v0.2.0
