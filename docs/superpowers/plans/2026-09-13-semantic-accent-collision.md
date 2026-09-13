@@ -379,7 +379,7 @@ Fixes five flavour × variant combinations on which a semantic token was the **s
 - [ ] **Step 2: Verify the entry references the exact hex values shipped**
 
 ```bash
-grep -oE '#(991b1b|854d0e|3f6212)' CHANGELOG.md | sort | uniq -c
+awk '/^## \[Unreleased\]/,/^## \[0.9.0\]/' CHANGELOG.md | grep -oE '#(991b1b|854d0e|3f6212)' | sort | uniq -c
 grep -c '#991b1b' tokens.json
 ```
 
