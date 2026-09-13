@@ -297,14 +297,20 @@ noon green 800 #3f6212
 
 - [ ] **Step 8: Demonstrate the gate fails on a reverted value, then restore**
 
+Steps 3–5 are still uncommitted here, so **do not** restore with `git checkout -- tokens.json5` — that reverts to the last commit and discards the fix along with the demonstration. Back the fixed file up and restore from the backup:
+
 ```bash
+cp tokens.json5 /tmp/tokens.json5.fixed
 sed -i 's/^      red: 800,$/      red: 900,/' tokens.json5
 node tools/build-tokens.mjs; echo "exit: $?"
-git checkout -- tokens.json5
+cp /tmp/tokens.json5.fixed tokens.json5
+cmp tokens.json5 /tmp/tokens.json5.fixed && echo "restored byte-identical"
 npm run build > /dev/null && npm run check
 ```
 
-Expected: the middle command prints one `✗ dawn.semantic.danger is red.900 ...` line and `exit: 1`. After the restore, `npm run check` is clean again. If the reverted run exits 0, the gate is not wired and Step 1 was lost.
+Expected: the `node tools/build-tokens.mjs` run prints one `✗ dawn.semantic.danger is red.900 ...` line and `exit: 1`. `cmp` prints `restored byte-identical`, and `npm run check` is clean again. If the reverted run exits 0, the gate is not wired and Step 1 was lost.
+
+(An earlier revision of this step used `git checkout --` and would have wiped the fix; the implementer caught it. Recorded as Ruling 3 in the ledger.)
 
 - [ ] **Step 9: Commit source and generated output together**
 
