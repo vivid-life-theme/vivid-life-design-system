@@ -156,7 +156,7 @@ Each flavor uses one of the **outer four** grey shades as its canvas:
 
 For each (flavor, hue) the shade is auto-picked:
 
-> _Pick the shade in the opposite half of the lightness scale from the bg, one step in from the extreme (300/700) by default. Step further (100/900) only when the hue's intrinsic luminance is too close to the background._
+> _Pick the shade in the opposite half of the lightness scale from the bg, one step in from the extreme (300/700) by default. Step further only when the hue's intrinsic luminance is too close to the background — and step by the smallest amount that clears: 800 before 900 on the dark side._
 
 Resolved table (all 24 combinations ≥ 4.5 : 1 WCAG AA):
 
@@ -246,20 +246,20 @@ Background: [issue #15](https://github.com/vivid-life-theme/vivid-life-design-sy
 
 Defined in `tokens.json5` as `syntax_hues` + `syntax_shade`, resolved at build time, and emitted to CSS as `--syn-*`.
 
-| Token       | Hue family      |
-| ----------- | --------------- |
+| Token       | Hue family       |
+| ----------- | ---------------- |
 | `comment`   | `text.fg_subtle` |
-| `keyword`   | purple          |
-| `string`    | green           |
-| `number`    | orange          |
-| `function`  | blue            |
-| `parameter` | orange (italic) |
-| `type`      | yellow          |
-| `constant`  | orange          |
-| `tag`       | blue            |
-| `attr`      | green           |
-| `regex`     | red             |
-| `punct`     | gray            |
+| `keyword`   | purple           |
+| `string`    | green            |
+| `number`    | orange           |
+| `function`  | blue             |
+| `parameter` | orange (italic)  |
+| `type`      | yellow           |
+| `constant`  | orange           |
+| `tag`       | blue             |
+| `attr`      | green            |
+| `regex`     | red              |
+| `punct`     | gray             |
 
 **25 extended tokens** map each logical name to either a string shorthand (a core slot or text/semantic alias) or a `{ color?, style? }` object — supporting font-style hints (`italic`, `bold`, `underline`) alongside color targets:
 
@@ -279,12 +279,12 @@ Two slot pairs share a hue but not a rung — `number`/`parameter` (orange) and 
 
 The 16-color terminal palette is **not** stable across flavors — it's the one place where each flavor deliberately diverges. `ansi_shade` is the terminal counterpart of the accent-shade ruleset: the same "step out from the background" rule, resolved against `surface.bg_terminal` instead of `surface.bg`.
 
-| Flavor   | `bg_terminal` | normal    | bright |
-| -------- | ------------- | --------- | ------ |
-| Midnight | `#0a0a0a`     | 500 †     | 300    |
-| Twilight | `#333333`     | 300       | 100    |
-| Dawn     | `#d4d4d4`     | 800       | 900    |
-| Noon     | `#ffffff`     | 700       | 900    |
+| Flavor   | `bg_terminal` | normal | bright |
+| -------- | ------------- | ------ | ------ |
+| Midnight | `#0a0a0a`     | 500 †  | 300    |
+| Twilight | `#333333`     | 300    | 100    |
+| Dawn     | `#d4d4d4`     | 800    | 900    |
+| Noon     | `#ffffff`     | 700    | 900    |
 
 † Midnight's `blue` and `magenta` sit at 300 in both rows — no 500 rung clears a near-black background for those two hues.
 
