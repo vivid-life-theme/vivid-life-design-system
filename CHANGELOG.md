@@ -4,7 +4,7 @@ All notable changes to `@vivid-life-theme/design-system` are documented here.
 
 Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [Semantic Versioning](https://semver.org/).
 
-**Breaking changes** (token renames / removals) are marked ⚠️ — downstream ports must update any hard-coded token references before regenerating.
+**Breaking changes** (token renames / removals) are marked ⚠️, as are value changes that visibly alter a shipped theme and require downstream regeneration — downstream ports must update any hard-coded token references before regenerating.
 
 ---
 
@@ -14,12 +14,12 @@ Fixes five flavour × variant combinations on which a semantic token was the **s
 
 ### Changed
 
-- ⚠️ **Five accents move from shade 900 to 800** — `dawn-red` (`#7f1d1d` → `#991b1b`), `dawn-yellow` (`#713f12` → `#854d0e`), `dawn-green` (`#365314` → `#3f6212`), `noon-yellow` (`#713f12` → `#854d0e`), `noon-green` (`#365314` → `#3f6212`). Each still clears the accent-vs-bg rule, with more headroom than before (5.61 / 4.62 / 4.77 / 6.28 / 6.49 : 1). The accents moved rather than the semantics because dropping dawn's semantics to 800 would fail the existing semantic-vs-surface gate on `bg_sunk`. Downstream ports regenerate to pick this up; these five themes get a slightly lighter accent and nothing else changes value.
+- ⚠️ **Five accents move from shade 900 to 800** — `dawn-red` (`#7f1d1d` → `#991b1b`), `dawn-yellow` (`#713f12` → `#854d0e`), `dawn-green` (`#365314` → `#3f6212`), `noon-yellow` (`#713f12` → `#854d0e`), `noon-green` (`#365314` → `#3f6212`). Each still clears the accent-vs-bg floor (5.61 / 4.62 / 4.77 / 6.28 / 6.49 : 1 — less margin than 900 had, but 800 is the smallest step that clears). The accents moved rather than the semantics because dropping dawn's semantics to 800 would fail the existing semantic-vs-surface gate on `bg_sunk`. Downstream ports regenerate to pick this up; these five themes get a slightly lighter accent and nothing else changes value.
 - **The accent-shade rule** (`tokens.json5` § 3) now says to step by the _smallest_ amount that clears — 800 before 900. The 800 rung was added after the rule was written, which is how dawn's warm hues ended up at 900 when 800 already cleared.
 
 ### Added
 
-- **Semantic/accent collision gate** — `semanticAccentCollisions(tokens)` in `tools/build-tokens.mjs`, wired into `check()`. For every flavour, `danger`, `warning` and `success` must not share a shade with the accent for their own hue. Pure integer comparison against `semantic_shade` and `accent_shade` via the existing `semantic_hues` mapping. `info` is deliberately exempt: sharing the primary blue is conventional and makes nothing unsafe, so the one remaining match (`midnight-blue`) is accepted rather than moved. Two self-test cases, one of which collides on `info` specifically so the exemption cannot silently drop out.
+- **Semantic/accent collision gate** — `semanticAccentCollisions(tokens)` in `tools/build-tokens.mjs`, wired into `check()`. For every flavour, `danger`, `warning` and `success` must not share a shade with the accent for their own hue. Shade-index comparison (string-coerced, so `900` and `"900"` collide) against `semantic_shade` and `accent_shade` via the existing `semantic_hues` mapping. `info` is deliberately exempt: sharing the primary blue is conventional and makes nothing unsafe, so the one remaining match (`midnight-blue`) is accepted rather than moved. Two self-test cases, one of which collides on `info` specifically so the exemption cannot silently drop out.
 
 ---
 
