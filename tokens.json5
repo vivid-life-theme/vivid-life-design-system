@@ -504,15 +504,29 @@
     //   behind: "ui"    only the roles listed in `text` are gated, on
     //                   every surface in `surfaces` (and `text_on_bg` on
     //                   the canvas only)
-    // A recipe's `border` must clear 3:1 against `bg` (WCAG 1.4.11).
+    // A recipe's `border` must clear 3:1 against `bg` and against its
+    // own fill (WCAG 1.4.11).
+    //
+    //   terminal_foreground  the role is also drawn behind terminal
+    //                        output, composited over `bg_terminal`. A
+    //                        terminal redraws selected text in this colour
+    //                        (VS Code terminal.selectionForeground,
+    //                        Alacritty selection.text, kitty
+    //                        selection_foreground, …), and it is gated at
+    //                        4.5:1 on that flat. The ANSI colours are not:
+    //                        Midnight's and Noon's normals sit just above
+    //                        4.5:1 on `bg_terminal`, so no tint they all
+    //                        survive is visible (ΔE ≤ 1.4 on Noon).
     roles: {
       selection: {
         behind: "code",
         use: "Text selection — editor, terminal, shell command line, ::selection.",
+        terminal_foreground: "fg",
       },
       inactive_selection: {
         behind: "code",
         use: "Selection in an unfocused editor or terminal.",
+        terminal_foreground: "fg",
       },
       line_highlight: { behind: "code", use: "The line the cursor is on." },
       find_match: { behind: "code", use: "The current search match." },
@@ -589,7 +603,11 @@
           alpha: 0.5,
           border: "semantic.warning",
         },
-        find_match_other: { color: "yellow.900", alpha: 0.25 },
+        find_match_other: {
+          color: "yellow.900",
+          alpha: 0.25,
+          border: "yellow.500",
+        },
         word_highlight_read: { color: "cyan.900", alpha: 0.25 },
         word_highlight_write: { color: "cyan.900", alpha: 0.5 },
         diff_inserted_line: { color: "green.900", alpha: 0.2 },
@@ -611,7 +629,11 @@
           alpha: 0.75,
           border: "semantic.warning",
         },
-        find_match_other: { color: "yellow.900", alpha: 0.4 },
+        find_match_other: {
+          color: "yellow.900",
+          alpha: 0.4,
+          border: "yellow.500",
+        },
         word_highlight_read: { color: "cyan.900", alpha: 0.45 },
         word_highlight_write: { color: "cyan.900", alpha: 0.85 },
         diff_inserted_line: { color: "green.900", alpha: 0.4 },
@@ -635,7 +657,11 @@
           alpha: 0.75,
           border: "semantic.warning",
         },
-        find_match_other: { color: "yellow.300", alpha: 0.35 },
+        find_match_other: {
+          color: "yellow.300",
+          alpha: 0.35,
+          border: "yellow.700",
+        },
         word_highlight_read: { color: "cyan.100", alpha: 0.5 },
         word_highlight_write: { color: "cyan.100", alpha: 1 },
         diff_inserted_line: { color: "green.100", alpha: 0.5 },
@@ -658,7 +684,11 @@
           alpha: 0.8,
           border: "semantic.warning",
         },
-        find_match_other: { color: "yellow.300", alpha: 0.35 },
+        find_match_other: {
+          color: "yellow.300",
+          alpha: 0.35,
+          border: "yellow.700",
+        },
         word_highlight_read: { color: "cyan.300", alpha: 0.3 },
         word_highlight_write: { color: "cyan.300", alpha: 0.6 },
         diff_inserted_line: { color: "green.300", alpha: 0.2 },
@@ -743,6 +773,12 @@
   //   • every pair within the normal ANSI row and within the bright
   //     row (neutrals included) ≥ `min`, except `ansi.exempt`
   //   • each ANSI colour vs its bright version ≥ `related_min`
+  //   • the overlays in `overlay.visible` ≥ `related_min` from `bg`
+  //     (and from `bg_terminal` where the role has a
+  //     `terminal_foreground`), per variant
+  //   • the overlay pairs in `overlay.apart` ≥ `min`, per variant —
+  //     unless one of the two carries a border that clears
+  //     control_boundary.min against both fills
   //
   // An alias is a pair that shares a colour ON PURPOSE. Listing it is
   // the point: an accidental collision anywhere else still fails.
@@ -790,6 +826,29 @@
           ["bright_cyan", "bright_white"],
         ],
       },
+    },
+    overlay: {
+      // A selection or a find match that doesn't read against the
+      // canvas isn't one. `related_min`, not `min`: Dawn's selection is
+      // already the palette's lightest rung at full opacity (accent.100)
+      // and reaches 6.96 — the syntax gate leaves no room to darken it.
+      visible: ["selection", "find_match"],
+      // Pairs that are on screen together: a selection with the search
+      // hits around it, and — while the find widget has focus — the
+      // inactive selection with them. On the dark flavors the
+      // comment grey caps how far any overlay may lift the canvas, so a
+      // yellow selection (the Yellow variant's accent.900) and a yellow
+      // find match can't be pulled apart by fill: the best split is
+      // ΔE 6.2 on Midnight and 5.0 on Twilight. The find matches carry
+      // a border instead — the current match `semantic.warning`, every
+      // other match a quieter yellow rung — which separates them at
+      // ≥ 3:1 from either selection.
+      apart: [
+        ["selection", "find_match"],
+        ["selection", "find_match_other"],
+        ["inactive_selection", "find_match"],
+        ["inactive_selection", "find_match_other"],
+      ],
     },
   },
 
