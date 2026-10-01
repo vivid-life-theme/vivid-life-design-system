@@ -21,7 +21,7 @@
  */
 
 import { readFile, writeFile } from "node:fs/promises";
-import { expandShadeTables } from "./build-tokens.mjs";
+import { resolveTokens, toHex, parseHex } from "./build-tokens.mjs";
 import { fileURLToPath } from "node:url";
 import { dirname, join, resolve, relative } from "node:path";
 
@@ -99,27 +99,6 @@ function json5ToJson(src) {
   );
   return out;
 }
-function resolveRefs(node, root) {
-  if (typeof node === "string") {
-    if (!node.startsWith("$")) return node;
-    const path = node.slice(1).split(".");
-    let cur = root;
-    for (const p of path) {
-      if (cur == null || !(p in cur)) throw new Error(`Unknown ref: ${node}`);
-      cur = cur[p];
-    }
-    if (typeof cur === "string" && cur.startsWith("$"))
-      return resolveRefs(cur, root);
-    return cur;
-  }
-  if (Array.isArray(node)) return node.map((v) => resolveRefs(v, root));
-  if (node && typeof node === "object") {
-    const o = {};
-    for (const [k, v] of Object.entries(node)) o[k] = resolveRefs(v, root);
-    return o;
-  }
-  return node;
-}
 
 // ── CSS emitter ──────────────────────────────────────────────────────
 // Conventions:
@@ -155,9 +134,9 @@ function header() {
      <body class="vl-midnight variant-purple"> … </body>
 
    The flavor class sets the canvas, text, borders, syntax map.
-   The variant class only sets --vl-accent (plus --vl-selection and
-   --vl-state-selected, both derived from --vl-accent via color-mix
-   at runtime).
+   The flavor + variant pair sets --vl-accent and the --vl-overlay-*
+   tints (selection, find match, diff, …), resolved at build time from
+   tokens.json5 -> overlay.
    ==================================================================== */
 `;
 }
@@ -297,57 +276,61 @@ function flavorBlock(name, flavor) {
   lines.push(`\n  /* text color for use on top of --vl-accent */`);
   lines.push(`  --vl-accent-on: ${accentOn};`);
 
-  // selection is now derived from accent at runtime via .vl-* + variant
+  // selection and the other overlays depend on the variant too — see
+  // variantBlock.
   lines.push(`}`);
   return lines.join("\n");
 }
 
 function variantBlock(tokens) {
   const lines = [
-    `\n/* ── Variants — UI accent only (cursor, link, focus ring, fill) ─── */`,
+    `\n/* ── Variants — accent + overlays per (flavor, variant) ──────────── */`,
   ];
   lines.push(
-    `/* Selection and the selected-item wash are derived from --vl-accent
-   via color-mix at runtime. */\n`,
+    `/* --vl-accent drives cursor, link, focus ring, fill. Each
+   --vl-overlay-<name> is a recipe from tokens.json5 -> overlay: a colour
+   at an alpha, written as #rrggbbaa so it composites over whatever it
+   sits on. Over --vl-bg it lands on the flattened value in tokens.json
+   (flavors.<flavor>.overlay.<variant>.<name>.flat), give or take one
+   step per channel from rounding alpha to 8 bits. */\n`,
   );
 
+  const names = Object.keys(tokens.overlay.roles);
   for (const fname of FLAVOR_NAMES) {
-    lines.push(`/* ${tokens.flavors[fname].label} accents */`);
+    lines.push(`/* ${tokens.flavors[fname].label} */`);
     for (const vname of VARIANT_HUES) {
       const shade = tokens.accent_shade[fname][vname];
       const accent = tokens.palette[vname][shade];
-      const sel = `.vl-${fname}.variant-${vname}`.padEnd(28);
-      lines.push(`${sel} { --vl-accent: ${accent}; }`);
+      lines.push(`.vl-${fname}.variant-${vname} {`);
+      lines.push(`  --vl-accent: ${accent};`);
+      for (const name of names) {
+        const o = tokens.flavors[fname].overlay[vname][name];
+        const [r, g, b] = parseHex(o.color);
+        const prop = `--vl-overlay-${kebab(name)}`.padEnd(34);
+        lines.push(`  ${prop}: ${toHex([r, g, b, o.alpha * 255])};`);
+        if (o.border) {
+          lines.push(`  ${`--vl-overlay-${kebab(name)}-border`.padEnd(34)}: ${o.border};`);
+        }
+      }
+      lines.push(`}`);
     }
     lines.push("");
   }
 
-  // Accent-derived tints — percentages and bases come from
-  // tokens.json5 → accent_mix, so the recipe lives with the tokens
-  // rather than in this generator. Both work on dark and light bg
-  // without needing per-flavor rules.
-  const { selection: sel, selected } = tokens.accent_mix;
-  const base = (b) => (b === "bg" ? "var(--vl-bg)" : b);
-  lines.push(`/* Accent-derived tints (percentages: tokens.json5 -> accent_mix).`);
+  // Stable names kept from before issue #19, so existing consumers and
+  // the preview cards don't change.
+  lines.push(`/* Aliases.`);
+  lines.push(`   --vl-selection       text selection (::selection, editor).`);
   lines.push(
-    `   --vl-selection       ${sel.pct}% over ${sel.base} — text selection.`,
+    `   --vl-state-selected  the selected tab / row. Reinforces an underline or`,
   );
   lines.push(
-    `   --vl-state-selected  ${selected.pct}% over ${selected.base} — the selected tab / row.`,
+    `                        accent bar; too light to be the sole selection`,
   );
-  lines.push(
-    `                        Reinforces an underline or accent bar; too light`,
-  );
-  lines.push(
-    `                        to be the sole selection signal on its own. */`,
-  );
+  lines.push(`                        signal on its own. */`);
   lines.push(`[class*="vl-"][class*="variant-"] {`);
-  lines.push(
-    `  --vl-selection: color-mix(in srgb, var(--vl-accent) ${sel.pct}%, ${base(sel.base)});`,
-  );
-  lines.push(
-    `  --vl-state-selected: color-mix(in srgb, var(--vl-accent) ${selected.pct}%, ${base(selected.base)});`,
-  );
+  lines.push(`  --vl-selection: var(--vl-overlay-selection);`);
+  lines.push(`  --vl-state-selected: var(--vl-overlay-selected);`);
   lines.push(`}`);
 
   return lines.join("\n");
@@ -386,7 +369,7 @@ async function main() {
 
   const src = await readFile(join(ROOT, "tokens.json5"), "utf8");
   const parsed = JSON.parse(json5ToJson(src));
-  const tokens = expandShadeTables(resolveRefs(parsed, parsed));
+  const tokens = resolveTokens(parsed);
 
   const cssPath = join(ROOT, "colors_and_type.css");
   const css = buildCss(tokens);

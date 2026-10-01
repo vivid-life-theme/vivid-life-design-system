@@ -11,9 +11,9 @@
      <body class="vl-midnight variant-purple"> … </body>
 
    The flavor class sets the canvas, text, borders, syntax map.
-   The variant class only sets --vl-accent (plus --vl-selection and
-   --vl-state-selected, both derived from --vl-accent via color-mix
-   at runtime).
+   The flavor + variant pair sets --vl-accent and the --vl-overlay-*
+   tints (selection, find match, diff, …), resolved at build time from
+   tokens.json5 -> overlay.
    ==================================================================== */
 
 
@@ -168,7 +168,7 @@
   /* text */
   --vl-fg                 : #f5f5f5;
   --vl-fg-muted           : #d4d4d4;
-  --vl-fg-subtle          : #737373;
+  --vl-fg-subtle          : #999999;
   --vl-fg-disabled        : #525252;
   /* border */
   --vl-border-subtle      : #262626;
@@ -178,14 +178,13 @@
   /* state */
   --vl-state-hover        : #ffffff14;
   --vl-state-active       : #ffffff1f;
-  --vl-state-selection    : #2a2f3a;
   /* semantic */
   --vl-semantic-success   : #bef264;
   --vl-semantic-warning   : #fde047;
   --vl-semantic-danger    : #fca5a5;
   --vl-semantic-info      : #93c5fd;
   /* syntax */
-  --syn-comment           : #737373;
+  --syn-comment           : #999999;
   --syn-keyword           : #d8b4fe;
   --syn-string            : #84cc16;
   --syn-number            : #f97316;
@@ -195,15 +194,15 @@
   --syn-constant          : #f97316;
   --syn-tag               : #93c5fd;
   --syn-attr              : #bef264;
-  --syn-regex             : #ef4444;
+  --syn-regex             : #fca5a5;
   --syn-punct             : #d4d4d4;
   /* ansi */
   --vl-ansi-black         : #0a0a0a;
   --vl-ansi-red           : #ef4444;
   --vl-ansi-green         : #84cc16;
   --vl-ansi-yellow        : #eab308;
-  --vl-ansi-blue          : #93c5fd;
-  --vl-ansi-magenta       : #d8b4fe;
+  --vl-ansi-blue          : #3b82f6;
+  --vl-ansi-magenta       : #a855f7;
   --vl-ansi-cyan          : #06b6d4;
   --vl-ansi-white         : #d4d4d4;
   --vl-ansi-bright-black  : #878787;
@@ -232,7 +231,7 @@
   /* text */
   --vl-fg                 : #f5f5f5;
   --vl-fg-muted           : #d4d4d4;
-  --vl-fg-subtle          : #a3a3a3;
+  --vl-fg-subtle          : #b8b8b8;
   --vl-fg-disabled        : #737373;
   /* border */
   --vl-border-subtle      : #525252;
@@ -242,19 +241,18 @@
   /* state */
   --vl-state-hover        : #ffffff14;
   --vl-state-active       : #ffffff1f;
-  --vl-state-selection    : #5b5b5b;
   /* semantic */
   --vl-semantic-success   : #bef264;
   --vl-semantic-warning   : #fef9c3;
   --vl-semantic-danger    : #fee2e2;
   --vl-semantic-info      : #dbeafe;
   /* syntax */
-  --syn-comment           : #a3a3a3;
+  --syn-comment           : #b8b8b8;
   --syn-keyword           : #d8b4fe;
   --syn-string            : #84cc16;
   --syn-number            : #fdba74;
   --syn-function          : #93c5fd;
-  --syn-parameter         : #f97316;
+  --syn-parameter         : #fdba74;
   --syn-type              : #eab308;
   --syn-constant          : #fdba74;
   --syn-tag               : #93c5fd;
@@ -306,7 +304,6 @@
   /* state */
   --vl-state-hover        : #0000000d;
   --vl-state-active       : #00000014;
-  --vl-state-selection    : #bdbdbd;
   /* semantic */
   --vl-semantic-success   : #365314;
   --vl-semantic-warning   : #713f12;
@@ -316,14 +313,14 @@
   --syn-comment           : #525252;
   --syn-keyword           : #7e22ce;
   --syn-string            : #365314;
-  --syn-number            : #c2410c;
+  --syn-number            : #9a3412;
   --syn-function          : #1d4ed8;
-  --syn-parameter         : #7c2d12;
+  --syn-parameter         : #9a3412;
   --syn-type              : #713f12;
-  --syn-constant          : #c2410c;
+  --syn-constant          : #9a3412;
   --syn-tag               : #1d4ed8;
-  --syn-attr              : #4d7c0f;
-  --syn-regex             : #b91c1c;
+  --syn-attr              : #3f6212;
+  --syn-regex             : #7f1d1d;
   --syn-punct             : #404040;
   /* ansi */
   --vl-ansi-black         : #171717;
@@ -370,7 +367,6 @@
   /* state */
   --vl-state-hover        : #0000000d;
   --vl-state-active       : #00000014;
-  --vl-state-selection    : #e5e5e5;
   /* semantic */
   --vl-semantic-success   : #365314;
   --vl-semantic-warning   : #713f12;
@@ -380,13 +376,13 @@
   --syn-comment           : #525252;
   --syn-keyword           : #7e22ce;
   --syn-string            : #365314;
-  --syn-number            : #c2410c;
+  --syn-number            : #7c2d12;
   --syn-function          : #1d4ed8;
   --syn-parameter         : #7c2d12;
-  --syn-type              : #713f12;
-  --syn-constant          : #c2410c;
+  --syn-type              : #854d0e;
+  --syn-constant          : #7c2d12;
   --syn-tag               : #1d4ed8;
-  --syn-attr              : #4d7c0f;
+  --syn-attr              : #3f6212;
   --syn-regex             : #b91c1c;
   --syn-punct             : #404040;
   /* ansi */
@@ -411,50 +407,462 @@
   --vl-accent-on: #f5f5f5;
 }
 
-/* ── Variants — UI accent only (cursor, link, focus ring, fill) ─── */
-/* Selection and the selected-item wash are derived from --vl-accent
-   via color-mix at runtime. */
+/* ── Variants — accent + overlays per (flavor, variant) ──────────── */
+/* --vl-accent drives cursor, link, focus ring, fill. Each
+   --vl-overlay-<name> is a recipe from tokens.json5 -> overlay: a colour
+   at an alpha, written as #rrggbbaa so it composites over whatever it
+   sits on. Over --vl-bg it lands on the flattened value in tokens.json
+   (flavors.<flavor>.overlay.<variant>.<name>.flat), give or take one
+   step per channel from rounding alpha to 8 bits. */
 
-/* Midnight accents */
-.vl-midnight.variant-red     { --vl-accent: #ef4444; }
-.vl-midnight.variant-orange  { --vl-accent: #f97316; }
-.vl-midnight.variant-yellow  { --vl-accent: #eab308; }
-.vl-midnight.variant-green   { --vl-accent: #84cc16; }
-.vl-midnight.variant-blue    { --vl-accent: #93c5fd; }
-.vl-midnight.variant-purple  { --vl-accent: #d8b4fe; }
+/* Midnight */
+.vl-midnight.variant-red {
+  --vl-accent: #ef4444;
+  --vl-overlay-selection            : #7f1d1d80;
+  --vl-overlay-inactive-selection   : #7f1d1d40;
+  --vl-overlay-line-highlight       : #262626;
+  --vl-overlay-find-match           : #713f1280;
+  --vl-overlay-find-match-border    : #fde047;
+  --vl-overlay-find-match-other     : #713f1240;
+  --vl-overlay-word-highlight-read  : #164e6340;
+  --vl-overlay-word-highlight-write : #164e6380;
+  --vl-overlay-diff-inserted-line   : #36531433;
+  --vl-overlay-diff-inserted-text   : #36531473;
+  --vl-overlay-diff-inserted-gutter : #36531459;
+  --vl-overlay-diff-removed-line    : #7f1d1d33;
+  --vl-overlay-diff-removed-text    : #7f1d1d73;
+  --vl-overlay-diff-removed-gutter  : #7f1d1d59;
+  --vl-overlay-selected             : #ef44442e;
+}
+.vl-midnight.variant-orange {
+  --vl-accent: #f97316;
+  --vl-overlay-selection            : #7c2d1280;
+  --vl-overlay-inactive-selection   : #7c2d1240;
+  --vl-overlay-line-highlight       : #262626;
+  --vl-overlay-find-match           : #713f1280;
+  --vl-overlay-find-match-border    : #fde047;
+  --vl-overlay-find-match-other     : #713f1240;
+  --vl-overlay-word-highlight-read  : #164e6340;
+  --vl-overlay-word-highlight-write : #164e6380;
+  --vl-overlay-diff-inserted-line   : #36531433;
+  --vl-overlay-diff-inserted-text   : #36531473;
+  --vl-overlay-diff-inserted-gutter : #36531459;
+  --vl-overlay-diff-removed-line    : #7f1d1d33;
+  --vl-overlay-diff-removed-text    : #7f1d1d73;
+  --vl-overlay-diff-removed-gutter  : #7f1d1d59;
+  --vl-overlay-selected             : #f973162e;
+}
+.vl-midnight.variant-yellow {
+  --vl-accent: #eab308;
+  --vl-overlay-selection            : #713f1280;
+  --vl-overlay-inactive-selection   : #713f1240;
+  --vl-overlay-line-highlight       : #262626;
+  --vl-overlay-find-match           : #713f1280;
+  --vl-overlay-find-match-border    : #fde047;
+  --vl-overlay-find-match-other     : #713f1240;
+  --vl-overlay-word-highlight-read  : #164e6340;
+  --vl-overlay-word-highlight-write : #164e6380;
+  --vl-overlay-diff-inserted-line   : #36531433;
+  --vl-overlay-diff-inserted-text   : #36531473;
+  --vl-overlay-diff-inserted-gutter : #36531459;
+  --vl-overlay-diff-removed-line    : #7f1d1d33;
+  --vl-overlay-diff-removed-text    : #7f1d1d73;
+  --vl-overlay-diff-removed-gutter  : #7f1d1d59;
+  --vl-overlay-selected             : #eab3082e;
+}
+.vl-midnight.variant-green {
+  --vl-accent: #84cc16;
+  --vl-overlay-selection            : #36531480;
+  --vl-overlay-inactive-selection   : #36531440;
+  --vl-overlay-line-highlight       : #262626;
+  --vl-overlay-find-match           : #713f1280;
+  --vl-overlay-find-match-border    : #fde047;
+  --vl-overlay-find-match-other     : #713f1240;
+  --vl-overlay-word-highlight-read  : #164e6340;
+  --vl-overlay-word-highlight-write : #164e6380;
+  --vl-overlay-diff-inserted-line   : #36531433;
+  --vl-overlay-diff-inserted-text   : #36531473;
+  --vl-overlay-diff-inserted-gutter : #36531459;
+  --vl-overlay-diff-removed-line    : #7f1d1d33;
+  --vl-overlay-diff-removed-text    : #7f1d1d73;
+  --vl-overlay-diff-removed-gutter  : #7f1d1d59;
+  --vl-overlay-selected             : #84cc162e;
+}
+.vl-midnight.variant-blue {
+  --vl-accent: #93c5fd;
+  --vl-overlay-selection            : #1e3a8a80;
+  --vl-overlay-inactive-selection   : #1e3a8a40;
+  --vl-overlay-line-highlight       : #262626;
+  --vl-overlay-find-match           : #713f1280;
+  --vl-overlay-find-match-border    : #fde047;
+  --vl-overlay-find-match-other     : #713f1240;
+  --vl-overlay-word-highlight-read  : #164e6340;
+  --vl-overlay-word-highlight-write : #164e6380;
+  --vl-overlay-diff-inserted-line   : #36531433;
+  --vl-overlay-diff-inserted-text   : #36531473;
+  --vl-overlay-diff-inserted-gutter : #36531459;
+  --vl-overlay-diff-removed-line    : #7f1d1d33;
+  --vl-overlay-diff-removed-text    : #7f1d1d73;
+  --vl-overlay-diff-removed-gutter  : #7f1d1d59;
+  --vl-overlay-selected             : #93c5fd2e;
+}
+.vl-midnight.variant-purple {
+  --vl-accent: #d8b4fe;
+  --vl-overlay-selection            : #581c8780;
+  --vl-overlay-inactive-selection   : #581c8740;
+  --vl-overlay-line-highlight       : #262626;
+  --vl-overlay-find-match           : #713f1280;
+  --vl-overlay-find-match-border    : #fde047;
+  --vl-overlay-find-match-other     : #713f1240;
+  --vl-overlay-word-highlight-read  : #164e6340;
+  --vl-overlay-word-highlight-write : #164e6380;
+  --vl-overlay-diff-inserted-line   : #36531433;
+  --vl-overlay-diff-inserted-text   : #36531473;
+  --vl-overlay-diff-inserted-gutter : #36531459;
+  --vl-overlay-diff-removed-line    : #7f1d1d33;
+  --vl-overlay-diff-removed-text    : #7f1d1d73;
+  --vl-overlay-diff-removed-gutter  : #7f1d1d59;
+  --vl-overlay-selected             : #d8b4fe2e;
+}
 
-/* Twilight accents */
-.vl-twilight.variant-red     { --vl-accent: #fca5a5; }
-.vl-twilight.variant-orange  { --vl-accent: #fdba74; }
-.vl-twilight.variant-yellow  { --vl-accent: #eab308; }
-.vl-twilight.variant-green   { --vl-accent: #84cc16; }
-.vl-twilight.variant-blue    { --vl-accent: #93c5fd; }
-.vl-twilight.variant-purple  { --vl-accent: #d8b4fe; }
+/* Twilight */
+.vl-twilight.variant-red {
+  --vl-accent: #fca5a5;
+  --vl-overlay-selection            : #7f1d1dbf;
+  --vl-overlay-inactive-selection   : #7f1d1d66;
+  --vl-overlay-line-highlight       : #26262699;
+  --vl-overlay-find-match           : #713f12bf;
+  --vl-overlay-find-match-border    : #fef9c3;
+  --vl-overlay-find-match-other     : #713f1266;
+  --vl-overlay-word-highlight-read  : #164e6373;
+  --vl-overlay-word-highlight-write : #164e63d9;
+  --vl-overlay-diff-inserted-line   : #36531466;
+  --vl-overlay-diff-inserted-text   : #365314cc;
+  --vl-overlay-diff-inserted-gutter : #36531499;
+  --vl-overlay-diff-removed-line    : #7f1d1d66;
+  --vl-overlay-diff-removed-text    : #7f1d1dcc;
+  --vl-overlay-diff-removed-gutter  : #7f1d1d99;
+  --vl-overlay-selected             : #fca5a52e;
+}
+.vl-twilight.variant-orange {
+  --vl-accent: #fdba74;
+  --vl-overlay-selection            : #7c2d12bf;
+  --vl-overlay-inactive-selection   : #7c2d1266;
+  --vl-overlay-line-highlight       : #26262699;
+  --vl-overlay-find-match           : #713f12bf;
+  --vl-overlay-find-match-border    : #fef9c3;
+  --vl-overlay-find-match-other     : #713f1266;
+  --vl-overlay-word-highlight-read  : #164e6373;
+  --vl-overlay-word-highlight-write : #164e63d9;
+  --vl-overlay-diff-inserted-line   : #36531466;
+  --vl-overlay-diff-inserted-text   : #365314cc;
+  --vl-overlay-diff-inserted-gutter : #36531499;
+  --vl-overlay-diff-removed-line    : #7f1d1d66;
+  --vl-overlay-diff-removed-text    : #7f1d1dcc;
+  --vl-overlay-diff-removed-gutter  : #7f1d1d99;
+  --vl-overlay-selected             : #fdba742e;
+}
+.vl-twilight.variant-yellow {
+  --vl-accent: #eab308;
+  --vl-overlay-selection            : #713f12bf;
+  --vl-overlay-inactive-selection   : #713f1266;
+  --vl-overlay-line-highlight       : #26262699;
+  --vl-overlay-find-match           : #713f12bf;
+  --vl-overlay-find-match-border    : #fef9c3;
+  --vl-overlay-find-match-other     : #713f1266;
+  --vl-overlay-word-highlight-read  : #164e6373;
+  --vl-overlay-word-highlight-write : #164e63d9;
+  --vl-overlay-diff-inserted-line   : #36531466;
+  --vl-overlay-diff-inserted-text   : #365314cc;
+  --vl-overlay-diff-inserted-gutter : #36531499;
+  --vl-overlay-diff-removed-line    : #7f1d1d66;
+  --vl-overlay-diff-removed-text    : #7f1d1dcc;
+  --vl-overlay-diff-removed-gutter  : #7f1d1d99;
+  --vl-overlay-selected             : #eab3082e;
+}
+.vl-twilight.variant-green {
+  --vl-accent: #84cc16;
+  --vl-overlay-selection            : #365314bf;
+  --vl-overlay-inactive-selection   : #36531466;
+  --vl-overlay-line-highlight       : #26262699;
+  --vl-overlay-find-match           : #713f12bf;
+  --vl-overlay-find-match-border    : #fef9c3;
+  --vl-overlay-find-match-other     : #713f1266;
+  --vl-overlay-word-highlight-read  : #164e6373;
+  --vl-overlay-word-highlight-write : #164e63d9;
+  --vl-overlay-diff-inserted-line   : #36531466;
+  --vl-overlay-diff-inserted-text   : #365314cc;
+  --vl-overlay-diff-inserted-gutter : #36531499;
+  --vl-overlay-diff-removed-line    : #7f1d1d66;
+  --vl-overlay-diff-removed-text    : #7f1d1dcc;
+  --vl-overlay-diff-removed-gutter  : #7f1d1d99;
+  --vl-overlay-selected             : #84cc162e;
+}
+.vl-twilight.variant-blue {
+  --vl-accent: #93c5fd;
+  --vl-overlay-selection            : #1e3a8abf;
+  --vl-overlay-inactive-selection   : #1e3a8a66;
+  --vl-overlay-line-highlight       : #26262699;
+  --vl-overlay-find-match           : #713f12bf;
+  --vl-overlay-find-match-border    : #fef9c3;
+  --vl-overlay-find-match-other     : #713f1266;
+  --vl-overlay-word-highlight-read  : #164e6373;
+  --vl-overlay-word-highlight-write : #164e63d9;
+  --vl-overlay-diff-inserted-line   : #36531466;
+  --vl-overlay-diff-inserted-text   : #365314cc;
+  --vl-overlay-diff-inserted-gutter : #36531499;
+  --vl-overlay-diff-removed-line    : #7f1d1d66;
+  --vl-overlay-diff-removed-text    : #7f1d1dcc;
+  --vl-overlay-diff-removed-gutter  : #7f1d1d99;
+  --vl-overlay-selected             : #93c5fd2e;
+}
+.vl-twilight.variant-purple {
+  --vl-accent: #d8b4fe;
+  --vl-overlay-selection            : #581c87bf;
+  --vl-overlay-inactive-selection   : #581c8766;
+  --vl-overlay-line-highlight       : #26262699;
+  --vl-overlay-find-match           : #713f12bf;
+  --vl-overlay-find-match-border    : #fef9c3;
+  --vl-overlay-find-match-other     : #713f1266;
+  --vl-overlay-word-highlight-read  : #164e6373;
+  --vl-overlay-word-highlight-write : #164e63d9;
+  --vl-overlay-diff-inserted-line   : #36531466;
+  --vl-overlay-diff-inserted-text   : #365314cc;
+  --vl-overlay-diff-inserted-gutter : #36531499;
+  --vl-overlay-diff-removed-line    : #7f1d1d66;
+  --vl-overlay-diff-removed-text    : #7f1d1dcc;
+  --vl-overlay-diff-removed-gutter  : #7f1d1d99;
+  --vl-overlay-selected             : #d8b4fe2e;
+}
 
-/* Dawn accents */
-.vl-dawn.variant-red         { --vl-accent: #991b1b; }
-.vl-dawn.variant-orange      { --vl-accent: #7c2d12; }
-.vl-dawn.variant-yellow      { --vl-accent: #854d0e; }
-.vl-dawn.variant-green       { --vl-accent: #3f6212; }
-.vl-dawn.variant-blue        { --vl-accent: #1d4ed8; }
-.vl-dawn.variant-purple      { --vl-accent: #7e22ce; }
+/* Dawn */
+.vl-dawn.variant-red {
+  --vl-accent: #991b1b;
+  --vl-overlay-selection            : #fee2e2;
+  --vl-overlay-inactive-selection   : #fee2e280;
+  --vl-overlay-line-highlight       : #f5f5f573;
+  --vl-overlay-find-match           : #fde047bf;
+  --vl-overlay-find-match-border    : #713f12;
+  --vl-overlay-find-match-other     : #fde04759;
+  --vl-overlay-word-highlight-read  : #cffafe80;
+  --vl-overlay-word-highlight-write : #cffafe;
+  --vl-overlay-diff-inserted-line   : #ecfccb80;
+  --vl-overlay-diff-inserted-text   : #ecfccb;
+  --vl-overlay-diff-inserted-gutter : #ecfccbcc;
+  --vl-overlay-diff-removed-line    : #fee2e280;
+  --vl-overlay-diff-removed-text    : #fee2e2;
+  --vl-overlay-diff-removed-gutter  : #fee2e2cc;
+  --vl-overlay-selected             : #991b1b2e;
+}
+.vl-dawn.variant-orange {
+  --vl-accent: #7c2d12;
+  --vl-overlay-selection            : #ffedd5;
+  --vl-overlay-inactive-selection   : #ffedd580;
+  --vl-overlay-line-highlight       : #f5f5f573;
+  --vl-overlay-find-match           : #fde047bf;
+  --vl-overlay-find-match-border    : #713f12;
+  --vl-overlay-find-match-other     : #fde04759;
+  --vl-overlay-word-highlight-read  : #cffafe80;
+  --vl-overlay-word-highlight-write : #cffafe;
+  --vl-overlay-diff-inserted-line   : #ecfccb80;
+  --vl-overlay-diff-inserted-text   : #ecfccb;
+  --vl-overlay-diff-inserted-gutter : #ecfccbcc;
+  --vl-overlay-diff-removed-line    : #fee2e280;
+  --vl-overlay-diff-removed-text    : #fee2e2;
+  --vl-overlay-diff-removed-gutter  : #fee2e2cc;
+  --vl-overlay-selected             : #7c2d122e;
+}
+.vl-dawn.variant-yellow {
+  --vl-accent: #854d0e;
+  --vl-overlay-selection            : #fef9c3;
+  --vl-overlay-inactive-selection   : #fef9c380;
+  --vl-overlay-line-highlight       : #f5f5f573;
+  --vl-overlay-find-match           : #fde047bf;
+  --vl-overlay-find-match-border    : #713f12;
+  --vl-overlay-find-match-other     : #fde04759;
+  --vl-overlay-word-highlight-read  : #cffafe80;
+  --vl-overlay-word-highlight-write : #cffafe;
+  --vl-overlay-diff-inserted-line   : #ecfccb80;
+  --vl-overlay-diff-inserted-text   : #ecfccb;
+  --vl-overlay-diff-inserted-gutter : #ecfccbcc;
+  --vl-overlay-diff-removed-line    : #fee2e280;
+  --vl-overlay-diff-removed-text    : #fee2e2;
+  --vl-overlay-diff-removed-gutter  : #fee2e2cc;
+  --vl-overlay-selected             : #854d0e2e;
+}
+.vl-dawn.variant-green {
+  --vl-accent: #3f6212;
+  --vl-overlay-selection            : #ecfccb;
+  --vl-overlay-inactive-selection   : #ecfccb80;
+  --vl-overlay-line-highlight       : #f5f5f573;
+  --vl-overlay-find-match           : #fde047bf;
+  --vl-overlay-find-match-border    : #713f12;
+  --vl-overlay-find-match-other     : #fde04759;
+  --vl-overlay-word-highlight-read  : #cffafe80;
+  --vl-overlay-word-highlight-write : #cffafe;
+  --vl-overlay-diff-inserted-line   : #ecfccb80;
+  --vl-overlay-diff-inserted-text   : #ecfccb;
+  --vl-overlay-diff-inserted-gutter : #ecfccbcc;
+  --vl-overlay-diff-removed-line    : #fee2e280;
+  --vl-overlay-diff-removed-text    : #fee2e2;
+  --vl-overlay-diff-removed-gutter  : #fee2e2cc;
+  --vl-overlay-selected             : #3f62122e;
+}
+.vl-dawn.variant-blue {
+  --vl-accent: #1d4ed8;
+  --vl-overlay-selection            : #dbeafe;
+  --vl-overlay-inactive-selection   : #dbeafe80;
+  --vl-overlay-line-highlight       : #f5f5f573;
+  --vl-overlay-find-match           : #fde047bf;
+  --vl-overlay-find-match-border    : #713f12;
+  --vl-overlay-find-match-other     : #fde04759;
+  --vl-overlay-word-highlight-read  : #cffafe80;
+  --vl-overlay-word-highlight-write : #cffafe;
+  --vl-overlay-diff-inserted-line   : #ecfccb80;
+  --vl-overlay-diff-inserted-text   : #ecfccb;
+  --vl-overlay-diff-inserted-gutter : #ecfccbcc;
+  --vl-overlay-diff-removed-line    : #fee2e280;
+  --vl-overlay-diff-removed-text    : #fee2e2;
+  --vl-overlay-diff-removed-gutter  : #fee2e2cc;
+  --vl-overlay-selected             : #1d4ed82e;
+}
+.vl-dawn.variant-purple {
+  --vl-accent: #7e22ce;
+  --vl-overlay-selection            : #f3e8ff;
+  --vl-overlay-inactive-selection   : #f3e8ff80;
+  --vl-overlay-line-highlight       : #f5f5f573;
+  --vl-overlay-find-match           : #fde047bf;
+  --vl-overlay-find-match-border    : #713f12;
+  --vl-overlay-find-match-other     : #fde04759;
+  --vl-overlay-word-highlight-read  : #cffafe80;
+  --vl-overlay-word-highlight-write : #cffafe;
+  --vl-overlay-diff-inserted-line   : #ecfccb80;
+  --vl-overlay-diff-inserted-text   : #ecfccb;
+  --vl-overlay-diff-inserted-gutter : #ecfccbcc;
+  --vl-overlay-diff-removed-line    : #fee2e280;
+  --vl-overlay-diff-removed-text    : #fee2e2;
+  --vl-overlay-diff-removed-gutter  : #fee2e2cc;
+  --vl-overlay-selected             : #7e22ce2e;
+}
 
-/* Noon accents */
-.vl-noon.variant-red         { --vl-accent: #b91c1c; }
-.vl-noon.variant-orange      { --vl-accent: #c2410c; }
-.vl-noon.variant-yellow      { --vl-accent: #854d0e; }
-.vl-noon.variant-green       { --vl-accent: #3f6212; }
-.vl-noon.variant-blue        { --vl-accent: #1d4ed8; }
-.vl-noon.variant-purple      { --vl-accent: #7e22ce; }
+/* Noon */
+.vl-noon.variant-red {
+  --vl-accent: #b91c1c;
+  --vl-overlay-selection            : #fca5a573;
+  --vl-overlay-inactive-selection   : #fca5a538;
+  --vl-overlay-line-highlight       : #1717170d;
+  --vl-overlay-find-match           : #fde047cc;
+  --vl-overlay-find-match-border    : #713f12;
+  --vl-overlay-find-match-other     : #fde04759;
+  --vl-overlay-word-highlight-read  : #67e8f94d;
+  --vl-overlay-word-highlight-write : #67e8f999;
+  --vl-overlay-diff-inserted-line   : #bef26433;
+  --vl-overlay-diff-inserted-text   : #bef26473;
+  --vl-overlay-diff-inserted-gutter : #bef26459;
+  --vl-overlay-diff-removed-line    : #fca5a533;
+  --vl-overlay-diff-removed-text    : #fca5a573;
+  --vl-overlay-diff-removed-gutter  : #fca5a559;
+  --vl-overlay-selected             : #b91c1c2e;
+}
+.vl-noon.variant-orange {
+  --vl-accent: #c2410c;
+  --vl-overlay-selection            : #fdba7473;
+  --vl-overlay-inactive-selection   : #fdba7438;
+  --vl-overlay-line-highlight       : #1717170d;
+  --vl-overlay-find-match           : #fde047cc;
+  --vl-overlay-find-match-border    : #713f12;
+  --vl-overlay-find-match-other     : #fde04759;
+  --vl-overlay-word-highlight-read  : #67e8f94d;
+  --vl-overlay-word-highlight-write : #67e8f999;
+  --vl-overlay-diff-inserted-line   : #bef26433;
+  --vl-overlay-diff-inserted-text   : #bef26473;
+  --vl-overlay-diff-inserted-gutter : #bef26459;
+  --vl-overlay-diff-removed-line    : #fca5a533;
+  --vl-overlay-diff-removed-text    : #fca5a573;
+  --vl-overlay-diff-removed-gutter  : #fca5a559;
+  --vl-overlay-selected             : #c2410c2e;
+}
+.vl-noon.variant-yellow {
+  --vl-accent: #854d0e;
+  --vl-overlay-selection            : #fde04773;
+  --vl-overlay-inactive-selection   : #fde04738;
+  --vl-overlay-line-highlight       : #1717170d;
+  --vl-overlay-find-match           : #fde047cc;
+  --vl-overlay-find-match-border    : #713f12;
+  --vl-overlay-find-match-other     : #fde04759;
+  --vl-overlay-word-highlight-read  : #67e8f94d;
+  --vl-overlay-word-highlight-write : #67e8f999;
+  --vl-overlay-diff-inserted-line   : #bef26433;
+  --vl-overlay-diff-inserted-text   : #bef26473;
+  --vl-overlay-diff-inserted-gutter : #bef26459;
+  --vl-overlay-diff-removed-line    : #fca5a533;
+  --vl-overlay-diff-removed-text    : #fca5a573;
+  --vl-overlay-diff-removed-gutter  : #fca5a559;
+  --vl-overlay-selected             : #854d0e2e;
+}
+.vl-noon.variant-green {
+  --vl-accent: #3f6212;
+  --vl-overlay-selection            : #bef26473;
+  --vl-overlay-inactive-selection   : #bef26438;
+  --vl-overlay-line-highlight       : #1717170d;
+  --vl-overlay-find-match           : #fde047cc;
+  --vl-overlay-find-match-border    : #713f12;
+  --vl-overlay-find-match-other     : #fde04759;
+  --vl-overlay-word-highlight-read  : #67e8f94d;
+  --vl-overlay-word-highlight-write : #67e8f999;
+  --vl-overlay-diff-inserted-line   : #bef26433;
+  --vl-overlay-diff-inserted-text   : #bef26473;
+  --vl-overlay-diff-inserted-gutter : #bef26459;
+  --vl-overlay-diff-removed-line    : #fca5a533;
+  --vl-overlay-diff-removed-text    : #fca5a573;
+  --vl-overlay-diff-removed-gutter  : #fca5a559;
+  --vl-overlay-selected             : #3f62122e;
+}
+.vl-noon.variant-blue {
+  --vl-accent: #1d4ed8;
+  --vl-overlay-selection            : #93c5fd73;
+  --vl-overlay-inactive-selection   : #93c5fd38;
+  --vl-overlay-line-highlight       : #1717170d;
+  --vl-overlay-find-match           : #fde047cc;
+  --vl-overlay-find-match-border    : #713f12;
+  --vl-overlay-find-match-other     : #fde04759;
+  --vl-overlay-word-highlight-read  : #67e8f94d;
+  --vl-overlay-word-highlight-write : #67e8f999;
+  --vl-overlay-diff-inserted-line   : #bef26433;
+  --vl-overlay-diff-inserted-text   : #bef26473;
+  --vl-overlay-diff-inserted-gutter : #bef26459;
+  --vl-overlay-diff-removed-line    : #fca5a533;
+  --vl-overlay-diff-removed-text    : #fca5a573;
+  --vl-overlay-diff-removed-gutter  : #fca5a559;
+  --vl-overlay-selected             : #1d4ed82e;
+}
+.vl-noon.variant-purple {
+  --vl-accent: #7e22ce;
+  --vl-overlay-selection            : #d8b4fe73;
+  --vl-overlay-inactive-selection   : #d8b4fe38;
+  --vl-overlay-line-highlight       : #1717170d;
+  --vl-overlay-find-match           : #fde047cc;
+  --vl-overlay-find-match-border    : #713f12;
+  --vl-overlay-find-match-other     : #fde04759;
+  --vl-overlay-word-highlight-read  : #67e8f94d;
+  --vl-overlay-word-highlight-write : #67e8f999;
+  --vl-overlay-diff-inserted-line   : #bef26433;
+  --vl-overlay-diff-inserted-text   : #bef26473;
+  --vl-overlay-diff-inserted-gutter : #bef26459;
+  --vl-overlay-diff-removed-line    : #fca5a533;
+  --vl-overlay-diff-removed-text    : #fca5a573;
+  --vl-overlay-diff-removed-gutter  : #fca5a559;
+  --vl-overlay-selected             : #7e22ce2e;
+}
 
-/* Accent-derived tints (percentages: tokens.json5 -> accent_mix).
-   --vl-selection       25% over bg — text selection.
-   --vl-state-selected  18% over transparent — the selected tab / row.
-                        Reinforces an underline or accent bar; too light
-                        to be the sole selection signal on its own. */
+/* Aliases.
+   --vl-selection       text selection (::selection, editor).
+   --vl-state-selected  the selected tab / row. Reinforces an underline or
+                        accent bar; too light to be the sole selection
+                        signal on its own. */
 [class*="vl-"][class*="variant-"] {
-  --vl-selection: color-mix(in srgb, var(--vl-accent) 25%, var(--vl-bg));
-  --vl-state-selected: color-mix(in srgb, var(--vl-accent) 18%, transparent);
+  --vl-selection: var(--vl-overlay-selection);
+  --vl-state-selected: var(--vl-overlay-selected);
 }
 
 /* ── Native ::selection rule, opt-in helper class ───────────────── */

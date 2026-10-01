@@ -218,16 +218,17 @@
   },
 
   ansi_shade: {
-    // Vivid 500 normals; 300 brights. blue/magenta have no 500 rung that
-    // clears a near-black bg, so they sit at 300 in both rows — a
-    // pre-existing duplicate pair, left as-is by issue #7.
+    // Vivid 500 normals; 300 brights. blue/magenta used to sit at 300 in
+    // both rows on the belief that their 500 rung couldn't clear a
+    // near-black bg. Against #0a0a0a it does (5.38 / 5.00 : 1), and the
+    // distinctness gate (§ 3g) caught the identical pair. Issue #19.
     midnight: {
       normal: {
         red: 500,
         green: 500,
         yellow: 500,
-        blue: 300,
-        magenta: 300,
+        blue: 500,
+        magenta: 500,
         cyan: 500,
       },
       bright: {
@@ -325,9 +326,16 @@
   // picks. Before this, all 48 values were hand-authored inside the
   // four flavor blocks; `flavors.*.syntax` is now derived.
   //
-  // Two slots share a hue but not a rung on purpose — `number` vs
-  // `parameter` (both orange) and `string` vs `attr` (both green) —
-  // so the table is keyed by slot, not by hue, exactly like ansi_shade.
+  // Slots that share a hue don't always share a rung — `string` vs
+  // `attr` (both green) on every flavor, `number` vs `parameter` (both
+  // orange) on Midnight — so the table is keyed by slot, not by hue,
+  // exactly like ansi_shade. On the other three flavors the canvas only
+  // affords one usable orange rung for both, and `parameter`'s italic
+  // (syntax_tokens.extended) carries the split; see `distinct` (§ 3g).
+  //
+  // Every resolved slot must clear 4.5:1 on `bg` — code is body text,
+  // so the 3:1 large-text threshold doesn't apply — and on every code
+  // overlay in § 3e. tools/build-tokens.mjs gates both (issue #19).
   //
   // `comment` is the one slot that is not shade-driven: it maps to the
   // text-ramp alias `fg_subtle`, which is where comment grey has always
@@ -357,12 +365,12 @@
       string: 500,
       number: 500,
       function: 300,
-      parameter: 300, // NEW (issue #2 item 2) — italic via extended map
+      parameter: 300, // italic via extended map
       type: 500,
       constant: 500,
       tag: 300,
-      attr: 300, // was yellow.500 (issue #2 item 3)
-      regex: 500,
+      attr: 300,
+      regex: 300, // was 500 (4.76:1 on bg) — no headroom left for the overlays in § 3e (issue #19)
       punct: 300,
     },
     twilight: {
@@ -370,37 +378,46 @@
       string: 500,
       number: 300,
       function: 300,
-      parameter: 500, // NEW — deeper than number.300 (only available split on this bg)
+      parameter: 300, // was 500 (#f97316, 3.70:1 on bg — below 4.5). Now shares number's rung; the italic carries the split (§ 3g alias). Issue #19.
       type: 500,
       constant: 300,
       tag: 300,
-      attr: 300, // was yellow.500
+      attr: 300,
       regex: 300,
       punct: 300,
     },
+    // Dawn's #d4d4d4 canvas only affords the 800 / 900 rungs of the warm
+    // hues, and those are all browns within ~6–8 ΔE of each other. Three
+    // warm colours fit, not four: number/constant/parameter share
+    // orange.800 (parameter is italic), regex goes to red.900, type stays
+    // yellow.900. Issue #19.
     dawn: {
       keyword: 700,
       string: 900,
-      number: 700,
+      number: 800, // was 700 (3.49:1 on bg)
       function: 700,
-      parameter: 900, // NEW
+      parameter: 800, // was 900 — orange.900 vs type's yellow.900 is ΔE 4.6, the same brown
       type: 900,
-      constant: 700,
+      constant: 800, // was 700 (3.49:1 on bg)
       tag: 700,
-      attr: 700, // was yellow.900
-      regex: 700,
+      attr: 800, // was 700 (3.37:1 on bg)
+      regex: 900, // was 700 (4.36:1 on bg); 800 sits within ΔE 6 of orange.800
       punct: 700,
     },
+    // Noon could clear 4.5:1 at the 700 rung, but with 4.58:1 at worst it
+    // left no room for any overlay to darken the canvas. One rung deeper
+    // on four slots buys 5.93:1, which is what lets selection and find
+    // tints in § 3e read as tints at all. Issue #19.
     noon: {
       keyword: 700,
       string: 900,
-      number: 700,
+      number: 900, // was 700
       function: 700,
-      parameter: 900, // NEW
-      type: 900,
-      constant: 700,
+      parameter: 900,
+      type: 800, // was 900 — keeps type ΔE ≥ 7 from number/parameter at orange.900
+      constant: 900, // was 700
       tag: 700,
-      attr: 700, // was yellow.900
+      attr: 800, // was 700
       regex: 700,
       punct: 700,
     },
@@ -434,63 +451,224 @@
   },
 
   // ────────────────────────────────────────────────────────────────
-  //   3e.  ACCENT MIXES  —  runtime color-mix recipes
+  //   3e.  OVERLAYS  —  everything that sits behind text
   // ────────────────────────────────────────────────────────────────
-  // Two accent-derived tints that can't be authored per flavor,
-  // because they depend on the *variant* — the flavor blocks below
-  // hold no entry for them. Each is emitted once, in the variant
-  // block, as a CSS `color-mix(in srgb, var(--vl-accent) <pct>%,
-  // <base>)`, and mirrored by a recipe in tools/build-tokens.mjs
-  // (`selection()` / `selectedWash()`) for ports that bake values at
-  // build time instead of resolving them in a browser.
+  // One recipe per (flavor, overlay): a colour target plus an alpha,
+  // optionally a border. tools/build-tokens.mjs composites each recipe
+  // over the flavor's `bg` and emits both halves into tokens.json as
+  // `flavors.<flavor>.overlay.<variant>.<name>`:
   //
-  //   base: "bg"          → mixes into the opaque flavor canvas
-  //   base: "transparent" → stays translucent, so it composites over
-  //                         whatever surface the element sits on
-  //                         (bg, bg_soft, bg_inset, …)
+  //   { color: "#rrggbb", alpha: 0.5, flat: "#rrggbb", border?: "#rrggbb" }
   //
-  // Both percentages are gated in tools/build-tokens.mjs: `text.fg`
-  // must clear 4.5:1 on the resolved tint for all 24 (flavor,
-  // variant) combinations.
+  // so a port with alpha support (VS Code, CSS) blends `color` at
+  // `alpha`, a port without it (Windows Terminal, fish, PSReadLine) uses
+  // `flat`, and both land on the same colour. Before issue #19 every
+  // port carried its own alpha table — VS Code ten steps, Windows
+  // Terminal a 30% selection while this file said 25% — and they had
+  // drifted apart.
+  //
+  // Colour targets (shared with shell_roles / prompt_roles, § 15–16):
+  //   accent                   the (flavor, variant) accent
+  //   accent.<rung>            the variant's hue at another rung
+  //   <hue>.<rung>             any palette entry, e.g. "cyan.900"
+  //   fg | fg_muted | fg_subtle | fg_disabled
+  //   semantic.<role>          success | warning | danger | info
+  //
+  // THE DIRECTION RULE. The gate below holds every syntax slot at 4.5:1
+  // on every code overlay, and the dimmest slot (the comment grey on
+  // dark flavors, the lightest saturated slot on light ones) leaves
+  // almost no luminance to spend in the direction of the text. So:
+  //
+  //   dark flavors   tint with the 900 rung — a deep hue at or below the
+  //                  canvas luminance, so light text keeps its contrast
+  //   light flavors  tint with the 100 / 300 rung — a pale hue at or
+  //                  above the canvas, the mirror image
+  //
+  // The old selection (25% of the *accent* over bg) did the opposite on
+  // dark flavors: a light accent lightened the canvas toward the text.
+  // On Midnight it dropped comments to 2.13:1 and on Twilight
+  // `parameter` to 2.19:1.
+  //
+  // Hue families stay stable across flavors so the overlays read the
+  // same way everywhere: selection and its weaker kin use the accent's
+  // hue, find matches yellow, word highlights cyan (outside the variant
+  // axis, so they never collide with the selection), diff green / red.
+  // On the yellow variants the find match shares the selection's hue;
+  // its border is what tells the two apart.
 
-  accent_mix: {
-    // Text selection — the ::selection background.
-    selection: { pct: 25, base: "bg" },
+  overlay: {
+    // What each overlay is for and what it is gated against.
+    //   behind: "code"  every syntax slot, text.fg, text.fg_subtle and
+    //                   the four semantic colours must clear 4.5:1 on the
+    //                   flattened overlay, for all 6 variants
+    //   behind: "ui"    only the roles listed in `text` are gated, on
+    //                   every surface in `surfaces` (and `text_on_bg` on
+    //                   the canvas only)
+    // A recipe's `border` must clear 3:1 against `bg` (WCAG 1.4.11).
+    roles: {
+      selection: {
+        behind: "code",
+        use: "Text selection — editor, terminal, shell command line, ::selection.",
+      },
+      inactive_selection: {
+        behind: "code",
+        use: "Selection in an unfocused editor or terminal.",
+      },
+      line_highlight: { behind: "code", use: "The line the cursor is on." },
+      find_match: { behind: "code", use: "The current search match." },
+      find_match_other: { behind: "code", use: "Every other search match." },
+      word_highlight_read: {
+        behind: "code",
+        use: "Other occurrences of the symbol under the cursor (read access).",
+      },
+      word_highlight_write: {
+        behind: "code",
+        use: "Occurrences of the symbol under the cursor that write to it.",
+      },
+      diff_inserted_line: {
+        behind: "code",
+        use: "Whole inserted line in a diff.",
+      },
+      diff_inserted_text: {
+        behind: "code",
+        use: "The changed characters within an inserted line.",
+      },
+      diff_inserted_gutter: {
+        behind: "code",
+        use: "Gutter / line-number column beside an inserted line.",
+      },
+      diff_removed_line: {
+        behind: "code",
+        use: "Whole removed line in a diff.",
+      },
+      diff_removed_text: {
+        behind: "code",
+        use: "The changed characters within a removed line.",
+      },
+      diff_removed_gutter: {
+        behind: "code",
+        use: "Gutter / line-number column beside a removed line.",
+      },
 
-    // Selected-item wash — the background of the one tab / row /
-    // sidebar entry that is currently chosen. Deliberately subtle: it
-    // reinforces a selection signal, it never carries one alone. A
-    // tint this light tops out at 1.21:1 against bg (midnight/red),
-    // far below the 3:1 WCAG 1.4.11 asks of a standalone non-text
-    // indicator, so the underline / accent bar beside it stays
-    // load-bearing. See issue #14.
-    //
-    // 18% is the ceiling that keeps `text.fg_muted` above 4.5:1 on
-    // Twilight (4.81:1 at 18%, 4.63:1 at 20%, 4.41:1 at 22%) while
-    // still reading as a distinct region (ΔE76 ≥ 10.8 vs plain bg on
-    // every flavor) and staying clearly apart from `state.hover`
-    // (ΔE76 ≥ 7.6).
-    selected: {
-      pct: 18,
-      base: "transparent",
-
-      // Because the tint is translucent it composites over whichever
-      // surface the row lands on, so the gate has to cover every one of
-      // them, not just the canvas. `surfaces` is that sanctioned list:
-      // tools/build-tokens.mjs requires `text.fg` to clear 4.5:1 on the
-      // resolved tint for all 24 combinations on each entry here.
+      // The selected-item wash — the background of the one tab / row /
+      // sidebar entry that is currently chosen (issue #14). Deliberately
+      // subtle: at 18% it tops out at 1.21:1 against bg (midnight/red),
+      // far below the 3:1 WCAG 1.4.11 asks of a standalone indicator, so
+      // the underline / accent bar beside it stays load-bearing.
+      //
+      // It is a UI overlay, not a code one: a selected row's label is
+      // `fg` by contract, so `fg` is what's gated — on every surface in
+      // `surfaces`, because the tint is translucent and composites over
+      // whatever the row lands on. On the canvas `fg_muted` must clear
+      // too, and that is what pins 18%: Twilight sits at 4.81:1 there
+      // and fails at 20% (4.63:1).
       //
       // `bg_inset` is deliberately absent. Twilight's #627084 sits at
       // 4.62:1 for `fg` before any tint at all, so no percentage clears
-      // AA there — this is a property of that surface, not of the wash.
-      // It is the same surface the README already exempts from the
-      // semantic-vs-surface gate. A port placing selected rows on
-      // `bg_inset` should carry the accent bar plus a `state.hover` /
-      // `state.active` overlay instead of this wash.
-      //
-      // `bg_scrim` is absent because it's a modal backdrop, not a
-      // surface rows sit on.
-      surfaces: ["bg", "bg_soft", "bg_sunk", "bg_overlay", "bg_terminal"],
+      // AA there. A port placing selected rows on `bg_inset` should
+      // carry the accent bar plus a `state.hover` / `state.active`
+      // overlay instead. `bg_scrim` is a modal backdrop.
+      selected: {
+        behind: "ui",
+        use: "The selected tab / list row / sidebar entry. Reinforces an underline or accent bar; never the sole cue.",
+        text: ["fg"],
+        text_on_bg: ["fg_muted"],
+        surfaces: ["bg", "bg_soft", "bg_sunk", "bg_overlay", "bg_terminal"],
+      },
+    },
+
+    recipes: {
+      // Midnight's budget is set by the comment grey (#999999): an
+      // overlay may not rise much above #262626 in luminance.
+      midnight: {
+        selection: { color: "accent.900", alpha: 0.5 },
+        inactive_selection: { color: "accent.900", alpha: 0.25 },
+        line_highlight: { color: "gray.800", alpha: 1 },
+        find_match: {
+          color: "yellow.900",
+          alpha: 0.5,
+          border: "semantic.warning",
+        },
+        find_match_other: { color: "yellow.900", alpha: 0.25 },
+        word_highlight_read: { color: "cyan.900", alpha: 0.25 },
+        word_highlight_write: { color: "cyan.900", alpha: 0.5 },
+        diff_inserted_line: { color: "green.900", alpha: 0.2 },
+        diff_inserted_text: { color: "green.900", alpha: 0.45 },
+        diff_inserted_gutter: { color: "green.900", alpha: 0.35 },
+        diff_removed_line: { color: "red.900", alpha: 0.2 },
+        diff_removed_text: { color: "red.900", alpha: 0.45 },
+        diff_removed_gutter: { color: "red.900", alpha: 0.35 },
+        selected: { color: "accent", alpha: 0.18 },
+      },
+      // Twilight's #404040 canvas sits above most 900 rungs, so its
+      // overlays darken outright — a deep tint, not a light wash.
+      twilight: {
+        selection: { color: "accent.900", alpha: 0.75 },
+        inactive_selection: { color: "accent.900", alpha: 0.4 },
+        line_highlight: { color: "gray.800", alpha: 0.6 },
+        find_match: {
+          color: "yellow.900",
+          alpha: 0.75,
+          border: "semantic.warning",
+        },
+        find_match_other: { color: "yellow.900", alpha: 0.4 },
+        word_highlight_read: { color: "cyan.900", alpha: 0.45 },
+        word_highlight_write: { color: "cyan.900", alpha: 0.85 },
+        diff_inserted_line: { color: "green.900", alpha: 0.4 },
+        diff_inserted_text: { color: "green.900", alpha: 0.8 },
+        diff_inserted_gutter: { color: "green.900", alpha: 0.6 },
+        diff_removed_line: { color: "red.900", alpha: 0.4 },
+        diff_removed_text: { color: "red.900", alpha: 0.8 },
+        diff_removed_gutter: { color: "red.900", alpha: 0.6 },
+        selected: { color: "accent", alpha: 0.18 },
+      },
+      // Dawn's syntax sits at 4.52:1 at worst (function, blue.700), so
+      // nothing may darken the canvas at all. Every overlay lightens:
+      // the 100 rung, which is above #d4d4d4 for every hue. 300 works
+      // for yellow (the find match); it doesn't for the accent hues.
+      dawn: {
+        selection: { color: "accent.100", alpha: 1 },
+        inactive_selection: { color: "accent.100", alpha: 0.5 },
+        line_highlight: { color: "gray.100", alpha: 0.45 },
+        find_match: {
+          color: "yellow.300",
+          alpha: 0.75,
+          border: "semantic.warning",
+        },
+        find_match_other: { color: "yellow.300", alpha: 0.35 },
+        word_highlight_read: { color: "cyan.100", alpha: 0.5 },
+        word_highlight_write: { color: "cyan.100", alpha: 1 },
+        diff_inserted_line: { color: "green.100", alpha: 0.5 },
+        diff_inserted_text: { color: "green.100", alpha: 1 },
+        diff_inserted_gutter: { color: "green.100", alpha: 0.8 },
+        diff_removed_line: { color: "red.100", alpha: 0.5 },
+        diff_removed_text: { color: "red.100", alpha: 1 },
+        diff_removed_gutter: { color: "red.100", alpha: 0.8 },
+        selected: { color: "accent", alpha: 0.18 },
+      },
+      // Noon's canvas is near white, so there is little room above it;
+      // the deeper syntax rungs in § 3c buy room below instead, and the
+      // 300 rung tints downward.
+      noon: {
+        selection: { color: "accent.300", alpha: 0.45 },
+        inactive_selection: { color: "accent.300", alpha: 0.22 },
+        line_highlight: { color: "gray.900", alpha: 0.05 },
+        find_match: {
+          color: "yellow.300",
+          alpha: 0.8,
+          border: "semantic.warning",
+        },
+        find_match_other: { color: "yellow.300", alpha: 0.35 },
+        word_highlight_read: { color: "cyan.300", alpha: 0.3 },
+        word_highlight_write: { color: "cyan.300", alpha: 0.6 },
+        diff_inserted_line: { color: "green.300", alpha: 0.2 },
+        diff_inserted_text: { color: "green.300", alpha: 0.45 },
+        diff_inserted_gutter: { color: "green.300", alpha: 0.35 },
+        diff_removed_line: { color: "red.300", alpha: 0.2 },
+        diff_removed_text: { color: "red.300", alpha: 0.45 },
+        diff_removed_gutter: { color: "red.300", alpha: 0.35 },
+        selected: { color: "accent", alpha: 0.18 },
+      },
     },
   },
 
@@ -537,7 +715,7 @@
     //
     // `bg_inset` is deliberately absent, the same exemption it already
     // carries from the semantic-vs-surface gate and from
-    // accent_mix.selected.surfaces. Clearing 3:1 on twilight's #627084
+    // overlay.roles.selected.surfaces. Clearing 3:1 on twilight's #627084
     // would need ≈#c9c9c9 — the text ramp, i.e. the wireframe outcome
     // this ruleset exists to avoid. A port drawing controls on docked
     // chrome should give them a `bg_soft` fill (which is on this list)
@@ -548,22 +726,101 @@
   },
 
   // ────────────────────────────────────────────────────────────────
+  //   3g.  PERCEPTUAL CHECKS  —  distinctness gate + APCA report
+  // ────────────────────────────────────────────────────────────────
+  // Contrast against the background says nothing about whether two
+  // foregrounds look alike. Auditing slot NAMES doesn't either: Dawn's
+  // `parameter` (orange.900) and `type` (yellow.900) were different
+  // slots on different hues and sat 4.6 apart in OKLab — the same brown.
+  // So the gate audits RESOLVED colours (issue #19).
+  //
+  // Distance is Euclidean in OKLab, × 100 (so ≈ 2 is a just-noticeable
+  // difference). tools/build-tokens.mjs checks, per flavor:
+  //
+  //   • every pair of syntax core slots plus `fg` ≥ `min`, except the
+  //     pairs in `syntax.alias` (exempt) and `syntax.related` (≥
+  //     `related_min`)
+  //   • every pair within the normal ANSI row and within the bright
+  //     row (neutrals included) ≥ `min`, except `ansi.exempt`
+  //   • each ANSI colour vs its bright version ≥ `related_min`
+  //
+  // An alias is a pair that shares a colour ON PURPOSE. Listing it is
+  // the point: an accidental collision anywhere else still fails.
+
+  distinct: {
+    min: 7,
+    related_min: 5,
+    syntax: {
+      alias: [
+        ["number", "constant"], // same rung on every flavor by design
+        ["function", "tag"], // same rung on every flavor by design
+        // Twilight, Dawn and Noon have one usable orange rung for both;
+        // `parameter` is italic everywhere (syntax_tokens.extended).
+        ["number", "parameter"],
+        ["constant", "parameter"],
+      ],
+      // Same hue family, different rung — must be distinguishable, not
+      // far apart.
+      related: [
+        ["string", "attr"], // both green
+        ["comment", "punct"], // both grey
+      ],
+    },
+    ansi: {
+      // Twilight's bright row is the 100 rung of every hue (issue #7):
+      // the only rung lighter than its 300 normals that still has a hue.
+      // At 100, red / magenta / blue / cyan / white converge on near-white
+      // and green meets yellow at 2.4. No palette rung fixes this without
+      // giving up the Twilight / Midnight split #7 exists for, so these
+      // pairs are a known, accepted weakness of that one row — listed
+      // pair by pair so any NEW collision still fails.
+      exempt: {
+        twilight: [
+          ["bright_red", "bright_blue"],
+          ["bright_red", "bright_magenta"],
+          ["bright_red", "bright_white"],
+          ["bright_green", "bright_yellow"],
+          ["bright_green", "bright_white"],
+          ["bright_yellow", "bright_white"],
+          ["bright_blue", "bright_magenta"],
+          ["bright_blue", "bright_cyan"],
+          ["bright_blue", "bright_white"],
+          ["bright_magenta", "bright_cyan"],
+          ["bright_magenta", "bright_white"],
+          ["bright_cyan", "bright_white"],
+        ],
+      },
+    },
+  },
+
+  // APCA (WCAG 3 draft) lightness contrast, printed by the build next
+  // to the WCAG ratio for every gated pair. INFORMATIONAL — not a gate:
+  // APCA is still a draft, and WCAG 2.x is what the 4.5:1 rule above
+  // enforces. Targets are absolute Lc values.
+  apca_targets: {
+    body: 75, // fg on bg
+    syntax: 60, // syntax slots on bg
+    comment: 45, // comment / fg_subtle on bg
+  },
+
+  // ────────────────────────────────────────────────────────────────
   //   4.  FLAVORS  —  the 4 base themes
   // ────────────────────────────────────────────────────────────────
   // Each flavor defines:
   //   surface  — background layers (bg / inset / lifted / sunk / overlay / scrim)
   //   text     — foreground layers
   //   border   — border weights
-  //   state    — interaction states (hover/active/disabled) as alpha overlays
+  //   state    — interaction states (hover/active) as alpha overlays
   //   ansi     — full 16-color terminal ANSI palette
   //
   // `semantic` and `syntax` are NOT authored here — they are derived
   // from semantic_shade / syntax_shade above (§ 3c, 3d) and appear in
   // the emitted tokens.json between `state` and `ansi`.
   //
-  // The selected-item wash is likewise absent from `state`: it depends
-  // on the variant, not the flavor, so it lives in accent_mix (§ 3e)
-  // and is emitted once as --vl-state-selected.
+  // Overlays (selection, find match, the selected-item wash, diff
+  // tints …) are absent from `state` too: they depend on the variant as
+  // well as the flavor, so they live in `overlay` (§ 3e). The resolved
+  // values appear in tokens.json as `flavors.*.overlay.<variant>`.
 
   flavors: {
     // ─── MIDNIGHT (deep dark, OLED-friendly) ───
@@ -582,7 +839,7 @@
       text: {
         fg: "$palette.gray.100",
         fg_muted: "$palette.gray.300",
-        fg_subtle: "$palette.gray.500",
+        fg_subtle: "#999999", // was gray.500 (#737373, 3.78:1 on bg). 6.29:1, APCA Lc 46 — the comment colour, and the luminance ceiling every dark overlay in § 3e is solved against. Outside the strict palette: gray.500 is too dark, gray.300 is fg_muted. Issue #19.
         fg_disabled: "#525252",
       },
       border: {
@@ -594,15 +851,14 @@
       state: {
         hover: "#ffffff14", // 8% white overlay
         active: "#ffffff1f", // 12% white overlay
-        selection: "#2a2f3a",
       },
       ansi: {
         black: "#0a0a0a",
         red: "$palette.red.500",
         green: "$palette.green.500",
         yellow: "$palette.yellow.500",
-        blue: "$palette.blue.300",
-        magenta: "$palette.purple.300",
+        blue: "$palette.blue.500", // was blue.300 — identical to bright_blue. 5.38:1 on bg_terminal. Issue #19.
+        magenta: "$palette.purple.500", // was purple.300 — identical to bright_magenta. 5.00:1 on bg_terminal. Issue #19.
         cyan: "$palette.cyan.500",
         white: "$palette.gray.300",
         bright_black: "#878787", // was $palette.gray.700 (#404040) — that shade only cleared 1.9:1 against bg_sunk/bg_terminal; #878787 clears 5.5:1. Dedicated literal (not a palette ref) so it doesn't move borders/text that also reference gray.700. See issue #5.
@@ -632,7 +888,7 @@
       text: {
         fg: "$palette.gray.100",
         fg_muted: "$palette.gray.300",
-        fg_subtle: "#a3a3a3", // neutral-400; readable on #404040
+        fg_subtle: "#b8b8b8", // was #a3a3a3 (4.11:1 on bg). 5.23:1, APCA Lc 54, still ΔE 8.7 from fg_muted. Issue #19.
         fg_disabled: "#737373",
       },
       border: {
@@ -644,7 +900,6 @@
       state: {
         hover: "#ffffff14",
         active: "#ffffff1f",
-        selection: "#5b5b5b",
       },
       ansi: {
         black: "$palette.gray.900",
@@ -655,7 +910,7 @@
         magenta: "$palette.purple.300",
         cyan: "$palette.cyan.300",
         white: "$palette.gray.300",
-        bright_black: "#a3a3a3", // was #878787 — that literal cleared 5.0:1 against the old bg_terminal (#171717) but only 3.5:1 against #333333. #a3a3a3 clears 5.0:1 and is already this flavor's fg_subtle / comment value. See issues #5, #7.
+        bright_black: "#a3a3a3", // was #878787 — that literal cleared 5.0:1 against the old bg_terminal (#171717) but only 3.5:1 against #333333. #a3a3a3 clears 5.0:1 (it was this flavor's fg_subtle until issue #19 lifted that to #b8b8b8). See issues #5, #7.
         bright_red: "$palette.red.100",
         bright_green: "$palette.green.100",
         bright_yellow: "$palette.yellow.100",
@@ -694,7 +949,6 @@
       state: {
         hover: "#0000000d", // 5% black overlay
         active: "#00000014", // 8% black overlay
-        selection: "#bdbdbd",
       },
       ansi: {
         black: "$palette.gray.900",
@@ -744,7 +998,6 @@
       state: {
         hover: "#0000000d",
         active: "#00000014",
-        selection: "#e5e5e5",
       },
       ansi: {
         black: "$palette.gray.900",
@@ -1228,9 +1481,9 @@
   // Use the SAME hue for each severity role everywhere it appears:
   // squiggles, gutter, overview ruler, status bar, minimap, panel.
   //
-  // Alpha compositing for diff / overlay backgrounds:
-  //   use alphaOver(color, flavor_bg, alpha) from tools/build-tokens.mjs
-  //   to bake a concrete hex value at port build time.
+  // Background tints (selection, find match, diff …) are not here —
+  // they live in `overlay` (§ 3e) and come out of the build already
+  // resolved, as `flavors.<flavor>.overlay.<variant>.<name>`.
 
   workbench_color_roles: {
     // ── Signals (error / warning / info / success) ────────────────────
@@ -1255,18 +1508,10 @@
     },
 
     // ── Diff editor ───────────────────────────────────────────────────
-    // Alpha values are composited over the flavor's surface.bg.
-    // Bake: alphaOver(tokens.flavors[f].semantic[role], tokens.flavors[f].surface.bg, alpha)
-    diff: {
-      inserted_color: "semantic.success",
-      removed_color: "semantic.danger",
-      inserted_line_alpha: 0.1,
-      inserted_gutter_alpha: 0.2,
-      inserted_text_alpha: 0.25,
-      removed_line_alpha: 0.1,
-      removed_gutter_alpha: 0.2,
-      removed_text_alpha: 0.35,
-    },
+    // Diff backgrounds moved to `overlay` (§ 3e) in issue #19:
+    // overlay.recipes.<flavor>.diff_{inserted,removed}_{line,text,gutter}.
+    // Each is gated for every syntax slot at 4.5:1, which the old bare
+    // alphas here (0.10 / 0.20 / 0.25 / 0.35 over bg) were not.
 
     // ── Bracket pair colorization ─────────────────────────────────────
     // Cycle these design-system slots in level order.
@@ -1364,6 +1609,349 @@
       source: "Lucide v0.x — vendored subset",
       path: "assets/glyphs/",
       note: 'Each SVG uses stroke="currentColor". Container sets `color` to retint. See preview/16-iconography.html for the live spec.',
+    },
+  },
+
+  // ────────────────────────────────────────────────────────────────
+  //   15.  SHELL ROLES  —  command-line highlighting (fish, PowerShell, …)
+  // ────────────────────────────────────────────────────────────────
+  // One entry per shell concept, so every shell port colours the same
+  // command line the same way. Before issue #19 the fish and PowerShell
+  // ports each mapped syntax slots to shell concepts in their own
+  // template, and disagreed: an option flag was `attr` in fish and
+  // `parameter` in PowerShell, a plain argument `parameter` in fish and
+  // `fg` in PowerShell.
+  //
+  // Each role:
+  //   color       foreground colour target (vocabulary in § 3e)
+  //   background  background colour target — usually "overlay.<name>"
+  //   style       any of "bold" | "italic" | "underline" | "reverse"
+  //   fish        fish variables this role feeds
+  //   psreadline  PSReadLine `-Colors` keys this role feeds
+  //
+  // A port iterates `roles` and writes every listed variable / key; a
+  // shell that can't express part of a role (PSReadLine has no style
+  // flags) drops that part. Shell text renders on `surface.bg_terminal`,
+  // so "overlay.<name>" here resolves flattened over bg_terminal, and
+  // tools/build-tokens.mjs gates every role's colour at 4.5:1 on its
+  // background (or on bg_terminal when it has none), for all 24
+  // (flavor, variant) combinations.
+  //
+  // Decisions where the ports disagreed:
+  //   option   → attr.     `parameter` now shares `number`'s rung on
+  //                         three flavors (§ 3c), so `-n 5` would read
+  //                         as one colour.
+  //   argument → fg.       Plain arguments are most of a command line;
+  //                         tinting them all is noise.
+  //   variable → constant. What PowerShell already shipped; fish has no
+  //                         variable colour to set.
+  //   selection            fg on overlay.selection in both — PSReadLine
+  //                         replaces the span's colours outright, so it
+  //                         needs the foreground; fish takes it too.
+
+  shell_roles: {
+    surface: "bg_terminal",
+    roles: {
+      default: {
+        color: "fg",
+        fish: ["fish_color_normal"],
+        psreadline: ["Default"],
+      },
+      command: {
+        color: "accent",
+        fish: ["fish_color_command"],
+        psreadline: ["Command"],
+      },
+      keyword: {
+        color: "keyword",
+        fish: ["fish_color_keyword"],
+        psreadline: ["Keyword"],
+      },
+      option: {
+        color: "attr",
+        fish: ["fish_color_option"],
+        psreadline: ["Parameter"],
+      },
+      argument: { color: "fg", fish: ["fish_color_param"], psreadline: [] },
+      string: {
+        color: "string",
+        fish: ["fish_color_quote"],
+        psreadline: ["String"],
+      },
+      number: { color: "number", fish: [], psreadline: ["Number"] },
+      variable: { color: "constant", fish: [], psreadline: ["Variable"] },
+      type: { color: "type", fish: [], psreadline: ["Type"] },
+      member: { color: "function", fish: [], psreadline: ["Member"] },
+      operator: {
+        color: "keyword",
+        fish: ["fish_color_operator"],
+        psreadline: ["Operator"],
+      },
+      redirection: {
+        color: "punct",
+        fish: ["fish_color_redirection"],
+        psreadline: [],
+      },
+      end: { color: "punct", fish: ["fish_color_end"], psreadline: [] },
+      escape: {
+        color: "constant",
+        fish: ["fish_color_escape"],
+        psreadline: [],
+      },
+      comment: {
+        color: "comment",
+        fish: ["fish_color_comment"],
+        psreadline: ["Comment"],
+      },
+      autosuggestion: {
+        color: "fg_subtle",
+        fish: ["fish_color_autosuggestion"],
+        psreadline: ["InlinePrediction"],
+      },
+      continuation: {
+        color: "fg_subtle",
+        fish: [],
+        psreadline: ["ContinuationPrompt"],
+      },
+      error: {
+        color: "semantic.danger",
+        fish: ["fish_color_error"],
+        psreadline: ["Error"],
+      },
+      cancel: {
+        color: "semantic.danger",
+        style: ["reverse"],
+        fish: ["fish_color_cancel"],
+        psreadline: [],
+      },
+      valid_path: {
+        style: ["underline"],
+        fish: ["fish_color_valid_path"],
+        psreadline: [],
+      },
+      history_current: {
+        style: ["bold"],
+        fish: ["fish_color_history_current"],
+        psreadline: [],
+      },
+      selection: {
+        color: "fg",
+        background: "overlay.selection",
+        fish: ["fish_color_selection"],
+        psreadline: ["Selection"],
+      },
+      // History-search hits. PSReadLine's `Emphasis` is the same idea.
+      search_match: {
+        color: "fg",
+        background: "overlay.find_match",
+        fish: ["fish_color_search_match"],
+        psreadline: ["Emphasis"],
+      },
+      // The bracket / quote paired with the one under the cursor: an
+      // occurrence related to the cursor, hence the word-highlight tint.
+      // Was --background=semantic.info in fish, a solid fill nothing was
+      // gated against.
+      bracket_match: {
+        color: "fg",
+        background: "overlay.word_highlight_write",
+        fish: ["fish_color_match"],
+        psreadline: [],
+      },
+
+      // Completion pager / prediction list
+      pager_prefix: {
+        color: "accent",
+        fish: ["fish_pager_color_prefix"],
+        psreadline: [],
+      },
+      pager_completion: {
+        color: "fg",
+        fish: ["fish_pager_color_completion"],
+        psreadline: ["ListPrediction"],
+      },
+      pager_description: {
+        color: "fg_subtle",
+        fish: ["fish_pager_color_description"],
+        psreadline: [],
+      },
+      pager_progress: {
+        color: "fg_subtle",
+        fish: ["fish_pager_color_progress"],
+        psreadline: [],
+      },
+      // The highlighted row: a selected list item, so the selected-item
+      // wash rather than the text-selection tint (issue #14). Its text
+      // follows the selected-row contract — labels at `fg` — because the
+      // wash costs contrast: the accent prefix fell to 3.53:1 on it
+      // (dawn/blue) and an fg_subtle description to 3.94:1 (dawn/red).
+      // The prefix keeps its cue through bold + underline instead of hue.
+      pager_selected: {
+        background: "overlay.selected",
+        fish: ["fish_pager_color_selected_background"],
+        psreadline: [],
+      },
+      pager_selected_prefix: {
+        color: "fg",
+        style: ["bold", "underline"],
+        background: "overlay.selected",
+        fish: ["fish_pager_color_selected_prefix"],
+        psreadline: [],
+      },
+      pager_selected_completion: {
+        color: "fg",
+        background: "overlay.selected",
+        fish: ["fish_pager_color_selected_completion"],
+        psreadline: ["ListPredictionSelected"],
+      },
+      pager_selected_description: {
+        color: "fg_muted",
+        background: "overlay.selected",
+        fish: ["fish_pager_color_selected_description"],
+        psreadline: [],
+      },
+    },
+  },
+
+  // ────────────────────────────────────────────────────────────────
+  //   16.  PROMPT ROLES  —  Starship, Oh My Posh, Powerlevel10k, fish …
+  // ────────────────────────────────────────────────────────────────
+  // What colour each prompt segment takes. Before issue #19 the
+  // Starship port decided this on its own — and differently in its own
+  // two variants (git_branch purple in one, fg_muted in the other; the
+  // success character `success` in one, `accent` in the other). A
+  // second prompt port would have had to copy or re-invent it.
+  //
+  // Each role takes `color` / `style` as in § 15, plus:
+  //   starship  "<module>.<field>" settings it feeds
+  //   fish      fish variables it feeds (fish's default prompt reads
+  //             fish_color_cwd, fish_color_user, …)
+  //
+  // The success character is `semantic.success`, not the accent: on the
+  // red variants an accent-coloured ❯ would share a hue with the error
+  // ❯. Git statuses follow workbench_color_roles.git (§ 13), so a file
+  // reads the same in the prompt as in the editor's source-control view.
+  //
+  // `language_hues` gives each language / tool module a fixed hue, all
+  // six variant hues used once, identical across all 24 themes so the
+  // prompt's shape doesn't change with the variant. Resolve each as
+  // "hue.<hue>" — the hue at its own accent rung on that flavor, which
+  // the accent-shade table already guarantees at 4.5:1 on bg.
+
+  prompt_roles: {
+    surface: "bg_terminal",
+    roles: {
+      directory: {
+        color: "accent",
+        style: ["bold"],
+        starship: ["directory.style"],
+        fish: ["fish_color_cwd"],
+      },
+      directory_root: {
+        color: "semantic.danger",
+        style: ["bold"],
+        starship: [],
+        fish: ["fish_color_cwd_root"],
+      },
+      user: {
+        color: "function",
+        starship: ["username.style_user"],
+        fish: ["fish_color_user"],
+      },
+      host: {
+        color: "fg_muted",
+        starship: ["hostname.style"],
+        fish: ["fish_color_host"],
+      },
+      host_remote: {
+        color: "semantic.warning",
+        starship: [],
+        fish: ["fish_color_host_remote"],
+      },
+      git_branch: {
+        color: "fg_muted",
+        starship: ["git_branch.style"],
+        fish: [],
+      },
+      git_status: {
+        color: "fg_muted",
+        starship: ["git_status.style"],
+        fish: [],
+      },
+      git_conflicted: {
+        color: "semantic.warning",
+        starship: ["git_status.conflicted"],
+        fish: [],
+      },
+      git_ahead: {
+        color: "fg_muted",
+        starship: ["git_status.ahead"],
+        fish: [],
+      },
+      git_behind: {
+        color: "fg_muted",
+        starship: ["git_status.behind"],
+        fish: [],
+      },
+      git_diverged: {
+        color: "fg_muted",
+        starship: ["git_status.diverged"],
+        fish: [],
+      },
+      git_untracked: {
+        color: "semantic.success",
+        starship: ["git_status.untracked"],
+        fish: [],
+      },
+      git_stashed: {
+        color: "fg_muted",
+        starship: ["git_status.stashed"],
+        fish: [],
+      },
+      git_modified: {
+        color: "semantic.info",
+        starship: ["git_status.modified"],
+        fish: [],
+      },
+      git_staged: {
+        color: "semantic.warning",
+        starship: ["git_status.staged"],
+        fish: [],
+      },
+      git_renamed: {
+        color: "semantic.info",
+        starship: ["git_status.renamed"],
+        fish: [],
+      },
+      git_deleted: {
+        color: "semantic.danger",
+        starship: ["git_status.deleted"],
+        fish: [],
+      },
+      character_success: {
+        color: "semantic.success",
+        starship: ["character.success_symbol"],
+        fish: [],
+      },
+      character_error: {
+        color: "semantic.danger",
+        starship: ["character.error_symbol"],
+        fish: ["fish_color_status"],
+      },
+      duration: {
+        color: "semantic.warning",
+        starship: ["cmd_duration.style"],
+        fish: [],
+      },
+      time: { color: "fg_muted", starship: ["time.style"], fish: [] },
+      fill: { color: "fg_muted", starship: ["fill.style"], fish: [] },
+    },
+    language_hues: {
+      nodejs: "green",
+      python: "yellow",
+      rust: "orange",
+      golang: "blue",
+      java: "red",
+      docker_context: "purple",
     },
   },
 }
