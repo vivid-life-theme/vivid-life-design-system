@@ -10,6 +10,52 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ## [Unreleased]
 
+Closes [#19](https://github.com/vivid-life-theme/vivid-life-design-system/issues/19): four things every port needed and answered on its own — shell roles, prompt roles, overlay recipes, stricter gates. The answers had drifted: one command line coloured differently in the fish and PowerShell ports of the same theme, Windows Terminal flattened selection at 30% where this repo said 25%, and the Starship port's two variants disagreed with each other.
+
+The stricter gates moved values. Holding every syntax slot at 4.5:1 on `bg` — and on every overlay behind code — turned up seven slots below AA on the canvas and selections that dropped Midnight comments to 2.13:1. Every port regenerates for this release.
+
+### Changed
+
+- ⚠️ **Syntax colours that were below 4.5:1 on `bg`, or indistinct** (`syntax_shade`, `tokens.json5` § 3c):
+  - Midnight `regex` `#ef4444` → `#fca5a5` (red.500 → 300) — no headroom left for any overlay at 4.76:1
+  - Twilight `parameter` `#f97316` → `#fdba74` (orange.500 → 300, 3.70:1 → 6.15:1); it now shares `number`'s rung, its italic carries the split
+  - Dawn `number` / `constant` `#c2410c` → `#9a3412` (3.49:1), `parameter` `#7c2d12` → `#9a3412` (was ΔE 4.6 from `type` — the same brown), `attr` `#4d7c0f` → `#3f6212` (3.37:1), `regex` `#b91c1c` → `#7f1d1d` (4.36:1)
+  - Noon `number` / `constant` `#c2410c` → `#7c2d12`, `type` `#713f12` → `#854d0e`, `attr` `#4d7c0f` → `#3f6212` — Noon passed at 4.58:1, but with nothing to spare for an overlay; it now sits at 5.93:1
+- ⚠️ **`text.fg_subtle` — the comment colour** — Midnight `#737373` → `#999999` (3.78:1 → 6.29:1, APCA Lc 46), Twilight `#a3a3a3` → `#b8b8b8` (4.11:1 → 5.23:1, Lc 54). Every UI use of `--vl-fg-subtle` (line numbers, descriptions, autosuggestions) gets lighter with it.
+- ⚠️ **Midnight ANSI `blue` / `magenta`** `#93c5fd` / `#d8b4fe` → `#3b82f6` / `#a855f7` (300 → 500). They were identical to their bright versions; against `bg_terminal` (`#0a0a0a`) the 500 rung clears at 5.38 / 5.00:1, contrary to the old comment.
+- ⚠️ **Selection and every other overlay** change colour — see `overlay` below. Dark flavors now tint with a deep 900 hue instead of lightening toward the text; light flavors tint with a pale 100 / 300 hue.
+- **Syntax on `bg` is gated at 4.5:1 as an error**, not 3:1 as a warning. Code is body text.
+- **Gates run before anything is written.** A failing build leaves `tokens.json` and `dist/tokens.js` untouched, so a port on a local-path dependency never picks up rejected values. Shape validation runs first of all.
+
+### Added
+
+- **`overlay`** (§ 3e) — one `{ color, alpha, border? }` recipe per (flavor, overlay): `selection`, `inactive_selection`, `line_highlight`, `find_match` (+ border), `find_match_other`, `word_highlight_read` / `_write`, `diff_{inserted,removed}_{line,text,gutter}`, and `selected` (the issue #14 wash, unchanged at 18%). Resolved into `tokens.json` as `flavors.<flavor>.overlay.<variant>.<name>` = `{ color, alpha, flat, border? }`, and into CSS as `--vl-overlay-<name>` (`#rrggbbaa`) on each `.vl-<flavor>.variant-<variant>` pair. `--vl-selection` and `--vl-state-selected` stay, as aliases.
+- **Syntax-on-overlay gate** — every syntax slot, `fg`, `fg_subtle` and the four semantic colours at 4.5:1 on every code overlay, for all 24 themes; overlay borders at 3:1 on `bg`.
+- **`shell_roles`** (§ 15) — 32 command-line concepts, each with a colour target and the fish variables / PSReadLine keys it feeds. Where the ports disagreed: option flag → `attr`, plain argument → `fg`, variable → `constant`, selection → `fg` on `overlay.selection`. Gated at 4.5:1 on what each role is drawn on, which moved the selected completion row to the selected-row contract: prefix `fg` + bold/underline, description `fg_muted` (the accent prefix had fallen to 3.53:1 on the wash).
+- **`prompt_roles`** (§ 16) — directory, user / host, git branch and every git status, success / error character, duration, time, and `language_hues`, with the Starship settings and fish variables each feeds. The success character is `semantic.success` (an accent ❯ would share a hue with the error ❯ on the red variants); `git_branch` is `fg_muted`.
+- **Distinctness gate** (`distinct`, § 3g) — resolved colours compared in OKLab (× 100): syntax slots + `fg` pairwise ≥ 7, same-hue `related` pairs ≥ 5, deliberate `alias` pairs exempt; within each ANSI row ≥ 7; each ANSI colour vs its bright version ≥ 5. Twilight's bright ANSI row (all 100 rung, converging on near-white) is listed pair by pair in `distinct.ansi.exempt` — a known weakness of the issue #7 design, not fixable with any palette rung.
+- **APCA report** — `npm run report` prints every gated pair with WCAG ratio and APCA Lc, flagging on-canvas text below `apca_targets` (body 75, syntax 60, comment 45). Informational; the build prints a one-line summary.
+- **Shape validation** — `validateShapes(tokens)`: allowed keys, known style names, colour targets that resolve on every theme, overlay recipes for every flavor, no fish variable or PSReadLine key fed twice. A typo such as `colour:` now fails the build.
+- **Library exports** in `tools/build-tokens.mjs`: `resolveColor()`, `resolveOverlay()`, `expandOverlays()`, `resolveTokens()`, `validateShapes()`, `distinctnessIssues()`, `oklab()`, `deltaE()`, `apcaContrast()`. 23 new self-test cases (37 in total).
+
+### Removed
+
+- ⚠️ **`accent_mix`** — folded into `overlay` (`selection` / `selected`).
+- ⚠️ **`flavors.*.state.selection`** and `--vl-state-selection` — a third selection value that matched neither `accent_mix` nor any port. Use `overlay.selection`.
+- ⚠️ **`workbench_color_roles.diff`** — the bare alphas are now `overlay.diff_*` recipes, gated like the rest.
+
+### Deprecated
+
+- **`selection()`** — still exported as plain colour math, but it is no longer the foundation's selection. Use `resolveOverlay(tokens, flavor, variant, 'selection')`.
+
+### Port migration
+
+- **fish** — iterate `shell_roles` (and `prompt_roles` for `fish_color_cwd`, `_user`, `_host`, `_status` …). Visible changes: `fish_color_param` → `fg`, `fish_color_selection` / `_search_match` gain a foreground and the new overlay backgrounds, `fish_color_match` moves off its ungated `semantic.info` fill, the selected pager row's prefix and description change. `tokens.accent_mix` no longer exists.
+- **PowerShell** — iterate `shell_roles`. `Parameter` → `attr`, `Emphasis` → `fg` on `overlay.find_match`, `ListPrediction` → `fg`, `Selection` / `ListPredictionSelected` backgrounds from the overlay recipes. `tokens.accent_mix` no longer exists.
+- **Starship** — read `prompt_roles` and `prompt_roles.language_hues` instead of `LANGUAGE_MODULE_HUE` and the per-variant choices in the template.
+- **VS Code** — the editor's selection, inactive selection, line highlight, find match (+ border), find match highlight, word highlight (strong), diff and terminal-selection colours come from `overlay`; the port's own `ALPHA` steps for those go.
+- **Windows Terminal** — `selectionBackground` = `resolveOverlay(…, 'selection', { surface: 'bg_terminal' }).flat`, replacing the port's 30% `blendFlat`.
+
 ---
 
 ## [0.10.0] - 2026-09-13
