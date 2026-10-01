@@ -424,6 +424,7 @@
   --vl-overlay-find-match           : #713f1280;
   --vl-overlay-find-match-border    : #fde047;
   --vl-overlay-find-match-other     : #713f1240;
+  --vl-overlay-find-match-other-border: #eab308;
   --vl-overlay-word-highlight-read  : #164e6340;
   --vl-overlay-word-highlight-write : #164e6380;
   --vl-overlay-diff-inserted-line   : #36531433;
@@ -442,6 +443,7 @@
   --vl-overlay-find-match           : #713f1280;
   --vl-overlay-find-match-border    : #fde047;
   --vl-overlay-find-match-other     : #713f1240;
+  --vl-overlay-find-match-other-border: #eab308;
   --vl-overlay-word-highlight-read  : #164e6340;
   --vl-overlay-word-highlight-write : #164e6380;
   --vl-overlay-diff-inserted-line   : #36531433;
@@ -460,6 +462,7 @@
   --vl-overlay-find-match           : #713f1280;
   --vl-overlay-find-match-border    : #fde047;
   --vl-overlay-find-match-other     : #713f1240;
+  --vl-overlay-find-match-other-border: #eab308;
   --vl-overlay-word-highlight-read  : #164e6340;
   --vl-overlay-word-highlight-write : #164e6380;
   --vl-overlay-diff-inserted-line   : #36531433;
@@ -478,6 +481,7 @@
   --vl-overlay-find-match           : #713f1280;
   --vl-overlay-find-match-border    : #fde047;
   --vl-overlay-find-match-other     : #713f1240;
+  --vl-overlay-find-match-other-border: #eab308;
   --vl-overlay-word-highlight-read  : #164e6340;
   --vl-overlay-word-highlight-write : #164e6380;
   --vl-overlay-diff-inserted-line   : #36531433;
@@ -496,6 +500,7 @@
   --vl-overlay-find-match           : #713f1280;
   --vl-overlay-find-match-border    : #fde047;
   --vl-overlay-find-match-other     : #713f1240;
+  --vl-overlay-find-match-other-border: #eab308;
   --vl-overlay-word-highlight-read  : #164e6340;
   --vl-overlay-word-highlight-write : #164e6380;
   --vl-overlay-diff-inserted-line   : #36531433;
@@ -514,6 +519,7 @@
   --vl-overlay-find-match           : #713f1280;
   --vl-overlay-find-match-border    : #fde047;
   --vl-overlay-find-match-other     : #713f1240;
+  --vl-overlay-find-match-other-border: #eab308;
   --vl-overlay-word-highlight-read  : #164e6340;
   --vl-overlay-word-highlight-write : #164e6380;
   --vl-overlay-diff-inserted-line   : #36531433;
@@ -534,6 +540,7 @@
   --vl-overlay-find-match           : #713f12bf;
   --vl-overlay-find-match-border    : #fef9c3;
   --vl-overlay-find-match-other     : #713f1266;
+  --vl-overlay-find-match-other-border: #eab308;
   --vl-overlay-word-highlight-read  : #164e6373;
   --vl-overlay-word-highlight-write : #164e63d9;
   --vl-overlay-diff-inserted-line   : #36531466;
@@ -552,6 +559,7 @@
   --vl-overlay-find-match           : #713f12bf;
   --vl-overlay-find-match-border    : #fef9c3;
   --vl-overlay-find-match-other     : #713f1266;
+  --vl-overlay-find-match-other-border: #eab308;
   --vl-overlay-word-highlight-read  : #164e6373;
   --vl-overlay-word-highlight-write : #164e63d9;
   --vl-overlay-diff-inserted-line   : #36531466;
@@ -570,6 +578,7 @@
   --vl-overlay-find-match           : #713f12bf;
   --vl-overlay-find-match-border    : #fef9c3;
   --vl-overlay-find-match-other     : #713f1266;
+  --vl-overlay-find-match-other-border: #eab308;
   --vl-overlay-word-highlight-read  : #164e6373;
   --vl-overlay-word-highlight-write : #164e63d9;
   --vl-overlay-diff-inserted-line   : #36531466;
@@ -588,6 +597,7 @@
   --vl-overlay-find-match           : #713f12bf;
   --vl-overlay-find-match-border    : #fef9c3;
   --vl-overlay-find-match-other     : #713f1266;
+  --vl-overlay-find-match-other-border: #eab308;
   --vl-overlay-word-highlight-read  : #164e6373;
   --vl-overlay-word-highlight-write : #164e63d9;
   --vl-overlay-diff-inserted-line   : #36531466;
@@ -606,6 +616,7 @@
   --vl-overlay-find-match           : #713f12bf;
   --vl-overlay-find-match-border    : #fef9c3;
   --vl-overlay-find-match-other     : #713f1266;
+  --vl-overlay-find-match-other-border: #eab308;
   --vl-overlay-word-highlight-read  : #164e6373;
   --vl-overlay-word-highlight-write : #164e63d9;
   --vl-overlay-diff-inserted-line   : #36531466;
@@ -624,6 +635,7 @@
   --vl-overlay-find-match           : #713f12bf;
   --vl-overlay-find-match-border    : #fef9c3;
   --vl-overlay-find-match-other     : #713f1266;
+  --vl-overlay-find-match-other-border: #eab308;
   --vl-overlay-word-highlight-read  : #164e6373;
   --vl-overlay-word-highlight-write : #164e63d9;
   --vl-overlay-diff-inserted-line   : #36531466;
@@ -644,6 +656,7 @@
   --vl-overlay-find-match           : #fde047bf;
   --vl-overlay-find-match-border    : #713f12;
   --vl-overlay-find-match-other     : #fde04759;
+  --vl-overlay-find-match-other-border: #a16207;
   --vl-overlay-word-highlight-read  : #cffafe80;
   --vl-overlay-word-highlight-write : #cffafe;
   --vl-overlay-diff-inserted-line   : #ecfccb80;
@@ -662,6 +675,7 @@
   --vl-overlay-find-match           : #fde047bf;
   --vl-overlay-find-match-border    : #713f12;
   --vl-overlay-find-match-other     : #fde04759;
+  --vl-overlay-find-match-other-border: #a16207;
   --vl-overlay-word-highlight-read  : #cffafe80;
   --vl-overlay-word-highlight-write : #cffafe;
   --vl-overlay-diff-inserted-line   : #ecfccb80;
@@ -680,6 +694,7 @@
   --vl-overlay-find-match           : #fde047bf;
   --vl-overlay-find-match-border    : #713f12;
   --vl-overlay-find-match-other     : #fde04759;
+  --vl-overlay-find-match-other-border: #a16207;
   --vl-overlay-word-highlight-read  : #cffafe80;
   --vl-overlay-word-highlight-write : #cffafe;
   --vl-overlay-diff-inserted-line   : #ecfccb80;
@@ -698,6 +713,7 @@
   --vl-overlay-find-match           : #fde047bf;
   --vl-overlay-find-match-border    : #713f12;
   --vl-overlay-find-match-other     : #fde04759;
+  --vl-overlay-find-match-other-border: #a16207;
   --vl-overlay-word-highlight-read  : #cffafe80;
   --vl-overlay-word-highlight-write : #cffafe;
   --vl-overlay-diff-inserted-line   : #ecfccb80;
@@ -716,6 +732,7 @@
   --vl-overlay-find-match           : #fde047bf;
   --vl-overlay-find-match-border    : #713f12;
   --vl-overlay-find-match-other     : #fde04759;
+  --vl-overlay-find-match-other-border: #a16207;
   --vl-overlay-word-highlight-read  : #cffafe80;
   --vl-overlay-word-highlight-write : #cffafe;
   --vl-overlay-diff-inserted-line   : #ecfccb80;
@@ -734,6 +751,7 @@
   --vl-overlay-find-match           : #fde047bf;
   --vl-overlay-find-match-border    : #713f12;
   --vl-overlay-find-match-other     : #fde04759;
+  --vl-overlay-find-match-other-border: #a16207;
   --vl-overlay-word-highlight-read  : #cffafe80;
   --vl-overlay-word-highlight-write : #cffafe;
   --vl-overlay-diff-inserted-line   : #ecfccb80;
@@ -754,6 +772,7 @@
   --vl-overlay-find-match           : #fde047cc;
   --vl-overlay-find-match-border    : #713f12;
   --vl-overlay-find-match-other     : #fde04759;
+  --vl-overlay-find-match-other-border: #a16207;
   --vl-overlay-word-highlight-read  : #67e8f94d;
   --vl-overlay-word-highlight-write : #67e8f999;
   --vl-overlay-diff-inserted-line   : #bef26433;
@@ -772,6 +791,7 @@
   --vl-overlay-find-match           : #fde047cc;
   --vl-overlay-find-match-border    : #713f12;
   --vl-overlay-find-match-other     : #fde04759;
+  --vl-overlay-find-match-other-border: #a16207;
   --vl-overlay-word-highlight-read  : #67e8f94d;
   --vl-overlay-word-highlight-write : #67e8f999;
   --vl-overlay-diff-inserted-line   : #bef26433;
@@ -790,6 +810,7 @@
   --vl-overlay-find-match           : #fde047cc;
   --vl-overlay-find-match-border    : #713f12;
   --vl-overlay-find-match-other     : #fde04759;
+  --vl-overlay-find-match-other-border: #a16207;
   --vl-overlay-word-highlight-read  : #67e8f94d;
   --vl-overlay-word-highlight-write : #67e8f999;
   --vl-overlay-diff-inserted-line   : #bef26433;
@@ -808,6 +829,7 @@
   --vl-overlay-find-match           : #fde047cc;
   --vl-overlay-find-match-border    : #713f12;
   --vl-overlay-find-match-other     : #fde04759;
+  --vl-overlay-find-match-other-border: #a16207;
   --vl-overlay-word-highlight-read  : #67e8f94d;
   --vl-overlay-word-highlight-write : #67e8f999;
   --vl-overlay-diff-inserted-line   : #bef26433;
@@ -826,6 +848,7 @@
   --vl-overlay-find-match           : #fde047cc;
   --vl-overlay-find-match-border    : #713f12;
   --vl-overlay-find-match-other     : #fde04759;
+  --vl-overlay-find-match-other-border: #a16207;
   --vl-overlay-word-highlight-read  : #67e8f94d;
   --vl-overlay-word-highlight-write : #67e8f999;
   --vl-overlay-diff-inserted-line   : #bef26433;
@@ -844,6 +867,7 @@
   --vl-overlay-find-match           : #fde047cc;
   --vl-overlay-find-match-border    : #713f12;
   --vl-overlay-find-match-other     : #fde04759;
+  --vl-overlay-find-match-other-border: #a16207;
   --vl-overlay-word-highlight-read  : #67e8f94d;
   --vl-overlay-word-highlight-write : #67e8f999;
   --vl-overlay-diff-inserted-line   : #bef26433;

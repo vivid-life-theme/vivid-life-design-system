@@ -564,6 +564,10 @@ export function expandShadeTables(tokens) {
  * and flattened over the flavor's `bg`. Emitted after `ansi`, so the
  * existing flavor shape is unchanged up to that point.
  *
+ * A role with a `terminal_foreground` also gets `terminal: { flat,
+ * foreground }` — the recipe flattened over `bg_terminal`, and the
+ * colour a terminal redraws selected text in.
+ *
  * Mutates and returns `tokens`. Runs after expandShadeTables, because
  * recipes may name syntax slots and semantic roles.
  */
@@ -572,8 +576,14 @@ export function expandOverlays(tokens) {
     const byVariant = {};
     for (const variant of tokens.variant_hues) {
       const out = {};
-      for (const name of Object.keys(tokens.overlay.roles)) {
+      for (const [name, role] of Object.entries(tokens.overlay.roles)) {
         out[name] = resolveOverlay(tokens, fName, variant, name);
+        if (role.terminal_foreground) {
+          out[name].terminal = {
+            flat: resolveOverlay(tokens, fName, variant, name, { surface: "bg_terminal" }).flat,
+            foreground: resolveColor(tokens, fName, variant, role.terminal_foreground),
+          };
+        }
       }
       byVariant[variant] = out;
     }
@@ -685,7 +695,10 @@ export function validateShapes(tokens) {
         errs.push(`✗ ${w} must be an object`);
         continue;
       }
-      keysOk(w, role, ["behind", "use", "text", "text_on_bg", "surfaces"]);
+      keysOk(w, role, ["behind", "use", "text", "text_on_bg", "surfaces", "terminal_foreground"]);
+      if (role.terminal_foreground !== undefined && !TEXT_ALIASES.includes(role.terminal_foreground)) {
+        errs.push(`✗ ${w}.terminal_foreground: "${role.terminal_foreground}" is not a text role`);
+      }
       if (!["code", "ui"].includes(role.behind)) {
         errs.push(`✗ ${w}.behind is "${role.behind}" — expected "code" or "ui"`);
       }
@@ -754,7 +767,19 @@ export function validateShapes(tokens) {
   if (!isObj(d) || typeof d.min !== "number" || typeof d.related_min !== "number") {
     errs.push(`✗ distinct needs numeric "min" and "related_min"`);
   } else {
-    keysOk("distinct", d, ["min", "related_min", "syntax", "ansi"]);
+    keysOk("distinct", d, ["min", "related_min", "syntax", "ansi", "overlay"]);
+    if (d.overlay !== undefined) {
+      keysOk("distinct.overlay", d.overlay, ["visible", "apart"]);
+      const names = Object.keys(tokens.overlay?.roles ?? {});
+      for (const n of stringList("distinct.overlay.visible", d.overlay.visible)) {
+        if (!names.includes(n)) errs.push(`✗ distinct.overlay.visible: "${n}" is not an overlay`);
+      }
+      for (const pr of d.overlay.apart ?? []) {
+        if (!Array.isArray(pr) || pr.length !== 2 || pr.some((x) => !names.includes(x))) {
+          errs.push(`✗ distinct.overlay.apart: ${JSON.stringify(pr)} is not a pair of overlays`);
+        }
+      }
+    }
     const slots = [...Object.keys(tokens.syntax_hues ?? {}), "fg"];
     for (const kind of ["alias", "related"]) {
       for (const pr of d.syntax?.[kind] ?? []) {
@@ -987,6 +1012,13 @@ function check(tokens, { onPair } = {}) {
         const border = f.overlay[hue][name].border;
         if (border) {
           pair("overlay", `${fName}/${hue} overlay.${name} border vs bg`, border, bg, tokens.control_boundary.min);
+          pair("overlay", `${fName}/${hue} overlay.${name} border vs its fill`, border, f.overlay[hue][name].flat, tokens.control_boundary.min);
+        }
+        // Behind terminal output the recipe composites over bg_terminal,
+        // and the terminal redraws selected text in `terminal_foreground`.
+        const term = f.overlay[hue][name].terminal;
+        if (term) {
+          pair("overlay", `${fName}/${hue} text.${role.terminal_foreground} on overlay.${name} over bg_terminal`, term.foreground, term.flat, 4.5);
         }
       }
     }
@@ -1154,6 +1186,34 @@ export function distinctnessIssues(tokens) {
               `✗ ${fName}: ansi ${row[i]} (${f.ansi[row[i]]}) and ${row[j]} (${f.ansi[row[j]]}) are ${dist.toFixed(1)} apart in OKLab, need ${d.min}`,
             );
           }
+        }
+      }
+    }
+    // Overlays (§ 3e): visible against what they sit on, and apart from
+    // the overlays they share the screen with — by fill, or by a border.
+    const ov = d.overlay ?? {};
+    for (const variant of tokens.variant_hues) {
+      const o = f.overlay[variant];
+      for (const name of ov.visible ?? []) {
+        const dist = deltaE(o[name].flat, f.surface.bg);
+        if (dist < d.related_min) {
+          out.push(`✗ ${fName}/${variant}: overlay.${name} (${o[name].flat}) is ${dist.toFixed(1)} from bg in OKLab, need ${d.related_min}`);
+        }
+        if (o[name].terminal) {
+          const tDist = deltaE(o[name].terminal.flat, f.surface.bg_terminal);
+          if (tDist < d.related_min) {
+            out.push(`✗ ${fName}/${variant}: overlay.${name} over bg_terminal (${o[name].terminal.flat}) is ${tDist.toFixed(1)} from it in OKLab, need ${d.related_min}`);
+          }
+        }
+      }
+      for (const [a, b] of ov.apart ?? []) {
+        const dist = deltaE(o[a].flat, o[b].flat);
+        if (dist >= d.min) continue;
+        const bordered = [o[a].border, o[b].border].some(
+          (bc) => bc && contrast(bc, o[a].flat) >= tokens.control_boundary.min && contrast(bc, o[b].flat) >= tokens.control_boundary.min,
+        );
+        if (!bordered) {
+          out.push(`✗ ${fName}/${variant}: overlay.${a} (${o[a].flat}) and ${b} (${o[b].flat}) are ${dist.toFixed(1)} apart in OKLab, need ${d.min} — or a border on one that clears ${tokens.control_boundary.min}:1 against both`);
         }
       }
     }
@@ -1332,6 +1392,16 @@ async function selfTest() {
       true,
       "two roles feeding one fish variable is rejected",
     ],
+    [
+      () => has(validateShapes(mutated((t) => (t.overlay.roles.selection.terminal_foreground = "accent"))), "is not a text role"),
+      true,
+      "a terminal_foreground outside the text ramp is rejected",
+    ],
+    [
+      () => has(validateShapes(mutated((t) => t.distinct.overlay.apart.push(["selection", "find_matches"]))), "is not a pair of overlays"),
+      true,
+      "an unknown overlay in distinct.overlay.apart is rejected",
+    ],
 
     // gates — the real tokens pass, and each gate bites
     [() => check(real).length, 0, "real tokens pass every gate"],
@@ -1357,6 +1427,45 @@ async function selfTest() {
       "syntax below 4.5:1 on bg is an error, not a 3:1 warning",
     ],
     [() => distinctnessIssues(real).length, 0, "real tokens pass the distinctness gate"],
+    [
+      () =>
+        has(
+          distinctnessIssues(mutated((t) => {
+            for (const v of t.variant_hues) delete t.flavors.midnight.overlay[v].find_match_other.border;
+          })),
+          "midnight/yellow: overlay.inactive_selection",
+        ),
+      true,
+      "without its border, find_match_other collides with the inactive selection on yellow",
+    ],
+    [
+      () => has(distinctnessIssues(mutated((t) => (t.flavors.noon.overlay.red.selection.flat = t.flavors.noon.surface.bg))), "noon/red: overlay.selection"),
+      true,
+      "a selection indistinguishable from bg is caught",
+    ],
+    [
+      () =>
+        has(
+          check(mutated((t) => (t.flavors.dawn.overlay.blue.find_match_other.border = t.flavors.dawn.overlay.blue.find_match_other.flat))),
+          "find_match_other border vs its fill",
+        ),
+      true,
+      "an overlay border that vanishes into its own fill is caught",
+    ],
+    [
+      () => real.flavors.noon.overlay.blue.selection.terminal.flat,
+      resolveOverlay(real, "noon", "blue", "selection", { surface: "bg_terminal" }).flat,
+      "overlay.selection.terminal.flat is the recipe over bg_terminal",
+    ],
+    [
+      () =>
+        has(
+          check(mutated((t) => (t.flavors.midnight.overlay.red.selection.terminal.foreground = t.flavors.midnight.ansi.magenta))),
+          "midnight/red text.fg on overlay.selection over bg_terminal",
+        ),
+      true,
+      "a terminal selection foreground below 4.5:1 is caught (ANSI magenta: 3.89:1)",
+    ],
     [
       () => has(distinctnessIssues(mutated((t) => (t.flavors.dawn.syntax.parameter = "#7c2d12"))), "dawn: syntax parameter (#7c2d12) and type"),
       true,
@@ -1475,11 +1584,12 @@ async function main() {
   console.log(`\n✓ ${rows.length} contrast pairs gated, all pass:`);
   console.log("  accents on bg · text and every syntax slot on bg at 4.5:1");
   console.log("  every syntax slot, fg, fg_subtle and semantic colour on every code overlay");
-  console.log("  the selected-item wash on every sanctioned surface · overlay borders at 3:1");
+  console.log("  the selected-item wash on every sanctioned surface · overlay borders at 3:1 on bg and fill");
+  console.log("  the terminal selection foreground on selection over bg_terminal");
   console.log("  border.control at 3:1 on every control surface (WCAG 1.4.11)");
   console.log("  ansi.* on bg_terminal · semantic colours on every surface");
   console.log("  shell_roles and prompt_roles on what they're drawn on");
-  console.log("✓ Resolved colours pass the OKLab distinctness gate.");
+  console.log("✓ Resolved colours and overlays pass the OKLab distinctness gate.");
   console.log("✓ Shade tables, overlay recipes and role maps are well-formed.");
   const below = rows.filter((r) => r.apcaTarget && Math.abs(apcaContrast(r.fg, r.bg)) < r.apcaTarget);
   console.log(

@@ -319,11 +319,13 @@ export default {
     "roles": {
       "selection": {
         "behind": "code",
-        "use": "Text selection — editor, terminal, shell command line, ::selection."
+        "use": "Text selection — editor, terminal, shell command line, ::selection.",
+        "terminal_foreground": "fg"
       },
       "inactive_selection": {
         "behind": "code",
-        "use": "Selection in an unfocused editor or terminal."
+        "use": "Selection in an unfocused editor or terminal.",
+        "terminal_foreground": "fg"
       },
       "line_highlight": {
         "behind": "code",
@@ -408,7 +410,8 @@ export default {
         },
         "find_match_other": {
           "color": "yellow.900",
-          "alpha": 0.25
+          "alpha": 0.25,
+          "border": "yellow.500"
         },
         "word_highlight_read": {
           "color": "cyan.900",
@@ -467,7 +470,8 @@ export default {
         },
         "find_match_other": {
           "color": "yellow.900",
-          "alpha": 0.4
+          "alpha": 0.4,
+          "border": "yellow.500"
         },
         "word_highlight_read": {
           "color": "cyan.900",
@@ -526,7 +530,8 @@ export default {
         },
         "find_match_other": {
           "color": "yellow.300",
-          "alpha": 0.35
+          "alpha": 0.35,
+          "border": "yellow.700"
         },
         "word_highlight_read": {
           "color": "cyan.100",
@@ -585,7 +590,8 @@ export default {
         },
         "find_match_other": {
           "color": "yellow.300",
-          "alpha": 0.35
+          "alpha": 0.35,
+          "border": "yellow.700"
         },
         "word_highlight_read": {
           "color": "cyan.300",
@@ -721,6 +727,30 @@ export default {
           ]
         ]
       }
+    },
+    "overlay": {
+      "visible": [
+        "selection",
+        "find_match"
+      ],
+      "apart": [
+        [
+          "selection",
+          "find_match"
+        ],
+        [
+          "selection",
+          "find_match_other"
+        ],
+        [
+          "inactive_selection",
+          "find_match"
+        ],
+        [
+          "inactive_selection",
+          "find_match_other"
+        ]
+      ]
     }
   },
   "apca_targets": {
@@ -800,12 +830,20 @@ export default {
           "selection": {
             "color": "#7f1d1d",
             "alpha": 0.5,
-            "flat": "#4b1a1a"
+            "flat": "#4b1a1a",
+            "terminal": {
+              "flat": "#451414",
+              "foreground": "#f5f5f5"
+            }
           },
           "inactive_selection": {
             "color": "#7f1d1d",
             "alpha": 0.25,
-            "flat": "#311919"
+            "flat": "#311919",
+            "terminal": {
+              "flat": "#270f0f",
+              "foreground": "#f5f5f5"
+            }
           },
           "line_highlight": {
             "color": "#262626",
@@ -821,7 +859,8 @@ export default {
           "find_match_other": {
             "color": "#713f12",
             "alpha": 0.25,
-            "flat": "#2e2116"
+            "flat": "#2e2116",
+            "border": "#eab308"
           },
           "word_highlight_read": {
             "color": "#164e63",
@@ -873,12 +912,20 @@ export default {
           "selection": {
             "color": "#7c2d12",
             "alpha": 0.5,
-            "flat": "#4a2215"
+            "flat": "#4a2215",
+            "terminal": {
+              "flat": "#431c0e",
+              "foreground": "#f5f5f5"
+            }
           },
           "inactive_selection": {
             "color": "#7c2d12",
             "alpha": 0.25,
-            "flat": "#301d16"
+            "flat": "#301d16",
+            "terminal": {
+              "flat": "#27130c",
+              "foreground": "#f5f5f5"
+            }
           },
           "line_highlight": {
             "color": "#262626",
@@ -894,7 +941,8 @@ export default {
           "find_match_other": {
             "color": "#713f12",
             "alpha": 0.25,
-            "flat": "#2e2116"
+            "flat": "#2e2116",
+            "border": "#eab308"
           },
           "word_highlight_read": {
             "color": "#164e63",
@@ -946,12 +994,20 @@ export default {
           "selection": {
             "color": "#713f12",
             "alpha": 0.5,
-            "flat": "#442b15"
+            "flat": "#442b15",
+            "terminal": {
+              "flat": "#3e250e",
+              "foreground": "#f5f5f5"
+            }
           },
           "inactive_selection": {
             "color": "#713f12",
             "alpha": 0.25,
-            "flat": "#2e2116"
+            "flat": "#2e2116",
+            "terminal": {
+              "flat": "#24170c",
+              "foreground": "#f5f5f5"
+            }
           },
           "line_highlight": {
             "color": "#262626",
@@ -967,7 +1023,8 @@ export default {
           "find_match_other": {
             "color": "#713f12",
             "alpha": 0.25,
-            "flat": "#2e2116"
+            "flat": "#2e2116",
+            "border": "#eab308"
           },
           "word_highlight_read": {
             "color": "#164e63",
@@ -1019,12 +1076,20 @@ export default {
           "selection": {
             "color": "#365314",
             "alpha": 0.5,
-            "flat": "#273516"
+            "flat": "#273516",
+            "terminal": {
+              "flat": "#202f0f",
+              "foreground": "#f5f5f5"
+            }
           },
           "inactive_selection": {
             "color": "#365314",
             "alpha": 0.25,
-            "flat": "#1f2616"
+            "flat": "#1f2616",
+            "terminal": {
+              "flat": "#151c0d",
+              "foreground": "#f5f5f5"
+            }
           },
           "line_highlight": {
             "color": "#262626",
@@ -1040,7 +1105,8 @@ export default {
           "find_match_other": {
             "color": "#713f12",
             "alpha": 0.25,
-            "flat": "#2e2116"
+            "flat": "#2e2116",
+            "border": "#eab308"
           },
           "word_highlight_read": {
             "color": "#164e63",
@@ -1092,12 +1158,20 @@ export default {
           "selection": {
             "color": "#1e3a8a",
             "alpha": 0.5,
-            "flat": "#1b2951"
+            "flat": "#1b2951",
+            "terminal": {
+              "flat": "#14224a",
+              "foreground": "#f5f5f5"
+            }
           },
           "inactive_selection": {
             "color": "#1e3a8a",
             "alpha": 0.25,
-            "flat": "#192034"
+            "flat": "#192034",
+            "terminal": {
+              "flat": "#0f162a",
+              "foreground": "#f5f5f5"
+            }
           },
           "line_highlight": {
             "color": "#262626",
@@ -1113,7 +1187,8 @@ export default {
           "find_match_other": {
             "color": "#713f12",
             "alpha": 0.25,
-            "flat": "#2e2116"
+            "flat": "#2e2116",
+            "border": "#eab308"
           },
           "word_highlight_read": {
             "color": "#164e63",
@@ -1165,12 +1240,20 @@ export default {
           "selection": {
             "color": "#581c87",
             "alpha": 0.5,
-            "flat": "#381a4f"
+            "flat": "#381a4f",
+            "terminal": {
+              "flat": "#311349",
+              "foreground": "#f5f5f5"
+            }
           },
           "inactive_selection": {
             "color": "#581c87",
             "alpha": 0.25,
-            "flat": "#271833"
+            "flat": "#271833",
+            "terminal": {
+              "flat": "#1e0f29",
+              "foreground": "#f5f5f5"
+            }
           },
           "line_highlight": {
             "color": "#262626",
@@ -1186,7 +1269,8 @@ export default {
           "find_match_other": {
             "color": "#713f12",
             "alpha": 0.25,
-            "flat": "#2e2116"
+            "flat": "#2e2116",
+            "border": "#eab308"
           },
           "word_highlight_read": {
             "color": "#164e63",
@@ -1307,12 +1391,20 @@ export default {
           "selection": {
             "color": "#7f1d1d",
             "alpha": 0.75,
-            "flat": "#6f2626"
+            "flat": "#6f2626",
+            "terminal": {
+              "flat": "#6c2323",
+              "foreground": "#f5f5f5"
+            }
           },
           "inactive_selection": {
             "color": "#7f1d1d",
             "alpha": 0.4,
-            "flat": "#593232"
+            "flat": "#593232",
+            "terminal": {
+              "flat": "#512a2a",
+              "foreground": "#f5f5f5"
+            }
           },
           "line_highlight": {
             "color": "#262626",
@@ -1328,7 +1420,8 @@ export default {
           "find_match_other": {
             "color": "#713f12",
             "alpha": 0.4,
-            "flat": "#54402e"
+            "flat": "#54402e",
+            "border": "#eab308"
           },
           "word_highlight_read": {
             "color": "#164e63",
@@ -1380,12 +1473,20 @@ export default {
           "selection": {
             "color": "#7c2d12",
             "alpha": 0.75,
-            "flat": "#6d321e"
+            "flat": "#6d321e",
+            "terminal": {
+              "flat": "#6a2f1a",
+              "foreground": "#f5f5f5"
+            }
           },
           "inactive_selection": {
             "color": "#7c2d12",
             "alpha": 0.4,
-            "flat": "#58382e"
+            "flat": "#58382e",
+            "terminal": {
+              "flat": "#503126",
+              "foreground": "#f5f5f5"
+            }
           },
           "line_highlight": {
             "color": "#262626",
@@ -1401,7 +1502,8 @@ export default {
           "find_match_other": {
             "color": "#713f12",
             "alpha": 0.4,
-            "flat": "#54402e"
+            "flat": "#54402e",
+            "border": "#eab308"
           },
           "word_highlight_read": {
             "color": "#164e63",
@@ -1453,12 +1555,20 @@ export default {
           "selection": {
             "color": "#713f12",
             "alpha": 0.75,
-            "flat": "#653f1e"
+            "flat": "#653f1e",
+            "terminal": {
+              "flat": "#623c1a",
+              "foreground": "#f5f5f5"
+            }
           },
           "inactive_selection": {
             "color": "#713f12",
             "alpha": 0.4,
-            "flat": "#54402e"
+            "flat": "#54402e",
+            "terminal": {
+              "flat": "#4c3826",
+              "foreground": "#f5f5f5"
+            }
           },
           "line_highlight": {
             "color": "#262626",
@@ -1474,7 +1584,8 @@ export default {
           "find_match_other": {
             "color": "#713f12",
             "alpha": 0.4,
-            "flat": "#54402e"
+            "flat": "#54402e",
+            "border": "#eab308"
           },
           "word_highlight_read": {
             "color": "#164e63",
@@ -1526,12 +1637,20 @@ export default {
           "selection": {
             "color": "#365314",
             "alpha": 0.75,
-            "flat": "#394e1f"
+            "flat": "#394e1f",
+            "terminal": {
+              "flat": "#354b1c",
+              "foreground": "#f5f5f5"
+            }
           },
           "inactive_selection": {
             "color": "#365314",
             "alpha": 0.4,
-            "flat": "#3c482e"
+            "flat": "#3c482e",
+            "terminal": {
+              "flat": "#344027",
+              "foreground": "#f5f5f5"
+            }
           },
           "line_highlight": {
             "color": "#262626",
@@ -1547,7 +1666,8 @@ export default {
           "find_match_other": {
             "color": "#713f12",
             "alpha": 0.4,
-            "flat": "#54402e"
+            "flat": "#54402e",
+            "border": "#eab308"
           },
           "word_highlight_read": {
             "color": "#164e63",
@@ -1599,12 +1719,20 @@ export default {
           "selection": {
             "color": "#1e3a8a",
             "alpha": 0.75,
-            "flat": "#273c78"
+            "flat": "#273c78",
+            "terminal": {
+              "flat": "#233874",
+              "foreground": "#f5f5f5"
+            }
           },
           "inactive_selection": {
             "color": "#1e3a8a",
             "alpha": 0.4,
-            "flat": "#323e5e"
+            "flat": "#323e5e",
+            "terminal": {
+              "flat": "#2b3656",
+              "foreground": "#f5f5f5"
+            }
           },
           "line_highlight": {
             "color": "#262626",
@@ -1620,7 +1748,8 @@ export default {
           "find_match_other": {
             "color": "#713f12",
             "alpha": 0.4,
-            "flat": "#54402e"
+            "flat": "#54402e",
+            "border": "#eab308"
           },
           "word_highlight_read": {
             "color": "#164e63",
@@ -1672,12 +1801,20 @@ export default {
           "selection": {
             "color": "#581c87",
             "alpha": 0.75,
-            "flat": "#522575"
+            "flat": "#522575",
+            "terminal": {
+              "flat": "#4f2272",
+              "foreground": "#f5f5f5"
+            }
           },
           "inactive_selection": {
             "color": "#581c87",
             "alpha": 0.4,
-            "flat": "#4a325c"
+            "flat": "#4a325c",
+            "terminal": {
+              "flat": "#422a55",
+              "foreground": "#f5f5f5"
+            }
           },
           "line_highlight": {
             "color": "#262626",
@@ -1693,7 +1830,8 @@ export default {
           "find_match_other": {
             "color": "#713f12",
             "alpha": 0.4,
-            "flat": "#54402e"
+            "flat": "#54402e",
+            "border": "#eab308"
           },
           "word_highlight_read": {
             "color": "#164e63",
@@ -1814,12 +1952,20 @@ export default {
           "selection": {
             "color": "#fee2e2",
             "alpha": 1,
-            "flat": "#fee2e2"
+            "flat": "#fee2e2",
+            "terminal": {
+              "flat": "#fee2e2",
+              "foreground": "#171717"
+            }
           },
           "inactive_selection": {
             "color": "#fee2e2",
             "alpha": 0.5,
-            "flat": "#e9dbdb"
+            "flat": "#e9dbdb",
+            "terminal": {
+              "flat": "#e9dbdb",
+              "foreground": "#171717"
+            }
           },
           "line_highlight": {
             "color": "#f5f5f5",
@@ -1835,7 +1981,8 @@ export default {
           "find_match_other": {
             "color": "#fde047",
             "alpha": 0.35,
-            "flat": "#e2d8a3"
+            "flat": "#e2d8a3",
+            "border": "#a16207"
           },
           "word_highlight_read": {
             "color": "#cffafe",
@@ -1887,12 +2034,20 @@ export default {
           "selection": {
             "color": "#ffedd5",
             "alpha": 1,
-            "flat": "#ffedd5"
+            "flat": "#ffedd5",
+            "terminal": {
+              "flat": "#ffedd5",
+              "foreground": "#171717"
+            }
           },
           "inactive_selection": {
             "color": "#ffedd5",
             "alpha": 0.5,
-            "flat": "#eae1d5"
+            "flat": "#eae1d5",
+            "terminal": {
+              "flat": "#eae1d5",
+              "foreground": "#171717"
+            }
           },
           "line_highlight": {
             "color": "#f5f5f5",
@@ -1908,7 +2063,8 @@ export default {
           "find_match_other": {
             "color": "#fde047",
             "alpha": 0.35,
-            "flat": "#e2d8a3"
+            "flat": "#e2d8a3",
+            "border": "#a16207"
           },
           "word_highlight_read": {
             "color": "#cffafe",
@@ -1960,12 +2116,20 @@ export default {
           "selection": {
             "color": "#fef9c3",
             "alpha": 1,
-            "flat": "#fef9c3"
+            "flat": "#fef9c3",
+            "terminal": {
+              "flat": "#fef9c3",
+              "foreground": "#171717"
+            }
           },
           "inactive_selection": {
             "color": "#fef9c3",
             "alpha": 0.5,
-            "flat": "#e9e7cc"
+            "flat": "#e9e7cc",
+            "terminal": {
+              "flat": "#e9e7cc",
+              "foreground": "#171717"
+            }
           },
           "line_highlight": {
             "color": "#f5f5f5",
@@ -1981,7 +2145,8 @@ export default {
           "find_match_other": {
             "color": "#fde047",
             "alpha": 0.35,
-            "flat": "#e2d8a3"
+            "flat": "#e2d8a3",
+            "border": "#a16207"
           },
           "word_highlight_read": {
             "color": "#cffafe",
@@ -2033,12 +2198,20 @@ export default {
           "selection": {
             "color": "#ecfccb",
             "alpha": 1,
-            "flat": "#ecfccb"
+            "flat": "#ecfccb",
+            "terminal": {
+              "flat": "#ecfccb",
+              "foreground": "#171717"
+            }
           },
           "inactive_selection": {
             "color": "#ecfccb",
             "alpha": 0.5,
-            "flat": "#e0e8d0"
+            "flat": "#e0e8d0",
+            "terminal": {
+              "flat": "#e0e8d0",
+              "foreground": "#171717"
+            }
           },
           "line_highlight": {
             "color": "#f5f5f5",
@@ -2054,7 +2227,8 @@ export default {
           "find_match_other": {
             "color": "#fde047",
             "alpha": 0.35,
-            "flat": "#e2d8a3"
+            "flat": "#e2d8a3",
+            "border": "#a16207"
           },
           "word_highlight_read": {
             "color": "#cffafe",
@@ -2106,12 +2280,20 @@ export default {
           "selection": {
             "color": "#dbeafe",
             "alpha": 1,
-            "flat": "#dbeafe"
+            "flat": "#dbeafe",
+            "terminal": {
+              "flat": "#dbeafe",
+              "foreground": "#171717"
+            }
           },
           "inactive_selection": {
             "color": "#dbeafe",
             "alpha": 0.5,
-            "flat": "#d8dfe9"
+            "flat": "#d8dfe9",
+            "terminal": {
+              "flat": "#d8dfe9",
+              "foreground": "#171717"
+            }
           },
           "line_highlight": {
             "color": "#f5f5f5",
@@ -2127,7 +2309,8 @@ export default {
           "find_match_other": {
             "color": "#fde047",
             "alpha": 0.35,
-            "flat": "#e2d8a3"
+            "flat": "#e2d8a3",
+            "border": "#a16207"
           },
           "word_highlight_read": {
             "color": "#cffafe",
@@ -2179,12 +2362,20 @@ export default {
           "selection": {
             "color": "#f3e8ff",
             "alpha": 1,
-            "flat": "#f3e8ff"
+            "flat": "#f3e8ff",
+            "terminal": {
+              "flat": "#f3e8ff",
+              "foreground": "#171717"
+            }
           },
           "inactive_selection": {
             "color": "#f3e8ff",
             "alpha": 0.5,
-            "flat": "#e4deea"
+            "flat": "#e4deea",
+            "terminal": {
+              "flat": "#e4deea",
+              "foreground": "#171717"
+            }
           },
           "line_highlight": {
             "color": "#f5f5f5",
@@ -2200,7 +2391,8 @@ export default {
           "find_match_other": {
             "color": "#fde047",
             "alpha": 0.35,
-            "flat": "#e2d8a3"
+            "flat": "#e2d8a3",
+            "border": "#a16207"
           },
           "word_highlight_read": {
             "color": "#cffafe",
@@ -2321,12 +2513,20 @@ export default {
           "selection": {
             "color": "#fca5a5",
             "alpha": 0.45,
-            "flat": "#f8d1d1"
+            "flat": "#f8d1d1",
+            "terminal": {
+              "flat": "#fed7d7",
+              "foreground": "#171717"
+            }
           },
           "inactive_selection": {
             "color": "#fca5a5",
             "alpha": 0.22,
-            "flat": "#f7e3e3"
+            "flat": "#f7e3e3",
+            "terminal": {
+              "flat": "#feebeb",
+              "foreground": "#171717"
+            }
           },
           "line_highlight": {
             "color": "#171717",
@@ -2342,7 +2542,8 @@ export default {
           "find_match_other": {
             "color": "#fde047",
             "alpha": 0.35,
-            "flat": "#f8eeb8"
+            "flat": "#f8eeb8",
+            "border": "#a16207"
           },
           "word_highlight_read": {
             "color": "#67e8f9",
@@ -2394,12 +2595,20 @@ export default {
           "selection": {
             "color": "#fdba74",
             "alpha": 0.45,
-            "flat": "#f9dabb"
+            "flat": "#f9dabb",
+            "terminal": {
+              "flat": "#fee0c0",
+              "foreground": "#171717"
+            }
           },
           "inactive_selection": {
             "color": "#fdba74",
             "alpha": 0.22,
-            "flat": "#f7e8d9"
+            "flat": "#f7e8d9",
+            "terminal": {
+              "flat": "#fff0e0",
+              "foreground": "#171717"
+            }
           },
           "line_highlight": {
             "color": "#171717",
@@ -2415,7 +2624,8 @@ export default {
           "find_match_other": {
             "color": "#fde047",
             "alpha": 0.35,
-            "flat": "#f8eeb8"
+            "flat": "#f8eeb8",
+            "border": "#a16207"
           },
           "word_highlight_read": {
             "color": "#67e8f9",
@@ -2467,12 +2677,20 @@ export default {
           "selection": {
             "color": "#fde047",
             "alpha": 0.45,
-            "flat": "#f9eca7"
+            "flat": "#f9eca7",
+            "terminal": {
+              "flat": "#fef1ac",
+              "foreground": "#171717"
+            }
           },
           "inactive_selection": {
             "color": "#fde047",
             "alpha": 0.22,
-            "flat": "#f7f0cf"
+            "flat": "#f7f0cf",
+            "terminal": {
+              "flat": "#fff8d7",
+              "foreground": "#171717"
+            }
           },
           "line_highlight": {
             "color": "#171717",
@@ -2488,7 +2706,8 @@ export default {
           "find_match_other": {
             "color": "#fde047",
             "alpha": 0.35,
-            "flat": "#f8eeb8"
+            "flat": "#f8eeb8",
+            "border": "#a16207"
           },
           "word_highlight_read": {
             "color": "#67e8f9",
@@ -2540,12 +2759,20 @@ export default {
           "selection": {
             "color": "#bef264",
             "alpha": 0.45,
-            "flat": "#dcf4b4"
+            "flat": "#dcf4b4",
+            "terminal": {
+              "flat": "#e2f9b9",
+              "foreground": "#171717"
+            }
           },
           "inactive_selection": {
             "color": "#bef264",
             "alpha": 0.22,
-            "flat": "#e9f4d5"
+            "flat": "#e9f4d5",
+            "terminal": {
+              "flat": "#f1fcdd",
+              "foreground": "#171717"
+            }
           },
           "line_highlight": {
             "color": "#171717",
@@ -2561,7 +2788,8 @@ export default {
           "find_match_other": {
             "color": "#fde047",
             "alpha": 0.35,
-            "flat": "#f8eeb8"
+            "flat": "#f8eeb8",
+            "border": "#a16207"
           },
           "word_highlight_read": {
             "color": "#67e8f9",
@@ -2613,12 +2841,20 @@ export default {
           "selection": {
             "color": "#93c5fd",
             "alpha": 0.45,
-            "flat": "#c9dff9"
+            "flat": "#c9dff9",
+            "terminal": {
+              "flat": "#cee5fe",
+              "foreground": "#171717"
+            }
           },
           "inactive_selection": {
             "color": "#93c5fd",
             "alpha": 0.22,
-            "flat": "#dfeaf7"
+            "flat": "#dfeaf7",
+            "terminal": {
+              "flat": "#e7f2ff",
+              "foreground": "#171717"
+            }
           },
           "line_highlight": {
             "color": "#171717",
@@ -2634,7 +2870,8 @@ export default {
           "find_match_other": {
             "color": "#fde047",
             "alpha": 0.35,
-            "flat": "#f8eeb8"
+            "flat": "#f8eeb8",
+            "border": "#a16207"
           },
           "word_highlight_read": {
             "color": "#67e8f9",
@@ -2686,12 +2923,20 @@ export default {
           "selection": {
             "color": "#d8b4fe",
             "alpha": 0.45,
-            "flat": "#e8d8f9"
+            "flat": "#e8d8f9",
+            "terminal": {
+              "flat": "#edddff",
+              "foreground": "#171717"
+            }
           },
           "inactive_selection": {
             "color": "#d8b4fe",
             "alpha": 0.22,
-            "flat": "#efe7f7"
+            "flat": "#efe7f7",
+            "terminal": {
+              "flat": "#f6efff",
+              "foreground": "#171717"
+            }
           },
           "line_highlight": {
             "color": "#171717",
@@ -2707,7 +2952,8 @@ export default {
           "find_match_other": {
             "color": "#fde047",
             "alpha": 0.35,
-            "flat": "#f8eeb8"
+            "flat": "#f8eeb8",
+            "border": "#a16207"
           },
           "word_highlight_read": {
             "color": "#67e8f9",

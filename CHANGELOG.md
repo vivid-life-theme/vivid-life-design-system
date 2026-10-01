@@ -25,6 +25,7 @@ The stricter gates moved values. Holding every syntax slot at 4.5:1 on `bg` — 
 - ⚠️ **Midnight ANSI `blue` / `magenta`** `#93c5fd` / `#d8b4fe` → `#3b82f6` / `#a855f7` (300 → 500). They were identical to their bright versions; against `bg_terminal` (`#0a0a0a`) the 500 rung clears at 5.38 / 5.00:1, contrary to the old comment.
 - ⚠️ **Selection and every other overlay** change colour — see `overlay` below. Dark flavors now tint with a deep 900 hue instead of lightening toward the text; light flavors tint with a pale 100 / 300 hue.
 - **Syntax on `bg` is gated at 4.5:1 as an error**, not 3:1 as a warning. Code is body text.
+- ⚠️ **`find_match_other` gains a border** — `yellow.500` on Midnight / Twilight, `yellow.700` on Dawn / Noon (`--vl-overlay-find-match-other-border`). On Midnight/Yellow and Twilight/Yellow the selection and find-match fills are identical, and no rung or alpha separates them by more than ΔE 6.2 within the syntax gate; the borders carry the difference.
 - **Gates run before anything is written.** A failing build leaves `tokens.json` and `dist/tokens.js` untouched, so a port on a local-path dependency never picks up rejected values. Shape validation runs first of all.
 
 ### Added
@@ -35,8 +36,10 @@ The stricter gates moved values. Holding every syntax slot at 4.5:1 on `bg` — 
 - **`prompt_roles`** (§ 16) — directory, user / host, git branch and every git status, success / error character, duration, time, and `language_hues`, with the Starship settings and fish variables each feeds. The success character is `semantic.success` (an accent ❯ would share a hue with the error ❯ on the red variants); `git_branch` is `fg_muted`.
 - **Distinctness gate** (`distinct`, § 3g) — resolved colours compared in OKLab (× 100): syntax slots + `fg` pairwise ≥ 7, same-hue `related` pairs ≥ 5, deliberate `alias` pairs exempt; within each ANSI row ≥ 7; each ANSI colour vs its bright version ≥ 5. Twilight's bright ANSI row (all 100 rung, converging on near-white) is listed pair by pair in `distinct.ansi.exempt` — a known weakness of the issue #7 design, not fixable with any palette rung.
 - **APCA report** — `npm run report` prints every gated pair with WCAG ratio and APCA Lc, flagging on-canvas text below `apca_targets` (body 75, syntax 60, comment 45). Informational; the build prints a one-line summary.
+- **Overlay distinctness gate** (`distinct.overlay`) — `selection` and `find_match` at least 5 from `bg` in OKLab (and the selection from `bg_terminal`); every selection / find-match pair 7 apart, or separated by a border at 3:1 against both fills. Overlay borders are now also gated against their own fill.
+- **Terminal selection contract** — `overlay.roles.{selection,inactive_selection}.terminal_foreground` (`fg`), resolved into `tokens.json` as `overlay.<variant>.<name>.terminal = { flat, foreground }` and gated at 4.5:1. Terminals redraw selected text in that foreground; the ANSI colours can't stay readable under any visible selection on Midnight and Noon.
 - **Shape validation** — `validateShapes(tokens)`: allowed keys, known style names, colour targets that resolve on every theme, overlay recipes for every flavor, no fish variable or PSReadLine key fed twice. A typo such as `colour:` now fails the build.
-- **Library exports** in `tools/build-tokens.mjs`: `resolveColor()`, `resolveOverlay()`, `expandOverlays()`, `resolveTokens()`, `validateShapes()`, `distinctnessIssues()`, `oklab()`, `deltaE()`, `apcaContrast()`. 23 new self-test cases (37 in total).
+- **Library exports** in `tools/build-tokens.mjs`: `resolveColor()`, `resolveOverlay()`, `expandOverlays()`, `resolveTokens()`, `validateShapes()`, `distinctnessIssues()`, `oklab()`, `deltaE()`, `apcaContrast()`. 30 new self-test cases (44 in total).
 
 ### Removed
 
@@ -53,8 +56,9 @@ The stricter gates moved values. Holding every syntax slot at 4.5:1 on `bg` — 
 - **fish** — iterate `shell_roles` (and `prompt_roles` for `fish_color_cwd`, `_user`, `_host`, `_status` …). Visible changes: `fish_color_param` → `fg`, `fish_color_selection` / `_search_match` gain a foreground and the new overlay backgrounds, `fish_color_match` moves off its ungated `semantic.info` fill, the selected pager row's prefix and description change. `tokens.accent_mix` no longer exists.
 - **PowerShell** — iterate `shell_roles`. `Parameter` → `attr`, `Emphasis` → `fg` on `overlay.find_match`, `ListPrediction` → `fg`, `Selection` / `ListPredictionSelected` backgrounds from the overlay recipes. `tokens.accent_mix` no longer exists.
 - **Starship** — read `prompt_roles` and `prompt_roles.language_hues` instead of `LANGUAGE_MODULE_HUE` and the per-variant choices in the template.
-- **VS Code** — the editor's selection, inactive selection, line highlight, find match (+ border), find match highlight, word highlight (strong), diff and terminal-selection colours come from `overlay`; the port's own `ALPHA` steps for those go.
-- **Windows Terminal** — `selectionBackground` = `resolveOverlay(…, 'selection', { surface: 'bg_terminal' }).flat`, replacing the port's 30% `blendFlat`.
+- **VS Code** — the editor's selection, inactive selection, line highlight, find match (+ border), find match highlight, word highlight (strong), diff and terminal-selection colours come from `overlay`; the port's own `ALPHA` steps for those go. `editor.findMatchHighlightBorder` / `terminal.findMatchHighlightBorder` come from `find_match_other.border`, and `terminal.selectionForeground` from `selection.terminal.foreground`.
+- **Windows Terminal** — `selectionBackground` = `overlay.<variant>.selection.terminal.flat`, replacing the port's 30% `blendFlat`. If Windows Terminal can't set a selection foreground, note in the port's README that ANSI text on a selection is below AA.
+- **Terminal selection, every terminal port** — set the selection foreground to `overlay.<variant>.selection.terminal.foreground` (VS Code `terminal.selectionForeground`, Alacritty `selection.text`, kitty `selection_foreground`, WezTerm `selection_fg`).
 
 ---
 
