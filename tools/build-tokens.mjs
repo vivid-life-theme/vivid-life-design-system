@@ -5,18 +5,22 @@
  * Two roles in one file:
  *
  * 1.  CLI — when run directly:
- *       node tools/build-tokens.mjs           → emit + WCAG check
- *       node tools/build-tokens.mjs --check   → exit 1 if outputs would change
- *     Reads `tokens.json5` and emits:
+ *       node tools/build-tokens.mjs           → gate, then emit
+ *       node tools/build-tokens.mjs --check   → gate, exit 1 if outputs would change
+ *       node tools/build-tokens.mjs --report  → print WCAG + APCA for every gated pair
+ *       node tools/build-tokens.mjs --test    → self-test
+ *     Reads `tokens.json5`, validates its shape, runs every gate, and
+ *     only then emits:
  *       tokens.json     — flat JSON with all $palette.x.y refs resolved
  *                         and the derived token groups filled in
  *       dist/tokens.js  — ES module that exports the resolved object
- *     Then runs WCAG checks against every accent / syntax token.
+ *     A failing gate leaves both files untouched, so a port on a
+ *     local-path dependency never picks up rejected values.
  *
  * 2.  Library — imported by downstream ports:
- *       import { loadTokens, expandShadeTables, mix, alphaOver,
+ *       import { loadTokens, resolveColor, resolveOverlay, alphaOver,
  *                contrast } from
- *         'vivid-life-theme/tools/build-tokens.mjs';
+ *         '@vivid-life-theme/design-system/tools/build-tokens';
  *     Color-math helpers are centralised here so a GTK port and a
  *     VS Code port can't drift from each other or from the web.
  *
@@ -131,6 +135,60 @@ export function readableOn(bg) {
   return relLum(bg) > 0.5 ? "#171717" : "#f5f5f5";
 }
 
+/** hex → [L, a, b] in OKLab (Björn Ottosson's matrices, sRGB D65). */
+export function oklab(hex) {
+  const [r, g, b] = parseHex(hex)
+    .slice(0, 3)
+    .map((v) => {
+      v /= 255;
+      return v <= 0.04045 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+    });
+  const l = Math.cbrt(0.4122214708 * r + 0.5363325363 * g + 0.0514459929 * b);
+  const m = Math.cbrt(0.2119034982 * r + 0.6806995451 * g + 0.1073969566 * b);
+  const s = Math.cbrt(0.0883024619 * r + 0.2817188376 * g + 0.6299787005 * b);
+  return [
+    0.2104542553 * l + 0.793617785 * m - 0.0040720468 * s,
+    1.9779984951 * l - 2.428592205 * m + 0.4505937099 * s,
+    0.0259040371 * l + 0.7827717662 * m - 0.808675766 * s,
+  ];
+}
+
+/**
+ * Perceptual distance between two colours: Euclidean in OKLab, × 100.
+ * ≈ 2 is a just-noticeable difference; the distinctness gate asks 7
+ * for colours that must not look alike (tokens.json5 § 3g).
+ */
+export function deltaE(a, b) {
+  const [L1, a1, b1] = oklab(a);
+  const [L2, a2, b2] = oklab(b);
+  return 100 * Math.hypot(L1 - L2, a1 - a2, b1 - b2);
+}
+
+/**
+ * APCA lightness contrast (Lc), APCA-W3 0.0.98G-4g constants. Signed:
+ * positive for dark text on light, negative for light on dark — compare
+ * `Math.abs()` against a target. Informational only: the gates enforce
+ * WCAG 2.x, the build prints this beside it (`--report`).
+ */
+export function apcaContrast(txt, bg) {
+  const Y = (hex) => {
+    const [r, g, b] = parseHex(hex)
+      .slice(0, 3)
+      .map((v) => Math.pow(v / 255, 2.4));
+    const y = 0.2126729 * r + 0.7151522 * g + 0.072175 * b;
+    return y < 0.022 ? y + Math.pow(0.022 - y, 1.414) : y;
+  };
+  const Yt = Y(txt),
+    Yb = Y(bg);
+  if (Math.abs(Yb - Yt) < 0.0005) return 0;
+  if (Yb > Yt) {
+    const s = (Math.pow(Yb, 0.56) - Math.pow(Yt, 0.57)) * 1.14;
+    return s < 0.1 ? 0 : (s - 0.027) * 100;
+  }
+  const s = (Math.pow(Yb, 0.65) - Math.pow(Yt, 0.62)) * 1.14;
+  return s > -0.1 ? 0 : (s + 0.027) * 100;
+}
+
 /* =====================================================================
    FOUNDATION RECIPES  (exported)
    ─────────────────────────────────────────────────────────────────────
@@ -139,8 +197,12 @@ export function readableOn(bg) {
    ===================================================================== */
 
 /**
- * Selection background for a (flavor, variant) combo.
- * Equivalent to `color-mix(in srgb, var(--vl-accent) 25%, var(--vl-bg))`.
+ * @deprecated since issue #19 — the selection is no longer "25% of the
+ * accent over bg" (that recipe lightened dark canvases toward the text
+ * and dropped Midnight comments to 2.13:1). Read the real value with
+ * `resolveOverlay(tokens, flavor, variant, 'selection')`, or from
+ * `tokens.flavors[flavor].overlay[variant].selection` in tokens.json.
+ * Kept as plain colour math so existing callers don't break.
  *
  *   selection({ bg: '#171717', accent: '#d8b4fe' })  → '#473e51'
  */
@@ -154,6 +216,10 @@ export function selection({ bg, accent, mixPct = 0.25 } = {}) {
  * Equivalent to `color-mix(in srgb, var(--vl-accent) 18%, transparent)`
  * composited over `surface` — a translucent tint mixes to the same
  * value as an opaque mix against whatever sits behind it.
+ *
+ * Same result as `resolveOverlay(tokens, flavor, variant, 'selected',
+ * { surface })`, which reads the percentage from tokens.json5 instead
+ * of taking it as an argument; prefer that in new code.
  *
  * Unlike `selection()`, which always lands on the flavor canvas, this
  * one takes the surface explicitly: a selected row can sit on `bg`,
@@ -205,6 +271,87 @@ export function resolveAccent(tokens, flavor, variant) {
   const hex = tokens.palette?.[variant]?.[shade];
   if (!hex) throw new Error(`No palette entry for ${variant}-${shade}`);
   return hex;
+}
+
+const TEXT_ALIASES = ["fg", "fg_muted", "fg_subtle", "fg_disabled"];
+
+/**
+ * Resolve a colour target — the vocabulary shared by `overlay`,
+ * `shell_roles`, `prompt_roles` and `workbench_color_roles` — to a hex
+ * for one (flavor, variant):
+ *
+ *   accent              the (flavor, variant) accent
+ *   accent.<rung>       the variant's hue at another rung
+ *   hue.<hue>           <hue> at its own accent rung on this flavor
+ *   <hue>.<rung>        any palette entry, e.g. "cyan.900"
+ *   fg | fg_muted | fg_subtle | fg_disabled
+ *   semantic.<role>     success | warning | danger | info
+ *   <syntax core slot>  comment, keyword, …, punct
+ *   ansi.<slot>         the flavor's 16-colour terminal palette
+ *   overlay.<name>      that overlay flattened over `surface`
+ *
+ *   resolveColor(tokens, 'midnight', 'purple', 'accent.900')  → '#581c87'
+ *
+ * Works on loadTokens() output (flavors.*.syntax already derived).
+ * `surface` names the surface an "overlay.*" target composites over;
+ * defaults to `bg`. Throws on anything it can't resolve.
+ */
+export function resolveColor(tokens, flavor, variant, target, opts = {}) {
+  const f = tokens.flavors?.[flavor];
+  if (!f) throw new Error(`resolveColor: unknown flavor "${flavor}"`);
+  if (typeof target !== "string" || !target) {
+    throw new Error(`resolveColor: colour target must be a non-empty string`);
+  }
+  const fail = () => {
+    throw new Error(`resolveColor: can't resolve "${target}" on ${flavor}`);
+  };
+  if (target === "accent") return resolveAccent(tokens, flavor, variant);
+  if (TEXT_ALIASES.includes(target)) return f.text[target] ?? fail();
+  if (f.syntax && Object.hasOwn(f.syntax, target)) return f.syntax[target];
+  const dot = target.indexOf(".");
+  if (dot < 0) fail();
+  const head = target.slice(0, dot),
+    tail = target.slice(dot + 1);
+  switch (head) {
+    case "accent":
+      return tokens.palette?.[variant]?.[tail] ?? fail();
+    case "hue":
+      return tokens.palette?.[tail]?.[tokens.accent_shade?.[flavor]?.[tail]] ?? fail();
+    case "semantic":
+      return f.semantic?.[tail] ?? fail();
+    case "ansi":
+      return f.ansi?.[tail] ?? fail();
+    case "overlay":
+      return resolveOverlay(tokens, flavor, variant, tail, opts).flat;
+    default:
+      return tokens.palette?.[head]?.[tail] ?? fail();
+  }
+}
+
+/**
+ * Resolve one overlay recipe (tokens.json5 § 3e) for a (flavor,
+ * variant), composited over `surface` (default `bg`):
+ *
+ *   resolveOverlay(tokens, 'midnight', 'purple', 'selection')
+ *     → { color: '#581c87', alpha: 0.5, flat: '#37194f' }
+ *
+ * `color` + `alpha` are for targets that blend; `flat` is the same
+ * colour, pre-composited, for targets that can't. `border` is present
+ * when the recipe has one.
+ */
+export function resolveOverlay(tokens, flavor, variant, name, opts = {}) {
+  const recipe = tokens.overlay?.recipes?.[flavor]?.[name];
+  if (!recipe) throw new Error(`resolveOverlay: no recipe ${flavor}.${name}`);
+  if (String(recipe.color).startsWith("overlay.")) {
+    throw new Error(`resolveOverlay: ${flavor}.${name} may not target another overlay`);
+  }
+  const surfaceName = opts.surface ?? "bg";
+  const base = tokens.flavors[flavor].surface[surfaceName];
+  if (!base) throw new Error(`resolveOverlay: unknown surface "${surfaceName}"`);
+  const color = resolveColor(tokens, flavor, variant, recipe.color);
+  const out = { color, alpha: recipe.alpha, flat: alphaOver(color, base, recipe.alpha) };
+  if (recipe.border) out.border = resolveColor(tokens, flavor, variant, recipe.border);
+  return out;
 }
 
 /**
@@ -412,77 +559,354 @@ export function expandShadeTables(tokens) {
 }
 
 /**
+ * Fill in `flavors.<flavor>.overlay.<variant>.<name>` from the overlay
+ * recipes (tokens.json5 § 3e): every recipe resolved for every variant
+ * and flattened over the flavor's `bg`. Emitted after `ansi`, so the
+ * existing flavor shape is unchanged up to that point.
+ *
+ * Mutates and returns `tokens`. Runs after expandShadeTables, because
+ * recipes may name syntax slots and semantic roles.
+ */
+export function expandOverlays(tokens) {
+  for (const fName of Object.keys(tokens.flavors)) {
+    const byVariant = {};
+    for (const variant of tokens.variant_hues) {
+      const out = {};
+      for (const name of Object.keys(tokens.overlay.roles)) {
+        out[name] = resolveOverlay(tokens, fName, variant, name);
+      }
+      byVariant[variant] = out;
+    }
+    tokens.flavors[fName].overlay = byVariant;
+  }
+  return tokens;
+}
+
+/** Parsed tokens.json5 → fully resolved token object (refs, shade tables, overlays). */
+export function resolveTokens(parsed) {
+  return expandOverlays(expandShadeTables(resolveRefs(parsed, parsed)));
+}
+
+/**
  * Convenience for downstream ports: load + parse + resolve in one call.
  *
  *   const tokens = await loadTokens();  // defaults to ../tokens.json5
  *   const accent = resolveAccent(tokens, 'midnight', 'purple');
- *   const selBg  = selection({ bg: tokens.flavors.midnight.surface.bg,
- *                              accent });
+ *   const sel    = tokens.flavors.midnight.overlay.purple.selection.flat;
  */
 export async function loadTokens(path = join(ROOT, "tokens.json5")) {
   const src = await readFile(path, "utf8");
-  const parsed = JSON.parse(json5ToJson(src));
-  return expandShadeTables(resolveRefs(parsed, parsed));
+  return resolveTokens(JSON.parse(json5ToJson(src)));
 }
 
 /* =====================================================================
-   WCAG sanity check  (used by main())
+   SHAPE VALIDATION  (exported; run before anything is resolved further)
+   ─────────────────────────────────────────────────────────────────────
+   Role objects are free-form JSON5, so a typo such as `colour:` or
+   `style: ["italics"]` used to pass silently and leave a port to fall
+   back to whatever its own default was. Every role map is checked for
+   allowed keys, known style names, and colour targets that resolve.
    ===================================================================== */
 
-function check(tokens) {
-  const warns = [];
-  // accent_mix drives two emitted color-mix recipes; a missing or
-  // malformed entry would silently fall back to a hard-coded default.
-  for (const name of ["selection", "selected"]) {
-    const entry = tokens.accent_mix?.[name];
-    if (!entry || typeof entry.pct !== "number" || !entry.base) {
-      warns.push(`✗ accent_mix.${name} missing or malformed (need pct + base)`);
-    } else if (!["bg", "transparent"].includes(entry.base)) {
-      warns.push(
-        `✗ accent_mix.${name}.base is "${entry.base}" — expected "bg" or "transparent"`,
-      );
+const STYLES = ["italic", "bold", "underline", "reverse"];
+
+/**
+ * Structural check of the authored token maps. Takes tokens after
+ * resolveRefs + expandShadeTables (overlays need not be expanded) and
+ * returns a list of error strings, empty when everything is well-formed.
+ */
+export function validateShapes(tokens) {
+  const errs = [];
+  const flavors = Object.keys(tokens.flavors ?? {});
+  const variants = tokens.variant_hues ?? [];
+  const isObj = (v) => v && typeof v === "object" && !Array.isArray(v);
+  const keysOk = (where, obj, allowed) => {
+    for (const k of Object.keys(obj)) {
+      if (!allowed.includes(k)) {
+        errs.push(`✗ ${where}: unknown key "${k}" (allowed: ${allowed.join(", ")})`);
+      }
     }
-  }
-  // A translucent tint composites over whatever it lands on, so its
-  // sanctioned surfaces have to be declared and every one of them gated.
-  const washSurfaces = tokens.accent_mix?.selected?.surfaces;
-  if (!Array.isArray(washSurfaces) || washSurfaces.length === 0) {
-    warns.push(`✗ accent_mix.selected.surfaces missing or empty`);
-  } else {
-    for (const s of washSurfaces) {
-      for (const [fName, f] of Object.entries(tokens.flavors)) {
-        if (!(s in f.surface)) {
-          warns.push(
-            `✗ accent_mix.selected.surfaces lists "${s}", missing from ${fName}.surface`,
-          );
+  };
+  const stylesOk = (where, style) => {
+    if (style === undefined) return;
+    if (!Array.isArray(style)) {
+      errs.push(`✗ ${where}.style must be an array`);
+      return;
+    }
+    for (const st of style) {
+      if (!STYLES.includes(st)) {
+        errs.push(`✗ ${where}.style: unknown style "${st}" (known: ${STYLES.join(", ")})`);
+      }
+    }
+  };
+  // A target must resolve on every (flavor, variant) — a palette rung
+  // that exists for one hue may be missing for another.
+  const targetOk = (where, target, opts = {}) => {
+    if (opts.noOverlay && String(target).startsWith("overlay.")) {
+      errs.push(`✗ ${where}: "${target}" — overlay targets aren't allowed here`);
+      return;
+    }
+    for (const fl of flavors) {
+      for (const v of variants) {
+        try {
+          resolveColor(tokens, fl, v, target, opts);
+        } catch {
+          errs.push(`✗ ${where}: colour target "${target}" doesn't resolve on ${fl}/${v}`);
+          return;
         }
       }
     }
+  };
+  const stringList = (where, list) => {
+    if (list === undefined) return [];
+    if (!Array.isArray(list) || list.some((x) => typeof x !== "string")) {
+      errs.push(`✗ ${where} must be an array of strings`);
+      return [];
+    }
+    return list;
+  };
+  const surfaceOk = (where, s) => {
+    for (const fl of flavors) {
+      if (!(s in tokens.flavors[fl].surface)) {
+        errs.push(`✗ ${where} lists "${s}", missing from ${fl}.surface`);
+      }
+    }
+  };
+
+  // ── overlay (§ 3e) ──────────────────────────────────────────────────
+  const ov = tokens.overlay;
+  if (!isObj(ov?.roles) || !isObj(ov?.recipes)) {
+    errs.push(`✗ overlay needs both "roles" and "recipes"`);
+  } else {
+    keysOk("overlay", ov, ["roles", "recipes"]);
+    for (const [name, role] of Object.entries(ov.roles)) {
+      const w = `overlay.roles.${name}`;
+      if (!isObj(role)) {
+        errs.push(`✗ ${w} must be an object`);
+        continue;
+      }
+      keysOk(w, role, ["behind", "use", "text", "text_on_bg", "surfaces"]);
+      if (!["code", "ui"].includes(role.behind)) {
+        errs.push(`✗ ${w}.behind is "${role.behind}" — expected "code" or "ui"`);
+      }
+      if (role.behind === "ui") {
+        const text = stringList(`${w}.text`, role.text);
+        if (!text.length) errs.push(`✗ ${w}: a "ui" overlay needs a non-empty text list`);
+        for (const t of [...text, ...stringList(`${w}.text_on_bg`, role.text_on_bg)]) {
+          if (!TEXT_ALIASES.includes(t)) errs.push(`✗ ${w}: "${t}" is not a text role`);
+        }
+        const surfaces = stringList(`${w}.surfaces`, role.surfaces);
+        if (!surfaces.length) {
+          errs.push(`✗ ${w}: a "ui" overlay needs a non-empty surfaces list`);
+        }
+        for (const sName of surfaces) surfaceOk(`${w}.surfaces`, sName);
+      }
+    }
+    for (const fl of Object.keys(ov.recipes)) {
+      if (!flavors.includes(fl)) errs.push(`✗ overlay.recipes.${fl}: no such flavor`);
+    }
+    for (const fl of flavors) {
+      const rows = ov.recipes[fl];
+      if (!isObj(rows)) {
+        errs.push(`✗ overlay.recipes.${fl} missing`);
+        continue;
+      }
+      for (const name of Object.keys(ov.roles)) {
+        if (!(name in rows)) errs.push(`✗ overlay.recipes.${fl}.${name} missing`);
+      }
+      for (const [name, r] of Object.entries(rows)) {
+        const w = `overlay.recipes.${fl}.${name}`;
+        if (!(name in ov.roles)) {
+          errs.push(`✗ ${w}: no overlay.roles entry of that name`);
+          continue;
+        }
+        if (!isObj(r)) {
+          errs.push(`✗ ${w} must be an object`);
+          continue;
+        }
+        keysOk(w, r, ["color", "alpha", "border"]);
+        if (typeof r.alpha !== "number" || !(r.alpha > 0 && r.alpha <= 1)) {
+          errs.push(`✗ ${w}.alpha must be a number in (0, 1]`);
+        }
+        if (r.color === undefined) errs.push(`✗ ${w}.color missing`);
+        else targetOk(`${w}.color`, r.color, { noOverlay: true });
+        if (r.border !== undefined) targetOk(`${w}.border`, r.border, { noOverlay: true });
+      }
+    }
   }
-  // The control-boundary ruleset (issue #15) has the same shape: a
-  // declared surface list plus a threshold, both meaningless if absent.
+
+  // ── control_boundary (§ 3f) ─────────────────────────────────────────
   const cb = tokens.control_boundary;
   if (!cb || typeof cb.min !== "number") {
-    warns.push(`✗ control_boundary missing or has no numeric min`);
+    errs.push(`✗ control_boundary missing or has no numeric min`);
   }
   if (!Array.isArray(cb?.surfaces) || cb.surfaces.length === 0) {
-    warns.push(`✗ control_boundary.surfaces missing or empty`);
+    errs.push(`✗ control_boundary.surfaces missing or empty`);
   } else {
-    for (const s of cb.surfaces) {
-      for (const [fName, f] of Object.entries(tokens.flavors)) {
-        if (!(s in f.surface)) {
-          warns.push(
-            `✗ control_boundary.surfaces lists "${s}", missing from ${fName}.surface`,
-          );
+    for (const sName of cb.surfaces) surfaceOk("control_boundary.surfaces", sName);
+  }
+  for (const fl of flavors) {
+    if (!tokens.flavors[fl].border?.control) errs.push(`✗ ${fl}.border.control missing`);
+  }
+
+  // ── distinct + apca_targets (§ 3g) ──────────────────────────────────
+  const d = tokens.distinct;
+  if (!isObj(d) || typeof d.min !== "number" || typeof d.related_min !== "number") {
+    errs.push(`✗ distinct needs numeric "min" and "related_min"`);
+  } else {
+    keysOk("distinct", d, ["min", "related_min", "syntax", "ansi"]);
+    const slots = [...Object.keys(tokens.syntax_hues ?? {}), "fg"];
+    for (const kind of ["alias", "related"]) {
+      for (const pr of d.syntax?.[kind] ?? []) {
+        if (!Array.isArray(pr) || pr.length !== 2 || pr.some((x) => !slots.includes(x))) {
+          errs.push(`✗ distinct.syntax.${kind}: ${JSON.stringify(pr)} is not a pair of syntax slots`);
+        }
+      }
+    }
+    for (const [fl, pairs] of Object.entries(d.ansi?.exempt ?? {})) {
+      if (!flavors.includes(fl)) {
+        errs.push(`✗ distinct.ansi.exempt.${fl}: no such flavor`);
+        continue;
+      }
+      for (const pr of pairs) {
+        const ansi = tokens.flavors[fl].ansi;
+        if (!Array.isArray(pr) || pr.length !== 2 || pr.some((x) => !(x in ansi))) {
+          errs.push(`✗ distinct.ansi.exempt.${fl}: ${JSON.stringify(pr)} is not a pair of ansi slots`);
         }
       }
     }
   }
-  for (const [fName, f] of Object.entries(tokens.flavors)) {
-    if (!f.border?.control) {
-      warns.push(`✗ ${fName}.border.control missing`);
+  for (const k of ["body", "syntax", "comment"]) {
+    if (typeof tokens.apca_targets?.[k] !== "number") {
+      errs.push(`✗ apca_targets.${k} missing or not a number`);
     }
   }
+
+  // ── syntax_tokens.extended / semantic_token_recommendations ─────────
+  // Targets here are the syntax vocabulary only: core slot, text alias,
+  // semantic.<role>.
+  const syntaxTarget = (where, target) => {
+    const ok =
+      target in (tokens.syntax_hues ?? {}) ||
+      TEXT_ALIASES.includes(target) ||
+      (typeof target === "string" &&
+        target.startsWith("semantic.") &&
+        target.slice(9) in (tokens.semantic_hues ?? {}));
+    if (!ok) errs.push(`✗ ${where}: "${target}" is not a syntax slot, text alias or semantic.<role>`);
+  };
+  const syntaxEntry = (where, e, { allowNone = false } = {}) => {
+    if (typeof e === "string") {
+      if (allowNone && e === "none") return;
+      syntaxTarget(where, e);
+      return;
+    }
+    if (!isObj(e)) {
+      errs.push(`✗ ${where} must be a string or { color?, style? }`);
+      return;
+    }
+    keysOk(where, e, ["color", "style"]);
+    if (e.color === undefined && e.style === undefined) {
+      errs.push(`✗ ${where} has neither color nor style`);
+    }
+    if (e.color !== undefined) syntaxTarget(`${where}.color`, e.color);
+    stylesOk(where, e.style);
+  };
+  for (const [k, e] of Object.entries(tokens.syntax_tokens?.extended ?? {})) {
+    syntaxEntry(`syntax_tokens.extended.${k}`, e);
+  }
+  const str = tokens.semantic_token_recommendations ?? {};
+  for (const [k, e] of Object.entries(str.types ?? {})) {
+    syntaxEntry(`semantic_token_recommendations.types.${k}`, e);
+  }
+  for (const [k, e] of Object.entries(str.modifiers ?? {})) {
+    syntaxEntry(`semantic_token_recommendations.modifiers.${k}`, e, { allowNone: true });
+  }
+
+  // ── workbench_color_roles (§ 13) ────────────────────────────────────
+  const wb = tokens.workbench_color_roles ?? {};
+  for (const group of ["signals", "git"]) {
+    for (const [k, target] of Object.entries(wb[group] ?? {})) {
+      targetOk(`workbench_color_roles.${group}.${k}`, target);
+    }
+  }
+  for (const target of wb.bracket_pairs ?? []) {
+    targetOk(`workbench_color_roles.bracket_pairs`, target);
+  }
+  if (wb.bracket_unexpected !== undefined) {
+    targetOk(`workbench_color_roles.bracket_unexpected`, wb.bracket_unexpected);
+  }
+
+  // ── shell_roles / prompt_roles (§ 15–16) ────────────────────────────
+  // fish reads one theme file, so a variable may be fed by one role
+  // across both maps; likewise one PSReadLine key.
+  const fed = { fish: new Map(), psreadline: new Map(), starship: new Map() };
+  for (const [mapName, allowed, sinks] of [
+    ["shell_roles", ["color", "background", "style", "fish", "psreadline"], ["fish", "psreadline"]],
+    ["prompt_roles", ["color", "style", "starship", "fish"], ["starship", "fish"]],
+  ]) {
+    const m = tokens[mapName];
+    if (!isObj(m?.roles)) {
+      errs.push(`✗ ${mapName}.roles missing`);
+      continue;
+    }
+    keysOk(mapName, m, mapName === "prompt_roles" ? ["surface", "roles", "language_hues"] : ["surface", "roles"]);
+    if (typeof m.surface !== "string") errs.push(`✗ ${mapName}.surface missing`);
+    else surfaceOk(`${mapName}.surface`, m.surface);
+    for (const [name, role] of Object.entries(m.roles)) {
+      const w = `${mapName}.roles.${name}`;
+      if (!isObj(role)) {
+        errs.push(`✗ ${w} must be an object`);
+        continue;
+      }
+      keysOk(w, role, allowed);
+      if (role.color === undefined && role.background === undefined && role.style === undefined) {
+        errs.push(`✗ ${w} has no color, background or style`);
+      }
+      if (role.color !== undefined) targetOk(`${w}.color`, role.color, { surface: m.surface });
+      if (role.background !== undefined) {
+        targetOk(`${w}.background`, role.background, { surface: m.surface });
+      }
+      stylesOk(w, role.style);
+      for (const sink of sinks) {
+        for (const key of stringList(`${w}.${sink}`, role[sink])) {
+          if (fed[sink].has(key)) {
+            errs.push(`✗ ${w}.${sink}: "${key}" is already fed by ${fed[sink].get(key)}`);
+          } else fed[sink].set(key, w);
+        }
+      }
+    }
+  }
+  for (const [mod, hue] of Object.entries(tokens.prompt_roles?.language_hues ?? {})) {
+    if (!variants.includes(hue)) {
+      errs.push(`✗ prompt_roles.language_hues.${mod}: "${hue}" is not a variant hue`);
+    }
+  }
+
+  return errs;
+}
+
+/* =====================================================================
+   GATES  (used by main(); every one runs before anything is written)
+   ===================================================================== */
+
+/**
+ * Every contrast gate, plus the distinctness gate. Takes fully resolved
+ * tokens (loadTokens / resolveTokens output). Returns failure strings.
+ *
+ * `onPair(row)` — optional — is called for every contrast pair a gate
+ * evaluates, pass or fail: { group, where, fg, bg, ratio, min, apca? }.
+ * That is what `--report` prints.
+ */
+function check(tokens, { onPair } = {}) {
+  const warns = [];
+  const pair = (group, where, fg, bg, min, apcaTarget) => {
+    const ratio = contrast(fg, bg);
+    onPair?.({ group, where, fg, bg, ratio, min, apcaTarget });
+    if (ratio < min) {
+      warns.push(`✗ ${where} (${fg} on ${bg}): ${ratio.toFixed(2)}:1 < ${min}`);
+    }
+  };
+
   // The collision gate below is an allowlist (COLLISION_GATED_ROLES), so a
   // role rename or a new semantic_hues entry that lands in neither list
   // would otherwise silently stop being checked. Keep the two lists in
@@ -514,73 +938,59 @@ function check(tokens) {
     );
   }
   if (warns.length) return warns;
+
+  const t = tokens.apca_targets;
   for (const [fName, f] of Object.entries(tokens.flavors)) {
     const bg = f.surface.bg;
     for (const hue of tokens.variant_hues) {
       const shade = tokens.accent_shade[fName][hue];
-      const accent = tokens.palette[hue][shade];
-      const r = contrast(accent, bg);
-      if (r < 4.5) {
-        warns.push(
-          `✗ ${fName}/${hue}-${shade} (${accent}) on ${bg}: ${r.toFixed(2)}:1`,
-        );
-      }
+      pair("accent", `${fName}/${hue}-${shade} accent on bg`, tokens.palette[hue][shade], bg, 4.5);
     }
-    for (const [tName, color] of Object.entries(f.syntax)) {
-      const r = contrast(color, bg);
-      if (r < 3) {
-        warns.push(
-          `⚠ ${fName}.syntax.${tName} (${color}) on ${bg}: ${r.toFixed(2)}:1`,
-        );
-      }
+    pair("text", `${fName}.text.fg on bg`, f.text.fg, bg, 4.5, t.body);
+    pair("text", `${fName}.text.fg_subtle on bg`, f.text.fg_subtle, bg, 4.5, t.comment);
+
+    // Code is body text: the old 3:1 warning here was the large-text
+    // threshold. Every slot clears 4.5:1 on the canvas (issue #19).
+    for (const [slot, color] of Object.entries(f.syntax)) {
+      pair("syntax", `${fName}.syntax.${slot} on bg`, color, bg, 4.5, slot === "comment" ? t.comment : t.syntax);
     }
-    // Also: every (flavor, variant) selection must remain readable.
-    const selPct = tokens.accent_mix.selection.pct / 100;
-    for (const hue of tokens.variant_hues) {
-      const accent = resolveAccent(tokens, fName, hue);
-      const sel = selection({ bg, accent, mixPct: selPct });
-      const r = contrast(f.text.fg, sel);
-      if (r < 4.5) {
-        warns.push(
-          `✗ ${fName}/${hue} selection text on ${sel}: ${r.toFixed(2)}:1`,
-        );
-      }
-    }
-    // Same for the selected-item wash (issue #14). The tint is
-    // translucent, so it composites over every surface in
-    // accent_mix.selected.surfaces — gating only `bg` would miss the
-    // surfaces a selected row actually lands on. The label on a
-    // selected row is `fg` by contract (both kitchen-sink patterns set
-    // it), so `fg` is what must clear 4.5:1 everywhere.
-    const washPct = tokens.accent_mix.selected.pct / 100;
-    for (const sName of tokens.accent_mix.selected.surfaces) {
-      const surface = f.surface[sName];
+
+    // Overlays (§ 3e). A "code" overlay sits behind whole lines of code,
+    // so every syntax slot, fg, fg_subtle and the semantic colours must
+    // stay readable on it — people read code while it is selected, on
+    // the current line, inside a find match. A "ui" overlay gates only
+    // its declared text roles, on every surface it may land on.
+    const codeText = {
+      ...Object.fromEntries(Object.entries(f.syntax).map(([k, v]) => [`syntax.${k}`, v])),
+      "text.fg": f.text.fg,
+      "text.fg_subtle": f.text.fg_subtle,
+      ...Object.fromEntries(Object.entries(f.semantic).map(([k, v]) => [`semantic.${k}`, v])),
+    };
+    for (const [name, role] of Object.entries(tokens.overlay.roles)) {
       for (const hue of tokens.variant_hues) {
-        const accent = resolveAccent(tokens, fName, hue);
-        const wash = selectedWash({ surface, accent, mixPct: washPct });
-        const r = contrast(f.text.fg, wash);
-        if (r < 4.5) {
-          warns.push(
-            `✗ ${fName}/${hue} selected-wash fg on ${sName} (${wash}): ${r.toFixed(2)}:1`,
-          );
+        if (role.behind === "code") {
+          const o = f.overlay[hue][name];
+          for (const [k, c] of Object.entries(codeText)) {
+            pair("overlay", `${fName}/${hue} ${k} on overlay.${name}`, c, o.flat, 4.5);
+          }
+        } else {
+          for (const sName of role.surfaces) {
+            const o = resolveOverlay(tokens, fName, hue, name, { surface: sName });
+            for (const k of role.text) {
+              pair("overlay", `${fName}/${hue} text.${k} on overlay.${name} over ${sName}`, f.text[k], o.flat, 4.5);
+            }
+          }
+          for (const k of role.text_on_bg ?? []) {
+            pair("overlay", `${fName}/${hue} text.${k} on overlay.${name} over bg`, f.text[k], f.overlay[hue][name].flat, 4.5);
+          }
+        }
+        const border = f.overlay[hue][name].border;
+        if (border) {
+          pair("overlay", `${fName}/${hue} overlay.${name} border vs bg`, border, bg, tokens.control_boundary.min);
         }
       }
     }
-    // On the canvas the wash additionally keeps `fg_muted` readable —
-    // that is the constraint pinning pct at its ceiling (Twilight sits
-    // at 4.81:1 here and fails at 20%). It is not required off-canvas:
-    // no useful percentage achieves it there, and the selected label is
-    // `fg` regardless.
-    for (const hue of tokens.variant_hues) {
-      const accent = resolveAccent(tokens, fName, hue);
-      const wash = selectedWash({ surface: bg, accent, mixPct: washPct });
-      const r = contrast(f.text.fg_muted, wash);
-      if (r < 4.5) {
-        warns.push(
-          `✗ ${fName}/${hue} selected-wash fg_muted on bg (${wash}): ${r.toFixed(2)}:1`,
-        );
-      }
-    }
+
     // Control boundaries: WCAG 1.4.11 (issue #15). `border.control` is
     // the one token a port can outline a control with and know the
     // component's boundary is identifiable. It has to hold on every
@@ -589,12 +999,7 @@ function check(tokens) {
     // `bg_overlay`, an input well on `bg_sunk`. `bg_inset` is exempt,
     // for the reason given in tokens.json5 § 3f.
     for (const sName of tokens.control_boundary.surfaces) {
-      const r = contrast(f.border.control, f.surface[sName]);
-      if (r < tokens.control_boundary.min) {
-        warns.push(
-          `✗ ${fName}.border.control (${f.border.control}) on ${sName} (${f.surface[sName]}): ${r.toFixed(2)}:1`,
-        );
-      }
+      pair("control", `${fName}.border.control on ${sName}`, f.border.control, f.surface[sName], tokens.control_boundary.min);
     }
 
     // ANSI slots must match the ansi_shade ruleset, and must clear
@@ -628,12 +1033,7 @@ function check(tokens) {
     }
     for (const [slot, color] of Object.entries(f.ansi)) {
       if (exempt.has(slot)) continue;
-      const r = contrast(color, bgTerm);
-      if (r < 4.5) {
-        warns.push(
-          `✗ ${fName}.ansi.${slot} (${color}) on bg_terminal (${bgTerm}): ${r.toFixed(2)}:1`,
-        );
-      }
+      pair("ansi", `${fName}.ansi.${slot} on bg_terminal`, color, bgTerm, 4.5);
     }
 
     // The derived groups must cover their hue map exactly once per
@@ -671,13 +1071,31 @@ function check(tokens) {
     );
     for (const [role, color] of Object.entries(f.semantic)) {
       for (const [sName, sColor] of semanticSurfaces) {
-        const r = contrast(color, sColor);
-        if (r < 4.5) {
-          warns.push(
-            `✗ ${fName}.semantic.${role} (${color}) on ${sName} (${sColor}): ${r.toFixed(2)}:1`,
-          );
+        pair("semantic", `${fName}.semantic.${role} on ${sName}`, color, sColor, 4.5);
+      }
+    }
+
+    // Shell and prompt roles (§ 15–16): every role with a colour must
+    // stay readable on what it is drawn on — its own background if it
+    // has one, otherwise the map's surface (bg_terminal) — for every
+    // variant, since `accent` and "overlay.*" vary with it.
+    for (const mapName of ["shell_roles", "prompt_roles"]) {
+      const m = tokens[mapName];
+      const surface = m.surface;
+      for (const [name, role] of Object.entries(m.roles)) {
+        if (role.color === undefined) continue;
+        for (const hue of tokens.variant_hues) {
+          const fg = resolveColor(tokens, fName, hue, role.color, { surface });
+          const back = role.background
+            ? resolveColor(tokens, fName, hue, role.background, { surface })
+            : f.surface[surface];
+          pair(mapName, `${fName}/${hue} ${mapName}.${name}`, fg, back, 4.5);
         }
       }
+    }
+    for (const [mod, hue] of Object.entries(tokens.prompt_roles.language_hues)) {
+      const fg = resolveColor(tokens, fName, hue, `hue.${hue}`);
+      pair("prompt_roles", `${fName} prompt_roles.language_hues.${mod}`, fg, f.surface[tokens.prompt_roles.surface], 4.5);
     }
   }
 
@@ -691,14 +1109,82 @@ function check(tokens) {
       );
     }
   }
+
+  warns.push(...distinctnessIssues(tokens));
   return warns;
+}
+
+/**
+ * The distinctness gate (tokens.json5 § 3g): resolved colours that must
+ * not look alike, measured in OKLab. Returns failure strings.
+ */
+export function distinctnessIssues(tokens) {
+  const out = [];
+  const d = tokens.distinct;
+  const key = (a, b) => [a, b].sort().join("|");
+  const alias = new Set((d.syntax?.alias ?? []).map(([a, b]) => key(a, b)));
+  const related = new Set((d.syntax?.related ?? []).map(([a, b]) => key(a, b)));
+  const base = ["black", "red", "green", "yellow", "blue", "magenta", "cyan", "white"];
+
+  for (const [fName, f] of Object.entries(tokens.flavors)) {
+    const colors = { ...f.syntax, fg: f.text.fg };
+    const slots = Object.keys(colors);
+    for (let i = 0; i < slots.length; i++) {
+      for (let j = i + 1; j < slots.length; j++) {
+        const k = key(slots[i], slots[j]);
+        if (alias.has(k)) continue;
+        const min = related.has(k) ? d.related_min : d.min;
+        const dist = deltaE(colors[slots[i]], colors[slots[j]]);
+        if (dist < min) {
+          out.push(
+            `✗ ${fName}: syntax ${slots[i]} (${colors[slots[i]]}) and ${slots[j]} (${colors[slots[j]]}) are ${dist.toFixed(1)} apart in OKLab, need ${min} — alias them in distinct.syntax if that's on purpose`,
+          );
+        }
+      }
+    }
+    const exempt = new Set((d.ansi?.exempt?.[fName] ?? []).map(([a, b]) => key(a, b)));
+    for (const prefix of ["", "bright_"]) {
+      const row = base.map((s) => prefix + s);
+      for (let i = 0; i < row.length; i++) {
+        for (let j = i + 1; j < row.length; j++) {
+          if (exempt.has(key(row[i], row[j]))) continue;
+          const dist = deltaE(f.ansi[row[i]], f.ansi[row[j]]);
+          if (dist < d.min) {
+            out.push(
+              `✗ ${fName}: ansi ${row[i]} (${f.ansi[row[i]]}) and ${row[j]} (${f.ansi[row[j]]}) are ${dist.toFixed(1)} apart in OKLab, need ${d.min}`,
+            );
+          }
+        }
+      }
+    }
+    for (const s of base) {
+      if (exempt.has(key(s, `bright_${s}`))) continue;
+      const dist = deltaE(f.ansi[s], f.ansi[`bright_${s}`]);
+      if (dist < d.related_min) {
+        out.push(
+          `✗ ${fName}: ansi ${s} (${f.ansi[s]}) and bright_${s} (${f.ansi[`bright_${s}`]}) are ${dist.toFixed(1)} apart in OKLab, need ${d.related_min}`,
+        );
+      }
+    }
+  }
+  return out;
 }
 
 /* =====================================================================
    Tiny self-test  (run when invoked as CLI with --test)
    ===================================================================== */
 
-function selfTest() {
+async function selfTest() {
+  const real = await loadTokens();
+  // A structural clone with one mutation — for the cases that prove a
+  // gate or validator actually rejects something.
+  const mutated = (fn) => {
+    const t = structuredClone(real);
+    fn(t);
+    return t;
+  };
+  const has = (list, needle) => list.some((m) => m.includes(needle));
+
   const cases = [
     // mix
     [() => mix("#000000", "#ffffff", 0.5), "#808080", "mix 50/50 black+white"],
@@ -784,6 +1270,103 @@ function selfTest() {
       0,
       "no collision when every gated role differs from its accent",
     ],
+
+    // perceptual helpers
+    [() => deltaE("#123456", "#123456"), 0, "deltaE of a colour with itself is 0"],
+    [() => Math.round(deltaE("#000000", "#ffffff")), 100, "deltaE black/white = 100"],
+    [() => Math.round(apcaContrast("#000000", "#ffffff")), 106, "APCA black on white ≈ Lc 106"],
+    [() => Math.round(apcaContrast("#ffffff", "#000000")), -108, "APCA white on black ≈ Lc -108"],
+
+    // resolveColor / resolveOverlay — issue #19
+    [() => resolveColor(real, "midnight", "purple", "accent.900"), "#581c87", "accent.<rung> follows the variant hue"],
+    [() => resolveColor(real, "dawn", "red", "hue.green"), "#3f6212", "hue.<hue> resolves at that hue's accent rung"],
+    [() => resolveColor(real, "dawn", "red", "semantic.danger"), "#7f1d1d", "semantic.<role>"],
+    [() => resolveColor(real, "noon", "red", "keyword"), real.flavors.noon.syntax.keyword, "core syntax slot"],
+    [
+      () => resolveColor(real, "midnight", "purple", "overlay.selected"),
+      "#3a3341",
+      "overlay.selected over bg = the old 18% wash",
+    ],
+    [
+      () => resolveOverlay(real, "midnight", "purple", "selected", { surface: "bg_inset" }).flat,
+      selectedWash({ surface: "#434f60", accent: "#d8b4fe" }),
+      "resolveOverlay over another surface matches selectedWash()",
+    ],
+    [
+      () => {
+        try {
+          resolveColor(real, "midnight", "red", "purple");
+          return "resolved";
+        } catch {
+          return "threw";
+        }
+      },
+      "threw",
+      "a bare hue name is not a colour target",
+    ],
+
+    // validateShapes — typos fail instead of passing silently
+    [() => validateShapes(real).length, 0, "real tokens are well-formed"],
+    [
+      () => has(validateShapes(mutated((t) => (t.shell_roles.roles.command = { colour: "accent" }))), 'unknown key "colour"'),
+      true,
+      "shell role with `colour:` is rejected",
+    ],
+    [
+      () => has(validateShapes(mutated((t) => (t.syntax_tokens.extended.label = { color: "fg", style: ["italics"] }))), 'unknown style "italics"'),
+      true,
+      "unknown style name is rejected",
+    ],
+    [
+      () => has(validateShapes(mutated((t) => (t.prompt_roles.roles.time.color = "fg_mutted"))), '"fg_mutted" doesn\'t resolve'),
+      true,
+      "unresolvable colour target is rejected",
+    ],
+    [
+      () => has(validateShapes(mutated((t) => delete t.overlay.recipes.noon.find_match)), "overlay.recipes.noon.find_match missing"),
+      true,
+      "a flavor missing an overlay recipe is rejected",
+    ],
+    [
+      () => has(validateShapes(mutated((t) => t.shell_roles.roles.keyword.fish.push("fish_color_command"))), "already fed by"),
+      true,
+      "two roles feeding one fish variable is rejected",
+    ],
+
+    // gates — the real tokens pass, and each gate bites
+    [() => check(real).length, 0, "real tokens pass every gate"],
+    [
+      () =>
+        has(
+          check(mutated((t) => {
+            for (const v of t.variant_hues) {
+              t.flavors.midnight.overlay[v].selection.flat = selection({
+                bg: t.flavors.midnight.surface.bg,
+                accent: resolveAccent(t, "midnight", v),
+              });
+            }
+          })),
+          "on overlay.selection",
+        ),
+      true,
+      "the old lightening selection (25% accent) fails the syntax-on-overlay gate",
+    ],
+    [
+      () => has(check(mutated((t) => (t.flavors.dawn.syntax.number = "#c2410c"))), "dawn.syntax.number on bg"),
+      true,
+      "syntax below 4.5:1 on bg is an error, not a 3:1 warning",
+    ],
+    [() => distinctnessIssues(real).length, 0, "real tokens pass the distinctness gate"],
+    [
+      () => has(distinctnessIssues(mutated((t) => (t.flavors.dawn.syntax.parameter = "#7c2d12"))), "dawn: syntax parameter (#7c2d12) and type"),
+      true,
+      "dawn's old parameter/type browns (ΔE 4.6) are caught",
+    ],
+    [
+      () => has(distinctnessIssues(mutated((t) => (t.flavors.midnight.ansi.blue = t.flavors.midnight.ansi.bright_blue))), "ansi blue"),
+      true,
+      "an ANSI colour identical to its bright version is caught",
+    ],
   ];
 
   let pass = 0,
@@ -813,7 +1396,7 @@ async function main() {
 
   if (args.includes("--test")) {
     console.log("Self-test:");
-    process.exit(selfTest() ? 0 : 1);
+    process.exit((await selfTest()) ? 0 : 1);
   }
 
   const opts = Object.fromEntries(
@@ -821,12 +1404,40 @@ async function main() {
   );
 
   const checkMode = args.includes("--check");
+  const reportMode = args.includes("--report");
 
   const srcPath = join(ROOT, "tokens.json5");
   const outPath = opts.out || join(ROOT, "tokens.json");
   const jsOutPath = join(ROOT, "dist", "tokens.js");
 
-  const tokens = await loadTokens(srcPath);
+  // Shape first: a typo'd role key would otherwise surface as a
+  // confusing resolution error, or not at all.
+  const parsed = JSON.parse(json5ToJson(await readFile(srcPath, "utf8")));
+  const partial = expandShadeTables(resolveRefs(parsed, parsed));
+  const shapeErrs = validateShapes(partial);
+  if (shapeErrs.length) {
+    console.error("Shape errors in tokens.json5 (nothing written):");
+    for (const e of shapeErrs) console.error("  " + e);
+    process.exit(1);
+  }
+  const tokens = expandOverlays(partial);
+
+  // Gates run BEFORE anything is written, so a failing build leaves the
+  // previous tokens.json / dist/tokens.js on disk untouched — a port on
+  // a local-path dependency never picks up rejected values.
+  const rows = [];
+  const warns = check(tokens, { onPair: (r) => rows.push(r) });
+
+  if (reportMode) {
+    printReport(rows);
+    process.exit(warns.length ? 1 : 0);
+  }
+
+  if (warns.length) {
+    console.error("Gate failures (nothing written):");
+    for (const w of warns) console.error("  " + w);
+    process.exit(1);
+  }
 
   const jsonOut = JSON.stringify(tokens, null, 2);
   const jsOut =
@@ -861,27 +1472,40 @@ async function main() {
     console.log(`✓ ${relative(ROOT, jsOutPath)}`);
   }
 
-  const warns = check(tokens);
-  if (warns.length) {
-    console.log("\nContrast warnings:");
-    for (const w of warns) console.log("  " + w);
-    process.exit(1);
+  console.log(`\n✓ ${rows.length} contrast pairs gated, all pass:`);
+  console.log("  accents on bg · text and every syntax slot on bg at 4.5:1");
+  console.log("  every syntax slot, fg, fg_subtle and semantic colour on every code overlay");
+  console.log("  the selected-item wash on every sanctioned surface · overlay borders at 3:1");
+  console.log("  border.control at 3:1 on every control surface (WCAG 1.4.11)");
+  console.log("  ansi.* on bg_terminal · semantic colours on every surface");
+  console.log("  shell_roles and prompt_roles on what they're drawn on");
+  console.log("✓ Resolved colours pass the OKLab distinctness gate.");
+  console.log("✓ Shade tables, overlay recipes and role maps are well-formed.");
+  const below = rows.filter((r) => r.apcaTarget && Math.abs(apcaContrast(r.fg, r.bg)) < r.apcaTarget);
+  console.log(
+    `ℹ APCA (informational): ${below.length} of ${rows.filter((r) => r.apcaTarget).length} on-canvas text pairs below their Lc target — \`npm run report\` for detail.`,
+  );
+}
+
+/** `--report`: every gated pair with its WCAG ratio and APCA Lc. */
+function printReport(rows) {
+  const groups = [...new Set(rows.map((r) => r.group))];
+  for (const group of groups) {
+    console.log(`\n── ${group} ${"─".repeat(Math.max(0, 60 - group.length))}`);
+    for (const r of rows.filter((x) => x.group === group)) {
+      printRow(r);
+    }
   }
-  console.log("\n✓ All accent variants meet WCAG AA against their flavor bg.");
+}
+
+function printRow(r) {
+  const lc = Math.abs(apcaContrast(r.fg, r.bg));
+  const wcagMark = r.ratio < r.min ? "✗" : " ";
+  const apcaNote = r.apcaTarget
+    ? `Lc ${lc.toFixed(0).padStart(3)}${lc < r.apcaTarget ? ` < ${r.apcaTarget}` : ""}`
+    : `Lc ${lc.toFixed(0).padStart(3)}`;
   console.log(
-    "✓ All (flavor, variant) selections remain readable for body text.",
-  );
-  console.log(
-    "✓ All (flavor, variant) selected-item washes keep fg at AA on every sanctioned surface.",
-  );
-  console.log(
-    "✓ All border.control values clear 3:1 on every control surface (WCAG 1.4.11).",
-  );
-  console.log(
-    "✓ All ansi.* slots match ansi_shade and clear AA on bg_terminal.",
-  );
-  console.log(
-    "✓ syntax and semantic resolve cleanly from their shade rulesets.",
+    `${wcagMark} ${r.ratio.toFixed(2).padStart(5)}:1  ${apcaNote.padEnd(12)}  ${r.where}`,
   );
 }
 
