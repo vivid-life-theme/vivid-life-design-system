@@ -8,6 +8,7 @@
       "Read(./.env.production)",
       "Read(./.env.staging)",
       "Read(./.env.test)",
+      "Read(./.env.*.local)",
       "Read(./secrets/**)",
       "Bash(curl:*)",
       "Bash(wget:*)",

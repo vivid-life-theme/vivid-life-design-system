@@ -59,13 +59,7 @@ Wait for the user to confirm or override before proceeding to any following step
 
 Check that `[Unreleased]` actually has content. If it's empty (only the `---` divider), stop and ask the user whether to proceed with an empty changelog entry or cancel.
 
-- Move all items from `[Unreleased]` to a new `## [X.Y.Z] - YYYY-MM-DD` section
-- Categories: Added · Changed · Fixed · Removed
-- Flag breaking token changes with **⚠️** — port maintainers scan for this
-- Update the two comparison links at the bottom of the file:
-  - `[unreleased]` → compare new version tag with HEAD
-  - Add `[X.Y.Z]` → compare previous version tag with new version tag
-- Leave an empty `[Unreleased]` stub above the new section for the next cycle
+Follow the format in [reference.md](reference.md#changelog-format-step-3): move `[Unreleased]` items into a new `## [X.Y.Z] - YYYY-MM-DD` section, flag breaking changes with **⚠️**, update the comparison links, and leave an empty `[Unreleased]` stub.
 
 ## 4 — Update README if needed
 
@@ -109,39 +103,11 @@ Watch the workflow run at: https://github.com/vivid-life-theme/vivid-life-design
 
 ## 8 — Create GitHub release
 
-Extract release notes from the CHANGELOG section you just wrote:
-
-```bash
-# Replace X.Y.Z with the actual version, e.g. 0.3.0
-VERSION="X.Y.Z"
-awk "/^## \[${VERSION}\]/{p=1; next} p && /^## /{exit} p" CHANGELOG.md > /tmp/vl-release-notes.md
-```
-
-Then create the release:
-
-```bash
-gh release create "v${VERSION}" \
-  --title "v${VERSION}" \
-  --notes-file /tmp/vl-release-notes.md
-```
-
-Add a downstream-ports note at the end of the release body if this release contains ⚠️ breaking changes:
-
-> **For downstream ports:** Re-read `tokens.json` / `dist/tokens.js`. Update any hard-coded token references before regenerating.
->
-> Full changelog: https://github.com/vivid-life-theme/vivid-life-design-system/blob/main/CHANGELOG.md
+Extract the release notes from the CHANGELOG section and run `gh release create` as described in [reference.md](reference.md#github-release-step-8). Add the downstream-ports note there if the release contains ⚠️ breaking changes.
 
 ## 9 — Post-release verification
 
-- [ ] Workflow succeeded: https://github.com/vivid-life-theme/vivid-life-design-system/actions
-- [ ] Package appears on npm: `npm view @vivid-life-theme/design-system version`
-- [ ] Install smoke test:
-  ```bash
-  mkdir /tmp/vl-test && cd /tmp/vl-test && npm init -y
-  npm install @vivid-life-theme/design-system
-  node -e "import('@vivid-life-theme/design-system').then(m => console.log(Object.keys(m)))"
-  ```
-- [ ] GitHub release visible with correct notes
+Run the checklist in [reference.md](reference.md#post-release-verification-step-9): workflow succeeded, package on npm, install smoke test, GitHub release visible.
 
 ## Rollback
 
