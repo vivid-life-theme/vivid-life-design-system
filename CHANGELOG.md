@@ -10,6 +10,10 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ## [Unreleased]
 
+---
+
+## [0.11.0] - 2026-10-01
+
 Closes [#19](https://github.com/vivid-life-theme/vivid-life-design-system/issues/19): four things every port needed and answered on its own — shell roles, prompt roles, overlay recipes, stricter gates. The answers had drifted: one command line coloured differently in the fish and PowerShell ports of the same theme, Windows Terminal flattened selection at 30% where this repo said 25%, and the Starship port's two variants disagreed with each other.
 
 The stricter gates moved values. Holding every syntax slot at 4.5:1 on `bg` — and on every overlay behind code — turned up seven slots below AA on the canvas and selections that dropped Midnight comments to 2.13:1. Every port regenerates for this release.
@@ -262,4 +266,15 @@ Initial npm release. The token system existed before this version; this is the f
 
 ---
 
-[unreleased]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.10.0...HEAD [0.10.0]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.9.0...v0.10.0 [0.9.0]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.8.0...v0.9.0 [0.8.0]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.7.0...v0.8.0 [0.7.0]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.6.0...v0.7.0 [0.6.0]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.5.0...v0.6.0 [0.5.0]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.4.0...v0.5.0 [0.4.0]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.3.0...v0.4.0 [0.3.0]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.2.1...v0.3.0 [0.2.1]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.2.0...v0.2.1 [0.2.0]: https://github.com/vivid-life-theme/vivid-life-design-system/releases/tag/v0.2.0
+[unreleased]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.11.0...HEAD
+[0.11.0]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.10.0...v0.11.0
+[0.10.0]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.9.0...v0.10.0
+[0.9.0]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.8.0...v0.9.0
+[0.8.0]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.7.0...v0.8.0
+[0.7.0]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.6.0...v0.7.0
+[0.6.0]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.5.0...v0.6.0
+[0.5.0]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.4.0...v0.5.0
+[0.4.0]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.3.0...v0.4.0
+[0.3.0]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.2.1...v0.3.0
+[0.2.1]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.2.0...v0.2.1
+[0.2.0]: https://github.com/vivid-life-theme/vivid-life-design-system/releases/tag/v0.2.0
