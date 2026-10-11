@@ -10,6 +10,10 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ## [Unreleased]
 
+---
+
+## [0.12.0] - 2026-10-11
+
 Closes [#22](https://github.com/vivid-life-theme/vivid-life-design-system/issues/22): shared colour roles for apps that draw their own chrome inside a terminal. The Claude Code port had made about 70 of these calls in its own `roles.mjs`; they now live in the foundation, gated like the shell and prompt roles. Nothing that already shipped changes value — every addition is new.
 
 ### Added
@@ -27,6 +31,10 @@ Closes [#22](https://github.com/vivid-life-theme/vivid-life-design-system/issues
 ### Fixed
 
 - **`readableOn(bg)`** split at luminance 0.5, far from the real crossover (≈ 0.18), and picked light text on six accents — 1.76:1 on Midnight's `yellow.500`. It now returns whichever of `#171717` / `#f5f5f5` has the higher contrast. For text on an accent, read `accent_on`.
+
+### Changed
+
+- **README** aligned with the rest of the theme family (structure, wording, links).
 
 ### Port migration
 
@@ -288,7 +296,8 @@ Initial npm release. The token system existed before this version; this is the f
 
 ---
 
-[unreleased]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.11.0...HEAD
+[unreleased]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.12.0...HEAD
+[0.12.0]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.11.0...v0.12.0
 [0.11.0]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.10.0...v0.11.0
 [0.10.0]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.9.0...v0.10.0
 [0.9.0]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.8.0...v0.9.0

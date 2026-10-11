@@ -433,7 +433,7 @@ Apps that let users pick from a fixed set of named colours (Claude Code: one per
 | pink   | `#fca5a5` (`red.300`)   | `#fee2e2` (`red.100`)   | `#581c87` (`purple.900`) | `#581c87` (`purple.900`) |
 | cyan   | `#06b6d4` (`ansi.cyan`) | `#67e8f9` (`ansi.cyan`) | `#155e75` (`ansi.cyan`)  | `#0e7490` (`ansi.cyan`)  |
 
-Unmarked cells are the hue at its accent rung. Taking every hue at its accent rung would have put red and orange 6.3 apart on Dawn and 6.1 on Noon, so those rungs move instead of being exempted (`distinct.app.categorical_exempt` exists, and is empty). The palette has no pink: on dark flavors the light red reads pink; on light flavors the deep reds turn brown and land on orange, so pink takes the deep purple. Cyan takes the ANSI slot — the protocol use cyan is reserved for. A rainbow sweep uses red → purple in table order.
+Unmarked cells are the hue at its accent rung. Taking every hue at its accent rung would have put red and orange 6.3 apart on Dawn and 6.1 on Noon, so those rungs move instead of being exempted (`distinct.app.categorical_exempt` exists, and is empty). The palette has no pink: on dark flavors the light red reads pink; on light flavors the deep reds turn brown and land on orange, so pink takes the deep purple. Cyan uses the ANSI slot (`ansi.cyan`), the protocol use cyan is reserved for. A rainbow sweep uses red → purple in table order.
 
 #### Emphasis step
 
