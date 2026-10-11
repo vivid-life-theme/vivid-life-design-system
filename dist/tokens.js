@@ -371,6 +371,18 @@ export default {
         "behind": "code",
         "use": "Gutter / line-number column beside a removed line."
       },
+      "diff_inserted_dimmed": {
+        "behind": "code",
+        "use": "Inserted line of a diff that is no longer live (rejected, superseded)."
+      },
+      "diff_removed_dimmed": {
+        "behind": "code",
+        "use": "Removed line of a diff that is no longer live (rejected, superseded)."
+      },
+      "panel": {
+        "behind": "code",
+        "use": "A raised block (message, sidebar, composer) inside a terminal app, drawn over bg_terminal."
+      },
       "selected": {
         "behind": "ui",
         "use": "The selected tab / list row / sidebar entry. Reinforces an underline or accent bar; never the sole cue.",
@@ -445,6 +457,18 @@ export default {
           "color": "red.900",
           "alpha": 0.35
         },
+        "diff_inserted_dimmed": {
+          "color": "green.900",
+          "alpha": 0.1
+        },
+        "diff_removed_dimmed": {
+          "color": "red.900",
+          "alpha": 0.1
+        },
+        "panel": {
+          "color": "gray.800",
+          "alpha": 0.5
+        },
         "selected": {
           "color": "accent",
           "alpha": 0.18
@@ -504,6 +528,18 @@ export default {
         "diff_removed_gutter": {
           "color": "red.900",
           "alpha": 0.6
+        },
+        "diff_inserted_dimmed": {
+          "color": "green.900",
+          "alpha": 0.2
+        },
+        "diff_removed_dimmed": {
+          "color": "red.900",
+          "alpha": 0.2
+        },
+        "panel": {
+          "color": "gray.900",
+          "alpha": 0.55
         },
         "selected": {
           "color": "accent",
@@ -565,6 +601,18 @@ export default {
           "color": "red.100",
           "alpha": 0.8
         },
+        "diff_inserted_dimmed": {
+          "color": "green.100",
+          "alpha": 0.25
+        },
+        "diff_removed_dimmed": {
+          "color": "red.100",
+          "alpha": 0.25
+        },
+        "panel": {
+          "color": "gray.100",
+          "alpha": 0.6
+        },
         "selected": {
           "color": "accent",
           "alpha": 0.18
@@ -625,6 +673,18 @@ export default {
           "color": "red.300",
           "alpha": 0.35
         },
+        "diff_inserted_dimmed": {
+          "color": "green.300",
+          "alpha": 0.1
+        },
+        "diff_removed_dimmed": {
+          "color": "red.300",
+          "alpha": 0.1
+        },
+        "panel": {
+          "color": "gray.900",
+          "alpha": 0.08
+        },
         "selected": {
           "color": "accent",
           "alpha": 0.18
@@ -639,6 +699,13 @@ export default {
       "bg_soft",
       "bg_sunk",
       "bg_overlay"
+    ]
+  },
+  "faint_text": {
+    "min": 3,
+    "surfaces": [
+      "bg",
+      "bg_terminal"
     ]
   },
   "distinct": {
@@ -751,12 +818,27 @@ export default {
           "find_match_other"
         ]
       ]
+    },
+    "app": {
+      "visible": [
+        "message"
+      ],
+      "categorical_exempt": {}
     }
   },
   "apca_targets": {
     "body": 75,
     "syntax": 60,
     "comment": 45
+  },
+  "emphasis_step": {
+    "min": 4.5,
+    "text_ramp": [
+      "fg_faint",
+      "fg_subtle",
+      "fg_muted",
+      "fg"
+    ]
   },
   "flavors": {
     "midnight": {
@@ -775,8 +857,10 @@ export default {
         "fg": "#f5f5f5",
         "fg_muted": "#d4d4d4",
         "fg_subtle": "#999999",
-        "fg_disabled": "#525252"
+        "fg_disabled": "#525252",
+        "fg_faint": "#686868"
       },
+      "accent_on": "#171717",
       "border": {
         "subtle": "#262626",
         "default": "#404040",
@@ -902,6 +986,21 @@ export default {
             "alpha": 0.35,
             "flat": "#3b1919"
           },
+          "diff_inserted_dimmed": {
+            "color": "#365314",
+            "alpha": 0.1,
+            "flat": "#1a1d17"
+          },
+          "diff_removed_dimmed": {
+            "color": "#7f1d1d",
+            "alpha": 0.1,
+            "flat": "#211818"
+          },
+          "panel": {
+            "color": "#262626",
+            "alpha": 0.5,
+            "flat": "#1f1f1f"
+          },
           "selected": {
             "color": "#ef4444",
             "alpha": 0.18,
@@ -983,6 +1082,21 @@ export default {
             "color": "#7f1d1d",
             "alpha": 0.35,
             "flat": "#3b1919"
+          },
+          "diff_inserted_dimmed": {
+            "color": "#365314",
+            "alpha": 0.1,
+            "flat": "#1a1d17"
+          },
+          "diff_removed_dimmed": {
+            "color": "#7f1d1d",
+            "alpha": 0.1,
+            "flat": "#211818"
+          },
+          "panel": {
+            "color": "#262626",
+            "alpha": 0.5,
+            "flat": "#1f1f1f"
           },
           "selected": {
             "color": "#f97316",
@@ -1066,6 +1180,21 @@ export default {
             "alpha": 0.35,
             "flat": "#3b1919"
           },
+          "diff_inserted_dimmed": {
+            "color": "#365314",
+            "alpha": 0.1,
+            "flat": "#1a1d17"
+          },
+          "diff_removed_dimmed": {
+            "color": "#7f1d1d",
+            "alpha": 0.1,
+            "flat": "#211818"
+          },
+          "panel": {
+            "color": "#262626",
+            "alpha": 0.5,
+            "flat": "#1f1f1f"
+          },
           "selected": {
             "color": "#eab308",
             "alpha": 0.18,
@@ -1147,6 +1276,21 @@ export default {
             "color": "#7f1d1d",
             "alpha": 0.35,
             "flat": "#3b1919"
+          },
+          "diff_inserted_dimmed": {
+            "color": "#365314",
+            "alpha": 0.1,
+            "flat": "#1a1d17"
+          },
+          "diff_removed_dimmed": {
+            "color": "#7f1d1d",
+            "alpha": 0.1,
+            "flat": "#211818"
+          },
+          "panel": {
+            "color": "#262626",
+            "alpha": 0.5,
+            "flat": "#1f1f1f"
           },
           "selected": {
             "color": "#84cc16",
@@ -1230,6 +1374,21 @@ export default {
             "alpha": 0.35,
             "flat": "#3b1919"
           },
+          "diff_inserted_dimmed": {
+            "color": "#365314",
+            "alpha": 0.1,
+            "flat": "#1a1d17"
+          },
+          "diff_removed_dimmed": {
+            "color": "#7f1d1d",
+            "alpha": 0.1,
+            "flat": "#211818"
+          },
+          "panel": {
+            "color": "#262626",
+            "alpha": 0.5,
+            "flat": "#1f1f1f"
+          },
           "selected": {
             "color": "#93c5fd",
             "alpha": 0.18,
@@ -1312,6 +1471,21 @@ export default {
             "alpha": 0.35,
             "flat": "#3b1919"
           },
+          "diff_inserted_dimmed": {
+            "color": "#365314",
+            "alpha": 0.1,
+            "flat": "#1a1d17"
+          },
+          "diff_removed_dimmed": {
+            "color": "#7f1d1d",
+            "alpha": 0.1,
+            "flat": "#211818"
+          },
+          "panel": {
+            "color": "#262626",
+            "alpha": 0.5,
+            "flat": "#1f1f1f"
+          },
           "selected": {
             "color": "#d8b4fe",
             "alpha": 0.18,
@@ -1336,8 +1510,10 @@ export default {
         "fg": "#f5f5f5",
         "fg_muted": "#d4d4d4",
         "fg_subtle": "#b8b8b8",
-        "fg_disabled": "#737373"
+        "fg_disabled": "#737373",
+        "fg_faint": "#8f8f8f"
       },
+      "accent_on": "#171717",
       "border": {
         "subtle": "#525252",
         "default": "#171717",
@@ -1463,6 +1639,21 @@ export default {
             "alpha": 0.6,
             "flat": "#662b2b"
           },
+          "diff_inserted_dimmed": {
+            "color": "#365314",
+            "alpha": 0.2,
+            "flat": "#3e4437"
+          },
+          "diff_removed_dimmed": {
+            "color": "#7f1d1d",
+            "alpha": 0.2,
+            "flat": "#4d3939"
+          },
+          "panel": {
+            "color": "#171717",
+            "alpha": 0.55,
+            "flat": "#292929"
+          },
           "selected": {
             "color": "#fca5a5",
             "alpha": 0.18,
@@ -1544,6 +1735,21 @@ export default {
             "color": "#7f1d1d",
             "alpha": 0.6,
             "flat": "#662b2b"
+          },
+          "diff_inserted_dimmed": {
+            "color": "#365314",
+            "alpha": 0.2,
+            "flat": "#3e4437"
+          },
+          "diff_removed_dimmed": {
+            "color": "#7f1d1d",
+            "alpha": 0.2,
+            "flat": "#4d3939"
+          },
+          "panel": {
+            "color": "#171717",
+            "alpha": 0.55,
+            "flat": "#292929"
           },
           "selected": {
             "color": "#fdba74",
@@ -1627,6 +1833,21 @@ export default {
             "alpha": 0.6,
             "flat": "#662b2b"
           },
+          "diff_inserted_dimmed": {
+            "color": "#365314",
+            "alpha": 0.2,
+            "flat": "#3e4437"
+          },
+          "diff_removed_dimmed": {
+            "color": "#7f1d1d",
+            "alpha": 0.2,
+            "flat": "#4d3939"
+          },
+          "panel": {
+            "color": "#171717",
+            "alpha": 0.55,
+            "flat": "#292929"
+          },
           "selected": {
             "color": "#eab308",
             "alpha": 0.18,
@@ -1708,6 +1929,21 @@ export default {
             "color": "#7f1d1d",
             "alpha": 0.6,
             "flat": "#662b2b"
+          },
+          "diff_inserted_dimmed": {
+            "color": "#365314",
+            "alpha": 0.2,
+            "flat": "#3e4437"
+          },
+          "diff_removed_dimmed": {
+            "color": "#7f1d1d",
+            "alpha": 0.2,
+            "flat": "#4d3939"
+          },
+          "panel": {
+            "color": "#171717",
+            "alpha": 0.55,
+            "flat": "#292929"
           },
           "selected": {
             "color": "#84cc16",
@@ -1791,6 +2027,21 @@ export default {
             "alpha": 0.6,
             "flat": "#662b2b"
           },
+          "diff_inserted_dimmed": {
+            "color": "#365314",
+            "alpha": 0.2,
+            "flat": "#3e4437"
+          },
+          "diff_removed_dimmed": {
+            "color": "#7f1d1d",
+            "alpha": 0.2,
+            "flat": "#4d3939"
+          },
+          "panel": {
+            "color": "#171717",
+            "alpha": 0.55,
+            "flat": "#292929"
+          },
           "selected": {
             "color": "#93c5fd",
             "alpha": 0.18,
@@ -1873,6 +2124,21 @@ export default {
             "alpha": 0.6,
             "flat": "#662b2b"
           },
+          "diff_inserted_dimmed": {
+            "color": "#365314",
+            "alpha": 0.2,
+            "flat": "#3e4437"
+          },
+          "diff_removed_dimmed": {
+            "color": "#7f1d1d",
+            "alpha": 0.2,
+            "flat": "#4d3939"
+          },
+          "panel": {
+            "color": "#171717",
+            "alpha": 0.55,
+            "flat": "#292929"
+          },
           "selected": {
             "color": "#d8b4fe",
             "alpha": 0.18,
@@ -1897,8 +2163,10 @@ export default {
         "fg": "#171717",
         "fg_muted": "#404040",
         "fg_subtle": "#525252",
-        "fg_disabled": "#737373"
+        "fg_disabled": "#737373",
+        "fg_faint": "#737373"
       },
+      "accent_on": "#f5f5f5",
       "border": {
         "subtle": "#bdbdbd",
         "default": "#a3a3a3",
@@ -2024,6 +2292,21 @@ export default {
             "alpha": 0.8,
             "flat": "#f6dfdf"
           },
+          "diff_inserted_dimmed": {
+            "color": "#ecfccb",
+            "alpha": 0.25,
+            "flat": "#daded2"
+          },
+          "diff_removed_dimmed": {
+            "color": "#fee2e2",
+            "alpha": 0.25,
+            "flat": "#dfd8d8"
+          },
+          "panel": {
+            "color": "#f5f5f5",
+            "alpha": 0.6,
+            "flat": "#e8e8e8"
+          },
           "selected": {
             "color": "#991b1b",
             "alpha": 0.18,
@@ -2105,6 +2388,21 @@ export default {
             "color": "#fee2e2",
             "alpha": 0.8,
             "flat": "#f6dfdf"
+          },
+          "diff_inserted_dimmed": {
+            "color": "#ecfccb",
+            "alpha": 0.25,
+            "flat": "#daded2"
+          },
+          "diff_removed_dimmed": {
+            "color": "#fee2e2",
+            "alpha": 0.25,
+            "flat": "#dfd8d8"
+          },
+          "panel": {
+            "color": "#f5f5f5",
+            "alpha": 0.6,
+            "flat": "#e8e8e8"
           },
           "selected": {
             "color": "#7c2d12",
@@ -2188,6 +2486,21 @@ export default {
             "alpha": 0.8,
             "flat": "#f6dfdf"
           },
+          "diff_inserted_dimmed": {
+            "color": "#ecfccb",
+            "alpha": 0.25,
+            "flat": "#daded2"
+          },
+          "diff_removed_dimmed": {
+            "color": "#fee2e2",
+            "alpha": 0.25,
+            "flat": "#dfd8d8"
+          },
+          "panel": {
+            "color": "#f5f5f5",
+            "alpha": 0.6,
+            "flat": "#e8e8e8"
+          },
           "selected": {
             "color": "#854d0e",
             "alpha": 0.18,
@@ -2269,6 +2582,21 @@ export default {
             "color": "#fee2e2",
             "alpha": 0.8,
             "flat": "#f6dfdf"
+          },
+          "diff_inserted_dimmed": {
+            "color": "#ecfccb",
+            "alpha": 0.25,
+            "flat": "#daded2"
+          },
+          "diff_removed_dimmed": {
+            "color": "#fee2e2",
+            "alpha": 0.25,
+            "flat": "#dfd8d8"
+          },
+          "panel": {
+            "color": "#f5f5f5",
+            "alpha": 0.6,
+            "flat": "#e8e8e8"
           },
           "selected": {
             "color": "#3f6212",
@@ -2352,6 +2680,21 @@ export default {
             "alpha": 0.8,
             "flat": "#f6dfdf"
           },
+          "diff_inserted_dimmed": {
+            "color": "#ecfccb",
+            "alpha": 0.25,
+            "flat": "#daded2"
+          },
+          "diff_removed_dimmed": {
+            "color": "#fee2e2",
+            "alpha": 0.25,
+            "flat": "#dfd8d8"
+          },
+          "panel": {
+            "color": "#f5f5f5",
+            "alpha": 0.6,
+            "flat": "#e8e8e8"
+          },
           "selected": {
             "color": "#1d4ed8",
             "alpha": 0.18,
@@ -2434,6 +2777,21 @@ export default {
             "alpha": 0.8,
             "flat": "#f6dfdf"
           },
+          "diff_inserted_dimmed": {
+            "color": "#ecfccb",
+            "alpha": 0.25,
+            "flat": "#daded2"
+          },
+          "diff_removed_dimmed": {
+            "color": "#fee2e2",
+            "alpha": 0.25,
+            "flat": "#dfd8d8"
+          },
+          "panel": {
+            "color": "#f5f5f5",
+            "alpha": 0.6,
+            "flat": "#e8e8e8"
+          },
           "selected": {
             "color": "#7e22ce",
             "alpha": 0.18,
@@ -2458,8 +2816,10 @@ export default {
         "fg": "#171717",
         "fg_muted": "#404040",
         "fg_subtle": "#525252",
-        "fg_disabled": "#737373"
+        "fg_disabled": "#737373",
+        "fg_faint": "#898989"
       },
+      "accent_on": "#f5f5f5",
       "border": {
         "subtle": "#e5e5e5",
         "default": "#d4d4d4",
@@ -2585,6 +2945,21 @@ export default {
             "alpha": 0.35,
             "flat": "#f7d9d9"
           },
+          "diff_inserted_dimmed": {
+            "color": "#bef264",
+            "alpha": 0.1,
+            "flat": "#f0f5e7"
+          },
+          "diff_removed_dimmed": {
+            "color": "#fca5a5",
+            "alpha": 0.1,
+            "flat": "#f6eded"
+          },
+          "panel": {
+            "color": "#171717",
+            "alpha": 0.08,
+            "flat": "#e3e3e3"
+          },
           "selected": {
             "color": "#b91c1c",
             "alpha": 0.18,
@@ -2666,6 +3041,21 @@ export default {
             "color": "#fca5a5",
             "alpha": 0.35,
             "flat": "#f7d9d9"
+          },
+          "diff_inserted_dimmed": {
+            "color": "#bef264",
+            "alpha": 0.1,
+            "flat": "#f0f5e7"
+          },
+          "diff_removed_dimmed": {
+            "color": "#fca5a5",
+            "alpha": 0.1,
+            "flat": "#f6eded"
+          },
+          "panel": {
+            "color": "#171717",
+            "alpha": 0.08,
+            "flat": "#e3e3e3"
           },
           "selected": {
             "color": "#c2410c",
@@ -2749,6 +3139,21 @@ export default {
             "alpha": 0.35,
             "flat": "#f7d9d9"
           },
+          "diff_inserted_dimmed": {
+            "color": "#bef264",
+            "alpha": 0.1,
+            "flat": "#f0f5e7"
+          },
+          "diff_removed_dimmed": {
+            "color": "#fca5a5",
+            "alpha": 0.1,
+            "flat": "#f6eded"
+          },
+          "panel": {
+            "color": "#171717",
+            "alpha": 0.08,
+            "flat": "#e3e3e3"
+          },
           "selected": {
             "color": "#854d0e",
             "alpha": 0.18,
@@ -2830,6 +3235,21 @@ export default {
             "color": "#fca5a5",
             "alpha": 0.35,
             "flat": "#f7d9d9"
+          },
+          "diff_inserted_dimmed": {
+            "color": "#bef264",
+            "alpha": 0.1,
+            "flat": "#f0f5e7"
+          },
+          "diff_removed_dimmed": {
+            "color": "#fca5a5",
+            "alpha": 0.1,
+            "flat": "#f6eded"
+          },
+          "panel": {
+            "color": "#171717",
+            "alpha": 0.08,
+            "flat": "#e3e3e3"
           },
           "selected": {
             "color": "#3f6212",
@@ -2913,6 +3333,21 @@ export default {
             "alpha": 0.35,
             "flat": "#f7d9d9"
           },
+          "diff_inserted_dimmed": {
+            "color": "#bef264",
+            "alpha": 0.1,
+            "flat": "#f0f5e7"
+          },
+          "diff_removed_dimmed": {
+            "color": "#fca5a5",
+            "alpha": 0.1,
+            "flat": "#f6eded"
+          },
+          "panel": {
+            "color": "#171717",
+            "alpha": 0.08,
+            "flat": "#e3e3e3"
+          },
           "selected": {
             "color": "#1d4ed8",
             "alpha": 0.18,
@@ -2994,6 +3429,21 @@ export default {
             "color": "#fca5a5",
             "alpha": 0.35,
             "flat": "#f7d9d9"
+          },
+          "diff_inserted_dimmed": {
+            "color": "#bef264",
+            "alpha": 0.1,
+            "flat": "#f0f5e7"
+          },
+          "diff_removed_dimmed": {
+            "color": "#fca5a5",
+            "alpha": 0.1,
+            "flat": "#f6eded"
+          },
+          "panel": {
+            "color": "#171717",
+            "alpha": 0.08,
+            "flat": "#e3e3e3"
           },
           "selected": {
             "color": "#7e22ce",
@@ -4053,6 +4503,185 @@ export default {
       "golang": "blue",
       "java": "red",
       "docker_context": "purple"
+    }
+  },
+  "app_roles": {
+    "surface": "bg_terminal",
+    "roles": {
+      "text": {
+        "color": "fg",
+        "gate": "text",
+        "use": "Body text."
+      },
+      "inactive": {
+        "color": "fg_subtle",
+        "gate": "text",
+        "emphasis": true,
+        "use": "Secondary or idle text; an idle spinner label."
+      },
+      "brand": {
+        "color": "accent",
+        "gate": "text",
+        "emphasis": true,
+        "use": "The app's own name, its working spinner, its primary highlight."
+      },
+      "permission": {
+        "color": "accent",
+        "gate": "text",
+        "emphasis": true,
+        "use": "A prompt that asks the user to decide (approve, allow, choose)."
+      },
+      "suggestion": {
+        "color": "accent",
+        "gate": "text",
+        "use": "A suggested input or completion the user can accept."
+      },
+      "success": {
+        "color": "semantic.success",
+        "gate": "text",
+        "use": "Done, passed, connected."
+      },
+      "error": {
+        "color": "semantic.danger",
+        "gate": "text",
+        "use": "Failed, rejected, disconnected."
+      },
+      "warning": {
+        "color": "semantic.warning",
+        "gate": "text",
+        "emphasis": true,
+        "use": "Needs attention; a rate limit closing in."
+      },
+      "info": {
+        "color": "semantic.info",
+        "gate": "text",
+        "emphasis": true,
+        "use": "Neutral status: a background task, an attached editor, a system spinner."
+      },
+      "merged": {
+        "color": "hue.purple",
+        "gate": "text",
+        "use": "A merged pull request or branch."
+      },
+      "on_accent": {
+        "color": "accent_on",
+        "background": "accent",
+        "gate": "text",
+        "use": "Label on an accent fill: a badge, a primary button. Also gated on every semantic colour as a fill (flavors.*.accent_on)."
+      },
+      "input_border": {
+        "color": "border.control",
+        "gate": "ui",
+        "use": "The boundary of the input box. A control boundary (§ 3f)."
+      },
+      "hint": {
+        "color": "fg_faint",
+        "gate": "ui",
+        "use": "Faint rules, separators, incidental hints nobody has to read (§ 3f)."
+      },
+      "meter_fill": {
+        "color": "accent",
+        "gate": "ui",
+        "use": "The filled part of a usage / progress bar."
+      },
+      "meter_track": {
+        "color": "fg_faint",
+        "gate": "ui",
+        "use": "The empty part of a usage / progress bar."
+      },
+      "message": {
+        "background": "overlay.panel",
+        "gate": "surface",
+        "use": "A message block, sidebar or composer. Must show on its own over bg_terminal (distinct.app.visible)."
+      },
+      "message_hover": {
+        "background": "overlay.inactive_selection",
+        "gate": "surface",
+        "use": "A message block under the pointer or keyboard focus. Not overlay.selected: that wash only gates fg, and a message can carry fg_subtle."
+      },
+      "selection": {
+        "background": "overlay.selection",
+        "gate": "surface",
+        "use": "Selected text."
+      },
+      "diff_inserted": {
+        "background": "overlay.diff_inserted_line",
+        "gate": "surface",
+        "use": "Inserted line."
+      },
+      "diff_removed": {
+        "background": "overlay.diff_removed_line",
+        "gate": "surface",
+        "use": "Removed line."
+      },
+      "diff_inserted_word": {
+        "background": "overlay.diff_inserted_text",
+        "gate": "surface",
+        "use": "Changed characters within an inserted line."
+      },
+      "diff_removed_word": {
+        "background": "overlay.diff_removed_text",
+        "gate": "surface",
+        "use": "Changed characters within a removed line."
+      },
+      "diff_inserted_dimmed": {
+        "background": "overlay.diff_inserted_dimmed",
+        "gate": "surface",
+        "use": "Inserted line of a diff that is no longer live (rejected, superseded)."
+      },
+      "diff_removed_dimmed": {
+        "background": "overlay.diff_removed_dimmed",
+        "gate": "surface",
+        "use": "Removed line of a diff that is no longer live (rejected, superseded)."
+      }
+    },
+    "mode_hues": {
+      "plan": "blue",
+      "auto_accept": "purple",
+      "fast": "orange",
+      "shell": "green"
+    },
+    "categorical": {
+      "midnight": {
+        "red": "hue.red",
+        "orange": "hue.orange",
+        "yellow": "hue.yellow",
+        "green": "hue.green",
+        "blue": "hue.blue",
+        "purple": "hue.purple",
+        "pink": "red.300",
+        "cyan": "ansi.cyan"
+      },
+      "twilight": {
+        "red": "hue.red",
+        "orange": "hue.orange",
+        "yellow": "hue.yellow",
+        "green": "hue.green",
+        "blue": "hue.blue",
+        "purple": "hue.purple",
+        "pink": "red.100",
+        "cyan": "ansi.cyan"
+      },
+      "dawn": {
+        "red": "red.900",
+        "orange": "orange.800",
+        "yellow": "yellow.900",
+        "green": "hue.green",
+        "blue": "hue.blue",
+        "purple": "hue.purple",
+        "pink": "purple.900",
+        "cyan": "ansi.cyan"
+      },
+      "noon": {
+        "red": "red.900",
+        "orange": "hue.orange",
+        "yellow": "hue.yellow",
+        "green": "hue.green",
+        "blue": "hue.blue",
+        "purple": "hue.purple",
+        "pink": "purple.900",
+        "cyan": "ansi.cyan"
+      }
     }
   }
 };

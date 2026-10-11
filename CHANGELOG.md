@@ -10,6 +10,28 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ## [Unreleased]
 
+Closes [#22](https://github.com/vivid-life-theme/vivid-life-design-system/issues/22): shared colour roles for apps that draw their own chrome inside a terminal. The Claude Code port had made about 70 of these calls in its own `roles.mjs`; they now live in the foundation, gated like the shell and prompt roles. Nothing that already shipped changes value — every addition is new.
+
+### Added
+
+- **`app_roles`** (§ 17) — concept → colour target, background and gate (`text` 4.5:1, `ui` 3:1, `surface`: every code colour plus `fg_muted` at 4.5:1 on it), for all 24 themes on `bg_terminal`. Covers body / inactive text, brand, permission, suggestion, the status colours, merged, text on an accent fill, the input border, faint hints, meter fill / track, message blocks and their hover state, selection, and every diff background.
+- **`app_roles.mode_hues`** — one fixed hue per app state (`plan` blue, `auto_accept` purple, `fast` orange, `shell` green), the `language_hues` idea for modes.
+- **`app_roles.categorical`** — named colours per flavor (red, orange, yellow, green, blue, purple, pink, cyan), each ≥ 4.5:1 on `bg_terminal`, pairwise ≥ 7 in OKLab, never variant-dependent. Taking every hue at its accent rung put red / orange 6.3 apart on Dawn and 6.1 on Noon; those rungs move instead (Dawn red / yellow → 900, orange → 800; Noon red → 900). `distinct.app.categorical_exempt` is the escape hatch, and is empty.
+- **`text.fg_faint`** / `--vl-fg-faint` — the grey closest to `bg` and `bg_terminal` that still clears 3:1 on both (`faint_text`, § 3f): Midnight `#686868`, Twilight `#8f8f8f`, Dawn `#737373`, Noon `#898989`. For marks and incidental hints only, never for text a user has to read.
+- **`flavors.*.accent_on`** — text on an accent fill, until now only in the CSS (`--vl-accent-on`, which now reads it; same values). Gated at 4.5:1 on all six accents of its flavor and on the four semantic colours.
+- **`emphasis_step`** (§ 3h) and the colour target `emphasis.<target>` — a spinner / shimmer highlight: same hue one rung further from the surface, one rung back at the end of the ramp; greys step along the text ramp. Also exported as `emphasisStep()`.
+- **Overlay recipes `panel`** — a raised block over `bg_terminal`, gated to stay ≥ 5 from it in OKLab (`distinct.app.visible`); `line_highlight` was 3.2 on Twilight — and **`diff_{inserted,removed}_dimmed`**, a diff that's no longer live, at half the live line's alpha.
+- **Colour targets** `accent_on`, `border.<weight>`, `fg_faint` and `emphasis.<target>` in `resolveColor()`.
+- 26 new self-test cases (70 in total).
+
+### Fixed
+
+- **`readableOn(bg)`** split at luminance 0.5, far from the real crossover (≈ 0.18), and picked light text on six accents — 1.76:1 on Midnight's `yellow.500`. It now returns whichever of `#171717` / `#f5f5f5` has the higher contrast. For text on an accent, read `accent_on`.
+
+### Port migration
+
+- **Claude Code** — map `src/roles.mjs` onto `app_roles` and drop the port-side forms: `accent_on` and `border.*` are foundation targets now, and `shimmer:<target>` is `emphasis.<target>`. Visible changes: `subtle` / `rate_limit_empty` → `fg_faint`; `planMode` → `mode_hues.plan` (`hue.blue` rather than `semantic.info`; they differ on every flavor but Midnight); the message backgrounds → `overlay.panel`; `diff*Dimmed` → the dimmed recipes; subagent red / orange / yellow on Dawn and red on Noon → `app_roles.categorical`.
+
 ---
 
 ## [0.11.0] - 2026-10-01

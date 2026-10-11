@@ -61,6 +61,7 @@ Every port is its own GitHub repo and its own Claude Code project; the [org prof
   - [Distinctness and APCA](#distinctness-and-apca)
   - [Shell roles](#shell-roles)
   - [Prompt roles](#prompt-roles)
+  - [App roles](#app-roles)
 - [Typography](#typography)
 - [Build flow](#build-flow)
 - [Files](#files)
@@ -79,9 +80,9 @@ Every port is its own GitHub repo and its own Claude Code project; the [org prof
 
 - **24 themes** — 4 flavors (Midnight · Twilight · Dawn · Noon) × 6 accent variants (Red · Orange · Yellow · Green · Blue · Purple), all WCAG AA
 - **Syntax token map** — 12 core slots + 23 extended, stable shape across all flavors
-- **UI tokens** — surfaces, text, borders, interactive states, semantic roles, accent-on
+- **UI tokens** — surfaces, text (with a 3:1 faint step), borders, interactive states, semantic roles, accent-on
 - **Overlay recipes** — selection, find match, word highlight, diff, selected-item wash; resolved to hex per theme, with syntax gated at AA on every one
-- **Shell & prompt roles** — one answer for "what colour is an option flag / a staged file", shared by every shell and prompt port
+- **Shell, prompt & app roles** — one answer for "what colour is an option flag / a staged file / plan mode / the subagent called pink", shared by every shell, prompt and terminal-app port
 - **Typography** — [Atkinson Hyperlegible Next + Mono](https://www.brailleinstitute.org/freefont) (OFL-1.1, locally bundled)
 - **Spacing · radii · shadows · motion** — complete foundation token set
 - **Brand assets** — logo, wordmark, icon set at 6 sizes
@@ -181,6 +182,10 @@ The readable text color for use _on_ `--vl-accent` (e.g. a primary button's labe
 - **Dark flavors** (Midnight, Twilight) → bright accents → **dark text** (`gray-900`)
 - **Light flavors** (Dawn, Noon) → deep accents → **light text** (`gray-100`)
 
+Ports read it as `flavors[flavor].accent_on` (or the colour target `accent_on`). The build gates it at 4.5:1 on all six accents of its flavor and on the four semantic colours, which apps use as badge fills. The tightest pair is Midnight / Red at 4.76:1.
+
+Don't compute it with `readableOn(accent)`. Before [issue #22](https://github.com/vivid-life-theme/vivid-life-design-system/issues/22) that helper split at luminance 0.5, far from the real crossover (≈ 0.18), and picked light text on six accents — 1.76:1 on Midnight's `yellow.500`. It now picks whichever side has the higher contrast, but the token is the contract.
+
 ### Overlays
 
 Everything that sits behind text — selection, the current line, find matches, word highlights, diff tints, the selected-item wash — is a recipe in `tokens.json5 → overlay`: a colour target and an alpha per flavor, optionally a border. The build resolves every recipe for all 24 themes and emits both halves:
@@ -200,6 +205,8 @@ A target with alpha support (VS Code, CSS) blends `color` at `alpha`; one withou
 | `find_match`, `find_match_other` (+ borders) | yellow      | code     |
 | `word_highlight_read`, `_write`              | cyan        | code     |
 | `diff_{inserted,removed}_{line,text,gutter}` | green / red | code     |
+| `diff_{inserted,removed}_dimmed`             | green / red | code     |
+| `panel`                                      | grey        | code     |
 | `selected`                                   | accent      | ui       |
 
 **Code overlays keep code readable.** Every syntax slot, `fg`, `fg_subtle` and the four semantic colours must clear 4.5:1 on every code overlay, for all six variants. That gate is what decides the recipes, and it forces one rule:
@@ -295,6 +302,19 @@ A fill that carried the boundary on its own would have to be `#646464` on Midnig
 
 Background: [issue #15](https://github.com/vivid-life-theme/vivid-life-design-system/issues/15).
 
+#### Faint text
+
+`text.fg_faint` (`--vl-fg-faint`) is the same rule applied to the text ramp: the grey closest to `faint_text.surfaces` (`bg`, `bg_terminal`) that still clears 3:1 on both. It's for faint rules, separators and incidental hints — marks that may recede but must not vanish. Before [issue #22](https://github.com/vivid-life-theme/vivid-life-design-system/issues/22) the Claude Code port borrowed `border.control` for this, which on Midnight sits at 5.54:1 and isn't faint at all.
+
+| Flavor   | `fg_faint` | vs `bg`  | vs `bg_terminal` |
+| -------- | ---------- | -------- | ---------------- |
+| Midnight | `#686868`  | **3.22** | 3.55             |
+| Twilight | `#8f8f8f`  | **3.21** | 3.91             |
+| Dawn     | `#737373`  | **3.20** | **3.20**         |
+| Noon     | `#898989`  | **3.21** | 3.50             |
+
+3:1 is the non-text floor, not body text's 4.5:1: **never use `fg_faint` for a label, a message, or anything a user has to read.** It is only gated on `bg` and `bg_terminal` (on Midnight's `bg_soft` it falls to 1.86:1), and the build also requires it to stay fainter than `fg_subtle` on both. On Noon it is lighter than `fg_disabled` — "faint" means the 3:1 floor, not a rung below disabled.
+
 ### Syntax token map (per flavor)
 
 Defined in `tokens.json5` as `syntax_hues` + `syntax_shade`, resolved at build time, and emitted to CSS as `--syn-*`.
@@ -379,6 +399,58 @@ Listing the aliases is the point: an accidental collision anywhere else still fa
 `tokens.json5 → prompt_roles` does the same for prompts: directory, user and host, git branch, every git status entry, the success / error character, command duration, time, plus `language_hues` — one fixed hue per language module, all six variant hues used once, so a prompt's shape doesn't change with the variant. Each role names the Starship settings and fish variables it feeds; an Oh My Posh or Powerlevel10k port reads the same roles.
 
 Git statuses follow `workbench_color_roles.git`, so a file reads the same in the prompt as in the editor's source-control view. The success character is `semantic.success`, not the accent: on the red variants an accent-coloured ❯ would share a hue with the error ❯.
+
+### App roles
+
+`tokens.json5 → app_roles` is the same idea for apps that run _inside_ a terminal — Claude Code, a TUI, a chat client, a status bar — and draw their own chrome on `bg_terminal`, a background they don't own: mode indicators, spinners, badges, message blocks, named colours. The first such port ([vivid-life-claude-code](https://github.com/vivid-life-theme/vivid-life-claude-code)) had to make about 70 of these calls on its own; [issue #22](https://github.com/vivid-life-theme/vivid-life-design-system/issues/22) moved them here. Each port keeps only the mapping from roles to its own token names.
+
+Every role names a colour target, optionally a background, and the **gate** it must pass for all 24 themes:
+
+| Gate      | What the build checks                                                                                                        | Roles                                                                                          |
+| --------- | ---------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| `text`    | colour ≥ 4.5:1 on its background (or `bg_terminal`)                                                                          | `text`, `inactive`, `brand`, `permission`, `suggestion`, status colours, `merged`, `on_accent` |
+| `ui`      | colour ≥ 3:1 on `bg_terminal`                                                                                                | `input_border` (`border.control`), `hint` and `meter_track` (`fg_faint`), `meter_fill`         |
+| `surface` | `fg`, `fg_muted`, `fg_subtle`, every syntax slot and semantic colour ≥ 4.5:1 on the background, flattened over `bg_terminal` | `message`, `message_hover`, `selection`, the diff backgrounds                                  |
+
+A `surface` role does **not** guarantee the accent on it. Noon's orange accent sits at 4.75:1 on its own canvas, and no grey far enough from white to show keeps it there.
+
+#### Mode hues
+
+`app_roles.mode_hues` gives each app state a fixed hue, the way `prompt_roles.language_hues` does for language modules: `plan` blue, `auto_accept` purple, `fast` orange, `shell` green. Resolve each as `hue.<hue>`. They don't change with the variant, so a mode reads the same in all 24 themes; on the variant of the same hue it shares the accent.
+
+#### Named colours
+
+Apps that let users pick from a fixed set of named colours (Claude Code: one per subagent) read `app_roles.categorical[flavor]`. Each is ≥ 4.5:1 on `bg_terminal`, every pair is ≥ 7 apart in OKLab, and none changes with the variant:
+
+| Name   | Midnight                | Twilight                | Dawn                     | Noon                     |
+| ------ | ----------------------- | ----------------------- | ------------------------ | ------------------------ |
+| red    | `#ef4444`               | `#fca5a5`               | `#7f1d1d` (`red.900`)    | `#7f1d1d` (`red.900`)    |
+| orange | `#f97316`               | `#fdba74`               | `#9a3412` (`orange.800`) | `#c2410c`                |
+| yellow | `#eab308`               | `#eab308`               | `#713f12` (`yellow.900`) | `#854d0e`                |
+| green  | `#84cc16`               | `#84cc16`               | `#3f6212`                | `#3f6212`                |
+| blue   | `#93c5fd`               | `#93c5fd`               | `#1d4ed8`                | `#1d4ed8`                |
+| purple | `#d8b4fe`               | `#d8b4fe`               | `#7e22ce`                | `#7e22ce`                |
+| pink   | `#fca5a5` (`red.300`)   | `#fee2e2` (`red.100`)   | `#581c87` (`purple.900`) | `#581c87` (`purple.900`) |
+| cyan   | `#06b6d4` (`ansi.cyan`) | `#67e8f9` (`ansi.cyan`) | `#155e75` (`ansi.cyan`)  | `#0e7490` (`ansi.cyan`)  |
+
+Unmarked cells are the hue at its accent rung. Taking every hue at its accent rung would have put red and orange 6.3 apart on Dawn and 6.1 on Noon, so those rungs move instead of being exempted (`distinct.app.categorical_exempt` exists, and is empty). The palette has no pink: on dark flavors the light red reads pink; on light flavors the deep reds turn brown and land on orange, so pink takes the deep purple. Cyan takes the ANSI slot — the protocol use cyan is reserved for. A rainbow sweep uses red → purple in table order.
+
+#### Emphasis step
+
+Spinners animate a label between its colour and a highlight. `emphasis.<target>` resolves that highlight with one rule (`tokens.json5 → emphasis_step`, § 3h): **the same hue one rung further from the surface**, so the sweep only gains contrast, stepping one rung back at the end of the ramp if that rung still clears 4.5:1. Greys step along the text ramp (`fg_faint` → `fg_subtle` → `fg_muted` → `fg`, and `fg` back to `fg_muted`). Roles with `emphasis: true` and every mode hue get theirs gated too.
+
+```js
+resolveColor(tokens, "dawn", "orange", "emphasis.accent", {
+  surface: "bg_terminal",
+});
+// → "#9a3412"   orange.900 is the end of the ramp on a light surface; 800 clears at 4.93:1
+```
+
+#### Panels and dimmed diffs
+
+`overlay.panel` is a raised block — a message, a sidebar, the composer — that has to show on its own over `bg_terminal`. `distinct.app.visible` holds the `message` role at ≥ 5 from `bg_terminal` in OKLab (5.7–6.4 across the flavors); `line_highlight`, which the Claude Code port borrowed, is 3.2 there on Twilight and 3.6 on Noon.
+
+`overlay.diff_{inserted,removed}_dimmed` is a diff that's no longer live — a rejected edit, a superseded proposal: the live line's hue at half its alpha. It is deliberately faint (ΔE 2–3 from `bg_terminal`), and faintest on Dawn's removed side (1.9), where the live line is only 3.6 to begin with.
 
 ---
 
@@ -487,7 +559,7 @@ Default variants for marketing screenshots (provisional, easy to change):
 If you're building a port (a VS Code extension, a GTK theme, a marketing site):
 
 1. **Read `dist/tokens.js`** (or `tokens.json`). Don't re-encode the palette or flavor map — the build-tokens script is the contract.
-2. **Iterate 24 themes** by `flavor × variant`. The accent is `palette[variant][accent_shade[flavor][variant]]`. The text-on-accent is dark for `dark`-typed flavors, light for `light`-typed flavors.
+2. **Iterate 24 themes** by `flavor × variant`. The accent is `palette[variant][accent_shade[flavor][variant]]`. The text-on-accent is `flavors[flavor].accent_on`.
 3. **Use the syntax map** from `flavors[flavor].syntax` directly for any editor port. Extended tokens fall back per `syntax_tokens.extended.{token}`.
 4. **If you need a value not in tokens**, open an issue / PR against this repo. Don't paper over it port-side.
 5. **For a terminal-emulator background** (VS Code's `terminal.background` and equivalents), use `surface.bg_terminal`, not `bg`/`bg_sunk`/`bg_soft` directly. It's the only surface tier verified against all 16 `ansi.*` colors per flavor — see the `bg_terminal` caveat below.
@@ -496,6 +568,7 @@ If you're building a port (a VS Code extension, a GTK theme, a marketing site):
 8. **For a standalone terminal port** (xfce4-terminal, Windows Terminal, Alacritty, …), take the whole 16-color set from `flavors[flavor].ansi` — it is flavor-specific, not shared within the dark or light pair. Don't substitute a syntax or accent color for an ANSI slot, and don't reuse one flavor's ANSI block for its pair partner. See [ANSI palette](#ansi-palette-per-flavor).
 9. **For any background behind text** — selection, current line, find match, word highlight, diff — read `flavors[flavor].overlay[variant][name]` (`color` + `alpha`, or `flat`). Don't keep a port-side alpha table. For a terminal selection, use `overlay[variant].selection.terminal` — `flat` (the recipe over `bg_terminal`) as the selection background and `foreground` as the selection foreground; the same for `inactive_selection`. Set both: the ANSI colours are not readable on the selection. Draw `find_match_other` with its `border` as well as `find_match`; on the Yellow variant the border is what tells a search hit from the selection. See [Overlays](#overlays).
 10. **For a shell or prompt port**, iterate `shell_roles.roles` / `prompt_roles.roles` and write every variable or setting each role lists; resolve colour targets with `resolveColor(tokens, flavor, variant, target, { surface: 'bg_terminal' })`. Drop the parts a target can't express (PSReadLine has no style flags); don't re-decide a role port-side. See [Shell roles](#shell-roles) and [Prompt roles](#prompt-roles).
+11. **For an app that draws inside a terminal** (Claude Code, a TUI, a chat client), map your token names onto `app_roles.roles`, `app_roles.mode_hues` and `app_roles.categorical` — the mapping is the only thing the port owns. Resolve with `resolveColor(tokens, flavor, variant, target, { surface: 'bg_terminal' })`; a spinner's highlight is `emphasis.<the role's color>`. Keep accent text off `surface` roles (panels, diffs) — they don't gate it. See [App roles](#app-roles).
 
 A port repo should look like:
 

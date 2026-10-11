@@ -41,8 +41,9 @@ npm install @vivid-life-theme/design-system
 3. Map foundation tokens into your target format. Use `syntax_tokens.extended` for fallback resolution.
 4. For anything behind text (selection, current line, find match, word highlight, diff), read `flavors[flavor].overlay[variant][name]` — `color` + `alpha` if the target blends, `flat` if it doesn't, and `border` where there is one (both find-match overlays have one). For a terminal selection, use `overlay[variant].selection.terminal` (and `inactive_selection.terminal`): `flat` as the selection background, `foreground` as the selection foreground. For another surface, use `resolveOverlay(tokens, flavor, variant, name, { surface })`.
 5. For a shell or prompt port, iterate `shell_roles.roles` / `prompt_roles.roles` and write every fish variable, PSReadLine key or Starship setting each role lists. Resolve targets with `resolveColor(tokens, flavor, variant, target, { surface: 'bg_terminal' })`.
-6. Write one file per theme to your port's output dir.
-7. See README's "For downstream ports" section.
+6. For an app that draws its own chrome inside a terminal (Claude Code, a TUI, a chat client), map your token names onto `app_roles.roles`, `app_roles.mode_hues` and `app_roles.categorical[flavor]`, and resolve the same way. A spinner's highlight is `emphasis.<the role's color>`; text on an accent fill is `accent_on`; a faint hint is `fg_faint`. The name mapping is the only thing the port owns.
+7. Write one file per theme to your port's output dir.
+8. See README's "For downstream ports" section.
 
 ### Pattern C — Production app design
 
@@ -75,7 +76,9 @@ Ask: "What are you building — a static artifact, a theme port, or a production
 - Don't keep a port-side alpha table or blend the accent over `bg` yourself for selection, find matches, word highlights or diff backgrounds. The foundation's `overlay` recipes are gated so every syntax colour stays at 4.5:1 on them; a home-made "accent at 25%" lightens dark canvases toward the text and fails that.
 - Don't leave a terminal's selection foreground unset when the target has one. The ANSI colours aren't readable on the selection; selected text is redrawn in `selection.terminal.foreground`. If the target can't set it, say so in the port's README.
 - Don't drop the `find_match_other` border. On the Yellow variant the selection and the find highlights share a hue, and the border is what keeps them apart.
-- Don't re-decide what colour a shell concept (option flag, argument, variable …) or a prompt segment (git status, success character, language module) takes. Read it from `shell_roles` / `prompt_roles`; if a concept you need is missing, that's a foundation gap.
+- Don't re-decide what colour a shell concept (option flag, argument, variable …), a prompt segment (git status, success character, language module) or an app's chrome (mode indicator, spinner highlight, named colour, message block) takes. Read it from `shell_roles` / `prompt_roles` / `app_roles`; if a concept you need is missing, that's a foundation gap.
+- Don't compute text-on-accent with `readableOn(accent)` or by flavor type yourself. Read `accent_on`; it is the gated value.
+- Don't use `fg_faint` for text anyone has to read. It is a 3:1 value for rules, separators and incidental hints.
 
 ## Feedback
 
