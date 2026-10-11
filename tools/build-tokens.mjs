@@ -130,9 +130,15 @@ export function contrast(fg, bg) {
   return (a + 0.05) / (b + 0.05);
 }
 
-/** Pick gray-900 or gray-100 for text on a given background. */
+/**
+ * Pick gray-900 or gray-100 for text on a given background — whichever
+ * has the higher contrast. The old cut at luminance 0.5 sat far from the
+ * real crossover (≈ 0.18) and picked light text on six accents, down to
+ * 1.76:1 on Midnight's yellow.500 (issue #22). For text on the accent,
+ * prefer the gated token: `flavors[flavor].accent_on`.
+ */
 export function readableOn(bg) {
-  return relLum(bg) > 0.5 ? "#171717" : "#f5f5f5";
+  return contrast("#171717", bg) >= contrast("#f5f5f5", bg) ? "#171717" : "#f5f5f5";
 }
 
 /** hex → [L, a, b] in OKLab (Björn Ottosson's matrices, sRGB D65). */
@@ -273,28 +279,33 @@ export function resolveAccent(tokens, flavor, variant) {
   return hex;
 }
 
-const TEXT_ALIASES = ["fg", "fg_muted", "fg_subtle", "fg_disabled"];
+const TEXT_ALIASES = ["fg", "fg_muted", "fg_subtle", "fg_faint", "fg_disabled"];
 
 /**
  * Resolve a colour target — the vocabulary shared by `overlay`,
- * `shell_roles`, `prompt_roles` and `workbench_color_roles` — to a hex
- * for one (flavor, variant):
+ * `shell_roles`, `prompt_roles`, `app_roles` and `workbench_color_roles`
+ * — to a hex for one (flavor, variant):
  *
  *   accent              the (flavor, variant) accent
  *   accent.<rung>       the variant's hue at another rung
+ *   accent_on           text on an accent fill (flavors.*.accent_on)
  *   hue.<hue>           <hue> at its own accent rung on this flavor
  *   <hue>.<rung>        any palette entry, e.g. "cyan.900"
- *   fg | fg_muted | fg_subtle | fg_disabled
+ *   fg | fg_muted | fg_subtle | fg_faint | fg_disabled
  *   semantic.<role>     success | warning | danger | info
  *   <syntax core slot>  comment, keyword, …, punct
  *   ansi.<slot>         the flavor's 16-colour terminal palette
+ *   border.<weight>     subtle | default | strong | control
  *   overlay.<name>      that overlay flattened over `surface`
+ *   emphasis.<target>   <target>'s emphasis step (tokens.json5 § 3h),
+ *                       one rung further from `surface`
  *
  *   resolveColor(tokens, 'midnight', 'purple', 'accent.900')  → '#581c87'
  *
  * Works on loadTokens() output (flavors.*.syntax already derived).
- * `surface` names the surface an "overlay.*" target composites over;
- * defaults to `bg`. Throws on anything it can't resolve.
+ * `surface` names the surface an "overlay.*" target composites over, and
+ * the one an "emphasis.*" step moves away from; defaults to `bg`. Throws
+ * on anything it can't resolve.
  */
 export function resolveColor(tokens, flavor, variant, target, opts = {}) {
   const f = tokens.flavors?.[flavor];
@@ -306,6 +317,7 @@ export function resolveColor(tokens, flavor, variant, target, opts = {}) {
     throw new Error(`resolveColor: can't resolve "${target}" on ${flavor}`);
   };
   if (target === "accent") return resolveAccent(tokens, flavor, variant);
+  if (target === "accent_on") return f.accent_on ?? fail();
   if (TEXT_ALIASES.includes(target)) return f.text[target] ?? fail();
   if (f.syntax && Object.hasOwn(f.syntax, target)) return f.syntax[target];
   const dot = target.indexOf(".");
@@ -321,11 +333,71 @@ export function resolveColor(tokens, flavor, variant, target, opts = {}) {
       return f.semantic?.[tail] ?? fail();
     case "ansi":
       return f.ansi?.[tail] ?? fail();
+    case "border":
+      return f.border?.[tail] ?? fail();
     case "overlay":
       return resolveOverlay(tokens, flavor, variant, tail, opts).flat;
+    case "emphasis":
+      return emphasisStep(tokens, flavor, variant, tail, opts);
     default:
       return tokens.palette?.[head]?.[tail] ?? fail();
   }
+}
+
+/**
+ * The emphasis step (tokens.json5 § 3h) for a colour target: the
+ * highlight a spinner or shimmer sweeps a label to. Same hue, one rung
+ * further from `surface` (default `bg`), so the sweep only gains
+ * contrast; at the end of the ramp, one rung back if that still clears
+ * `emphasis_step.min`. Greys step along `emphasis_step.text_ramp`.
+ *
+ *   emphasisStep(tokens, 'dawn', 'orange', 'accent')  → '#9a3412'  (900 → 800)
+ *
+ * Also reachable as the colour target "emphasis.<target>". Throws when
+ * the target is neither a palette rung nor on the text ramp, or when no
+ * neighbouring rung clears.
+ */
+export function emphasisStep(tokens, flavor, variant, target, opts = {}) {
+  const f = tokens.flavors[flavor];
+  const rule = tokens.emphasis_step;
+  const surfaceName = opts.surface ?? "bg";
+  const surface = f?.surface?.[surfaceName];
+  if (!rule || !surface) {
+    throw new Error(`emphasisStep: no emphasis_step rule or surface "${surfaceName}" on ${flavor}`);
+  }
+  if (String(target).startsWith("overlay.")) {
+    throw new Error(`emphasisStep: "${target}" is a background, not a colour to emphasise`);
+  }
+  const clears = (hex) => contrast(hex, surface) >= rule.min;
+
+  const ramp = rule.text_ramp ?? [];
+  const rampStep = (r) => {
+    for (const j of [r + 1, r - 1]) {
+      const step = f.text[ramp[j]];
+      if (step && clears(step)) return step;
+    }
+    throw new Error(`emphasisStep: no text-ramp step beside "${ramp[r]}" clears ${rule.min}:1 on ${flavor}.${surfaceName}`);
+  };
+  if (ramp.includes(target)) return rampStep(ramp.indexOf(target));
+
+  const hex = resolveColor(tokens, flavor, variant, target, opts).toLowerCase();
+  for (const [hue, rungs] of Object.entries(tokens.palette)) {
+    const order = Object.keys(rungs).sort((a, b) => a - b); // light → dark
+    const i = order.findIndex((k) => rungs[k].toLowerCase() === hex);
+    if (i < 0) continue;
+    // Further from the surface: lighter on a dark surface, darker on a light one.
+    const out = relLum(hex) > relLum(surface) ? -1 : 1;
+    for (const j of [i + out, i - out]) {
+      const step = rungs[order[j]];
+      if (step && clears(step)) return step;
+    }
+    throw new Error(`emphasisStep: no ${hue} rung beside ${hex} clears ${rule.min}:1 on ${flavor}.${surfaceName}`);
+  }
+  // A slot that resolves to a ramp grey by value (syntax.comment →
+  // fg_subtle) steps along the ramp too.
+  const r = ramp.findIndex((k) => f.text[k]?.toLowerCase() === hex);
+  if (r >= 0) return rampStep(r);
+  throw new Error(`emphasisStep: "${target}" (${hex}) is neither a palette rung nor on emphasis_step.text_ramp`);
 }
 
 /**
@@ -544,6 +616,7 @@ export function expandShadeTables(tokens) {
       "type",
       "surface",
       "text",
+      "accent_on",
       "border",
       "state",
       "semantic",
@@ -619,6 +692,7 @@ export async function loadTokens(path = join(ROOT, "tokens.json5")) {
    ===================================================================== */
 
 const STYLES = ["italic", "bold", "underline", "reverse"];
+const APP_GATES = ["text", "ui", "surface"];
 
 /**
  * Structural check of the authored token maps. Takes tokens after
@@ -767,7 +841,7 @@ export function validateShapes(tokens) {
   if (!isObj(d) || typeof d.min !== "number" || typeof d.related_min !== "number") {
     errs.push(`✗ distinct needs numeric "min" and "related_min"`);
   } else {
-    keysOk("distinct", d, ["min", "related_min", "syntax", "ansi", "overlay"]);
+    keysOk("distinct", d, ["min", "related_min", "syntax", "ansi", "overlay", "app"]);
     if (d.overlay !== undefined) {
       keysOk("distinct.overlay", d.overlay, ["visible", "apart"]);
       const names = Object.keys(tokens.overlay?.roles ?? {});
@@ -904,6 +978,136 @@ export function validateShapes(tokens) {
   for (const [mod, hue] of Object.entries(tokens.prompt_roles?.language_hues ?? {})) {
     if (!variants.includes(hue)) {
       errs.push(`✗ prompt_roles.language_hues.${mod}: "${hue}" is not a variant hue`);
+    }
+  }
+
+  // ── accent_on, fg_faint, faint_text, emphasis_step (§ 3f, 3h) ───────
+  for (const fl of flavors) {
+    if (typeof tokens.flavors[fl].accent_on !== "string") errs.push(`✗ ${fl}.accent_on missing`);
+    if (!tokens.flavors[fl].text?.fg_faint) errs.push(`✗ ${fl}.text.fg_faint missing`);
+  }
+  const ft = tokens.faint_text;
+  if (!isObj(ft) || typeof ft.min !== "number") {
+    errs.push(`✗ faint_text missing or has no numeric min`);
+  } else {
+    keysOk("faint_text", ft, ["min", "surfaces"]);
+    const ss = stringList("faint_text.surfaces", ft.surfaces);
+    if (!ss.length) errs.push(`✗ faint_text.surfaces missing or empty`);
+    for (const sName of ss) surfaceOk("faint_text.surfaces", sName);
+  }
+  const es = tokens.emphasis_step;
+  if (!isObj(es) || typeof es.min !== "number") {
+    errs.push(`✗ emphasis_step missing or has no numeric min`);
+  } else {
+    keysOk("emphasis_step", es, ["min", "text_ramp"]);
+    for (const k of stringList("emphasis_step.text_ramp", es.text_ramp)) {
+      if (!TEXT_ALIASES.includes(k)) errs.push(`✗ emphasis_step.text_ramp: "${k}" is not a text role`);
+    }
+  }
+
+  // ── app_roles (§ 17) ────────────────────────────────────────────────
+  const app = tokens.app_roles;
+  const appRoles = isObj(app?.roles) ? app.roles : {};
+  const categoricalNames = new Set();
+  if (!isObj(app?.roles)) {
+    errs.push(`✗ app_roles.roles missing`);
+  } else {
+    keysOk("app_roles", app, ["surface", "roles", "mode_hues", "categorical"]);
+    const surface = app.surface;
+    if (typeof surface !== "string") errs.push(`✗ app_roles.surface missing`);
+    else surfaceOk("app_roles.surface", surface);
+    for (const [name, role] of Object.entries(app.roles)) {
+      const w = `app_roles.roles.${name}`;
+      if (!isObj(role)) {
+        errs.push(`✗ ${w} must be an object`);
+        continue;
+      }
+      keysOk(w, role, ["color", "background", "style", "gate", "emphasis", "use"]);
+      if (!APP_GATES.includes(role.gate)) {
+        errs.push(`✗ ${w}.gate is "${role.gate}" — expected ${APP_GATES.map((g) => `"${g}"`).join(", ")}`);
+      }
+      if (role.gate === "surface") {
+        if (role.background === undefined) errs.push(`✗ ${w}: a "surface" role needs a background`);
+        if (role.color !== undefined) errs.push(`✗ ${w}: a "surface" role takes no color — it gates every text colour on its background`);
+      } else if (role.color === undefined) {
+        errs.push(`✗ ${w}: a "${role.gate}" role needs a color`);
+      }
+      if (role.color !== undefined) targetOk(`${w}.color`, role.color, { surface });
+      if (role.background !== undefined) targetOk(`${w}.background`, role.background, { surface });
+      if (role.emphasis !== undefined) {
+        if (typeof role.emphasis !== "boolean") errs.push(`✗ ${w}.emphasis must be true or false`);
+        else if (role.emphasis) {
+          if (role.gate !== "text" || role.color === undefined) {
+            errs.push(`✗ ${w}: emphasis needs a "text" role with a color`);
+          } else targetOk(`${w}.emphasis`, `emphasis.${role.color}`, { surface });
+        }
+      }
+      stylesOk(w, role.style);
+      if (role.use !== undefined && typeof role.use !== "string") errs.push(`✗ ${w}.use must be a string`);
+    }
+    for (const [mode, hue] of Object.entries(app.mode_hues ?? {})) {
+      if (!variants.includes(hue)) errs.push(`✗ app_roles.mode_hues.${mode}: "${hue}" is not a variant hue`);
+    }
+    // Named colours are fixed per flavor: same names on every flavor,
+    // and no target that changes with the variant (accent, overlay …).
+    const cat = app.categorical;
+    if (!isObj(cat)) {
+      errs.push(`✗ app_roles.categorical missing`);
+    } else {
+      for (const fl of Object.keys(cat)) {
+        if (!flavors.includes(fl)) errs.push(`✗ app_roles.categorical.${fl}: no such flavor`);
+      }
+      for (const fl of flavors) {
+        if (!isObj(cat[fl])) {
+          errs.push(`✗ app_roles.categorical.${fl} missing`);
+          continue;
+        }
+        for (const n of Object.keys(cat[fl])) categoricalNames.add(n);
+      }
+      for (const fl of flavors) {
+        if (!isObj(cat[fl])) continue;
+        for (const n of categoricalNames) {
+          if (!(n in cat[fl])) errs.push(`✗ app_roles.categorical.${fl}.${n} missing — every flavor names the same colours`);
+        }
+        for (const [n, target] of Object.entries(cat[fl])) {
+          const w = `app_roles.categorical.${fl}.${n}`;
+          if (String(target).startsWith("overlay.")) {
+            errs.push(`✗ ${w}: "${target}" — overlay targets aren't allowed here`);
+            continue;
+          }
+          let hexes;
+          try {
+            hexes = new Set(variants.map((v) => resolveColor(tokens, fl, v, target).toLowerCase()));
+          } catch {
+            errs.push(`✗ ${w}: colour target "${target}" doesn't resolve on ${fl}`);
+            continue;
+          }
+          if (hexes.size > 1) errs.push(`✗ ${w}: "${target}" changes with the variant — a named colour must not`);
+        }
+      }
+    }
+  }
+  const da = tokens.distinct?.app;
+  if (da !== undefined) {
+    if (!isObj(da)) errs.push(`✗ distinct.app must be an object`);
+    else {
+      keysOk("distinct.app", da, ["visible", "categorical_exempt"]);
+      for (const n of stringList("distinct.app.visible", da.visible)) {
+        if (appRoles[n]?.background === undefined) {
+          errs.push(`✗ distinct.app.visible: "${n}" is not an app_roles role with a background`);
+        }
+      }
+      for (const [fl, pairs] of Object.entries(da.categorical_exempt ?? {})) {
+        if (!flavors.includes(fl)) {
+          errs.push(`✗ distinct.app.categorical_exempt.${fl}: no such flavor`);
+          continue;
+        }
+        for (const pr of pairs) {
+          if (!Array.isArray(pr) || pr.length !== 2 || pr.some((x) => !categoricalNames.has(x))) {
+            errs.push(`✗ distinct.app.categorical_exempt.${fl}: ${JSON.stringify(pr)} is not a pair of categorical colours`);
+          }
+        }
+      }
     }
   }
 
@@ -1129,6 +1333,66 @@ function check(tokens, { onPair } = {}) {
       const fg = resolveColor(tokens, fName, hue, `hue.${hue}`);
       pair("prompt_roles", `${fName} prompt_roles.language_hues.${mod}`, fg, f.surface[tokens.prompt_roles.surface], 4.5);
     }
+
+    // Text on an accent fill (issue #22): every accent of this flavor,
+    // and the semantic colours, which apps use as badge fills too.
+    for (const hue of tokens.variant_hues) {
+      pair("accent_on", `${fName}/${hue} accent_on on accent`, f.accent_on, resolveAccent(tokens, fName, hue), 4.5);
+    }
+    for (const [role, color] of Object.entries(f.semantic)) {
+      pair("accent_on", `${fName} accent_on on semantic.${role}`, f.accent_on, color, 4.5);
+    }
+
+    // fg_faint (§ 3f): the 3:1 floor on its surfaces, and fainter than
+    // fg_subtle on each — otherwise it isn't the step below it.
+    for (const sName of tokens.faint_text.surfaces) {
+      const sColor = f.surface[sName];
+      pair("faint", `${fName}.text.fg_faint on ${sName}`, f.text.fg_faint, sColor, tokens.faint_text.min);
+      if (contrast(f.text.fg_faint, sColor) >= contrast(f.text.fg_subtle, sColor)) {
+        warns.push(`✗ ${fName}.text.fg_faint (${f.text.fg_faint}) is not fainter than fg_subtle (${f.text.fg_subtle}) on ${sName}`);
+      }
+    }
+
+    // App roles (§ 17), on what each is drawn on — its background, or
+    // the map's surface (bg_terminal) — for every variant.
+    const app = tokens.app_roles;
+    const appSurface = app.surface;
+    const panelText = {
+      ...Object.fromEntries(Object.entries(f.syntax).map(([k, v]) => [`syntax.${k}`, v])),
+      "text.fg": f.text.fg,
+      "text.fg_muted": f.text.fg_muted,
+      "text.fg_subtle": f.text.fg_subtle,
+      ...Object.fromEntries(Object.entries(f.semantic).map(([k, v]) => [`semantic.${k}`, v])),
+    };
+    for (const [name, role] of Object.entries(app.roles)) {
+      for (const hue of tokens.variant_hues) {
+        const opts = { surface: appSurface };
+        const back = role.background
+          ? resolveColor(tokens, fName, hue, role.background, opts)
+          : f.surface[appSurface];
+        const where = `${fName}/${hue} app_roles.${name}`;
+        if (role.gate === "surface") {
+          for (const [k, c] of Object.entries(panelText)) pair("app_roles", `${where}: ${k} on it`, c, back, 4.5);
+          continue;
+        }
+        const min = role.gate === "ui" ? tokens.control_boundary.min : 4.5;
+        pair("app_roles", where, resolveColor(tokens, fName, hue, role.color, opts), back, min);
+        if (role.emphasis) {
+          pair("app_roles", `${where} emphasis`, resolveColor(tokens, fName, hue, `emphasis.${role.color}`, opts), back, 4.5);
+        }
+      }
+    }
+    // Mode hues and named colours are variant-independent (validated),
+    // so one variant stands for all six.
+    const v0 = tokens.variant_hues[0];
+    for (const [mode, hue] of Object.entries(app.mode_hues ?? {})) {
+      const opts = { surface: appSurface };
+      pair("app_roles", `${fName} app_roles.mode_hues.${mode}`, resolveColor(tokens, fName, v0, `hue.${hue}`), f.surface[appSurface], 4.5);
+      pair("app_roles", `${fName} app_roles.mode_hues.${mode} emphasis`, resolveColor(tokens, fName, v0, `emphasis.hue.${hue}`, opts), f.surface[appSurface], 4.5);
+    }
+    for (const [n, target] of Object.entries(app.categorical[fName])) {
+      pair("app_roles", `${fName} app_roles.categorical.${n}`, resolveColor(tokens, fName, v0, target), f.surface[appSurface], 4.5);
+    }
   }
 
   // The 12 core slots are the contract ports build against, so the hue
@@ -1217,6 +1481,40 @@ export function distinctnessIssues(tokens) {
         }
       }
     }
+    // App roles (§ 17): named colours and mode hues pairwise apart,
+    // and the `visible` surfaces showing against app_roles.surface.
+    const app = tokens.app_roles;
+    if (app) {
+      const da = d.app ?? {};
+      const v0 = tokens.variant_hues[0];
+      const sets = [
+        ["categorical", Object.entries(app.categorical?.[fName] ?? {}), da.categorical_exempt?.[fName] ?? []],
+        ["mode_hues", Object.entries(app.mode_hues ?? {}).map(([m, h]) => [m, `hue.${h}`]), []],
+      ];
+      for (const [label, entries, ex] of sets) {
+        const skip = new Set(ex.map(([a, b]) => key(a, b)));
+        const hex = entries.map(([n, target]) => [n, resolveColor(tokens, fName, v0, target)]);
+        for (let i = 0; i < hex.length; i++) {
+          for (let j = i + 1; j < hex.length; j++) {
+            if (skip.has(key(hex[i][0], hex[j][0]))) continue;
+            const dist = deltaE(hex[i][1], hex[j][1]);
+            if (dist < d.min) {
+              out.push(`✗ ${fName}: app_roles.${label} ${hex[i][0]} (${hex[i][1]}) and ${hex[j][0]} (${hex[j][1]}) are ${dist.toFixed(1)} apart in OKLab, need ${d.min}`);
+            }
+          }
+        }
+      }
+      const surface = f.surface[app.surface];
+      for (const name of da.visible ?? []) {
+        for (const variant of tokens.variant_hues) {
+          const back = resolveColor(tokens, fName, variant, app.roles[name].background, { surface: app.surface });
+          const dist = deltaE(back, surface);
+          if (dist < d.related_min) {
+            out.push(`✗ ${fName}/${variant}: app_roles.${name} (${back}) is ${dist.toFixed(1)} from ${app.surface} in OKLab, need ${d.related_min}`);
+          }
+        }
+      }
+    }
     for (const s of base) {
       if (exempt.has(key(s, `bright_${s}`))) continue;
       const dist = deltaE(f.ansi[s], f.ansi[`bright_${s}`]);
@@ -1291,6 +1589,8 @@ async function selfTest() {
     // readableOn
     [() => readableOn("#171717"), "#f5f5f5", "readable on midnight"],
     [() => readableOn("#f5f5f5"), "#171717", "readable on noon"],
+    [() => readableOn("#eab308"), "#171717", "readable on yellow.500 is dark text (was #f5f5f5 at 1.76:1, issue #22)"],
+    [() => readableOn("#ef4444"), "#171717", "readable on red.500 picks the higher-contrast side"],
 
     // semanticAccentCollisions — a role whose semantic_shade equals the
     // accent_shade for its own hue is a collision; info is excluded by rule.
@@ -1363,6 +1663,108 @@ async function selfTest() {
       },
       "threw",
       "a bare hue name is not a colour target",
+    ],
+
+    // app_roles vocabulary — issue #22
+    [() => resolveColor(real, "midnight", "yellow", "accent_on"), "#171717", "accent_on is gray.900 on a dark flavor"],
+    [() => resolveColor(real, "noon", "yellow", "accent_on"), "#f5f5f5", "accent_on is gray.100 on a light flavor"],
+    [() => resolveColor(real, "dawn", "red", "border.control"), real.flavors.dawn.border.control, "border.<weight>"],
+    [() => resolveColor(real, "dawn", "red", "fg_faint"), "#737373", "fg_faint is a text alias"],
+    [() => resolveColor(real, "midnight", "purple", "emphasis.accent"), "#f3e8ff", "emphasis steps a dark-flavor accent lighter (300 → 100)"],
+    [() => resolveColor(real, "noon", "red", "emphasis.accent"), "#991b1b", "emphasis steps a light-flavor accent darker (700 → 800)"],
+    [() => resolveColor(real, "dawn", "orange", "emphasis.accent", { surface: "bg_terminal" }), "#9a3412", "at the end of the ramp emphasis steps back (dawn orange 900 → 800)"],
+    [() => resolveColor(real, "midnight", "red", "emphasis.fg_subtle"), real.flavors.midnight.text.fg_muted, "emphasis on a grey steps along the text ramp"],
+    [() => resolveColor(real, "noon", "red", "emphasis.fg"), real.flavors.noon.text.fg_muted, "emphasis.fg steps back to fg_muted"],
+    [() => resolveColor(real, "twilight", "red", "emphasis.comment"), real.flavors.twilight.text.fg_muted, "a slot that is a ramp grey by value steps along the ramp"],
+    [
+      () => {
+        try {
+          resolveColor(real, "midnight", "red", "emphasis.overlay.panel");
+          return "resolved";
+        } catch {
+          return "threw";
+        }
+      },
+      "threw",
+      "an overlay has no emphasis step",
+    ],
+    [
+      () => has(validateShapes(mutated((t) => (t.app_roles.roles.brand.gate = "texts"))), 'gate is "texts"'),
+      true,
+      "an unknown app_roles gate is rejected",
+    ],
+    [
+      () => has(validateShapes(mutated((t) => (t.app_roles.roles.message.color = "fg"))), "takes no color"),
+      true,
+      "a surface role with a color is rejected",
+    ],
+    [
+      () => has(validateShapes(mutated((t) => (t.app_roles.categorical.noon.red = "accent"))), "changes with the variant"),
+      true,
+      "a categorical colour that follows the variant is rejected",
+    ],
+    [
+      () => has(validateShapes(mutated((t) => delete t.app_roles.categorical.dawn.pink)), "categorical.dawn.pink missing"),
+      true,
+      "a flavor missing a named colour is rejected",
+    ],
+    [
+      () => has(validateShapes(mutated((t) => (t.distinct.app.visible = ["brand"]))), "is not an app_roles role with a background"),
+      true,
+      "distinct.app.visible must name a surface role",
+    ],
+    [
+      () => has(check(mutated((t) => (t.flavors.midnight.accent_on = "#f5f5f5"))), "midnight/yellow accent_on on accent"),
+      true,
+      "light text on Midnight's yellow accent is caught",
+    ],
+    [
+      () => has(check(mutated((t) => (t.flavors.noon.text.fg_faint = "#d4d4d4"))), "noon.text.fg_faint on bg"),
+      true,
+      "an fg_faint below 3:1 is caught",
+    ],
+    [
+      () => has(check(mutated((t) => (t.flavors.noon.text.fg_faint = "#404040"))), "is not fainter than fg_subtle"),
+      true,
+      "an fg_faint stronger than fg_subtle is caught",
+    ],
+    [
+      () => has(check(mutated((t) => (t.app_roles.roles.hint.color = "fg_disabled"))), "midnight/red app_roles.hint"),
+      true,
+      "a ui role below 3:1 on bg_terminal is caught (fg_disabled on Midnight: 2.53:1)",
+    ],
+    [
+      () => has(check(mutated((t) => (t.app_roles.roles.message_hover.background = "overlay.selected"))), "dawn/red app_roles.message_hover: text.fg_subtle on it"),
+      true,
+      "a message on the selected-item wash fails the surface gate (fg_subtle 3.94:1 on Dawn)",
+    ],
+    [
+      () =>
+        has(
+          distinctnessIssues(mutated((t) => {
+            for (const n of ["red", "orange", "yellow"]) t.app_roles.categorical.dawn[n] = `hue.${n}`;
+          })),
+          "dawn: app_roles.categorical red",
+        ),
+      true,
+      "the categorical set at the accent rungs collides on Dawn (red/orange ΔE 6.3)",
+    ],
+    [
+      () =>
+        has(
+          distinctnessIssues(mutated((t) => {
+            for (const n of ["red", "orange", "yellow"]) t.app_roles.categorical.dawn[n] = `hue.${n}`;
+            t.distinct.app.categorical_exempt = { dawn: [["red", "orange"]] };
+          })),
+          "dawn: app_roles.categorical red (#991b1b) and orange",
+        ),
+      false,
+      "an exempt categorical pair is skipped",
+    ],
+    [
+      () => has(distinctnessIssues(mutated((t) => (t.app_roles.roles.message.background = "overlay.line_highlight"))), "twilight/red: app_roles.message"),
+      true,
+      "a message block on line_highlight doesn't show over Twilight's bg_terminal (ΔE 3.2)",
     ],
 
     // validateShapes — typos fail instead of passing silently
@@ -1588,7 +1990,8 @@ async function main() {
   console.log("  the terminal selection foreground on selection over bg_terminal");
   console.log("  border.control at 3:1 on every control surface (WCAG 1.4.11)");
   console.log("  ansi.* on bg_terminal · semantic colours on every surface");
-  console.log("  shell_roles and prompt_roles on what they're drawn on");
+  console.log("  shell_roles, prompt_roles and app_roles on what they're drawn on");
+  console.log("  accent_on on every accent and semantic fill · fg_faint at 3:1 on bg and bg_terminal");
   console.log("✓ Resolved colours and overlays pass the OKLab distinctness gate.");
   console.log("✓ Shade tables, overlay recipes and role maps are well-formed.");
   const below = rows.filter((r) => r.apcaTarget && Math.abs(apcaContrast(r.fg, r.bg)) < r.apcaTarget);

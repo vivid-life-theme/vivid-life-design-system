@@ -271,10 +271,9 @@ function flavorBlock(name, flavor) {
     }
   }
 
-  // text-on-accent: derived from flavor type
-  const accentOn = flavor.type === "dark" ? "#171717" : "#f5f5f5";
+  // text-on-accent: flavors.*.accent_on, gated on every accent (issue #22)
   lines.push(`\n  /* text color for use on top of --vl-accent */`);
-  lines.push(`  --vl-accent-on: ${accentOn};`);
+  lines.push(`  --vl-accent-on: ${flavor.accent_on};`);
 
   // selection and the other overlays depend on the variant too — see
   // variantBlock.

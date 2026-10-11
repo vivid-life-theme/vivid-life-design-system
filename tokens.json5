@@ -467,12 +467,21 @@
   // Terminal a 30% selection while this file said 25% — and they had
   // drifted apart.
   //
-  // Colour targets (shared with shell_roles / prompt_roles, § 15–16):
+  // Colour targets (shared with shell_roles / prompt_roles / app_roles,
+  // § 15–17; resolveColor() in tools/build-tokens.mjs has the full list):
   //   accent                   the (flavor, variant) accent
   //   accent.<rung>            the variant's hue at another rung
+  //   accent_on                text on an accent fill (flavors.*.accent_on)
+  //   hue.<hue>                <hue> at its own accent rung on the flavor
   //   <hue>.<rung>             any palette entry, e.g. "cyan.900"
-  //   fg | fg_muted | fg_subtle | fg_disabled
+  //   fg | fg_muted | fg_subtle | fg_faint | fg_disabled
   //   semantic.<role>          success | warning | danger | info
+  //   <syntax slot>            comment, keyword, …, punct
+  //   ansi.<slot>              the flavor's 16-colour terminal palette
+  //   border.<weight>          subtle | default | strong | control
+  //   overlay.<name>           another overlay, flattened (roles only —
+  //                            a recipe may not target an overlay)
+  //   emphasis.<target>        the emphasis step of <target> (§ 3h)
   //
   // THE DIRECTION RULE. The gate below holds every syntax slot at 4.5:1
   // on every code overlay, and the dimmest slot (the comment grey on
@@ -563,6 +572,32 @@
         behind: "code",
         use: "Gutter / line-number column beside a removed line.",
       },
+      // A diff the user no longer acts on — an edit they rejected, a
+      // superseded proposal. The same hue as the live line at half its
+      // alpha: still a diff, plainly not the current one. A port that
+      // also dims the text does so on top of this. Issue #22.
+      diff_inserted_dimmed: {
+        behind: "code",
+        use: "Inserted line of a diff that is no longer live (rejected, superseded).",
+      },
+      diff_removed_dimmed: {
+        behind: "code",
+        use: "Removed line of a diff that is no longer live (rejected, superseded).",
+      },
+
+      // A raised block inside a terminal app — a message, a sidebar, the
+      // composer. Unlike line_highlight it has to show on its own over
+      // `bg_terminal`, the background a terminal app draws on but doesn't
+      // own: app_roles (§ 17) gates it at ≥ distinct.related_min from
+      // bg_terminal, and every code colour plus fg_muted at 4.5:1 on it.
+      // line_highlight was only ΔE 3.2 / 4.6 / 3.6 from bg_terminal on
+      // Twilight / Dawn / Noon. The accent is NOT gated on a panel: Noon's
+      // orange accent sits at 4.75:1 on its canvas, and no grey far enough
+      // from white to show keeps it there. Issue #22.
+      panel: {
+        behind: "code",
+        use: "A raised block (message, sidebar, composer) inside a terminal app, drawn over bg_terminal.",
+      },
 
       // The selected-item wash — the background of the one tab / row /
       // sidebar entry that is currently chosen (issue #14). Deliberately
@@ -616,6 +651,9 @@
         diff_removed_line: { color: "red.900", alpha: 0.2 },
         diff_removed_text: { color: "red.900", alpha: 0.45 },
         diff_removed_gutter: { color: "red.900", alpha: 0.35 },
+        diff_inserted_dimmed: { color: "green.900", alpha: 0.1 },
+        diff_removed_dimmed: { color: "red.900", alpha: 0.1 },
+        panel: { color: "gray.800", alpha: 0.5 },
         selected: { color: "accent", alpha: 0.18 },
       },
       // Twilight's #404040 canvas sits above most 900 rungs, so its
@@ -642,6 +680,9 @@
         diff_removed_line: { color: "red.900", alpha: 0.4 },
         diff_removed_text: { color: "red.900", alpha: 0.8 },
         diff_removed_gutter: { color: "red.900", alpha: 0.6 },
+        diff_inserted_dimmed: { color: "green.900", alpha: 0.2 },
+        diff_removed_dimmed: { color: "red.900", alpha: 0.2 },
+        panel: { color: "gray.900", alpha: 0.55 },
         selected: { color: "accent", alpha: 0.18 },
       },
       // Dawn's syntax sits at 4.52:1 at worst (function, blue.700), so
@@ -670,6 +711,9 @@
         diff_removed_line: { color: "red.100", alpha: 0.5 },
         diff_removed_text: { color: "red.100", alpha: 1 },
         diff_removed_gutter: { color: "red.100", alpha: 0.8 },
+        diff_inserted_dimmed: { color: "green.100", alpha: 0.25 },
+        diff_removed_dimmed: { color: "red.100", alpha: 0.25 },
+        panel: { color: "gray.100", alpha: 0.6 },
         selected: { color: "accent", alpha: 0.18 },
       },
       // Noon's canvas is near white, so there is little room above it;
@@ -697,6 +741,9 @@
         diff_removed_line: { color: "red.300", alpha: 0.2 },
         diff_removed_text: { color: "red.300", alpha: 0.45 },
         diff_removed_gutter: { color: "red.300", alpha: 0.35 },
+        diff_inserted_dimmed: { color: "green.300", alpha: 0.1 },
+        diff_removed_dimmed: { color: "red.300", alpha: 0.1 },
+        panel: { color: "gray.900", alpha: 0.08 },
         selected: { color: "accent", alpha: 0.18 },
       },
     },
@@ -753,6 +800,28 @@
     // border. `bg_scrim` is a modal backdrop, not a control surface;
     // `bg_terminal` hosts no toolkit controls.
     surfaces: ["bg", "bg_soft", "bg_sunk", "bg_overlay"],
+  },
+
+  // The same rule, for TEXT: `text.fg_faint`, the step below fg_subtle.
+  // Apps need a grey for faint rules, separators, placeholder-ish hints
+  // and incidental labels — things that may recede but must not vanish.
+  // Before issue #22 the Claude Code port borrowed border.control for
+  // this, which on Midnight (5.54:1) was hardly faint at all.
+  //
+  //   Take the grey CLOSEST to the surfaces in `surfaces` that still
+  //   clears `min` on every one of them, with a little headroom. All
+  //   four land at ≈3.2:1 on their tightest surface.
+  //
+  // 3:1 is WCAG 1.4.11's non-text floor and 1.4.3's large-text floor —
+  // NOT the 4.5:1 body text needs. fg_faint is for non-text marks and
+  // for text the user doesn't have to read: never for a label, a
+  // message, or anything a screen reader would announce as content.
+  // It is only gated on `surfaces`; on bg_soft it falls to 1.86:1
+  // (Midnight). tools/build-tokens.mjs also requires it to sit below
+  // fg_subtle on each surface, so "faint" stays fainter.
+  faint_text: {
+    min: 3,
+    surfaces: ["bg", "bg_terminal"],
   },
 
   // ────────────────────────────────────────────────────────────────
@@ -850,6 +919,18 @@
         ["inactive_selection", "find_match_other"],
       ],
     },
+    // app_roles (§ 17). The categorical set and mode_hues are checked
+    // pairwise at `min` per flavor — named colours a user picks from
+    // must not look alike. `categorical_exempt` lists accepted pairs the
+    // way ansi.exempt does; none are needed today. Using every hue at
+    // its accent rung would have put red/orange at ΔE 6.3 on Dawn and 6.1
+    // on Noon, so the categorical table moves those rungs instead (§ 17).
+    // The roles in `visible` are surfaces that must show on their own:
+    // their background ≥ `related_min` from app_roles.surface.
+    app: {
+      visible: ["message"],
+      categorical_exempt: {},
+    },
   },
 
   // APCA (WCAG 3 draft) lightness contrast, printed by the build next
@@ -863,11 +944,42 @@
   },
 
   // ────────────────────────────────────────────────────────────────
+  //   3h.  EMPHASIS STEP  —  the highlight one rung out from a colour
+  // ────────────────────────────────────────────────────────────────
+  // Spinners and progress labels animate between a colour and a
+  // highlight (Claude Code calls it a shimmer). Before issue #22 each
+  // app port picked its own highlight. The rule:
+  //
+  //   Same hue, one rung FURTHER from the surface the text sits on, so
+  //   the sweep only ever gains contrast. At the end of the ramp (100
+  //   on a dark surface, 900 on a light one) step one rung back toward
+  //   the surface instead — if that rung still clears `min`.
+  //
+  // It is a colour target, not a table: "emphasis.<target>" resolves to
+  // the step for any target that lands on a palette rung (accent,
+  // hue.<hue>, semantic.<role>, a syntax slot …), or on the text ramp.
+  // Greys step along `text_ramp`, which is ordered faint → strong: one
+  // entry toward `fg`, and back from `fg` to the entry before it. A
+  // target that is neither (an overlay, a literal grey outside the
+  // ramp) doesn't resolve, and validation rejects it.
+  //
+  // Every end-of-ramp case on the four flavors finds a rung that clears:
+  // Dawn's orange accent (900) emphasises to 800 at 4.93:1.
+  emphasis_step: {
+    min: 4.5,
+    // fg_disabled is left out: disabled text has nothing to emphasise,
+    // and on Noon it is darker than fg_faint, so the ramp wouldn't be
+    // monotonic with it in.
+    text_ramp: ["fg_faint", "fg_subtle", "fg_muted", "fg"],
+  },
+
+  // ────────────────────────────────────────────────────────────────
   //   4.  FLAVORS  —  the 4 base themes
   // ────────────────────────────────────────────────────────────────
   // Each flavor defines:
   //   surface  — background layers (bg / inset / lifted / sunk / overlay / scrim)
-  //   text     — foreground layers
+  //   text     — foreground layers; fg_faint is the 3:1 step (§ 3f)
+  //   accent_on — text on an accent fill
   //   border   — border weights
   //   state    — interaction states (hover/active) as alpha overlays
   //   ansi     — full 16-color terminal ANSI palette
@@ -900,7 +1012,9 @@
         fg_muted: "$palette.gray.300",
         fg_subtle: "#999999", // was gray.500 (#737373, 3.78:1 on bg). 6.29:1, APCA Lc 46 — the comment colour, and the luminance ceiling every dark overlay in § 3e is solved against. Outside the strict palette: gray.500 is too dark, gray.300 is fg_muted. Issue #19.
         fg_disabled: "#525252",
+        fg_faint: "#686868", // 3.22:1 on bg, 3.55:1 on bg_terminal — see faint_text (§ 3f). Below fg_subtle (6.29:1) by ΔE 16.6. Dedicated literal: gray.500 (#737373, 3.78:1) also clears, but the rule takes the grey closest to the canvas, as border.control does. Issue #22.
       },
+      accent_on: "$palette.gray.900", // text on an accent fill (button label, badge) — gated at 4.5:1 on all six accents and the four semantic colours. Dark flavors carry bright accents, so dark text; light flavors the mirror. Issue #22.
       border: {
         subtle: "$palette.gray.800",
         default: "$palette.gray.700",
@@ -949,7 +1063,9 @@
         fg_muted: "$palette.gray.300",
         fg_subtle: "#b8b8b8", // was #a3a3a3 (4.11:1 on bg). 5.23:1, APCA Lc 54, still ΔE 8.7 from fg_muted. Issue #19.
         fg_disabled: "#737373",
+        fg_faint: "#8f8f8f", // 3.21:1 on bg, 3.91:1 on bg_terminal — see faint_text (§ 3f). Issue #22.
       },
+      accent_on: "$palette.gray.900", // see midnight. Issue #22.
       border: {
         subtle: "#525252",
         default: "$palette.gray.900",
@@ -998,7 +1114,9 @@
         fg_muted: "$palette.gray.700",
         fg_subtle: "#525252",
         fg_disabled: "#737373",
+        fg_faint: "$palette.gray.500", // #737373 — 3.20:1 on bg and bg_terminal (the same surface on this flavor), the same value as fg_disabled. See faint_text (§ 3f). Issue #22.
       },
+      accent_on: "$palette.gray.100", // see midnight. Issue #22.
       border: {
         subtle: "#bdbdbd",
         default: "#a3a3a3",
@@ -1047,7 +1165,9 @@
         fg_muted: "$palette.gray.700",
         fg_subtle: "#525252",
         fg_disabled: "#737373",
+        fg_faint: "#898989", // 3.21:1 on bg, 3.50:1 on bg_terminal — see faint_text (§ 3f). Lighter than fg_disabled (#737373, 4.35:1): faint means the 3:1 floor, not a rung below disabled. Issue #22.
       },
+      accent_on: "$palette.gray.100", // see midnight. Issue #22.
       border: {
         subtle: "#e5e5e5",
         default: "$palette.gray.300",
@@ -2011,6 +2131,264 @@
       golang: "blue",
       java: "red",
       docker_context: "purple",
+    },
+  },
+
+  // ────────────────────────────────────────────────────────────────
+  //   17.  APP ROLES  —  app chrome on a surface the app doesn't own
+  // ────────────────────────────────────────────────────────────────
+  // shell_roles and prompt_roles cover what a shell draws. An app
+  // running INSIDE a terminal (Claude Code, a TUI, a chat client, a
+  // status bar) draws its own chrome — mode indicators, spinners,
+  // badges, message blocks, named colours — on `bg_terminal`, which
+  // it doesn't control. Before issue #22 the first such port made
+  // about 70 of these calls in its own roles file; the next one would
+  // have made them differently.
+  //
+  // Each role:
+  //   color       foreground colour target (vocabulary in § 3e, plus
+  //               accent_on, border.<weight> and emphasis.<target>)
+  //   background  background colour target — usually "overlay.<name>",
+  //               flattened over `surface`
+  //   style       as in § 15
+  //   gate        what tools/build-tokens.mjs holds the role to, for
+  //               all 24 (flavor, variant) combinations:
+  //                 text     color ≥ 4.5:1 on its background
+  //                 ui       color ≥ control_boundary.min (3:1) on its
+  //                          background — bars, borders, faint hints
+  //                 surface  background only: fg, fg_muted, fg_subtle,
+  //                          every syntax slot and every semantic colour
+  //                          ≥ 4.5:1 on it. NOT the accent (see
+  //                          overlay.roles.panel).
+  //               "its background" is `background` when the role has
+  //               one, otherwise `surface`.
+  //   emphasis    true: the role animates (spinner, shimmer). Its
+  //               highlight is "emphasis.<color>" (§ 3h), gated too.
+  //   use         what the role is for
+  //
+  // A port iterates `roles` and maps each to its own token names —
+  // that mapping stays in the port (issue #22, out of scope here). Resolve with
+  //   resolveColor(tokens, flavor, variant, target, { surface: 'bg_terminal' })
+  //
+  // Decisions the Claude Code port had made on its own, now made here:
+  //   faint grey     fg_faint (§ 3f), not border.control
+  //   text on accent accent_on — not readableOn(accent), which used to
+  //                  pick light text on Midnight's yellow.500 (1.76:1)
+  //   message block  overlay.panel, gated for visibility over
+  //                  bg_terminal; line_highlight was ΔE 3.2 there on
+  //                  Twilight
+  //   dimmed diff    overlay.diff_{inserted,removed}_dimmed
+
+  app_roles: {
+    surface: "bg_terminal",
+    roles: {
+      // ── Text ──
+      text: { color: "fg", gate: "text", use: "Body text." },
+      inactive: {
+        color: "fg_subtle",
+        gate: "text",
+        emphasis: true,
+        use: "Secondary or idle text; an idle spinner label.",
+      },
+      brand: {
+        color: "accent",
+        gate: "text",
+        emphasis: true,
+        use: "The app's own name, its working spinner, its primary highlight.",
+      },
+      permission: {
+        color: "accent",
+        gate: "text",
+        emphasis: true,
+        use: "A prompt that asks the user to decide (approve, allow, choose).",
+      },
+      suggestion: {
+        color: "accent",
+        gate: "text",
+        use: "A suggested input or completion the user can accept.",
+      },
+      success: {
+        color: "semantic.success",
+        gate: "text",
+        use: "Done, passed, connected.",
+      },
+      error: {
+        color: "semantic.danger",
+        gate: "text",
+        use: "Failed, rejected, disconnected.",
+      },
+      warning: {
+        color: "semantic.warning",
+        gate: "text",
+        emphasis: true,
+        use: "Needs attention; a rate limit closing in.",
+      },
+      info: {
+        color: "semantic.info",
+        gate: "text",
+        emphasis: true,
+        use: "Neutral status: a background task, an attached editor, a system spinner.",
+      },
+      // Purple for merged is the git hosting convention, and it matches
+      // nothing in semantic.*.
+      merged: {
+        color: "hue.purple",
+        gate: "text",
+        use: "A merged pull request or branch.",
+      },
+
+      // ── Text on a fill ──
+      on_accent: {
+        color: "accent_on",
+        background: "accent",
+        gate: "text",
+        use: "Label on an accent fill: a badge, a primary button. Also gated on every semantic colour as a fill (flavors.*.accent_on).",
+      },
+
+      // ── Non-text marks, 3:1 ──
+      input_border: {
+        color: "border.control",
+        gate: "ui",
+        use: "The boundary of the input box. A control boundary (§ 3f).",
+      },
+      hint: {
+        color: "fg_faint",
+        gate: "ui",
+        use: "Faint rules, separators, incidental hints nobody has to read (§ 3f).",
+      },
+      meter_fill: {
+        color: "accent",
+        gate: "ui",
+        use: "The filled part of a usage / progress bar.",
+      },
+      meter_track: {
+        color: "fg_faint",
+        gate: "ui",
+        use: "The empty part of a usage / progress bar.",
+      },
+
+      // ── Surfaces ──
+      message: {
+        background: "overlay.panel",
+        gate: "surface",
+        use: "A message block, sidebar or composer. Must show on its own over bg_terminal (distinct.app.visible).",
+      },
+      message_hover: {
+        background: "overlay.inactive_selection",
+        gate: "surface",
+        use: "A message block under the pointer or keyboard focus. Not overlay.selected: that wash only gates fg, and a message can carry fg_subtle.",
+      },
+      selection: {
+        background: "overlay.selection",
+        gate: "surface",
+        use: "Selected text.",
+      },
+      diff_inserted: {
+        background: "overlay.diff_inserted_line",
+        gate: "surface",
+        use: "Inserted line.",
+      },
+      diff_removed: {
+        background: "overlay.diff_removed_line",
+        gate: "surface",
+        use: "Removed line.",
+      },
+      diff_inserted_word: {
+        background: "overlay.diff_inserted_text",
+        gate: "surface",
+        use: "Changed characters within an inserted line.",
+      },
+      diff_removed_word: {
+        background: "overlay.diff_removed_text",
+        gate: "surface",
+        use: "Changed characters within a removed line.",
+      },
+      diff_inserted_dimmed: {
+        background: "overlay.diff_inserted_dimmed",
+        gate: "surface",
+        use: "Inserted line of a diff that is no longer live (rejected, superseded).",
+      },
+      diff_removed_dimmed: {
+        background: "overlay.diff_removed_dimmed",
+        gate: "surface",
+        use: "Removed line of a diff that is no longer live (rejected, superseded).",
+      },
+    },
+
+    // Mode indicators: one fixed hue per app state, identical across all
+    // 24 themes so a mode reads the same whatever the variant — the
+    // language_hues idea from § 16. Resolve as "hue.<hue>"; each is
+    // gated at 4.5:1 on `surface`, with its emphasis step, and the four
+    // are pairwise ≥ distinct.min apart. On the variant of the same hue
+    // a mode shares the accent; that is accepted, as for language_hues.
+    mode_hues: {
+      plan: "blue", // read-only planning
+      auto_accept: "purple", // edits apply without asking
+      fast: "orange", // a faster, cheaper mode
+      shell: "green", // input goes to the shell, not the app
+    },
+
+    // Named colours a user picks from (Claude Code: one per subagent).
+    // Fixed per flavor — never the variant — and gated: each ≥ 4.5:1 on
+    // `surface`, every pair ≥ distinct.min apart in OKLab, unless listed
+    // in distinct.app.categorical_exempt.
+    //
+    // Where the variant hue's accent rung would collide, the categorical
+    // colour takes another rung: on Dawn red/orange sat at ΔE 6.3 (red.800
+    // / orange.900) and orange/yellow at 8.2, on Noon red/orange at 6.1.
+    // The palette has no pink: on the dark flavors the light red rung
+    // reads pink; on the light ones the deep reds turn brown and land on
+    // top of orange, so pink takes the deep purple. Cyan is not a variant
+    // hue; it takes the ANSI slot that carries it (§ 3b), the protocol
+    // use cyan is reserved for.
+    //
+    // A multi-hue sweep (a rainbow) uses red → purple from this table in
+    // order; it has six hues, so an indigo band folds into blue.
+    categorical: {
+      midnight: {
+        red: "hue.red",
+        orange: "hue.orange",
+        yellow: "hue.yellow",
+        green: "hue.green",
+        blue: "hue.blue",
+        purple: "hue.purple",
+        pink: "red.300",
+        cyan: "ansi.cyan",
+      },
+      twilight: {
+        red: "hue.red",
+        orange: "hue.orange",
+        yellow: "hue.yellow",
+        green: "hue.green",
+        blue: "hue.blue",
+        purple: "hue.purple",
+        pink: "red.100",
+        cyan: "ansi.cyan",
+      },
+      // Three warm hues can't all sit on their accent rung here (see
+      // above): red and yellow go to 900, orange to 800. Closest pair
+      // after the move: ΔE 7.8.
+      dawn: {
+        red: "red.900",
+        orange: "orange.800",
+        yellow: "yellow.900",
+        green: "hue.green",
+        blue: "hue.blue",
+        purple: "hue.purple",
+        pink: "purple.900",
+        cyan: "ansi.cyan",
+      },
+      // Red goes to 900 to clear orange.700. Closest pair after: ΔE 11.2.
+      noon: {
+        red: "red.900",
+        orange: "hue.orange",
+        yellow: "hue.yellow",
+        green: "hue.green",
+        blue: "hue.blue",
+        purple: "hue.purple",
+        pink: "purple.900",
+        cyan: "ansi.cyan",
+      },
     },
   },
 }
