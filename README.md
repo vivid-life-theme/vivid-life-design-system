@@ -14,21 +14,23 @@
 
 > A multi-flavor color scheme system. 4 flavors × 6 variants = 24 themes. WCAG AA verified.
 
-This repository is the **foundation** for a family of themes. It is not itself a theme for any one app. Downstream projects — VS Code, GTK, websites, future ports — read their colors, type, spacing, and component rules from **this** project and emit native theme files.
+This repository is the **foundation** for a family of themes. It isn't a theme for any one app; think of it as the upstream everyone else pulls from. The ports (VS Code, terminals, shells, the Xfce desktop, Claude Code, and whatever comes next) read their colors, type, spacing and component rules from **this** project and emit native theme files.
 
 ```txt
    THIS REPO                                  DOWNSTREAM PORTS
    ─────────                                  ────────────────
    tokens.json5  (single source of truth)
-        │
-        ├── tokens.json                       vivid-life-vscode
-        ├── dist/tokens.js                    vivid-life-gtk
-        ├── colors_and_type.css               vivid-life-web      …
-        ├── fonts/
-        └── assets/
+        │                                     vivid-life-vs-code
+        ├── tokens.json                       vivid-life-claude-code
+        ├── dist/tokens.js                    vivid-life-windows-terminal
+        ├── colors_and_type.css               vivid-life-xfce4-terminal
+        ├── fonts/                            vivid-life-fish
+        └── assets/                           vivid-life-powershell
+                                              vivid-life-starship
+                                              vivid-life-xfce       …
 ```
 
-Every port is its own GitHub repo and (potentially) its own Claude Code project. **If a port needs a color, type, or spacing value not defined here, that's a foundation gap** — fix it here, regenerate, and the port re-reads.
+Every port is its own GitHub repo and its own Claude Code project; the [org profile](https://github.com/vivid-life-theme) lists them with install one-liners. **If a port needs a color, type or spacing value that isn't defined here, that's a foundation gap.** Fix it here, regenerate, and the port re-reads. Duct tape in a port is just technical debt with a bow on it.
 
 <br />
 
@@ -500,10 +502,11 @@ A port repo should look like:
 ```
 vivid-life-<target>/
   README.md
-  build.mjs              Reads ../vivid-life-theme/dist/tokens.js
+  build.mjs                  Reads @vivid-life-theme/design-system (dist/tokens.js)
   src/
-    template.<ext>       Target-format template
-  themes/                Generated output, one per flavor×variant
+    theme-template.mjs       Pure buildTheme(flavor, variant, tokens)
+    theme-template.test.mjs  Mapping and contrast tests
+  themes/                    Generated output, one per flavor×variant
 ```
 
 Bring the foundation in via npm (recommended), git submodule, or a hand-copied snapshot:
@@ -550,13 +553,13 @@ Light flavors (Dawn, Noon) get a hairline frame for legibility on similar light 
 
 Vivid Life Theme does not ship its own icon themes. Building a complete set for IDE + OS + apps would be ~5000+ glyphs of work for a generation-behind result. Instead the system recommends best-in-class existing sets per layer; ports document the recommendation and pull from CDN / package manager.
 
-| Scope                    | Where it shows                      | Recommendation                                                                                                                                           | License |
-| ------------------------ | ----------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
-| **App UI** glyphs        | Buttons, menus, toolbars (web, app) | [**Lucide**](https://lucide.dev) (~1500), via `currentColor`                                                                                             | ISC     |
-| **IDE** (VS Code)        | Sidebar file icons                  | [**Material Icon Theme**](https://marketplace.visualstudio.com/items?itemName=PKief.material-icon-theme)                                                 | MIT     |
-| **IDE** (Helix / Neovim) | Modal-editor file icons             | [**Atkinson Mono Nerd Font**](https://www.nerdfonts.com/font-downloads) + native plugin                                                                  | OFL     |
-| **IDE** (JetBrains)      | Sidebar file icons                  | Built-in (not user-configurable)                                                                                                                         | —       |
-| **OS** / GTK desktop     | File manager, taskbar, launcher     | [**Papirus**](https://github.com/PapirusIconTheme/papirus-icon-theme) (~7000) + [`papirus-folders`](https://github.com/PapirusIconTheme/papirus-folders) | GPL-3.0 |
+| Scope                    | Where it shows                      | Recommendation                                                                                                                                                       | License |
+| ------------------------ | ----------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
+| **App UI** glyphs        | Buttons, menus, toolbars (web, app) | [**Lucide**](https://lucide.dev) (~1500), via `currentColor`                                                                                                         | ISC     |
+| **IDE** (VS Code)        | Sidebar file icons                  | [**Material Icon Theme**](https://marketplace.visualstudio.com/items?itemName=PKief.material-icon-theme)                                                             | MIT     |
+| **IDE** (Helix / Neovim) | Modal-editor file icons             | [**Atkinson Mono Nerd Font**](https://www.nerdfonts.com/font-downloads) + native plugin                                                                              | OFL     |
+| **IDE** (JetBrains)      | Sidebar file icons                  | Built-in (not user-configurable)                                                                                                                                     | —       |
+| **OS** / GTK desktop     | File manager, taskbar, launcher     | [**Papirus**](https://github.com/PapirusDevelopmentTeam/papirus-icon-theme) (~7000) + [`papirus-folders`](https://github.com/PapirusDevelopmentTeam/papirus-folders) | GPL-3.0 |
 
 **Don't recolor file icons.** They encode the file _type_, which has its own visual language users learn across apps. Recolor only folder icons (where the target supports it) and the chrome around the icon.
 
