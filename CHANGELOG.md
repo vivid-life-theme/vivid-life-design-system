@@ -10,6 +10,10 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ## [Unreleased]
 
+### Fixed
+
+- Docs: the selected-item wash ceiling is 20%, not 18%. Twilight/orange `fg_muted` clears 4.5:1 at 20% (4.63:1) and fails at 21% (4.49:1); 18% is a margin below the limit. No colour values changed.
+
 ---
 
 ## [0.13.0] - 2026-10-14

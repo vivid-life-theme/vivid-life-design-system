@@ -254,7 +254,7 @@ The tint is translucent, so it composites over whichever surface the row lands o
 
 #### Why 18%
 
-A ceiling, not a taste call. On the canvas the wash additionally has to keep `text.fg_muted` readable, and that's the binding constraint: Twilight sits at 4.81:1 at 18% and fails at 20% (4.63:1). Off-canvas that requirement isn't imposed — no useful percentage achieves it there (it would need ≈8%, faint enough to stop reading as a state at all), and the selected label is `fg` regardless.
+A ceiling with headroom, not a taste call. On the canvas the wash additionally has to keep `text.fg_muted` readable, and that's the binding constraint: Twilight/orange sits at 4.81:1 at 18%, still clears at 20% (4.63:1) and fails at 21% (4.49:1). So 20% is the hard limit, and 18% keeps a margin for the next recipe tweak. Off-canvas that requirement isn't imposed — no useful percentage achieves it there (it would need ≈8%, faint enough to stop reading as a state at all), and the selected label is `fg` regardless.
 
 The tint still reads as a distinct region — ΔE76 ≥ 10.8 against plain `bg` on every flavor — and stays clearly apart from `state.hover` (ΔE76 ≥ 7.6), so "hovered" and "selected" don't blur together. It's weakest where the accent hue sits close to the surface beneath it: a blue accent on a cool-slate surface moves far less than a yellow or orange one, which is another reason the shape cue beside it carries the signal.
 

@@ -609,8 +609,9 @@
       // `fg` by contract, so `fg` is what's gated — on every surface in
       // `surfaces`, because the tint is translucent and composites over
       // whatever the row lands on. On the canvas `fg_muted` must clear
-      // too, and that is what pins 18%: Twilight sits at 4.81:1 there
-      // and fails at 20% (4.63:1).
+      // too, and that caps the percentage: Twilight/orange sits at 4.81:1
+      // at 18%, 4.63:1 at 20% and fails at 21% (4.49:1). 18% keeps
+      // a margin below that 20% limit.
       //
       // `bg_inset` is deliberately absent. Twilight's #627084 sits at
       // 4.62:1 for `fg` before any tint at all, so no percentage clears
