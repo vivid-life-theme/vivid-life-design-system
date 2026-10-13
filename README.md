@@ -30,7 +30,7 @@ This repository is the **foundation** for a family of themes. It isn't a theme f
                                               vivid-life-xfce       …
 ```
 
-Every port is its own GitHub repo and its own Claude Code project; the [org profile](https://github.com/vivid-life-theme) lists them with install one-liners. **If a port needs a color, type or spacing value that isn't defined here, that's a foundation gap.** Fix it here, regenerate, and the port re-reads. Duct tape in a port is just technical debt with a bow on it.
+Every port is its own GitHub repo and its own Claude Code project; the [org profile](https://github.com/vivid-life-theme) lists them with install one-liners. **If a port needs a color, type or spacing value that isn't defined here, that's a foundation gap.** Fix it here, regenerate, and the port re-reads. Duct tape in a port is just technical debt with a bow on it. (We've all shipped a gift-wrapped `#ff00ff` at some point. Don't.)
 
 <br />
 
@@ -127,7 +127,7 @@ Every port is its own GitHub repo and its own Claude Code project; the [org prof
   </tr>
 </table>
 
-> Open [`preview/01-kitchen-sink.html`](preview/01-kitchen-sink.html) locally to interact with all 24 themes.
+> Open [`preview/01-kitchen-sink.html`](preview/01-kitchen-sink.html) locally to interact with all 24 themes. It has everything except the actual sink.
 
 ---
 
@@ -141,13 +141,13 @@ Seven hues, six shades each — Tailwind v3 defaults at `900 / 800 / 700 / 500 /
   <img src="assets/palette.svg" alt="Source palette: 7 hues × 6 shades (900–100) plus Cyan extension" />
 </p>
 
-The `800` tier exists for one job: the light-flavor ANSI normal set (see [ANSI palette](#ansi-palette-per-flavor)). On a light `bg_terminal` the `700` tier can't clear 4.5:1 and `900` is already spoken for by the bright set, so `800` is the only rung that keeps normal and bright distinct. It's a Tailwind v3 default like every other shade here — adding it moved no existing value.
+The `800` tier exists for one job: the light-flavor ANSI normal set (see [ANSI palette](#ansi-palette-per-flavor)). On Dawn's `bg_terminal` the `700` tier can't clear 4.5:1 and `900` is already spoken for by the bright set, so `800` is the only rung that keeps normal and bright distinct. It's a Tailwind v3 default like every other shade here — adding it moved no existing value.
 
 Cyan is reserved for places where the protocol or convention _explicitly_ requires cyan — terminal ANSI `cyan` / `bright-cyan`, diff hunk headers (per `git diff` tradition). Not in the 6-hue variant axis; not in the default syntax-token map.
 
 ### 4 flavors (= 4 syntax color schemes)
 
-Each flavor uses one of the **outer four** grey shades as its canvas:
+Each flavor uses one of four greys as its canvas (`900`, `700`, `300` and `100` of the neutral ramp):
 
 <p align="center">
   <img src="assets/flavors-table.svg" alt="4 flavors: Midnight, Twilight, Dawn, Noon" />
@@ -463,7 +463,7 @@ resolveColor(tokens, "dawn", "orange", "emphasis.accent", {
 | **Sans** (UI, body, display) | **Atkinson Hyperlegible Next** | OFL-1.1 | [Braille Institute](https://www.brailleinstitute.org/freefont) (locally bundled) |
 | **Mono** (code, terminal)    | **Atkinson Hyperlegible Mono** | OFL-1.1 | [Braille Institute](https://www.brailleinstitute.org/freefont) (locally bundled) |
 
-Atkinson Hyperlegible was designed by the Braille Institute for readers with low vision. The family ships only Sans + Mono — no serif. We don't pair a third-party serif: brand consistency wins over completeness.
+Atkinson Hyperlegible was designed by the Braille Institute for readers with low vision. The family ships only Sans + Mono — no serif. We don't pair a third-party serif: brand consistency wins over completeness, and nobody has ever missed serifs in a terminal.
 
 **Mono stack:** `Atkinson Hyperlegible Mono` → [`Cascadia Code`](https://github.com/microsoft/cascadia-code) → `Cascadia Mono` → `ui-monospace` → … The fallback keeps respect for locally-installed coding fonts.
 
@@ -493,7 +493,7 @@ Atkinson Hyperlegible was designed by the Braille Institute for readers with low
    └──────────────────────────────────────────┘
 ```
 
-Both generators are deterministic — same input → byte-identical output. `build-tokens.mjs` validates the shape of every role map (unknown keys like `colour:`, unknown style names, colour targets that don't resolve) and then runs every gate — contrast, distinctness, overlays, roles — **before** it writes anything, so a failing build leaves the previous `tokens.json` and `dist/tokens.js` on disk for any port on a local-path dependency. All build scripts accept `--check` to fail CI when their outputs drift from `tokens.json5`. `tools/build-previews.mjs --check` additionally validates that every `var(--…)` reference and relative URL in `preview/*.html` still resolves — catches token renames that would silently break the reference cards. `npm run check` runs all three.
+Both generators are deterministic: same input, byte-identical output. The only surprise left in your diff is the one you put there yourself. `build-tokens.mjs` validates the shape of every role map (unknown keys like `colour:`, unknown style names, colour targets that don't resolve) and then runs every gate — contrast, distinctness, overlays, roles — **before** it writes anything, so a failing build leaves the previous `tokens.json` and `dist/tokens.js` on disk for any port on a local-path dependency. All build scripts accept `--check` to fail CI when their outputs drift from `tokens.json5`. `tools/build-previews.mjs --check` additionally validates that every `var(--…)` reference and relative URL in `preview/*.html` still resolves — catches token renames that would silently break the reference cards. `npm run check` runs all three.
 
 **Adding a new token:** edit `tokens.json5`, run both scripts. Both `tokens.json` and `colors_and_type.css` regenerate; nothing is hand-maintained.
 
@@ -510,6 +510,7 @@ colors_and_type.css             CSS implementation of the foundation
 tools/
   build-tokens.mjs              JSON5 → JSON converter + WCAG checker
   build-css.mjs                 tokens.json5 → colors_and_type.css generator
+  build-previews.mjs            Validates var(--…) refs and URLs in preview/*.html
 fonts/
   AtkinsonHyperlegibleNext-*.ttf
   AtkinsonHyperlegibleMono-*.ttf
@@ -648,7 +649,7 @@ See `preview/03-iconography.html` for the live spec and `tokens.json5 → iconog
 
 ## Caveats
 
-- **`bgSunk`** on Midnight (`#0a0a0a`) and Dawn (`#bdbdbd`), and `--vl-fg-subtle` on Midnight (`#999999`) and Twilight (`#b8b8b8`) are _outside_ the strict palette — needed for surface depth and comment readability respectively. Documented choices, not bugs.
+- **`bg_sunk`** on Midnight (`#0a0a0a`) and Dawn (`#bdbdbd`), and `--vl-fg-subtle` on Midnight (`#999999`) and Twilight (`#b8b8b8`) are _outside_ the strict palette — needed for surface depth and comment readability respectively. Documented choices, not bugs.
 - **CONTENT FUNDAMENTALS** / tone-of-voice guidelines are deliberately scoped out for now — themes don't ship copy, so the only writing surface is per-port release notes and the future website. Will revisit when the website exists.
 - **ANSI text on a terminal selection is not AA.** Terminals are expected to redraw selected text in `overlay.*.selection.terminal.foreground`; one without a selection-foreground setting falls below 4.5:1 for some ANSI colours. See [Terminal selection](#terminal-selection).
 - **Overlays are per (flavor, variant)**, emitted as `#rrggbbaa` CSS variables. Over `bg` they match the `flat` value in `tokens.json` to within one step of 8-bit alpha rounding. Ports targeting a format without alpha should use `flat` (or `resolveOverlay()` for another surface) rather than blending themselves.
