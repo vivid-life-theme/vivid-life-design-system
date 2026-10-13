@@ -79,7 +79,7 @@ Every port is its own GitHub repo and its own Claude Code project; the [org prof
 ## Features
 
 - **24 themes** — 4 flavors (Midnight · Twilight · Dawn · Noon) × 6 accent variants (Red · Orange · Yellow · Green · Blue · Purple), all WCAG AA
-- **Syntax token map** — 12 core slots + 23 extended, stable shape across all flavors
+- **Syntax token map** — 12 core slots + 26 extended, stable shape across all flavors
 - **UI tokens** — surfaces, text (with a 3:1 faint step), borders, interactive states, semantic roles, accent-on
 - **Overlay recipes** — selection, find match, word highlight, diff, selected-item wash; resolved to hex per theme, with syntax gated at AA on every one
 - **Shell, prompt & app roles** — one answer for "what colour is an option flag / a staged file / plan mode / the subagent called pink", shared by every shell, prompt and terminal-app port
@@ -334,11 +334,13 @@ Defined in `tokens.json5` as `syntax_hues` + `syntax_shade`, resolved at build t
 | `regex`     | red              |
 | `punct`     | gray             |
 
-**25 extended tokens** map each logical name to either a string shorthand (a core slot or text/semantic alias) or a `{ color?, style? }` object — supporting font-style hints (`italic`, `bold`, `underline`) alongside color targets:
+**26 extended tokens** map each logical name to either a string shorthand (a core slot or text/semantic alias) or a `{ color?, style? }` object — supporting font-style hints (`italic`, `bold`, `underline`) alongside color targets:
 
 - _Repurposed:_ `variable`, `parameter`, `property`, `decorator`
 - _Unchanged:_ `operator`, `builtin`, `namespace`, `macro`, `lifetime`, `heading`, `link`, `selector`, `unit`, `hex`, `shebang`
-- _New:_ `lang_var` (this/self/super), `emphasis` (tinted italic), `strong` (tinted bold), `invalid`, `invalid_deprecated`, `doc_keyword`, `doc_type`, `doc_param`, `event`, `label`
+- _New:_ `primitive_type` (int/bool/string spelled as keywords), `lang_var` (this/self/super), `emphasis` (tinted italic), `strong` (tinted bold), `invalid`, `invalid_deprecated`, `doc_keyword`, `doc_type`, `doc_param`, `event`, `label`
+
+`primitive_type` covers `int`, `bool`, `string` and their kin where a language spells them as keywords: C# (`keyword.type`), C and C++ (`storage.type.built-in`), Java (`storage.type.primitive`) and Go (`storage.type.*.go`). They take the `type` colour, as TypeScript, Python and Rust primitives already do, so `int count` and `List<int> items` colour their types alike; the keywords around them (`if`, `return`, `static`) keep `keyword`. The `keyword` scope list ends in a bare `keyword` catch-all, so a grammar's own keyword scopes, such as Go's `func`, `var` and `struct`, never fall through to `fg`.
 
 Color targets may resolve to one of the 12 core slots, a text alias (`fg`, `fg_muted`, `fg_subtle`, `fg_disabled`), or a semantic alias (`semantic.success | .warning | .danger | .info`). Ports may override individual entries.
 

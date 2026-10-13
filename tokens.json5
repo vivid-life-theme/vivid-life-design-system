@@ -1459,6 +1459,7 @@
       operator: "keyword", // +, -, =, =>, |
       builtin: { color: "function", style: ["italic"] }, // print, len, console.log — "not yours"
       namespace: "type", // module / namespace paths
+      primitive_type: "type", // int, bool, string where a grammar spells them as keywords (C, C++, C#, Java, Go)
       macro: "function", // println!, vec!
       lifetime: "constant", // Rust 'a, 'static
       heading: { color: "keyword", style: ["bold"] }, // markdown # ## ### — structural anchor
@@ -1501,8 +1502,10 @@
     keyword: [
       "keyword.control",
       "keyword.other",
+      "keyword.type.go", // Go's `type` keyword, not a type
       "storage.type",
       "storage.modifier",
+      "keyword", // catch-all: Go's func/var/struct, C# preprocessor keywords
     ],
     string: ["string", "string.quoted", "string.template"],
     number: [
@@ -1510,15 +1513,22 @@
       "constant.language", // true, false, null, undefined
     ],
     function: ["entity.name.function", "support.function"],
-    parameter: ["variable.parameter"],
+    parameter: ["variable.parameter", "entity.name.variable.parameter"],
     type: [
       "entity.name.type",
       "entity.name.class",
+      "entity.other.inherited-class",
       "support.class",
       "support.type",
+      // Java writes class references as storage types.
+      "storage.type.java",
+      "storage.type.generic.java",
+      "storage.type.object.array.java",
     ],
     constant: [
       "constant.other",
+      "entity.name.variable.enum-member", // C#
+      "variable.other.enummember", // C++
       // NOTE: variable.other.constant.{js,ts,tsx} → fg; see fg_fallthrough_jsts
     ],
     tag: ["entity.name.tag"],
@@ -1538,13 +1548,29 @@
       "meta.decorator entity.name.function",
       "punctuation.decorator",
     ],
-    operator: ["keyword.operator"],
+    operator: ["keyword.operator", "keyword.symbol"], // keyword.symbol: F#'s -> and |>
     builtin: [
       "support.function.builtin",
       "support.class.builtin",
       "support.variable.builtin",
     ],
-    namespace: ["entity.name.namespace", "entity.name.module"],
+    namespace: [
+      "entity.name.namespace",
+      "entity.name.module",
+      "entity.name.scope-resolution", // C++ std::
+    ],
+    primitive_type: [
+      "keyword.type", // C#: keyword.type.int.cs
+      "storage.type.primitive", // Java, Groovy, Dart, Objective-C++
+      "storage.type.built-in", // C, C++, Objective-C, incl. size_t
+      "storage.type.numeric.go",
+      "storage.type.boolean.go",
+      "storage.type.byte.go",
+      "storage.type.error.go",
+      "storage.type.rune.go",
+      "storage.type.string.go",
+      "storage.type.uintptr.go",
+    ],
     macro: ["entity.name.function.macro", "support.function.macro"],
     lifetime: ["storage.modifier.lifetime.rust", "entity.name.lifetime.rust"],
     heading: [
@@ -1573,6 +1599,7 @@
     lang_var: [
       "variable.language.this",
       "variable.language.self",
+      "variable.language.special.self", // Python
       "variable.language.super",
     ],
 
