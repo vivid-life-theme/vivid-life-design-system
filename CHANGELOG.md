@@ -10,6 +10,10 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ## [Unreleased]
 
+---
+
+## [0.13.0] - 2026-10-14
+
 Scope coverage for languages that the existing `scope_recommendations` missed — C#, C, C++, Java, Go, F# and Python. No colour value changes; ports that build `tokenColors` from `scope_recommendations` pick the new rules up on regeneration.
 
 ### Added
@@ -307,7 +311,8 @@ Initial npm release. The token system existed before this version; this is the f
 
 ---
 
-[unreleased]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.12.0...HEAD
+[unreleased]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.13.0...HEAD
+[0.13.0]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.12.0...v0.13.0
 [0.12.0]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.11.0...v0.12.0
 [0.11.0]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.10.0...v0.11.0
 [0.10.0]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.9.0...v0.10.0
