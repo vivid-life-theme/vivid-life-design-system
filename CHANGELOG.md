@@ -10,6 +10,12 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ## [Unreleased]
 
+---
+
+## [0.13.1] - 2026-10-14
+
+Docs-only patch. No token or colour values changed.
+
 ### Fixed
 
 - Docs: the selected-item wash ceiling is 20%, not 18%. Twilight/orange `fg_muted` clears 4.5:1 at 20% (4.63:1) and fails at 21% (4.49:1); 18% is a margin below the limit. No colour values changed.
@@ -315,7 +321,8 @@ Initial npm release. The token system existed before this version; this is the f
 
 ---
 
-[unreleased]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.13.0...HEAD
+[unreleased]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.13.1...HEAD
+[0.13.1]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.13.0...v0.13.1
 [0.13.0]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.12.0...v0.13.0
 [0.12.0]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.11.0...v0.12.0
 [0.11.0]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.10.0...v0.11.0
