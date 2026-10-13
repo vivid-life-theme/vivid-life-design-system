@@ -10,6 +10,17 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ## [Unreleased]
 
+Scope coverage for languages that the existing `scope_recommendations` missed — C#, C, C++, Java, Go, F# and Python. No colour value changes; ports that build `tokenColors` from `scope_recommendations` pick the new rules up on regeneration.
+
+### Added
+
+- **`syntax_tokens.extended.primitive_type`** (`type`) with its scope list, for `int`, `bool`, `string` and their kin where a grammar spells them as keywords: `keyword.type` (C#), `storage.type.primitive` (Java, Groovy, Dart, Objective-C++), `storage.type.built-in` (C, C++, Objective-C, including `size_t`) and Go's `storage.type.*.go`. Before, C# left them in `fg`, and C, C++ and Java painted them in the keyword colour like `if` and `return`.
+
+### Changed
+
+- The `keyword` scopes end in a bare `keyword` catch-all, so keyword scopes no rule names — Go's `func`, `var`, `struct`, `package`, C# preprocessor keywords — no longer fall through to `fg`. Go's `type` keyword (`keyword.type.go`) stays `keyword` instead of matching `primitive_type`.
+- More scopes for existing slots: Java class references (`storage.type.java`, `storage.type.generic.java`, `storage.type.object.array.java`) and base classes (`entity.other.inherited-class`) → `type`, instead of `keyword`; C++ `std::` scope resolution → `namespace`; C# parameter declarations → `parameter`; C# and C++ enum members → `constant`; Python `self` (`variable.language.special.self`) → `lang_var`; F#'s symbolic operators (`keyword.symbol`) → `operator`.
+
 ---
 
 ## [0.12.0] - 2026-10-11

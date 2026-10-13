@@ -3673,6 +3673,7 @@ export default {
         ]
       },
       "namespace": "type",
+      "primitive_type": "type",
       "macro": "function",
       "lifetime": "constant",
       "heading": {
@@ -3749,8 +3750,10 @@ export default {
     "keyword": [
       "keyword.control",
       "keyword.other",
+      "keyword.type.go",
       "storage.type",
-      "storage.modifier"
+      "storage.modifier",
+      "keyword"
     ],
     "string": [
       "string",
@@ -3766,16 +3769,23 @@ export default {
       "support.function"
     ],
     "parameter": [
-      "variable.parameter"
+      "variable.parameter",
+      "entity.name.variable.parameter"
     ],
     "type": [
       "entity.name.type",
       "entity.name.class",
+      "entity.other.inherited-class",
       "support.class",
-      "support.type"
+      "support.type",
+      "storage.type.java",
+      "storage.type.generic.java",
+      "storage.type.object.array.java"
     ],
     "constant": [
-      "constant.other"
+      "constant.other",
+      "entity.name.variable.enum-member",
+      "variable.other.enummember"
     ],
     "tag": [
       "entity.name.tag"
@@ -3804,7 +3814,8 @@ export default {
       "punctuation.decorator"
     ],
     "operator": [
-      "keyword.operator"
+      "keyword.operator",
+      "keyword.symbol"
     ],
     "builtin": [
       "support.function.builtin",
@@ -3813,7 +3824,20 @@ export default {
     ],
     "namespace": [
       "entity.name.namespace",
-      "entity.name.module"
+      "entity.name.module",
+      "entity.name.scope-resolution"
+    ],
+    "primitive_type": [
+      "keyword.type",
+      "storage.type.primitive",
+      "storage.type.built-in",
+      "storage.type.numeric.go",
+      "storage.type.boolean.go",
+      "storage.type.byte.go",
+      "storage.type.error.go",
+      "storage.type.rune.go",
+      "storage.type.string.go",
+      "storage.type.uintptr.go"
     ],
     "macro": [
       "entity.name.function.macro",
@@ -3870,6 +3894,7 @@ export default {
     "lang_var": [
       "variable.language.this",
       "variable.language.self",
+      "variable.language.special.self",
       "variable.language.super"
     ],
     "doc_keyword": [
