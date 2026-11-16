@@ -207,8 +207,15 @@
   // emulator has no editor pane: bg_terminal plus these 12 slots ARE
   // the whole theme, and Midnight/Twilight differed in 2 of 16 slots
   // (Dawn/Noon in 3, all of them neutrals). Each flavor now sits on
-  // its own rung, which is also what frees bg_terminal to spread apart
-  // — see the bg_terminal comments in each flavor below.
+  // its own rung.
+  //
+  // `bg_terminal` used to be a surface of its own, spread apart from the
+  // editor canvas per flavor. It is now `bg` on every flavor: the editor
+  // and the terminal share one background, and in an embedded port the
+  // panel's tab row (the frame, § 3i) separates them. The four canvases
+  // (#171717 / #404040 / #d4d4d4 / #f5f5f5) are further apart than the
+  // old terminal backgrounds were, so a standalone terminal still shows
+  // its flavor. See docs/superpowers/specs/2026-11-16-frame-colours-design.md.
   //
   // ANSI hue names are NOT variant hues: ANSI has `magenta` and `cyan`,
   // the variant axis has `orange` and `purple`. ansi_hues maps the ANSI
@@ -233,7 +240,8 @@
   ansi_shade: {
     // Vivid 500 normals; 300 brights. blue/magenta used to sit at 300 in
     // both rows on the belief that their 500 rung couldn't clear a
-    // near-black bg. Against #0a0a0a it does (5.38 / 5.00 : 1), and the
+    // near-black bg. Against #0a0a0a it does (5.38 / 5.00 : 1; 4.87 / 4.53
+    // on today's #171717 bg_terminal), and the
     // distinctness gate (§ 3g) caught the identical pair. Issue #19.
     midnight: {
       normal: {
@@ -255,7 +263,7 @@
     },
     // One rung lighter than Midnight in both rows: pastel normals, washed
     // brights. This is what makes Twilight legible as its own flavor in a
-    // standalone emulator, and what lets bg_terminal rise to #333333.
+    // standalone emulator, on its #404040 canvas.
     twilight: {
       normal: {
         red: 300,
@@ -603,8 +611,8 @@
       // `bg_terminal`, the background a terminal app draws on but doesn't
       // own: app_roles (§ 17) gates it at ≥ distinct.related_min from
       // bg_terminal, and every code colour plus fg_muted at 4.5:1 on it.
-      // line_highlight was only ΔE 3.2 / 4.6 / 3.6 from bg_terminal on
-      // Twilight / Dawn / Noon. The accent is NOT gated on a panel: Noon's
+      // line_highlight was only ΔE 3.2 / 4.6 / 3.6 from the old
+      // bg_terminal on Twilight / Dawn / Noon. The accent is NOT gated on a panel: Noon's
       // orange accent sits at 4.75:1 on its canvas, and no grey far enough
       // from white to show keeps it there. Issue #22.
       panel: {
@@ -667,7 +675,7 @@
         diff_removed_gutter: { color: "red.900", alpha: 0.35 },
         diff_inserted_dimmed: { color: "green.900", alpha: 0.1 },
         diff_removed_dimmed: { color: "red.900", alpha: 0.1 },
-        panel: { color: "gray.800", alpha: 0.5 },
+        panel: { color: "gray.800", alpha: 1 }, // was 0.5: ΔE 3.5 from the new bg_terminal (#171717). At 1 it is ΔE 6.4, comment grey 5.31:1.
         selected: { color: "accent", alpha: 0.18 },
       },
       // Twilight's #404040 canvas sits above most 900 rungs, so its
@@ -1019,14 +1027,14 @@
         bg_sunk: "$palette.gray.950", // slightly below canvas
         bg_overlay: "$palette.gray.700", // floating menus, dropdowns
         bg_scrim: "#000000cc", // modal backdrop (80% black)
-        bg_terminal: "$flavors.midnight.surface.bg_sunk", // darkest of the four; anchors the low end of the bg_terminal spread. Clears ≥4.5:1 vs every ansi.* color except ansi.black (reverse-video anchor, == this value). See issues #5, #7.
+        bg_terminal: "$flavors.midnight.surface.bg", // editor and terminal share one background (§ 3b). Every ansi.* colour except the reverse-video anchor ansi.black clears ≥4.5:1 on it.
       },
       text: {
         fg: "$palette.gray.100",
         fg_muted: "$palette.gray.300",
         fg_subtle: "#999999", // was gray.500 (#737373, 3.78:1 on bg). 6.29:1, APCA Lc 46 — the comment colour, and the luminance ceiling every dark overlay in § 3e is solved against. Outside the strict palette: gray.500 is too dark, gray.300 is fg_muted. Issue #19.
         fg_disabled: "#525252",
-        fg_faint: "#686868", // 3.22:1 on bg, 3.55:1 on bg_terminal — see faint_text (§ 3f). Below fg_subtle (6.29:1) by ΔE 16.6. Dedicated literal: gray.500 (#737373, 3.78:1) also clears, but the rule takes the grey closest to the canvas, as border.control does. Issue #22.
+        fg_faint: "#686868", // 3.22:1 on bg (= bg_terminal) — see faint_text (§ 3f). Below fg_subtle (6.29:1) by ΔE 16.6. Dedicated literal: gray.500 (#737373, 3.78:1) also clears, but the rule takes the grey closest to the canvas, as border.control does. Issue #22.
       },
       accent_on: "$palette.gray.900", // text on an accent fill (button label, badge) — gated at 4.5:1 on all six accents and the four semantic colours. Dark flavors carry bright accents, so dark text; light flavors the mirror. Issue #22.
       border: {
@@ -1044,11 +1052,11 @@
         red: "$palette.red.500",
         green: "$palette.green.500",
         yellow: "$palette.yellow.500",
-        blue: "$palette.blue.500", // was blue.300 — identical to bright_blue. 5.38:1 on bg_terminal. Issue #19.
-        magenta: "$palette.purple.500", // was purple.300 — identical to bright_magenta. 5.00:1 on bg_terminal. Issue #19.
+        blue: "$palette.blue.500", // was blue.300 — identical to bright_blue. 4.87:1 on bg_terminal. Issue #19.
+        magenta: "$palette.purple.500", // was purple.300 — identical to bright_magenta. 4.53:1 on bg_terminal. Issue #19.
         cyan: "$palette.cyan.500",
         white: "$palette.gray.300",
-        bright_black: "#878787", // was $palette.gray.700 (#404040) — that shade only cleared 1.9:1 against bg_sunk/bg_terminal; #878787 clears 5.5:1. Dedicated literal (not a palette ref) so it doesn't move borders/text that also reference gray.700. See issue #5.
+        bright_black: "#878787", // was $palette.gray.700 (#404040) — that shade only cleared 1.9:1 against bg_sunk/bg_terminal; #878787 clears 4.99:1 on today's #171717 bg_terminal. Dedicated literal (not a palette ref) so it doesn't move borders/text that also reference gray.700. See issue #5.
         bright_red: "$palette.red.300",
         bright_green: "$palette.green.300",
         bright_yellow: "$palette.yellow.300",
@@ -1070,14 +1078,14 @@
         bg_sunk: "$palette.gray.900", // deeper recess
         bg_overlay: "#525252",
         bg_scrim: "#000000bb",
-        bg_terminal: "#333333", // was bg_sunk (#171717), only ΔL* 5.0 from Midnight's — indistinguishable in a standalone terminal emulator, which shows no other surface. #333333 is ΔL* 18.5 from Midnight, matching the editor-bg spread that already reads as flavor identity, while staying below bg (#404040) so the embedded terminal panel keeps its layer. Outside the strict palette, like bg_sunk on Midnight. See issue #7.
+        bg_terminal: "$flavors.twilight.surface.bg", // editor and terminal share one background (§ 3b). Was #333333 (issue #7).
       },
       text: {
         fg: "$palette.gray.100",
         fg_muted: "$palette.gray.300",
         fg_subtle: "#b8b8b8", // was #a3a3a3 (4.11:1 on bg). 5.23:1, APCA Lc 54, still ΔE 8.7 from fg_muted. Issue #19.
         fg_disabled: "#737373",
-        fg_faint: "#8f8f8f", // 3.21:1 on bg, 3.91:1 on bg_terminal — see faint_text (§ 3f). Issue #22.
+        fg_faint: "#8f8f8f", // 3.21:1 on bg (= bg_terminal) — see faint_text (§ 3f). Issue #22.
       },
       accent_on: "$palette.gray.900", // see midnight. Issue #22.
       border: {
@@ -1099,7 +1107,7 @@
         magenta: "$palette.purple.300",
         cyan: "$palette.cyan.300",
         white: "$palette.gray.300",
-        bright_black: "#a3a3a3", // was #878787 — that literal cleared 5.0:1 against the old bg_terminal (#171717) but only 3.5:1 against #333333. #a3a3a3 clears 5.0:1 (it was this flavor's fg_subtle until issue #19 lifted that to #b8b8b8). See issues #5, #7.
+        bright_black: "#adadad", // the closest grey to the canvas that clears 4.5:1 on bg_terminal (#404040): 4.62:1, ΔE 12.2 from ansi.white. #a3a3a3 cleared 5.0:1 on the old #333333 but only 4.11:1 here. See issues #5, #7 and the frame-colours spec.
         bright_red: "$palette.red.100",
         bright_green: "$palette.green.100",
         bright_yellow: "$palette.yellow.100",
@@ -1121,7 +1129,7 @@
         bg_sunk: "#bdbdbd", // outside strict palette
         bg_overlay: "$palette.gray.100",
         bg_scrim: "#17171788",
-        bg_terminal: "$flavors.dawn.surface.bg", // was bg_soft (#f5f5f5), only ΔL* 3.5 from Noon's — indistinguishable in a standalone terminal emulator. Dropping to the flavor canvas (#d4d4d4) gives ΔL* 15.1 from Noon and inherits the accent-shade table's own contrast guarantee for free, since this IS the surface that table is verified against. Cost: in embedded ports the terminal panel no longer differs from the editor canvas by fill — the panel is read from its bg_inset chrome and border instead. See issue #7.
+        bg_terminal: "$flavors.dawn.surface.bg", // editor and terminal share one background (§ 3b). Dawn was the first flavor to do this (issue #7).
       },
       text: {
         fg: "$palette.gray.900",
@@ -1172,14 +1180,14 @@
         bg_sunk: "$palette.gray.300",
         bg_overlay: "#ffffff",
         bg_scrim: "#17171788",
-        bg_terminal: "$flavors.noon.surface.bg_soft", // verified ≥4.5:1 vs every ansi.* color except ansi.bright_white (intentional reverse-video anchor); bright_black already clears 4.7:1 unchanged. See issue #5
+        bg_terminal: "$flavors.noon.surface.bg", // editor and terminal share one background (§ 3b). Was bg_soft (#ffffff). Every ansi.* colour except the reverse-video anchor ansi.bright_white clears ≥4.5:1 on it.
       },
       text: {
         fg: "$palette.gray.900",
         fg_muted: "$palette.gray.700",
         fg_subtle: "#525252",
         fg_disabled: "#737373",
-        fg_faint: "#898989", // 3.21:1 on bg, 3.50:1 on bg_terminal — see faint_text (§ 3f). Lighter than fg_disabled (#737373, 4.35:1): faint means the 3:1 floor, not a rung below disabled. Issue #22.
+        fg_faint: "#898989", // 3.21:1 on bg (= bg_terminal) — see faint_text (§ 3f). Lighter than fg_disabled (#737373, 4.35:1): faint means the 3:1 floor, not a rung below disabled. Issue #22.
       },
       accent_on: "$palette.gray.100", // see midnight. Issue #22.
       border: {
@@ -1201,7 +1209,7 @@
         magenta: "$palette.purple.700",
         cyan: "$palette.cyan.700",
         white: "$palette.gray.700",
-        bright_black: "$palette.gray.500",
+        bright_black: "#6f6f6f", // was gray.500 (#737373): 4.74:1 on the old #ffffff terminal, 4.35:1 on #f5f5f5. #6f6f6f is the lightest grey that clears 4.5:1 (4.61:1).
         bright_red: "$palette.red.900",
         bright_green: "$palette.green.900",
         bright_yellow: "$palette.yellow.900",

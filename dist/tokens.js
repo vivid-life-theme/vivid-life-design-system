@@ -475,7 +475,7 @@ export default {
         },
         "panel": {
           "color": "gray.800",
-          "alpha": 0.5
+          "alpha": 1
         },
         "selected": {
           "color": "accent",
@@ -859,7 +859,7 @@ export default {
         "bg_sunk": "#0a0a0a",
         "bg_overlay": "#404040",
         "bg_scrim": "#000000cc",
-        "bg_terminal": "#0a0a0a"
+        "bg_terminal": "#171717"
       },
       "text": {
         "fg": "#f5f5f5",
@@ -924,7 +924,7 @@ export default {
             "alpha": 0.5,
             "flat": "#4b1a1a",
             "terminal": {
-              "flat": "#451414",
+              "flat": "#4b1a1a",
               "foreground": "#f5f5f5"
             }
           },
@@ -933,7 +933,7 @@ export default {
             "alpha": 0.25,
             "flat": "#311919",
             "terminal": {
-              "flat": "#270f0f",
+              "flat": "#311919",
               "foreground": "#f5f5f5"
             }
           },
@@ -1006,8 +1006,8 @@ export default {
           },
           "panel": {
             "color": "#262626",
-            "alpha": 0.5,
-            "flat": "#1f1f1f"
+            "alpha": 1,
+            "flat": "#262626"
           },
           "selected": {
             "color": "#ef4444",
@@ -1021,7 +1021,7 @@ export default {
             "alpha": 0.5,
             "flat": "#4a2215",
             "terminal": {
-              "flat": "#431c0e",
+              "flat": "#4a2215",
               "foreground": "#f5f5f5"
             }
           },
@@ -1030,7 +1030,7 @@ export default {
             "alpha": 0.25,
             "flat": "#301d16",
             "terminal": {
-              "flat": "#27130c",
+              "flat": "#301d16",
               "foreground": "#f5f5f5"
             }
           },
@@ -1103,8 +1103,8 @@ export default {
           },
           "panel": {
             "color": "#262626",
-            "alpha": 0.5,
-            "flat": "#1f1f1f"
+            "alpha": 1,
+            "flat": "#262626"
           },
           "selected": {
             "color": "#f97316",
@@ -1118,7 +1118,7 @@ export default {
             "alpha": 0.5,
             "flat": "#442b15",
             "terminal": {
-              "flat": "#3e250e",
+              "flat": "#442b15",
               "foreground": "#f5f5f5"
             }
           },
@@ -1127,7 +1127,7 @@ export default {
             "alpha": 0.25,
             "flat": "#2e2116",
             "terminal": {
-              "flat": "#24170c",
+              "flat": "#2e2116",
               "foreground": "#f5f5f5"
             }
           },
@@ -1200,8 +1200,8 @@ export default {
           },
           "panel": {
             "color": "#262626",
-            "alpha": 0.5,
-            "flat": "#1f1f1f"
+            "alpha": 1,
+            "flat": "#262626"
           },
           "selected": {
             "color": "#eab308",
@@ -1215,7 +1215,7 @@ export default {
             "alpha": 0.5,
             "flat": "#273516",
             "terminal": {
-              "flat": "#202f0f",
+              "flat": "#273516",
               "foreground": "#f5f5f5"
             }
           },
@@ -1224,7 +1224,7 @@ export default {
             "alpha": 0.25,
             "flat": "#1f2616",
             "terminal": {
-              "flat": "#151c0d",
+              "flat": "#1f2616",
               "foreground": "#f5f5f5"
             }
           },
@@ -1297,8 +1297,8 @@ export default {
           },
           "panel": {
             "color": "#262626",
-            "alpha": 0.5,
-            "flat": "#1f1f1f"
+            "alpha": 1,
+            "flat": "#262626"
           },
           "selected": {
             "color": "#84cc16",
@@ -1312,7 +1312,7 @@ export default {
             "alpha": 0.5,
             "flat": "#1b2951",
             "terminal": {
-              "flat": "#14224a",
+              "flat": "#1b2951",
               "foreground": "#f5f5f5"
             }
           },
@@ -1321,7 +1321,7 @@ export default {
             "alpha": 0.25,
             "flat": "#192034",
             "terminal": {
-              "flat": "#0f162a",
+              "flat": "#192034",
               "foreground": "#f5f5f5"
             }
           },
@@ -1394,8 +1394,8 @@ export default {
           },
           "panel": {
             "color": "#262626",
-            "alpha": 0.5,
-            "flat": "#1f1f1f"
+            "alpha": 1,
+            "flat": "#262626"
           },
           "selected": {
             "color": "#93c5fd",
@@ -1409,7 +1409,7 @@ export default {
             "alpha": 0.5,
             "flat": "#381a4f",
             "terminal": {
-              "flat": "#311349",
+              "flat": "#381a4f",
               "foreground": "#f5f5f5"
             }
           },
@@ -1418,7 +1418,7 @@ export default {
             "alpha": 0.25,
             "flat": "#271833",
             "terminal": {
-              "flat": "#1e0f29",
+              "flat": "#271833",
               "foreground": "#f5f5f5"
             }
           },
@@ -1491,8 +1491,8 @@ export default {
           },
           "panel": {
             "color": "#262626",
-            "alpha": 0.5,
-            "flat": "#1f1f1f"
+            "alpha": 1,
+            "flat": "#262626"
           },
           "selected": {
             "color": "#d8b4fe",
@@ -1512,7 +1512,7 @@ export default {
         "bg_sunk": "#171717",
         "bg_overlay": "#525252",
         "bg_scrim": "#000000bb",
-        "bg_terminal": "#333333"
+        "bg_terminal": "#404040"
       },
       "text": {
         "fg": "#f5f5f5",
@@ -1561,7 +1561,7 @@ export default {
         "magenta": "#d8b4fe",
         "cyan": "#67e8f9",
         "white": "#d4d4d4",
-        "bright_black": "#a3a3a3",
+        "bright_black": "#adadad",
         "bright_red": "#fee2e2",
         "bright_green": "#ecfccb",
         "bright_yellow": "#fef9c3",
@@ -1577,7 +1577,7 @@ export default {
             "alpha": 0.75,
             "flat": "#6f2626",
             "terminal": {
-              "flat": "#6c2323",
+              "flat": "#6f2626",
               "foreground": "#f5f5f5"
             }
           },
@@ -1586,7 +1586,7 @@ export default {
             "alpha": 0.4,
             "flat": "#593232",
             "terminal": {
-              "flat": "#512a2a",
+              "flat": "#593232",
               "foreground": "#f5f5f5"
             }
           },
@@ -1674,7 +1674,7 @@ export default {
             "alpha": 0.75,
             "flat": "#6d321e",
             "terminal": {
-              "flat": "#6a2f1a",
+              "flat": "#6d321e",
               "foreground": "#f5f5f5"
             }
           },
@@ -1683,7 +1683,7 @@ export default {
             "alpha": 0.4,
             "flat": "#58382e",
             "terminal": {
-              "flat": "#503126",
+              "flat": "#58382e",
               "foreground": "#f5f5f5"
             }
           },
@@ -1771,7 +1771,7 @@ export default {
             "alpha": 0.75,
             "flat": "#653f1e",
             "terminal": {
-              "flat": "#623c1a",
+              "flat": "#653f1e",
               "foreground": "#f5f5f5"
             }
           },
@@ -1780,7 +1780,7 @@ export default {
             "alpha": 0.4,
             "flat": "#54402e",
             "terminal": {
-              "flat": "#4c3826",
+              "flat": "#54402e",
               "foreground": "#f5f5f5"
             }
           },
@@ -1868,7 +1868,7 @@ export default {
             "alpha": 0.75,
             "flat": "#394e1f",
             "terminal": {
-              "flat": "#354b1c",
+              "flat": "#394e1f",
               "foreground": "#f5f5f5"
             }
           },
@@ -1877,7 +1877,7 @@ export default {
             "alpha": 0.4,
             "flat": "#3c482e",
             "terminal": {
-              "flat": "#344027",
+              "flat": "#3c482e",
               "foreground": "#f5f5f5"
             }
           },
@@ -1965,7 +1965,7 @@ export default {
             "alpha": 0.75,
             "flat": "#273c78",
             "terminal": {
-              "flat": "#233874",
+              "flat": "#273c78",
               "foreground": "#f5f5f5"
             }
           },
@@ -1974,7 +1974,7 @@ export default {
             "alpha": 0.4,
             "flat": "#323e5e",
             "terminal": {
-              "flat": "#2b3656",
+              "flat": "#323e5e",
               "foreground": "#f5f5f5"
             }
           },
@@ -2062,7 +2062,7 @@ export default {
             "alpha": 0.75,
             "flat": "#522575",
             "terminal": {
-              "flat": "#4f2272",
+              "flat": "#522575",
               "foreground": "#f5f5f5"
             }
           },
@@ -2071,7 +2071,7 @@ export default {
             "alpha": 0.4,
             "flat": "#4a325c",
             "terminal": {
-              "flat": "#422a55",
+              "flat": "#4a325c",
               "foreground": "#f5f5f5"
             }
           },
@@ -2818,7 +2818,7 @@ export default {
         "bg_sunk": "#d4d4d4",
         "bg_overlay": "#ffffff",
         "bg_scrim": "#17171788",
-        "bg_terminal": "#ffffff"
+        "bg_terminal": "#f5f5f5"
       },
       "text": {
         "fg": "#171717",
@@ -2867,7 +2867,7 @@ export default {
         "magenta": "#7e22ce",
         "cyan": "#0e7490",
         "white": "#404040",
-        "bright_black": "#737373",
+        "bright_black": "#6f6f6f",
         "bright_red": "#7f1d1d",
         "bright_green": "#365314",
         "bright_yellow": "#713f12",
@@ -2883,7 +2883,7 @@ export default {
             "alpha": 0.45,
             "flat": "#f8d1d1",
             "terminal": {
-              "flat": "#fed7d7",
+              "flat": "#f8d1d1",
               "foreground": "#171717"
             }
           },
@@ -2892,7 +2892,7 @@ export default {
             "alpha": 0.22,
             "flat": "#f7e3e3",
             "terminal": {
-              "flat": "#feebeb",
+              "flat": "#f7e3e3",
               "foreground": "#171717"
             }
           },
@@ -2980,7 +2980,7 @@ export default {
             "alpha": 0.45,
             "flat": "#f9dabb",
             "terminal": {
-              "flat": "#fee0c0",
+              "flat": "#f9dabb",
               "foreground": "#171717"
             }
           },
@@ -2989,7 +2989,7 @@ export default {
             "alpha": 0.22,
             "flat": "#f7e8d9",
             "terminal": {
-              "flat": "#fff0e0",
+              "flat": "#f7e8d9",
               "foreground": "#171717"
             }
           },
@@ -3077,7 +3077,7 @@ export default {
             "alpha": 0.45,
             "flat": "#f9eca7",
             "terminal": {
-              "flat": "#fef1ac",
+              "flat": "#f9eca7",
               "foreground": "#171717"
             }
           },
@@ -3086,7 +3086,7 @@ export default {
             "alpha": 0.22,
             "flat": "#f7f0cf",
             "terminal": {
-              "flat": "#fff8d7",
+              "flat": "#f7f0cf",
               "foreground": "#171717"
             }
           },
@@ -3174,7 +3174,7 @@ export default {
             "alpha": 0.45,
             "flat": "#dcf4b4",
             "terminal": {
-              "flat": "#e2f9b9",
+              "flat": "#dcf4b4",
               "foreground": "#171717"
             }
           },
@@ -3183,7 +3183,7 @@ export default {
             "alpha": 0.22,
             "flat": "#e9f4d5",
             "terminal": {
-              "flat": "#f1fcdd",
+              "flat": "#e9f4d5",
               "foreground": "#171717"
             }
           },
@@ -3271,7 +3271,7 @@ export default {
             "alpha": 0.45,
             "flat": "#c9dff9",
             "terminal": {
-              "flat": "#cee5fe",
+              "flat": "#c9dff9",
               "foreground": "#171717"
             }
           },
@@ -3280,7 +3280,7 @@ export default {
             "alpha": 0.22,
             "flat": "#dfeaf7",
             "terminal": {
-              "flat": "#e7f2ff",
+              "flat": "#dfeaf7",
               "foreground": "#171717"
             }
           },
@@ -3368,7 +3368,7 @@ export default {
             "alpha": 0.45,
             "flat": "#e8d8f9",
             "terminal": {
-              "flat": "#edddff",
+              "flat": "#e8d8f9",
               "foreground": "#171717"
             }
           },
@@ -3377,7 +3377,7 @@ export default {
             "alpha": 0.22,
             "flat": "#efe7f7",
             "terminal": {
-              "flat": "#f6efff",
+              "flat": "#efe7f7",
               "foreground": "#171717"
             }
           },

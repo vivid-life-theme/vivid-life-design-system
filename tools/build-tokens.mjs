@@ -1736,7 +1736,7 @@ async function selfTest() {
     [
       () => has(check(mutated((t) => (t.app_roles.roles.hint.color = "fg_disabled"))), "midnight/red app_roles.hint"),
       true,
-      "a ui role below 3:1 on bg_terminal is caught (fg_disabled on Midnight: 2.53:1)",
+      "a ui role below 3:1 on bg_terminal is caught (fg_disabled on Midnight: 2.29:1)",
     ],
     [
       () => has(check(mutated((t) => (t.app_roles.roles.message_hover.background = "overlay.selected"))), "dawn/red app_roles.message_hover: text.fg_subtle on it"),
@@ -1767,9 +1767,9 @@ async function selfTest() {
       "an exempt categorical pair is skipped",
     ],
     [
-      () => has(distinctnessIssues(mutated((t) => (t.app_roles.roles.message.background = "overlay.line_highlight"))), "twilight/red: app_roles.message"),
+      () => has(distinctnessIssues(mutated((t) => (t.overlay.recipes.midnight.panel = { color: "gray.800", alpha: 0.5 }))), "midnight/red: app_roles.message"),
       true,
-      "a message block on line_highlight doesn't show over Twilight's bg_terminal (ΔE 3.2)",
+      "the old Midnight panel (ΔE 3.5 from bg_terminal) is caught",
     ],
 
     // validateShapes — typos fail instead of passing silently
@@ -1893,6 +1893,9 @@ async function selfTest() {
       "every palette row has a 950",
     ],
     [() => real.flavors.midnight.surface.bg_sunk, real.palette.gray[950], "midnight bg_sunk is gray.950"],
+    [() => Object.values(real.flavors).every((f) => f.surface.bg_terminal === f.surface.bg), true, "bg_terminal is bg on every flavor"],
+    [() => real.flavors.twilight.ansi.bright_black, "#adadad", "twilight bright_black clears 4.5:1 on #404040"],
+    [() => real.flavors.noon.ansi.bright_black, "#6f6f6f", "noon bright_black clears 4.5:1 on #f5f5f5"],
   ];
 
   let pass = 0,
