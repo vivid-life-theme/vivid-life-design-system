@@ -10,6 +10,10 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ## [Unreleased]
 
+---
+
+## [0.14.1] - 2026-11-16
+
 Follow-up to 0.14.0 from the review of #35.
 
 ### Added
@@ -370,7 +374,8 @@ Initial npm release. The token system existed before this version; this is the f
 
 ---
 
-[unreleased]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.14.0...HEAD
+[unreleased]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.14.1...HEAD
+[0.14.1]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.14.0...v0.14.1
 [0.14.0]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.13.1...v0.14.0
 [0.13.1]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.13.0...v0.13.1
 [0.13.0]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.12.0...v0.13.0
