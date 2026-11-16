@@ -407,7 +407,8 @@ export function emphasisStep(tokens, flavor, variant, target, opts = {}) {
 
 /**
  * Resolve one overlay recipe (tokens.json5 § 3e) for a (flavor,
- * variant), composited over `surface` (default `bg`):
+ * variant), composited over `surface` (default `bg`; "frame" for the
+ * variant's frame colour):
  *
  *   resolveOverlay(tokens, 'midnight', 'purple', 'selection')
  *     → { color: '#581c87', alpha: 0.5, flat: '#37194f' }
@@ -423,7 +424,8 @@ export function resolveOverlay(tokens, flavor, variant, name, opts = {}) {
     throw new Error(`resolveOverlay: ${flavor}.${name} may not target another overlay`);
   }
   const surfaceName = opts.surface ?? "bg";
-  const base = tokens.flavors[flavor].surface[surfaceName];
+  // "frame" is the variant's frame (§ 3i), not a flavor surface.
+  const base = surfaceName === "frame" ? resolveFrame(tokens, flavor, variant) : tokens.flavors[flavor].surface[surfaceName];
   if (!base) throw new Error(`resolveOverlay: unknown surface "${surfaceName}"`);
   const color = resolveColor(tokens, flavor, variant, recipe.color);
   const out = { color, alpha: recipe.alpha, flat: alphaOver(color, base, recipe.alpha) };
@@ -1564,6 +1566,10 @@ function check(tokens, { onPair } = {}) {
       pair("frame", `${w} frame.accent_text on frame`, fr.accent_text, fr.bg, 4.5);
       const wash = alphaOver(resolveColor(tokens, fName, hue, selRecipe.color), fr.bg, selRecipe.alpha);
       for (const k of selRole.text) pair("frame", `${w} text.${k} on overlay.selected over frame`, f.text[k], wash, 4.5);
+      // The accent bar beside a selected row (WCAG 1.4.11): on the frame
+      // it is accent_text, because the accent drops to 2.7:1 against the
+      // wash on Midnight-red and Noon-orange.
+      pair("frame", `${w} frame.accent_text vs overlay.selected over frame`, fr.accent_text, wash, tokens.control_boundary.min);
       if (!tokens.frame.step_exempt.includes(fName)) {
         pair("frame", `${w} frame vs bg`, fr.bg, bg, tokens.frame.min_step);
       }
@@ -2085,6 +2091,21 @@ async function selfTest() {
     [() => resolveFrame(real, "noon", "blue"), "#bed2f3", "noon frame is a pastel darker than its canvas"],
     [() => resolveFrame(real, "noon", "yellow"), "#e0cfac", "noon yellow frame"],
     [() => real.frame.step_exempt.length, 0, "no flavor is exempt from the frame step"],
+    [
+      () => resolveOverlay(real, "midnight", "red", "selected", { surface: "frame" }).flat,
+      alphaOver("#ef4444", "#621414", 0.18),
+      "resolveOverlay composites over the variant's frame",
+    ],
+    [
+      () => resolveColor(real, "noon", "blue", "overlay.selected", { surface: "frame" }),
+      alphaOver(real.palette.blue[700], "#bed2f3", 0.18),
+      "overlay.<name> resolves over the frame too",
+    ],
+    [
+      () => has(check(mutated((t) => (t.flavors.midnight.frame.red.accent_text = "#ef4444"))), "midnight/red frame.accent_text vs overlay.selected over frame"),
+      true,
+      "an accent bar below 3:1 against the selected wash on the frame is caught (midnight red accent: 2.74:1)",
+    ],
     [() => real.flavors.twilight.frame?.green?.bg, "#1a2e05", "frames are emitted per variant"],
     [() => frameAccentText(real, "midnight", "red"), "#fca5a5", "midnight red accent text steps to red.300 (accent is 3.42:1)"],
     [() => frameAccentText(real, "midnight", "blue"), real.palette.blue[300], "an accent that clears stays the accent"],
