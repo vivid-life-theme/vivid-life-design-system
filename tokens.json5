@@ -452,8 +452,8 @@
   // only the rung does. `flavors.*.semantic` is derived from this.
   //
   // Every resolved value must clear 4.5:1 against every surface tier
-  // except bg_scrim and bg_inset — that gate already exists in
-  // tools/build-tokens.mjs and is unchanged by this table.
+  // except bg_scrim, and against every frame (§ 3i) — those gates live
+  // in tools/build-tokens.mjs.
 
   semantic_hues: {
     success: "green",
@@ -645,11 +645,10 @@
       // at 18%, 4.63:1 at 20% and fails at 21% (4.49:1). 18% keeps
       // a margin below that 20% limit.
       //
-      // `bg_inset` is deliberately absent. Twilight's #627084 sits at
-      // 4.62:1 for `fg` before any tint at all, so no percentage clears
-      // AA there. A port placing selected rows on `bg_inset` should
-      // carry the accent bar plus a `state.hover` / `state.active`
-      // overlay instead. `bg_scrim` is a modal backdrop.
+      // The frame (§ 3i) is not a surface name, because it varies by
+      // variant; the frame gates check this wash over it separately, so
+      // a selected row in a frame-coloured sidebar is covered.
+      // `bg_scrim` is a modal backdrop.
       selected: {
         behind: "ui",
         use: "The selected tab / list row / sidebar entry. Reinforces an underline or accent bar; never the sole cue.",
@@ -823,15 +822,12 @@
     // requires `border.control` to clear `min` against every one of
     // them, on every flavor.
     //
-    // `bg_inset` is deliberately absent, the same exemption it already
-    // carries from the semantic-vs-surface gate and from
-    // overlay.roles.selected.surfaces. Clearing 3:1 on twilight's #627084
-    // would need ≈#c9c9c9 — the text ramp, i.e. the wireframe outcome
-    // this ruleset exists to avoid. A port drawing controls on docked
-    // chrome should give them a `bg_soft` fill (which is on this list)
-    // or rely on `state.hover` / `state.active`, not on a lighter
-    // border. `bg_scrim` is a modal backdrop, not a control surface;
-    // `bg_terminal` hosts no toolkit controls.
+    // The frame (§ 3i) is absent: it is coloured and varies by variant,
+    // so a grey outline is not gated against it. A port drawing controls
+    // on the frame (a search box in a sidebar) gives them a `bg_soft`
+    // fill, which is on this list, or relies on `state.hover` /
+    // `state.active`. `bg_scrim` is a modal backdrop, not a control
+    // surface; `bg_terminal` is `bg` and hosts no toolkit controls.
     surfaces: ["bg", "bg_soft", "bg_sunk", "bg_overlay"],
   },
 
@@ -1088,7 +1084,6 @@
       type: "dark",
       surface: {
         bg: "$palette.gray.900", // #171717
-        bg_inset: "#434f60", // docked structural chrome (sidebar/panel/terminal/status bar) — fixed cool-slate tint, NOT a variant/accent color; see README § surface hierarchy. Exempt from the semantic-vs-surface WCAG gate (banners render on bg/bg_soft, never on bg_inset).
         bg_soft: "$palette.gray.700", // lifted panels
         bg_sunk: "$palette.gray.950", // slightly below canvas
         bg_overlay: "$palette.gray.700", // floating menus, dropdowns
@@ -1139,7 +1134,6 @@
       type: "dark",
       surface: {
         bg: "$palette.gray.700", // #404040
-        bg_inset: "#627084", // docked structural chrome (sidebar/panel/terminal/status bar) — fixed cool-slate tint, NOT a variant/accent color; see README § surface hierarchy. Exempt from the semantic-vs-surface WCAG gate (banners render on bg/bg_soft, never on bg_inset).
         bg_soft: "#525252", // neutral-600; lifted
         bg_sunk: "$palette.gray.900", // deeper recess
         bg_overlay: "#525252",
@@ -1190,7 +1184,6 @@
       type: "light",
       surface: {
         bg: "$palette.gray.300", // #d4d4d4
-        bg_inset: "#788ba5", // docked structural chrome (sidebar/panel/terminal/status bar) — fixed cool-slate tint, NOT a variant/accent color; see README § surface hierarchy. Exempt from the semantic-vs-surface WCAG gate (banners render on bg/bg_soft, never on bg_inset).
         bg_soft: "$palette.gray.100", // lifted
         bg_sunk: "#bdbdbd", // outside strict palette
         bg_overlay: "$palette.gray.100",
@@ -1241,7 +1234,6 @@
       type: "light",
       surface: {
         bg: "$palette.gray.100", // #f5f5f5
-        bg_inset: "#91a0b6", // docked structural chrome (sidebar/panel/terminal/status bar) — fixed cool-slate tint, NOT a variant/accent color; see README § surface hierarchy. Exempt from the semantic-vs-surface WCAG gate (banners render on bg/bg_soft, never on bg_inset).
         bg_soft: "#ffffff",
         bg_sunk: "$palette.gray.300",
         bg_overlay: "#ffffff",

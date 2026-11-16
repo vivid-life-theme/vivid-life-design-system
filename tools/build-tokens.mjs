@@ -229,7 +229,7 @@ export function selection({ bg, accent, mixPct = 0.25 } = {}) {
  *
  * Unlike `selection()`, which always lands on the flavor canvas, this
  * one takes the surface explicitly: a selected row can sit on `bg`,
- * `bg_soft` or `bg_inset`, and the wash reads differently on each.
+ * `bg_soft` or the frame, and the wash reads differently on each.
  *
  *   selectedWash({ surface: '#171717', accent: '#d8b4fe' })  → '#3a3341'
  *
@@ -1336,8 +1336,8 @@ function check(tokens, { onPair } = {}) {
     // component's boundary is identifiable. It has to hold on every
     // surface a control lands on, not just the canvas — a dialog button
     // sits on `bg`, a card button on `bg_soft`, a menu item on
-    // `bg_overlay`, an input well on `bg_sunk`. `bg_inset` is exempt,
-    // for the reason given in tokens.json5 § 3f.
+    // `bg_overlay`, an input well on `bg_sunk`. The frame is not on the
+    // list, for the reason given in tokens.json5 § 3f.
     for (const sName of tokens.control_boundary.surfaces) {
       pair("control", `${fName}.border.control on ${sName}`, f.border.control, f.surface[sName], tokens.control_boundary.min);
     }
@@ -1404,11 +1404,9 @@ function check(tokens, { onPair } = {}) {
     }
 
     // Semantic colors must be readable (≥4.5:1) on every surface token
-    // except bg_scrim (a translucent overlay, not a fill) and bg_inset
-    // (docked structural chrome — banners render on bg/bg_soft, never here).
-    const semanticSurfaces = Object.entries(f.surface).filter(
-      ([k]) => k !== "bg_scrim" && k !== "bg_inset",
-    );
+    // except bg_scrim (a translucent overlay, not a fill). The frame
+    // gates below cover them on the frame.
+    const semanticSurfaces = Object.entries(f.surface).filter(([k]) => k !== "bg_scrim");
     for (const [role, color] of Object.entries(f.semantic)) {
       for (const [sName, sColor] of semanticSurfaces) {
         pair("semantic", `${fName}.semantic.${role} on ${sName}`, color, sColor, 4.5);
@@ -1689,9 +1687,9 @@ async function selfTest() {
       "midnight selected wash (purple) on bg",
     ],
     [
-      () => selectedWash({ surface: "#434f60", accent: "#d8b4fe" }),
-      "#5e617c",
-      "midnight selected wash (purple) on bg_inset",
+      () => selectedWash({ surface: "#404040", accent: "#d8b4fe" }),
+      "#5b5562",
+      "midnight selected wash (purple) on bg_soft",
     ],
 
     // alphaOver
@@ -1776,8 +1774,8 @@ async function selfTest() {
       "overlay.selected over bg = the old 18% wash",
     ],
     [
-      () => resolveOverlay(real, "midnight", "purple", "selected", { surface: "bg_inset" }).flat,
-      selectedWash({ surface: "#434f60", accent: "#d8b4fe" }),
+      () => resolveOverlay(real, "midnight", "purple", "selected", { surface: "bg_soft" }).flat,
+      selectedWash({ surface: "#404040", accent: "#d8b4fe" }),
       "resolveOverlay over another surface matches selectedWash()",
     ],
     [
@@ -2080,6 +2078,7 @@ async function selfTest() {
       true,
       "mix without ratio is rejected",
     ],
+    [() => Object.values(real.flavors).some((f) => "bg_inset" in f.surface), false, "bg_inset is gone"],
   ];
 
   let pass = 0,

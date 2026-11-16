@@ -286,8 +286,11 @@ function variantBlock(tokens) {
     `\n/* ── Variants — accent + overlays per (flavor, variant) ──────────── */`,
   ];
   lines.push(
-    `/* --vl-accent drives cursor, link, focus ring, fill. Each
-   --vl-overlay-<name> is a recipe from tokens.json5 -> overlay: a colour
+    `/* --vl-accent drives cursor, link, focus ring, fill. --vl-frame is the
+   variant-coloured frame around the work areas (title bar, sidebar, tab
+   strip, status bar); text on it is --vl-fg or --vl-fg-muted, and
+   accent-hued text on it is --vl-frame-accent-text (tokens.json5 § 3i).
+   Each --vl-overlay-<name> is a recipe from tokens.json5 -> overlay: a colour
    at an alpha, written as #rrggbbaa so it composites over whatever it
    sits on. Over --vl-bg it lands on the flattened value in tokens.json
    (flavors.<flavor>.overlay.<variant>.<name>.flat), give or take one
@@ -302,6 +305,9 @@ function variantBlock(tokens) {
       const accent = tokens.palette[vname][shade];
       lines.push(`.vl-${fname}.variant-${vname} {`);
       lines.push(`  --vl-accent: ${accent};`);
+      const frame = tokens.flavors[fname].frame[vname];
+      lines.push(`  ${"--vl-frame".padEnd(34)}: ${frame.bg};`);
+      lines.push(`  ${"--vl-frame-accent-text".padEnd(34)}: ${frame.accent_text};`);
       for (const name of names) {
         const o = tokens.flavors[fname].overlay[vname][name];
         const [r, g, b] = parseHex(o.color);
