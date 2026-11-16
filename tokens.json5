@@ -1007,6 +1007,61 @@
   },
 
   // ────────────────────────────────────────────────────────────────
+  //   3i.  FRAME  —  the variant's colour around the work areas
+  // ────────────────────────────────────────────────────────────────
+  // Vivid Life is a one-strong-colour theme: the work areas (editor,
+  // terminal) keep the flavor's grey, and the variant's colour goes
+  // into the frame around them — title bar, activity bar, tab strip,
+  // status bar, sidebar, and the tab row of a bottom panel. Before this
+  // the only colour on screen was the accent, and regions were told
+  // apart by lightness alone. See
+  // docs/superpowers/specs/2026-11-16-frame-colours-design.md.
+  //
+  // THE RULE: each flavor takes the frame shade that gives the clearest
+  // lightness step from its own editor background.
+  //
+  //   Midnight  a 50/50 mix of the variant's 900 and 950. 950 alone is
+  //             only 1.1–1.2:1 from #171717; the mix reaches 1.39–1.59:1.
+  //   Twilight  the variant's 950, below its #404040 canvas at
+  //             1.41–1.56:1. The mix would be almost as light as the
+  //             canvas (1.09–1.24:1).
+  //   Dawn,     today's chrome (`bg_sunk`) on every variant — a
+  //   Noon      placeholder until the light flavors get their own round.
+  //
+  // A recipe is either { surface } or { color, mix?, ratio? }: `ratio`
+  // is the share of `color`, as in mix(a, b, p). The resolved values are
+  // emitted per (flavor, variant) as flavors.<flavor>.frame.<variant>:
+  //   { bg, accent_text }
+  //
+  // The build gates, per (flavor, variant):
+  //   • fg, fg_muted and the four semantic colours ≥ 4.5:1 on the frame
+  //     (git decorations in a sidebar are semantic colours)
+  //   • the accent ≥ control_boundary.min (3:1) — bars, badges and
+  //     indicators, not text. Midnight-red is the tightest at 3.42:1.
+  //   • accent_text ≥ 4.5:1 — accent-hued TEXT on the frame (a search
+  //     match in a file tree). It is the accent where that clears, else
+  //     the nearest rung of the hue further from the frame: Midnight's
+  //     red and orange step to their 300.
+  //   • the selected-item wash over the frame, with its text roles
+  //   • the frame ≥ min_step from bg, unless the flavor is in step_exempt
+  //
+  // PORT RULE: text on the frame is `fg` or `fg_muted` only. `fg_subtle`
+  // measures 3.96–4.52:1 on Midnight's frames; inactive tab labels and
+  // sidebar descriptions take `fg_muted` there.
+  frame: {
+    min_step: 1.35, // luminance contrast; every dark-flavor frame clears it (tightest 1.39:1)
+    // Dawn's placeholder `bg_sunk` (#bdbdbd) is 1.27:1 from its canvas.
+    // Noon's (#d4d4d4) clears at 1.36:1.
+    step_exempt: ["dawn"],
+    recipes: {
+      midnight: { color: "accent.900", mix: "accent.950", ratio: 0.5 },
+      twilight: { color: "accent.950" },
+      dawn: { surface: "bg_sunk" },
+      noon: { surface: "bg_sunk" },
+    },
+  },
+
+  // ────────────────────────────────────────────────────────────────
   //   4.  FLAVORS  —  the 4 base themes
   // ────────────────────────────────────────────────────────────────
   // Each flavor defines:

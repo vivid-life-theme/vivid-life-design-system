@@ -432,6 +432,59 @@ export function resolveOverlay(tokens, flavor, variant, name, opts = {}) {
 }
 
 /**
+ * The frame colour (tokens.json5 § 3i) for a (flavor, variant): the
+ * flavor's recipe, with the variant supplying the hue.
+ *
+ *   resolveFrame(tokens, 'twilight', 'purple') → '#3b0764'
+ */
+export function resolveFrame(tokens, flavor, variant) {
+  const recipe = tokens.frame?.recipes?.[flavor];
+  if (!recipe) throw new Error(`resolveFrame: no frame recipe for ${flavor}`);
+  if (recipe.surface) return tokens.flavors[flavor].surface[recipe.surface];
+  const color = resolveColor(tokens, flavor, variant, recipe.color);
+  if (!recipe.mix) return color;
+  return mix(color, resolveColor(tokens, flavor, variant, recipe.mix), recipe.ratio);
+}
+
+/**
+ * Accent-hued text that stays readable on the frame: the accent when it
+ * clears 4.5:1 there, otherwise the nearest rung of the variant's hue
+ * further from the frame (lighter on a dark frame, darker on a light
+ * one). Throws when no rung of the hue clears.
+ *
+ *   frameAccentText(tokens, 'midnight', 'red') → '#fca5a5'  (500 → 300)
+ */
+export function frameAccentText(tokens, flavor, variant, frame = resolveFrame(tokens, flavor, variant)) {
+  const accent = resolveAccent(tokens, flavor, variant);
+  if (contrast(accent, frame) >= 4.5) return accent;
+  const rungs = tokens.palette[variant];
+  const order = Object.keys(rungs).sort((a, b) => a - b); // light → dark
+  const i = order.indexOf(String(tokens.accent_shade[flavor][variant]));
+  const step = relLum(accent) > relLum(frame) ? -1 : 1;
+  for (let j = i + step; j >= 0 && j < order.length; j += step) {
+    if (contrast(rungs[order[j]], frame) >= 4.5) return rungs[order[j]];
+  }
+  throw new Error(`frameAccentText: no ${variant} rung clears 4.5:1 on ${flavor}/${variant} frame ${frame}`);
+}
+
+/**
+ * Fill in `flavors.<flavor>.frame.<variant> = { bg, accent_text }` from
+ * the frame recipes (tokens.json5 § 3i). Emitted after `overlay`.
+ * Mutates and returns `tokens`.
+ */
+export function expandFrames(tokens) {
+  for (const fName of Object.keys(tokens.flavors)) {
+    const byVariant = {};
+    for (const variant of tokens.variant_hues) {
+      const bg = resolveFrame(tokens, fName, variant);
+      byVariant[variant] = { bg, accent_text: frameAccentText(tokens, fName, variant, bg) };
+    }
+    tokens.flavors[fName].frame = byVariant;
+  }
+  return tokens;
+}
+
+/**
  * Roles whose semantic colour is the same palette shade as the accent for
  * that role's own hue. Shade-index comparison (string-coerced, so `900`
  * and `"900"` collide) against the two shade rulesets — no colour math —
@@ -670,9 +723,9 @@ export function expandOverlays(tokens) {
   return tokens;
 }
 
-/** Parsed tokens.json5 → fully resolved token object (refs, shade tables, overlays). */
+/** Parsed tokens.json5 → fully resolved token object (refs, shade tables, overlays, frames). */
 export function resolveTokens(parsed) {
-  return expandOverlays(expandShadeTables(resolveRefs(parsed, parsed)));
+  return expandFrames(expandOverlays(expandShadeTables(resolveRefs(parsed, parsed))));
 }
 
 /**
@@ -830,6 +883,45 @@ export function validateShapes(tokens) {
         if (r.color === undefined) errs.push(`✗ ${w}.color missing`);
         else targetOk(`${w}.color`, r.color, { noOverlay: true });
         if (r.border !== undefined) targetOk(`${w}.border`, r.border, { noOverlay: true });
+      }
+    }
+  }
+
+  // ── frame (§ 3i) ────────────────────────────────────────────────────
+  const fr = tokens.frame;
+  if (!isObj(fr)) {
+    errs.push(`✗ frame missing`);
+  } else {
+    keysOk("frame", fr, ["min_step", "step_exempt", "recipes"]);
+    if (typeof fr.min_step !== "number" || !(fr.min_step > 1)) errs.push(`✗ frame.min_step must be a number > 1`);
+    for (const fl of stringList("frame.step_exempt", fr.step_exempt)) {
+      if (!flavors.includes(fl)) errs.push(`✗ frame.step_exempt: no such flavor "${fl}"`);
+    }
+    if (!isObj(fr.recipes)) {
+      errs.push(`✗ frame.recipes missing`);
+    } else {
+      for (const fl of Object.keys(fr.recipes)) {
+        if (!flavors.includes(fl)) errs.push(`✗ frame.recipes.${fl}: no such flavor`);
+      }
+      for (const fl of flavors) {
+        const r = fr.recipes[fl];
+        const w = `frame.recipes.${fl}`;
+        if (!isObj(r)) {
+          errs.push(`✗ ${w} missing`);
+          continue;
+        }
+        keysOk(w, r, ["surface", "color", "mix", "ratio"]);
+        if ((r.surface === undefined) === (r.color === undefined)) {
+          errs.push(`✗ ${w}: needs exactly one of "surface" or "color"`);
+        }
+        if (r.surface !== undefined) surfaceOk(`${w}.surface`, r.surface);
+        if (r.color !== undefined) targetOk(`${w}.color`, r.color, { noOverlay: true });
+        if (r.mix !== undefined) targetOk(`${w}.mix`, r.mix, { noOverlay: true });
+        if ((r.mix === undefined) !== (r.ratio === undefined)) {
+          errs.push(`✗ ${w}: "mix" and "ratio" go together`);
+        } else if (r.ratio !== undefined && !(typeof r.ratio === "number" && r.ratio > 0 && r.ratio < 1)) {
+          errs.push(`✗ ${w}.ratio must be a number in (0, 1)`);
+        }
       }
     }
   }
@@ -1409,6 +1501,26 @@ function check(tokens, { onPair } = {}) {
     for (const [n, target] of Object.entries(app.categorical[fName])) {
       pair("app_roles", `${fName} app_roles.categorical.${n}`, resolveColor(tokens, fName, v0, target), f.surface[appSurface], 4.5);
     }
+
+    // Frame (§ 3i): the text a port may put on it, the semantic colours
+    // (git decorations in a sidebar), the accent as a non-text mark,
+    // accent-hued text, the selected-item wash, and a lightness step
+    // from bg.
+    const selRole = tokens.overlay.roles.selected;
+    const selRecipe = tokens.overlay.recipes[fName].selected;
+    for (const hue of tokens.variant_hues) {
+      const fr = f.frame[hue];
+      const w = `${fName}/${hue}`;
+      for (const k of ["fg", "fg_muted"]) pair("frame", `${w} text.${k} on frame`, f.text[k], fr.bg, 4.5);
+      for (const [role, color] of Object.entries(f.semantic)) pair("frame", `${w} semantic.${role} on frame`, color, fr.bg, 4.5);
+      pair("frame", `${w} accent on frame`, resolveAccent(tokens, fName, hue), fr.bg, tokens.control_boundary.min);
+      pair("frame", `${w} frame.accent_text on frame`, fr.accent_text, fr.bg, 4.5);
+      const wash = alphaOver(resolveColor(tokens, fName, hue, selRecipe.color), fr.bg, selRecipe.alpha);
+      for (const k of selRole.text) pair("frame", `${w} text.${k} on overlay.selected over frame`, f.text[k], wash, 4.5);
+      if (!tokens.frame.step_exempt.includes(fName)) {
+        pair("frame", `${w} frame vs bg`, fr.bg, bg, tokens.frame.min_step);
+      }
+    }
   }
 
   // The 12 core slots are the contract ports build against, so the hue
@@ -1918,6 +2030,56 @@ async function selfTest() {
       true,
       "a non-numeric text_min is rejected",
     ],
+    [() => resolveFrame(real, "midnight", "red"), "#621414", "midnight frame is the 50/50 mix of 900 and 950"],
+    [() => resolveFrame(real, "midnight", "blue"), "#1b306f", "midnight blue frame"],
+    [() => resolveFrame(real, "twilight", "purple"), "#3b0764", "twilight frame is 950"],
+    [() => resolveFrame(real, "dawn", "red"), real.flavors.dawn.surface.bg_sunk, "dawn frame is today's chrome"],
+    [() => real.flavors.twilight.frame?.green?.bg, "#1a2e05", "frames are emitted per variant"],
+    [() => frameAccentText(real, "midnight", "red"), "#fca5a5", "midnight red accent text steps to red.300 (accent is 3.42:1)"],
+    [() => frameAccentText(real, "midnight", "blue"), real.palette.blue[300], "an accent that clears stays the accent"],
+    [
+      () => {
+        try {
+          frameAccentText(real, "midnight", "red", "#808080");
+          return "resolved";
+        } catch (e) {
+          return /midnight\/red.*#808080/.test(e.message);
+        }
+      },
+      true,
+      "no clearing rung throws with flavor, variant and frame",
+    ],
+    [
+      () => has(check(mutated((t) => (t.flavors.midnight.frame.red.bg = t.flavors.midnight.surface.bg))), "midnight/red frame vs bg"),
+      true,
+      "a frame too close to bg is caught",
+    ],
+    [() => has(check(mutated((t) => (t.frame.step_exempt = []))), "dawn/red frame vs bg"), true, "dawn's placeholder frame needs its exemption"],
+    [
+      () => has(check(mutated((t) => (t.flavors.midnight.frame.red.accent_text = "#ef4444"))), "midnight/red frame.accent_text on frame"),
+      true,
+      "accent text below 4.5:1 on the frame is caught",
+    ],
+    [
+      () => has(check(mutated((t) => (t.flavors.midnight.frame.red.bg = "#7a7a7a"))), "midnight/red text.fg_muted on frame"),
+      true,
+      "fg_muted below 4.5:1 on the frame is caught",
+    ],
+    [
+      () => has(validateShapes(mutated((t) => (t.frame.recipes.twilight = { color: "accent.975" }))), "frame.recipes.twilight.color"),
+      true,
+      "a frame rung some hue lacks is rejected",
+    ],
+    [
+      () => has(validateShapes(mutated((t) => (t.frame.recipes.dawn = { surface: "bg_sunk", color: "accent" }))), "frame.recipes.dawn"),
+      true,
+      "surface and color together are rejected",
+    ],
+    [
+      () => has(validateShapes(mutated((t) => (t.frame.recipes.midnight = { color: "accent.900", mix: "accent.950" }))), "ratio"),
+      true,
+      "mix without ratio is rejected",
+    ],
   ];
 
   let pass = 0,
@@ -1971,7 +2133,7 @@ async function main() {
     for (const e of shapeErrs) console.error("  " + e);
     process.exit(1);
   }
-  const tokens = expandOverlays(partial);
+  const tokens = expandFrames(expandOverlays(partial));
 
   // Gates run BEFORE anything is written, so a failing build leaves the
   // previous tokens.json / dist/tokens.js on disk untouched — a port on
@@ -2032,6 +2194,7 @@ async function main() {
   console.log("  ansi.* on bg_terminal · semantic colours on every surface");
   console.log("  shell_roles, prompt_roles and app_roles on what they're drawn on");
   console.log("  accent_on on every accent and semantic fill · fg_faint at 3:1 on bg and bg_terminal");
+  console.log("  on every frame: fg, fg_muted, semantic colours, accent text, the selected wash · accent at 3:1 · the step from bg");
   console.log("✓ Resolved colours and overlays pass the OKLab distinctness gate.");
   console.log("✓ Shade tables, overlay recipes and role maps are well-formed.");
   const below = rows.filter((r) => r.apcaTarget && Math.abs(apcaContrast(r.fg, r.bg)) < r.apcaTarget);
