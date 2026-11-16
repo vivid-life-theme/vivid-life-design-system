@@ -426,6 +426,7 @@
   --vl-overlay-selection            : #ef444440;
   --vl-overlay-inactive-selection   : #ef444426;
   --vl-overlay-line-highlight       : #262626;
+  --vl-overlay-hover-tint           : #7f1d1d40;
   --vl-overlay-find-match           : #713f1280;
   --vl-overlay-find-match-border    : #fde047;
   --vl-overlay-find-match-other     : #713f1240;
@@ -450,6 +451,7 @@
   --vl-overlay-selection            : #f9731640;
   --vl-overlay-inactive-selection   : #f9731626;
   --vl-overlay-line-highlight       : #262626;
+  --vl-overlay-hover-tint           : #7c2d1240;
   --vl-overlay-find-match           : #713f1280;
   --vl-overlay-find-match-border    : #fde047;
   --vl-overlay-find-match-other     : #713f1240;
@@ -474,6 +476,7 @@
   --vl-overlay-selection            : #eab30840;
   --vl-overlay-inactive-selection   : #eab30826;
   --vl-overlay-line-highlight       : #262626;
+  --vl-overlay-hover-tint           : #713f1240;
   --vl-overlay-find-match           : #713f1280;
   --vl-overlay-find-match-border    : #fde047;
   --vl-overlay-find-match-other     : #713f1240;
@@ -498,6 +501,7 @@
   --vl-overlay-selection            : #84cc1640;
   --vl-overlay-inactive-selection   : #84cc1626;
   --vl-overlay-line-highlight       : #262626;
+  --vl-overlay-hover-tint           : #36531440;
   --vl-overlay-find-match           : #713f1280;
   --vl-overlay-find-match-border    : #fde047;
   --vl-overlay-find-match-other     : #713f1240;
@@ -522,6 +526,7 @@
   --vl-overlay-selection            : #93c5fd40;
   --vl-overlay-inactive-selection   : #93c5fd26;
   --vl-overlay-line-highlight       : #262626;
+  --vl-overlay-hover-tint           : #1e3a8a40;
   --vl-overlay-find-match           : #713f1280;
   --vl-overlay-find-match-border    : #fde047;
   --vl-overlay-find-match-other     : #713f1240;
@@ -546,6 +551,7 @@
   --vl-overlay-selection            : #d8b4fe40;
   --vl-overlay-inactive-selection   : #d8b4fe26;
   --vl-overlay-line-highlight       : #262626;
+  --vl-overlay-hover-tint           : #581c8740;
   --vl-overlay-find-match           : #713f1280;
   --vl-overlay-find-match-border    : #fde047;
   --vl-overlay-find-match-other     : #713f1240;
@@ -572,6 +578,7 @@
   --vl-overlay-selection            : #fca5a540;
   --vl-overlay-inactive-selection   : #fca5a526;
   --vl-overlay-line-highlight       : #26262699;
+  --vl-overlay-hover-tint           : #7f1d1d66;
   --vl-overlay-find-match           : #713f12bf;
   --vl-overlay-find-match-border    : #fef9c3;
   --vl-overlay-find-match-other     : #713f1266;
@@ -596,6 +603,7 @@
   --vl-overlay-selection            : #fdba7440;
   --vl-overlay-inactive-selection   : #fdba7426;
   --vl-overlay-line-highlight       : #26262699;
+  --vl-overlay-hover-tint           : #7c2d1266;
   --vl-overlay-find-match           : #713f12bf;
   --vl-overlay-find-match-border    : #fef9c3;
   --vl-overlay-find-match-other     : #713f1266;
@@ -620,6 +628,7 @@
   --vl-overlay-selection            : #eab30840;
   --vl-overlay-inactive-selection   : #eab30826;
   --vl-overlay-line-highlight       : #26262699;
+  --vl-overlay-hover-tint           : #713f1266;
   --vl-overlay-find-match           : #713f12bf;
   --vl-overlay-find-match-border    : #fef9c3;
   --vl-overlay-find-match-other     : #713f1266;
@@ -644,6 +653,7 @@
   --vl-overlay-selection            : #84cc1640;
   --vl-overlay-inactive-selection   : #84cc1626;
   --vl-overlay-line-highlight       : #26262699;
+  --vl-overlay-hover-tint           : #36531466;
   --vl-overlay-find-match           : #713f12bf;
   --vl-overlay-find-match-border    : #fef9c3;
   --vl-overlay-find-match-other     : #713f1266;
@@ -668,6 +678,7 @@
   --vl-overlay-selection            : #93c5fd40;
   --vl-overlay-inactive-selection   : #93c5fd26;
   --vl-overlay-line-highlight       : #26262699;
+  --vl-overlay-hover-tint           : #1e3a8a66;
   --vl-overlay-find-match           : #713f12bf;
   --vl-overlay-find-match-border    : #fef9c3;
   --vl-overlay-find-match-other     : #713f1266;
@@ -692,6 +703,7 @@
   --vl-overlay-selection            : #d8b4fe40;
   --vl-overlay-inactive-selection   : #d8b4fe26;
   --vl-overlay-line-highlight       : #26262699;
+  --vl-overlay-hover-tint           : #581c8766;
   --vl-overlay-find-match           : #713f12bf;
   --vl-overlay-find-match-border    : #fef9c3;
   --vl-overlay-find-match-other     : #713f1266;
@@ -718,6 +730,7 @@
   --vl-overlay-selection            : #fee2e2;
   --vl-overlay-inactive-selection   : #fee2e280;
   --vl-overlay-line-highlight       : #f5f5f573;
+  --vl-overlay-hover-tint           : #fee2e280;
   --vl-overlay-find-match           : #fde047bf;
   --vl-overlay-find-match-border    : #713f12;
   --vl-overlay-find-match-other     : #fde04759;
@@ -742,6 +755,7 @@
   --vl-overlay-selection            : #ffedd5;
   --vl-overlay-inactive-selection   : #ffedd580;
   --vl-overlay-line-highlight       : #f5f5f573;
+  --vl-overlay-hover-tint           : #ffedd580;
   --vl-overlay-find-match           : #fde047bf;
   --vl-overlay-find-match-border    : #713f12;
   --vl-overlay-find-match-other     : #fde04759;
@@ -766,6 +780,7 @@
   --vl-overlay-selection            : #fef9c3;
   --vl-overlay-inactive-selection   : #fef9c380;
   --vl-overlay-line-highlight       : #f5f5f573;
+  --vl-overlay-hover-tint           : #fef9c380;
   --vl-overlay-find-match           : #fde047bf;
   --vl-overlay-find-match-border    : #713f12;
   --vl-overlay-find-match-other     : #fde04759;
@@ -790,6 +805,7 @@
   --vl-overlay-selection            : #ecfccb;
   --vl-overlay-inactive-selection   : #ecfccb80;
   --vl-overlay-line-highlight       : #f5f5f573;
+  --vl-overlay-hover-tint           : #ecfccb80;
   --vl-overlay-find-match           : #fde047bf;
   --vl-overlay-find-match-border    : #713f12;
   --vl-overlay-find-match-other     : #fde04759;
@@ -814,6 +830,7 @@
   --vl-overlay-selection            : #dbeafe;
   --vl-overlay-inactive-selection   : #dbeafe80;
   --vl-overlay-line-highlight       : #f5f5f573;
+  --vl-overlay-hover-tint           : #dbeafe80;
   --vl-overlay-find-match           : #fde047bf;
   --vl-overlay-find-match-border    : #713f12;
   --vl-overlay-find-match-other     : #fde04759;
@@ -838,6 +855,7 @@
   --vl-overlay-selection            : #f3e8ff;
   --vl-overlay-inactive-selection   : #f3e8ff80;
   --vl-overlay-line-highlight       : #f5f5f573;
+  --vl-overlay-hover-tint           : #f3e8ff80;
   --vl-overlay-find-match           : #fde047bf;
   --vl-overlay-find-match-border    : #713f12;
   --vl-overlay-find-match-other     : #fde04759;
@@ -864,6 +882,7 @@
   --vl-overlay-selection            : #fca5a573;
   --vl-overlay-inactive-selection   : #fca5a538;
   --vl-overlay-line-highlight       : #1717170d;
+  --vl-overlay-hover-tint           : #fca5a538;
   --vl-overlay-find-match           : #fde047cc;
   --vl-overlay-find-match-border    : #713f12;
   --vl-overlay-find-match-other     : #fde04759;
@@ -888,6 +907,7 @@
   --vl-overlay-selection            : #fdba7473;
   --vl-overlay-inactive-selection   : #fdba7438;
   --vl-overlay-line-highlight       : #1717170d;
+  --vl-overlay-hover-tint           : #fdba7438;
   --vl-overlay-find-match           : #fde047cc;
   --vl-overlay-find-match-border    : #713f12;
   --vl-overlay-find-match-other     : #fde04759;
@@ -912,6 +932,7 @@
   --vl-overlay-selection            : #fde04773;
   --vl-overlay-inactive-selection   : #fde04738;
   --vl-overlay-line-highlight       : #1717170d;
+  --vl-overlay-hover-tint           : #fde04738;
   --vl-overlay-find-match           : #fde047cc;
   --vl-overlay-find-match-border    : #713f12;
   --vl-overlay-find-match-other     : #fde04759;
@@ -936,6 +957,7 @@
   --vl-overlay-selection            : #bef26473;
   --vl-overlay-inactive-selection   : #bef26438;
   --vl-overlay-line-highlight       : #1717170d;
+  --vl-overlay-hover-tint           : #bef26438;
   --vl-overlay-find-match           : #fde047cc;
   --vl-overlay-find-match-border    : #713f12;
   --vl-overlay-find-match-other     : #fde04759;
@@ -960,6 +982,7 @@
   --vl-overlay-selection            : #93c5fd73;
   --vl-overlay-inactive-selection   : #93c5fd38;
   --vl-overlay-line-highlight       : #1717170d;
+  --vl-overlay-hover-tint           : #93c5fd38;
   --vl-overlay-find-match           : #fde047cc;
   --vl-overlay-find-match-border    : #713f12;
   --vl-overlay-find-match-other     : #fde04759;
@@ -984,6 +1007,7 @@
   --vl-overlay-selection            : #d8b4fe73;
   --vl-overlay-inactive-selection   : #d8b4fe38;
   --vl-overlay-line-highlight       : #1717170d;
+  --vl-overlay-hover-tint           : #d8b4fe38;
   --vl-overlay-find-match           : #fde047cc;
   --vl-overlay-find-match-border    : #713f12;
   --vl-overlay-find-match-other     : #fde04759;

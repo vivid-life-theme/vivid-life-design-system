@@ -226,8 +226,9 @@ A target with alpha support (VS Code, CSS) blends `color` at `alpha`; one withou
 
 | Overlay                                      | Hue family  | Gated as |
 | -------------------------------------------- | ----------- | -------- |
-| `selection`, `inactive_selection`            | accent      | code     |
+| `selection`, `inactive_selection`            | accent      | code 3:1 |
 | `line_highlight`                             | grey        | code     |
+| `hover_tint`                                 | accent      | code     |
 | `find_match`, `find_match_other` (+ borders) | yellow      | code     |
 | `word_highlight_read`, `_write`              | cyan        | code     |
 | `diff_{inserted,removed}_{line,text,gutter}` | green / red | code     |
@@ -254,7 +255,7 @@ The border is the only option on the dark flavors. The comment grey caps how far
 
 `selection` and `inactive_selection` are also drawn behind terminal output, composited over `bg_terminal`, and their role carries a `terminal_foreground` (`fg`): **a terminal redraws selected text in `fg`** rather than leaving its ANSI colours on the tint. The build emits both as `overlay.<variant>.selection.terminal = { flat, foreground }` and gates the pair at 4.5:1 — the worst case is 8.83:1 (Twilight).
 
-Keeping the ANSI colours on the selection instead isn't possible. Midnight's and Noon's normal rows sit just above 4.5:1 on `bg_terminal` (Noon's `bright_black` at 4.74:1 on white, Midnight's `magenta` at 5.00:1 on `#0a0a0a`), so any tint all sixteen survive is close to invisible: ΔE 1.4 at best on Noon, 5.8 on Midnight. With the current recipes, 51 (ANSI colour, variant) pairs fall below AA on a selection, down to 3.59:1 (Noon/Red, `bright_black`). Set the selection foreground wherever the target has one — VS Code `terminal.selectionForeground`, Alacritty `selection.text`, kitty `selection_foreground`, WezTerm `selection_fg`. A terminal without one shows ANSI text below AA while it is selected; say so in that port's README.
+Keeping the ANSI colours on the selection instead isn't possible. Midnight's and Noon's normal rows sit just above 4.5:1 on `bg_terminal` (Noon's `bright_black` at 4.61:1, Midnight's `magenta` at 4.53:1), so any tint all sixteen survive is close to invisible. With the current recipes, 86 (ANSI colour, variant) pairs fall below AA on a selection, down to 2.55:1 (Midnight/Blue, `magenta`). Set the selection foreground wherever the target has one — VS Code `terminal.selectionForeground`, Alacritty `selection.text`, kitty `selection_foreground`, WezTerm `selection_fg`. A terminal without one shows ANSI text below AA while it is selected; say so in that port's README.
 
 Terminal find matches (`terminal.findMatchBackground` and friends) have no foreground setting anywhere, and the same arithmetic applies: ANSI text inside a terminal search hit is not gated.
 
@@ -438,7 +439,7 @@ Every role names a colour target, optionally a background, and the **gate** it m
 | --------- | ---------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
 | `text`    | colour ≥ 4.5:1 on its background (or `bg_terminal`)                                                                          | `text`, `inactive`, `brand`, `permission`, `suggestion`, status colours, `merged`, `on_accent` |
 | `ui`      | colour ≥ 3:1 on `bg_terminal`                                                                                                | `input_border` (`border.control`), `hint` and `meter_track` (`fg_faint`), `meter_fill`         |
-| `surface` | `fg`, `fg_muted`, `fg_subtle`, every syntax slot and semantic colour ≥ 4.5:1 on the background (3:1 on a selection), flattened over `bg_terminal` | `message`, `message_hover`, `selection`, the diff backgrounds                                  |
+| `surface` | `fg`, `fg_muted`, `fg_subtle`, every syntax slot and semantic colour ≥ 4.5:1 on the background (3:1 on a selection, for a role that sets `text_min`), flattened over `bg_terminal` | `message`, `message_hover`, `selection`, the diff backgrounds                                  |
 
 A `surface` role does **not** guarantee the accent on it. Noon's orange accent sits at 4.75:1 on its own canvas, and no grey far enough from white to show keeps it there.
 
@@ -675,7 +676,7 @@ See `preview/03-iconography.html` for the live spec and `tokens.json5 → iconog
 
 ## Caveats
 
-- **`bg_sunk`** on Midnight (`#0a0a0a`) and Dawn (`#bdbdbd`), and `--vl-fg-subtle` on Midnight (`#999999`) and Twilight (`#b8b8b8`) are _outside_ the strict palette — needed for surface depth and comment readability respectively. Documented choices, not bugs.
+- **`bg_sunk`** on Dawn (`#bdbdbd`), and `--vl-fg-subtle` on Midnight (`#999999`) and Twilight (`#b8b8b8`) are _outside_ the strict palette — needed for surface depth and comment readability respectively. Documented choices, not bugs.
 - **CONTENT FUNDAMENTALS** / tone-of-voice guidelines are deliberately scoped out for now — themes don't ship copy, so the only writing surface is per-port release notes and the future website. Will revisit when the website exists.
 - **ANSI text on a terminal selection is not AA.** Terminals are expected to redraw selected text in `overlay.*.selection.terminal.foreground`; one without a selection-foreground setting falls below 4.5:1 for some ANSI colours. See [Terminal selection](#terminal-selection).
 - **Overlays are per (flavor, variant)**, emitted as `#rrggbbaa` CSS variables. Over `bg` they match the `flat` value in `tokens.json` to within one step of 8-bit alpha rounding. Ports targeting a format without alpha should use `flat` (or `resolveOverlay()` for another surface) rather than blending themselves.

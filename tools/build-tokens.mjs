@@ -1126,7 +1126,16 @@ export function validateShapes(tokens) {
         errs.push(`✗ ${w} must be an object`);
         continue;
       }
-      keysOk(w, role, ["color", "background", "style", "gate", "emphasis", "use"]);
+      keysOk(w, role, ["color", "background", "style", "gate", "emphasis", "use", "text_min"]);
+      // An app surface may take its overlay's looser floor (§ 3e, the
+      // selection exception) only by saying so, and only that floor.
+      if (role.text_min !== undefined) {
+        const ovName = String(role.background ?? "").startsWith("overlay.") ? role.background.slice(8) : undefined;
+        const ovMin = tokens.overlay?.roles?.[ovName]?.text_min;
+        if (role.gate !== "surface" || ovMin === undefined || role.text_min !== ovMin) {
+          errs.push(`✗ ${w}.text_min: only a "surface" role on an overlay with the same text_min may set it`);
+        }
+      }
       if (!APP_GATES.includes(role.gate)) {
         errs.push(`✗ ${w}.gate is "${role.gate}" — expected ${APP_GATES.map((g) => `"${g}"`).join(", ")}`);
       }
@@ -1474,11 +1483,9 @@ function check(tokens, { onPair } = {}) {
           : f.surface[appSurface];
         const where = `${fName}/${hue} app_roles.${name}`;
         if (role.gate === "surface") {
-          // A surface that is an overlay keeps that overlay's minimum: an
-          // app's selection is the same signal as the editor's (§ 3e).
-          const ov = String(role.background ?? "").startsWith("overlay.") ? tokens.overlay.roles[role.background.slice(8)] : undefined;
-          const surfMin = ov?.text_min ?? 4.5;
-          for (const [k, c] of Object.entries(panelText)) pair("app_roles", `${where}: ${k} on it`, c, back, surfMin);
+          // An app's selection is the same signal as the editor's and
+          // opts into its 3:1 floor (§ 3e); every other surface keeps 4.5:1.
+          for (const [k, c] of Object.entries(panelText)) pair("app_roles", `${where}: ${k} on it`, c, back, role.text_min ?? 4.5);
           continue;
         }
         const min = role.gate === "ui" ? tokens.control_boundary.min : 4.5;
@@ -2079,6 +2086,16 @@ async function selfTest() {
       "mix without ratio is rejected",
     ],
     [() => Object.values(real.flavors).some((f) => "bg_inset" in f.surface), false, "bg_inset is gone"],
+    [
+      () => has(check(mutated((t) => (t.app_roles.roles.message_hover.background = "overlay.inactive_selection"))), "twilight/orange app_roles.message_hover: syntax.comment on it"),
+      true,
+      "an app surface on a selection overlay keeps 4.5:1 unless it opts in (message_hover)",
+    ],
+    [
+      () => has(validateShapes(mutated((t) => (t.app_roles.roles.message.text_min = 3))), "text_min"),
+      true,
+      "app text_min is rejected unless the role's background overlay carries the same text_min",
+    ],
   ];
 
   let pass = 0,

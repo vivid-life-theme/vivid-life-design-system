@@ -341,6 +341,10 @@ export default {
         "behind": "code",
         "use": "The line the cursor is on."
       },
+      "hover_tint": {
+        "behind": "code",
+        "use": "A block under the pointer or keyboard focus inside a terminal app."
+      },
       "find_match": {
         "behind": "code",
         "use": "The current search match."
@@ -425,6 +429,10 @@ export default {
           "color": "gray.800",
           "alpha": 1
         },
+        "hover_tint": {
+          "color": "accent.900",
+          "alpha": 0.25
+        },
         "find_match": {
           "color": "yellow.900",
           "alpha": 0.5,
@@ -496,6 +504,10 @@ export default {
         "line_highlight": {
           "color": "gray.800",
           "alpha": 0.6
+        },
+        "hover_tint": {
+          "color": "accent.900",
+          "alpha": 0.4
         },
         "find_match": {
           "color": "yellow.900",
@@ -569,6 +581,10 @@ export default {
           "color": "gray.100",
           "alpha": 0.45
         },
+        "hover_tint": {
+          "color": "accent.100",
+          "alpha": 0.5
+        },
         "find_match": {
           "color": "yellow.300",
           "alpha": 0.75,
@@ -640,6 +656,10 @@ export default {
         "line_highlight": {
           "color": "gray.900",
           "alpha": 0.05
+        },
+        "hover_tint": {
+          "color": "accent.300",
+          "alpha": 0.22
         },
         "find_match": {
           "color": "yellow.300",
@@ -965,6 +985,11 @@ export default {
             "alpha": 1,
             "flat": "#262626"
           },
+          "hover_tint": {
+            "color": "#7f1d1d",
+            "alpha": 0.25,
+            "flat": "#311919"
+          },
           "find_match": {
             "color": "#713f12",
             "alpha": 0.5,
@@ -1061,6 +1086,11 @@ export default {
             "color": "#262626",
             "alpha": 1,
             "flat": "#262626"
+          },
+          "hover_tint": {
+            "color": "#7c2d12",
+            "alpha": 0.25,
+            "flat": "#301d16"
           },
           "find_match": {
             "color": "#713f12",
@@ -1159,6 +1189,11 @@ export default {
             "alpha": 1,
             "flat": "#262626"
           },
+          "hover_tint": {
+            "color": "#713f12",
+            "alpha": 0.25,
+            "flat": "#2e2116"
+          },
           "find_match": {
             "color": "#713f12",
             "alpha": 0.5,
@@ -1255,6 +1290,11 @@ export default {
             "color": "#262626",
             "alpha": 1,
             "flat": "#262626"
+          },
+          "hover_tint": {
+            "color": "#365314",
+            "alpha": 0.25,
+            "flat": "#1f2616"
           },
           "find_match": {
             "color": "#713f12",
@@ -1353,6 +1393,11 @@ export default {
             "alpha": 1,
             "flat": "#262626"
           },
+          "hover_tint": {
+            "color": "#1e3a8a",
+            "alpha": 0.25,
+            "flat": "#192034"
+          },
           "find_match": {
             "color": "#713f12",
             "alpha": 0.5,
@@ -1449,6 +1494,11 @@ export default {
             "color": "#262626",
             "alpha": 1,
             "flat": "#262626"
+          },
+          "hover_tint": {
+            "color": "#581c87",
+            "alpha": 0.25,
+            "flat": "#271833"
           },
           "find_match": {
             "color": "#713f12",
@@ -1643,6 +1693,11 @@ export default {
             "alpha": 0.6,
             "flat": "#303030"
           },
+          "hover_tint": {
+            "color": "#7f1d1d",
+            "alpha": 0.4,
+            "flat": "#593232"
+          },
           "find_match": {
             "color": "#713f12",
             "alpha": 0.75,
@@ -1739,6 +1794,11 @@ export default {
             "color": "#262626",
             "alpha": 0.6,
             "flat": "#303030"
+          },
+          "hover_tint": {
+            "color": "#7c2d12",
+            "alpha": 0.4,
+            "flat": "#58382e"
           },
           "find_match": {
             "color": "#713f12",
@@ -1837,6 +1897,11 @@ export default {
             "alpha": 0.6,
             "flat": "#303030"
           },
+          "hover_tint": {
+            "color": "#713f12",
+            "alpha": 0.4,
+            "flat": "#54402e"
+          },
           "find_match": {
             "color": "#713f12",
             "alpha": 0.75,
@@ -1933,6 +1998,11 @@ export default {
             "color": "#262626",
             "alpha": 0.6,
             "flat": "#303030"
+          },
+          "hover_tint": {
+            "color": "#365314",
+            "alpha": 0.4,
+            "flat": "#3c482e"
           },
           "find_match": {
             "color": "#713f12",
@@ -2031,6 +2101,11 @@ export default {
             "alpha": 0.6,
             "flat": "#303030"
           },
+          "hover_tint": {
+            "color": "#1e3a8a",
+            "alpha": 0.4,
+            "flat": "#323e5e"
+          },
           "find_match": {
             "color": "#713f12",
             "alpha": 0.75,
@@ -2127,6 +2202,11 @@ export default {
             "color": "#262626",
             "alpha": 0.6,
             "flat": "#303030"
+          },
+          "hover_tint": {
+            "color": "#581c87",
+            "alpha": 0.4,
+            "flat": "#4a325c"
           },
           "find_match": {
             "color": "#713f12",
@@ -2321,6 +2401,11 @@ export default {
             "alpha": 0.45,
             "flat": "#e3e3e3"
           },
+          "hover_tint": {
+            "color": "#fee2e2",
+            "alpha": 0.5,
+            "flat": "#e9dbdb"
+          },
           "find_match": {
             "color": "#fde047",
             "alpha": 0.75,
@@ -2417,6 +2502,11 @@ export default {
             "color": "#f5f5f5",
             "alpha": 0.45,
             "flat": "#e3e3e3"
+          },
+          "hover_tint": {
+            "color": "#ffedd5",
+            "alpha": 0.5,
+            "flat": "#eae1d5"
           },
           "find_match": {
             "color": "#fde047",
@@ -2515,6 +2605,11 @@ export default {
             "alpha": 0.45,
             "flat": "#e3e3e3"
           },
+          "hover_tint": {
+            "color": "#fef9c3",
+            "alpha": 0.5,
+            "flat": "#e9e7cc"
+          },
           "find_match": {
             "color": "#fde047",
             "alpha": 0.75,
@@ -2611,6 +2706,11 @@ export default {
             "color": "#f5f5f5",
             "alpha": 0.45,
             "flat": "#e3e3e3"
+          },
+          "hover_tint": {
+            "color": "#ecfccb",
+            "alpha": 0.5,
+            "flat": "#e0e8d0"
           },
           "find_match": {
             "color": "#fde047",
@@ -2709,6 +2809,11 @@ export default {
             "alpha": 0.45,
             "flat": "#e3e3e3"
           },
+          "hover_tint": {
+            "color": "#dbeafe",
+            "alpha": 0.5,
+            "flat": "#d8dfe9"
+          },
           "find_match": {
             "color": "#fde047",
             "alpha": 0.75,
@@ -2805,6 +2910,11 @@ export default {
             "color": "#f5f5f5",
             "alpha": 0.45,
             "flat": "#e3e3e3"
+          },
+          "hover_tint": {
+            "color": "#f3e8ff",
+            "alpha": 0.5,
+            "flat": "#e4deea"
           },
           "find_match": {
             "color": "#fde047",
@@ -2999,6 +3109,11 @@ export default {
             "alpha": 0.05,
             "flat": "#eaeaea"
           },
+          "hover_tint": {
+            "color": "#fca5a5",
+            "alpha": 0.22,
+            "flat": "#f7e3e3"
+          },
           "find_match": {
             "color": "#fde047",
             "alpha": 0.8,
@@ -3095,6 +3210,11 @@ export default {
             "color": "#171717",
             "alpha": 0.05,
             "flat": "#eaeaea"
+          },
+          "hover_tint": {
+            "color": "#fdba74",
+            "alpha": 0.22,
+            "flat": "#f7e8d9"
           },
           "find_match": {
             "color": "#fde047",
@@ -3193,6 +3313,11 @@ export default {
             "alpha": 0.05,
             "flat": "#eaeaea"
           },
+          "hover_tint": {
+            "color": "#fde047",
+            "alpha": 0.22,
+            "flat": "#f7f0cf"
+          },
           "find_match": {
             "color": "#fde047",
             "alpha": 0.8,
@@ -3289,6 +3414,11 @@ export default {
             "color": "#171717",
             "alpha": 0.05,
             "flat": "#eaeaea"
+          },
+          "hover_tint": {
+            "color": "#bef264",
+            "alpha": 0.22,
+            "flat": "#e9f4d5"
           },
           "find_match": {
             "color": "#fde047",
@@ -3387,6 +3517,11 @@ export default {
             "alpha": 0.05,
             "flat": "#eaeaea"
           },
+          "hover_tint": {
+            "color": "#93c5fd",
+            "alpha": 0.22,
+            "flat": "#dfeaf7"
+          },
           "find_match": {
             "color": "#fde047",
             "alpha": 0.8,
@@ -3483,6 +3618,11 @@ export default {
             "color": "#171717",
             "alpha": 0.05,
             "flat": "#eaeaea"
+          },
+          "hover_tint": {
+            "color": "#d8b4fe",
+            "alpha": 0.22,
+            "flat": "#efe7f7"
           },
           "find_match": {
             "color": "#fde047",
@@ -4752,12 +4892,13 @@ export default {
         "use": "A message block, sidebar or composer. Must show on its own over bg_terminal (distinct.app.visible)."
       },
       "message_hover": {
-        "background": "overlay.inactive_selection",
+        "background": "overlay.hover_tint",
         "gate": "surface",
         "use": "A message block under the pointer or keyboard focus. Not overlay.selected: that wash only gates fg, and a message can carry fg_subtle."
       },
       "selection": {
         "background": "overlay.selection",
+        "text_min": 3,
         "gate": "surface",
         "use": "Selected text."
       },
