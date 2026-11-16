@@ -12,6 +12,19 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ---
 
+## [0.14.2] - 2026-11-16
+
+### Changed
+
+- **⚠️ Dawn's frame carries visible colour** ([#37](https://github.com/vivid-life-theme/vivid-life-design-system/issues/37)). At OKLCH L 0.98 the sRGB gamut clamped red, blue and purple to C 0.009, so the frame read as white around the grey editor. The recipe is now L 0.91, C 0.05 (C 0.043–0.051 for every variant, as on Noon), and `frame.step_exempt` lists `dawn`: no Dawn frame both carries colour and clears the 1.35:1 step from `#d4d4d4`, so it is set apart by hue at 1.12–1.15:1. `flavors.dawn.frame.<variant>.bg` changes (red `#fef6f6` → `#ffd6d2`, orange `#fff7f3` → `#fed8c5`, yellow `#fef8ea` → `#f0e0bc`, green `#efffe2` → `#d6e9c6`, blue `#f5f9fe` → `#d1e2fe`, purple `#faf7fe` → `#e8dafd`); `accent_text` is unchanged. Ports must bump and regenerate.
+
+### Fixed
+
+- Self-tests pin the new Dawn frames, require every Dawn frame to reach OKLCH C 0.04, and check that Dawn still needs its step exemption.
+- README, `tokens.json5` § 3i and the frame-colours spec describe the Dawn exception; the Dawn kitchen-sink screenshot shows the new frame.
+
+---
+
 ## [0.14.1] - 2026-11-16
 
 Follow-up to 0.14.0 from the review of #35.
@@ -374,7 +387,8 @@ Initial npm release. The token system existed before this version; this is the f
 
 ---
 
-[unreleased]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.14.1...HEAD
+[unreleased]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.14.2...HEAD
+[0.14.2]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.14.1...v0.14.2
 [0.14.1]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.14.0...v0.14.1
 [0.14.0]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.13.1...v0.14.0
 [0.13.1]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.13.0...v0.13.1
