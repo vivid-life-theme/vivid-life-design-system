@@ -82,7 +82,7 @@ Every port is its own GitHub repo and its own Claude Code project; the [org prof
 - **24 themes** — 4 flavors (Midnight · Twilight · Dawn · Noon) × 6 accent variants (Red · Orange · Yellow · Green · Blue · Purple), all WCAG AA
 - **Syntax token map** — 12 core slots + 26 extended, stable shape across all flavors
 - **UI tokens** — surfaces, text (with a 3:1 faint step), borders, interactive states, semantic roles, accent-on
-- **Overlay recipes** — selection, find match, word highlight, diff, selected-item wash; resolved to hex per theme, with syntax gated at AA on every one
+- **Overlay recipes** — selection, find match, word highlight, diff, selected-item wash; resolved to hex per theme, with syntax contrast gated on every one (4.5:1, or 3:1 on the short-lived selection and highlights)
 - **Shell, prompt & app roles** — one answer for "what colour is an option flag / a staged file / plan mode / the subagent called pink", shared by every shell, prompt and terminal-app port
 - **Typography** — [Atkinson Hyperlegible Next + Mono](https://www.brailleinstitute.org/freefont) (OFL-1.1, locally bundled)
 - **Spacing · radii · shadows · motion** — complete foundation token set
@@ -193,12 +193,12 @@ Vivid Life is a one-strong-colour theme. The work areas — editor and terminal 
 
 The rule: each flavor takes the frame shade that gives the clearest lightness step from its own editor background.
 
-| Flavor   | Frame                                                         | Step from `bg`         |
-| -------- | ------------------------------------------------------------- | ---------------------- |
-| Midnight | 50/50 mix of the variant's `900` and `950`                    | 1.39–1.59:1            |
-| Twilight | the variant's `950`                                           | 1.41–1.56:1            |
-| Dawn     | pastel, OKLCH L 0.98 / C 0.05, hue of the variant's `500`     | 1.39–1.42:1, brighter  |
-| Noon     | pastel, OKLCH L 0.86 / C 0.05, hue of the variant's `500`     | 1.39–1.43:1            |
+| Flavor   | Frame                                                     | Step from `bg`        |
+| -------- | --------------------------------------------------------- | --------------------- |
+| Midnight | 50/50 mix of the variant's `900` and `950`                | 1.39–1.59:1           |
+| Twilight | the variant's `950`                                       | 1.41–1.56:1           |
+| Dawn     | pastel, OKLCH L 0.98 / C 0.05, hue of the variant's `500` | 1.39–1.42:1, brighter |
+| Noon     | pastel, OKLCH L 0.86 / C 0.05, hue of the variant's `500` | 1.39–1.43:1           |
 
 The light-flavor pastels are computed, not palette shades: they sit near Tailwind's `200`, but the plain `200` is uneven (1.07:1 for yellow and green on Noon). Dawn's frame is the one that goes the other way, brighter than its mid-grey canvas: a darker pastel would drop Dawn's `success` and `warning` (git decorations in a sidebar) below 4.5:1. On a dark flavor the yellow frame is brown; that's what dark yellow is.
 
@@ -247,35 +247,35 @@ A target with alpha support (VS Code, CSS) uses `hexa` (`#rrggbbaa`, `color` at 
 
 Every translucent colour a port used to decide itself is a recipe too ([issue #28](https://github.com/vivid-life-theme/vivid-life-design-system/issues/28)). A port keeps no alpha table: it maps its keys onto these roles and reads `hexa` or `flat`. Each role has exactly one gate class (`overlay.roles.<name>.behind`), and the build fails on a role without one:
 
-| Class     | Gated                                                                                                        |
-| --------- | ------------------------------------------------------------------------------------------------------------ |
+| Class     | Gated                                                                                                          |
+| --------- | -------------------------------------------------------------------------------------------------------------- |
 | `code`    | every syntax colour, `fg`, `fg_subtle` and the semantic colours on the flat, at 4.5:1 or the role's `text_min` |
-| `ui`      | the roles in `text` on every surface in `surfaces` at 4.5:1; `text_on` limits a role to some surfaces        |
-| `surface` | as `ui`, plus visible: ΔE ≥ 5 from every surface                                                             |
-| `mark`    | non-text: ΔE ≥ 5 from every surface, and `contrast_min` where set                                            |
-| `fill`    | `accent_on` (or a text role) on the solid flat at 4.5:1                                                      |
+| `ui`      | the roles in `text` on every surface in `surfaces` at 4.5:1; `text_on` limits a role to some surfaces          |
+| `surface` | as `ui`, plus visible: ΔE ≥ 5 from every surface                                                               |
+| `mark`    | non-text: ΔE ≥ 5 from every surface, and `contrast_min` where set                                              |
+| `fill`    | `accent_on` (or a text role) on the solid flat at 4.5:1                                                        |
 
 `surfaces` may name `frame`; `resolveOverlay(…, { surface: "frame" })` composites over the variant's frame.
 
-| Role                                                              | Class        | Recipe                                             | VS Code keys                                                                                  |
-| ----------------------------------------------------------------- | ------------ | -------------------------------------------------- | --------------------------------------------------------------------------------------------- |
-| `find_range`                                                      | code 3:1     | accent 10 %                                        | `editor.findRangeHighlightBackground`                                                         |
-| `highlight`                                                       | code 3:1     | accent 15 %                                        | `editor.selectionHighlightBackground`, `editor.hoverHighlightBackground`, `notebook.symbolHighlightBackground` |
-| `symbol_highlight`                                                | code 3:1     | accent 20 %                                        | `editor.symbolHighlightBackground`, `editorBracketMatch.background`, `peekView*.matchHighlightBackground` |
-| `merge_current`                                                   | code         | blue, direction rule                               | `merge.currentContentBackground`                                                              |
-| `diff_inserted_line` / `line_highlight` (reused)                  | code         | —                                                  | `merge.incomingContentBackground` / `merge.commonContentBackground`                            |
-| `stack_frame`, `stack_frame_focused`                              | code         | yellow, direction rule                             | `editor.stackFrameHighlightBackground`, `editor.focusedStackFrameHighlightBackground`         |
-| `merge_{current,incoming,common}_header`                          | ui           | info / success 15 %, fg_subtle 20 %                | `merge.*HeaderBackground`                                                                     |
-| `validation_{error,warning,info}`                                 | ui           | semantic 6 %; the coloured border carries the signal | `inputValidation.*Background`                                                               |
-| `input_option_active`, `slash_command`                            | ui           | accent 9 %, ANSI cyan 8 %                          | `inputOption.activeBackground`, `chat.slashCommandBackground`                                 |
-| `hover`, `active`                                                 | surface      | `gray.100` (dark) / `gray.950` (light), 9–14 %     | hover and pressed rows, tabs, menus and controls (`list.hoverBackground`, `statusBarItem.hoverBackground` / `activeBackground`, `chat.requestBubbleHoverBackground`, …); supersede `flavors.*.state` for these, but not behind code (see below) |
-| `ruler_find`, `mark`, `minimap_selection`, `minimap_occurrence`   | mark         | accent 60 / 40 / 25 / 20 %                         | overview-ruler and minimap marks                                                              |
-| `mark_inserted`, `mark_removed`                                   | mark         | success / danger 40 %                              | `diffEditorOverview.*Foreground`                                                              |
-| `terminal_decoration`                                             | mark         | fg_subtle 40 %                                     | `terminalCommandDecoration.defaultBackground`                                                 |
-| `slider`, `slider_hover`, `slider_active`                         | mark         | fg_subtle 30 / 50 / 80 %, active ≥ 3:1             | `scrollbarSlider.*`                                                                           |
-| `minimap_slider`, `_hover`, `_active`                             | mark         | fg_subtle 20 / 30 / 50 %                           | `minimapSlider.*`                                                                             |
-| `button_hover`                                                    | fill         | the accent's emphasis step, solid                  | `button.hoverBackground`, `extensionButton.prominentHoverBackground`                          |
-| `warning_hover`                                                   | fill         | `semantic.warning`'s emphasis step, solid          | `statusBarItem.prominentHoverBackground`                                                      |
+| Role                                                            | Class    | Recipe                                               | VS Code keys                                                                                                                                                                                                                                    |
+| --------------------------------------------------------------- | -------- | ---------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `find_range`                                                    | code 3:1 | accent 10 %                                          | `editor.findRangeHighlightBackground`                                                                                                                                                                                                           |
+| `highlight`                                                     | code 3:1 | accent 15 %                                          | `editor.selectionHighlightBackground`, `editor.hoverHighlightBackground`, `notebook.symbolHighlightBackground`                                                                                                                                  |
+| `symbol_highlight`                                              | code 3:1 | accent 20 %                                          | `editor.symbolHighlightBackground`, `editorBracketMatch.background`, `peekView*.matchHighlightBackground`                                                                                                                                       |
+| `merge_current`                                                 | code     | blue, direction rule                                 | `merge.currentContentBackground`                                                                                                                                                                                                                |
+| `diff_inserted_line` / `line_highlight` (reused)                | code     | —                                                    | `merge.incomingContentBackground` / `merge.commonContentBackground`                                                                                                                                                                             |
+| `stack_frame`, `stack_frame_focused`                            | code     | yellow, direction rule                               | `editor.stackFrameHighlightBackground`, `editor.focusedStackFrameHighlightBackground`                                                                                                                                                           |
+| `merge_{current,incoming,common}_header`                        | ui       | info / success 15 %, fg_subtle 20 %                  | `merge.*HeaderBackground`                                                                                                                                                                                                                       |
+| `validation_{error,warning,info}`                               | ui       | semantic 6 %; the coloured border carries the signal | `inputValidation.*Background`                                                                                                                                                                                                                   |
+| `input_option_active`, `slash_command`                          | ui       | accent 9 %, ANSI cyan 8 %                            | `inputOption.activeBackground`, `chat.slashCommandBackground`                                                                                                                                                                                   |
+| `hover`, `active`                                               | surface  | `gray.100` (dark) / `gray.950` (light), 9–14 %       | hover and pressed rows, tabs, menus and controls (`list.hoverBackground`, `statusBarItem.hoverBackground` / `activeBackground`, `chat.requestBubbleHoverBackground`, …); supersede `flavors.*.state` for these, but not behind code (see below) |
+| `ruler_find`, `mark`, `minimap_selection`, `minimap_occurrence` | mark     | accent 60 / 40 / 25 / 20 %                           | overview-ruler and minimap marks                                                                                                                                                                                                                |
+| `mark_inserted`, `mark_removed`                                 | mark     | success / danger 40 %                                | `diffEditorOverview.*Foreground`                                                                                                                                                                                                                |
+| `terminal_decoration`                                           | mark     | fg_subtle 40 %                                       | `terminalCommandDecoration.defaultBackground`                                                                                                                                                                                                   |
+| `slider`, `slider_hover`, `slider_active`                       | mark     | fg_subtle 30 / 50 / 80 %, active ≥ 3:1               | `scrollbarSlider.*`                                                                                                                                                                                                                             |
+| `minimap_slider`, `_hover`, `_active`                           | mark     | fg_subtle 20 / 30 / 50 %                             | `minimapSlider.*`                                                                                                                                                                                                                               |
+| `button_hover`                                                  | fill     | the accent's emphasis step, solid                    | `button.hoverBackground`, `extensionButton.prominentHoverBackground`                                                                                                                                                                            |
+| `warning_hover`                                                 | fill     | `semantic.warning`'s emphasis step, solid            | `statusBarItem.prominentHoverBackground`                                                                                                                                                                                                        |
 
 **Behind code, no `surface` wash.** A port that used `state.hover` behind code takes a code overlay instead: `editor.rangeHighlightBackground` → `highlight`, `notebook.cellHoverBackground` and `notebook.focusedCellBackground` → `line_highlight`. `hover` over code would drop Dawn's `function` colour to 3.68:1. `activityBar.activeBorder` (accent at 90 % in the VS Code port) takes the plain accent: no recipe.
 
@@ -474,10 +474,10 @@ Git statuses follow `workbench_color_roles.git`, so a file reads the same in the
 
 Every role names a colour target, optionally a background, and the **gate** it must pass for all 24 themes:
 
-| Gate      | What the build checks                                                                                                        | Roles                                                                                          |
-| --------- | ---------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
-| `text`    | colour ≥ 4.5:1 on its background (or `bg_terminal`)                                                                          | `text`, `inactive`, `brand`, `permission`, `suggestion`, status colours, `merged`, `on_accent` |
-| `ui`      | colour ≥ 3:1 on `bg_terminal`                                                                                                | `input_border` (`border.control`), `hint` and `meter_track` (`fg_faint`), `meter_fill`         |
+| Gate      | What the build checks                                                                                                                                                              | Roles                                                                                          |
+| --------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| `text`    | colour ≥ 4.5:1 on its background (or `bg_terminal`)                                                                                                                                | `text`, `inactive`, `brand`, `permission`, `suggestion`, status colours, `merged`, `on_accent` |
+| `ui`      | colour ≥ 3:1 on `bg_terminal`                                                                                                                                                      | `input_border` (`border.control`), `hint` and `meter_track` (`fg_faint`), `meter_fill`         |
 | `surface` | `fg`, `fg_muted`, `fg_subtle`, every syntax slot and semantic colour ≥ 4.5:1 on the background (3:1 on a selection, for a role that sets `text_min`), flattened over `bg_terminal` | `message`, `message_hover`, `selection`, the diff backgrounds                                  |
 
 A `surface` role does **not** guarantee the accent on it. Noon's orange accent sits at 4.75:1 on its own canvas, and no grey far enough from white to show keeps it there.
