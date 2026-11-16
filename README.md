@@ -218,11 +218,11 @@ Everything that sits behind text — selection, the current line, find matches, 
 
 ```js
 tokens.flavors.midnight.overlay.purple.selection;
-// → { color: "#581c87", alpha: 0.5, flat: "#381a4f",
-//     terminal: { flat: "#311349", foreground: "#f5f5f5" } }
+// → { color: "#d8b4fe", alpha: 0.25, flat: "#473e51", hexa: "#d8b4fe40",
+//     terminal: { flat: "#473e51", foreground: "#f5f5f5" } }
 ```
 
-A target with alpha support (VS Code, CSS) blends `color` at `alpha`; one without it (Windows Terminal, fish, PSReadLine) uses `flat`. Both land on the same colour. In CSS each is a `--vl-overlay-<name>` variable on the `.vl-<flavor>.variant-<variant>` pair, written as `#rrggbbaa`; `--vl-selection` and `--vl-state-selected` remain as aliases.
+A target with alpha support (VS Code, CSS) uses `hexa` (`#rrggbbaa`, `color` at `alpha`); one without it (Windows Terminal, fish, PSReadLine) uses `flat`. Both land on the same colour. In CSS each is a `--vl-overlay-<name>` variable on the `.vl-<flavor>.variant-<variant>` pair, written as `#rrggbbaa`; `--vl-selection` and `--vl-state-selected` remain as aliases.
 
 | Overlay                                      | Hue family  | Gated as |
 | -------------------------------------------- | ----------- | -------- |
@@ -235,12 +235,48 @@ A target with alpha support (VS Code, CSS) blends `color` at `alpha`; one withou
 | `diff_{inserted,removed}_dimmed`             | green / red | code     |
 | `panel`                                      | grey        | code     |
 | `selected`                                   | accent      | ui       |
+| the port-side washes below                   | various     | per role |
 
 **Code overlays keep code readable.** Every syntax slot, `fg`, `fg_subtle` and the four semantic colours must clear 4.5:1 on every code overlay, for all six variants. That gate is what decides the recipes, and it forces one rule:
 
 > _Dark flavors tint with the 900 rung — a deep hue at or below the canvas luminance. Light flavors tint with the 100 / 300 rung — a pale hue at or above it._
 
 **The exception is the selection on the dark flavors.** A selection is a short-lived signal: that it shows matters more than how readable the text inside it is at that moment. A 900-rung selection kept 4.5:1 but read as a dark smudge rather than the variant's colour. So on Midnight and Twilight `selection` is 25 % of the accent over `bg` and `inactive_selection` 15 %, and both roles carry `text_min: 3`: every code colour clears 3:1 on them (worst: comment grey at 3.55:1 on Midnight, 3.10:1 on Twilight). `app_roles` surfaces drawn on a selection follow the same minimum. Every other code overlay keeps 4.5:1, and the terminal selection foreground keeps 4.5:1 too. Sepp's Workshop made the same call after its users found a dark selection too hard to see; see the [frame-colours design](docs/superpowers/specs/2026-11-16-frame-colours-design.md).
+
+#### Port-side washes and gate classes
+
+Every translucent colour a port used to decide itself is a recipe too ([issue #28](https://github.com/vivid-life-theme/vivid-life-design-system/issues/28)). A port keeps no alpha table: it maps its keys onto these roles and reads `hexa` or `flat`. Each role has exactly one gate class (`overlay.roles.<name>.behind`), and the build fails on a role without one:
+
+| Class     | Gated                                                                                                        |
+| --------- | ------------------------------------------------------------------------------------------------------------ |
+| `code`    | every syntax colour, `fg`, `fg_subtle` and the semantic colours on the flat, at 4.5:1 or the role's `text_min` |
+| `ui`      | the roles in `text` on every surface in `surfaces` at 4.5:1; `text_on` limits a role to some surfaces        |
+| `surface` | as `ui`, plus visible: ΔE ≥ 5 from every surface                                                             |
+| `mark`    | non-text: ΔE ≥ 5 from every surface, and `contrast_min` where set                                            |
+| `fill`    | `accent_on` (or a text role) on the solid flat at 4.5:1                                                      |
+
+`surfaces` may name `frame`; `resolveOverlay(…, { surface: "frame" })` composites over the variant's frame.
+
+| Role                                                              | Class        | Recipe                                             | VS Code keys                                                                                  |
+| ----------------------------------------------------------------- | ------------ | -------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| `find_range`                                                      | code 3:1     | accent 10 %                                        | `editor.findRangeHighlightBackground`                                                         |
+| `highlight`                                                       | code 3:1     | accent 15 %                                        | `editor.selectionHighlightBackground`, `editor.hoverHighlightBackground`, `notebook.symbolHighlightBackground` |
+| `symbol_highlight`                                                | code 3:1     | accent 20 %                                        | `editor.symbolHighlightBackground`, `editorBracketMatch.background`, `peekView*.matchHighlightBackground` |
+| `merge_current`                                                   | code         | blue, direction rule                               | `merge.currentContentBackground`                                                              |
+| `diff_inserted_line` / `line_highlight` (reused)                  | code         | —                                                  | `merge.incomingContentBackground` / `merge.commonContentBackground`                            |
+| `stack_frame`, `stack_frame_focused`                              | code         | yellow, direction rule                             | `editor.stackFrameHighlightBackground`, `editor.focusedStackFrameHighlightBackground`         |
+| `merge_{current,incoming,common}_header`                          | ui           | info / success 15 %, fg_subtle 20 %                | `merge.*HeaderBackground`                                                                     |
+| `validation_{error,warning,info}`                                 | ui           | semantic 6 %; the coloured border carries the signal | `inputValidation.*Background`                                                               |
+| `input_option_active`, `slash_command`                            | ui           | accent 9 %, ANSI cyan 8 %                          | `inputOption.activeBackground`, `chat.slashCommandBackground`                                 |
+| `hover`, `active`                                                 | surface      | `gray.100` (dark) / `gray.950` (light), 8–14 %     | list / tab / menu hover and pressed states, `chat.requestBubbleHoverBackground`; supersede `flavors.*.state` |
+| `ruler_find`, `mark`, `minimap_selection`, `minimap_occurrence`   | mark         | accent 60 / 40 / 25 / 20 %                         | overview-ruler and minimap marks                                                              |
+| `mark_inserted`, `mark_removed`                                   | mark         | success / danger 40 %                              | `diffEditorOverview.*Foreground`                                                              |
+| `terminal_decoration`                                             | mark         | fg_subtle 40 %                                     | `terminalCommandDecoration.defaultBackground`                                                 |
+| `slider`, `slider_hover`, `slider_active`                         | mark         | fg_subtle 30 / 50 / 80 %, active ≥ 3:1             | `scrollbarSlider.*`                                                                           |
+| `minimap_slider`, `_hover`, `_active`                             | mark         | fg_subtle 20 / 30 / 50 %                           | `minimapSlider.*`                                                                             |
+| `button_hover`                                                    | fill         | the accent's emphasis step, solid                  | `button.hoverBackground`, `extensionButton.prominentHoverBackground`                          |
+
+The short-lived editor highlights follow the selection's 3:1 rule: no accent tint behind code reaches 4.5:1 at any alpha, because syntax colours sit just above 4.5:1 on `bg`. Backgrounds code is read on for longer (merge, stack frames) keep 4.5:1 and the direction rule. Design and measurements: [overlay-recipes design](docs/superpowers/specs/2026-11-16-overlay-recipes-design.md).
 
 #### Telling overlays apart
 
