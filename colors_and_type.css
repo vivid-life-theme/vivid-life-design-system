@@ -481,6 +481,7 @@
   --vl-overlay-minimap-slider-hover : #9999994d;
   --vl-overlay-minimap-slider-active: #99999980;
   --vl-overlay-button-hover         : #fca5a5;
+  --vl-overlay-warning-hover        : #fef9c3;
 }
 .vl-midnight.variant-orange {
   --vl-accent: #f97316;
@@ -536,6 +537,7 @@
   --vl-overlay-minimap-slider-hover : #9999994d;
   --vl-overlay-minimap-slider-active: #99999980;
   --vl-overlay-button-hover         : #fdba74;
+  --vl-overlay-warning-hover        : #fef9c3;
 }
 .vl-midnight.variant-yellow {
   --vl-accent: #eab308;
@@ -591,6 +593,7 @@
   --vl-overlay-minimap-slider-hover : #9999994d;
   --vl-overlay-minimap-slider-active: #99999980;
   --vl-overlay-button-hover         : #fde047;
+  --vl-overlay-warning-hover        : #fef9c3;
 }
 .vl-midnight.variant-green {
   --vl-accent: #84cc16;
@@ -646,6 +649,7 @@
   --vl-overlay-minimap-slider-hover : #9999994d;
   --vl-overlay-minimap-slider-active: #99999980;
   --vl-overlay-button-hover         : #bef264;
+  --vl-overlay-warning-hover        : #fef9c3;
 }
 .vl-midnight.variant-blue {
   --vl-accent: #93c5fd;
@@ -701,6 +705,7 @@
   --vl-overlay-minimap-slider-hover : #9999994d;
   --vl-overlay-minimap-slider-active: #99999980;
   --vl-overlay-button-hover         : #dbeafe;
+  --vl-overlay-warning-hover        : #fef9c3;
 }
 .vl-midnight.variant-purple {
   --vl-accent: #d8b4fe;
@@ -756,6 +761,7 @@
   --vl-overlay-minimap-slider-hover : #9999994d;
   --vl-overlay-minimap-slider-active: #99999980;
   --vl-overlay-button-hover         : #f3e8ff;
+  --vl-overlay-warning-hover        : #fef9c3;
 }
 
 /* Twilight */
@@ -813,6 +819,7 @@
   --vl-overlay-minimap-slider-hover : #b8b8b84d;
   --vl-overlay-minimap-slider-active: #b8b8b880;
   --vl-overlay-button-hover         : #fee2e2;
+  --vl-overlay-warning-hover        : #fde047;
 }
 .vl-twilight.variant-orange {
   --vl-accent: #fdba74;
@@ -868,6 +875,7 @@
   --vl-overlay-minimap-slider-hover : #b8b8b84d;
   --vl-overlay-minimap-slider-active: #b8b8b880;
   --vl-overlay-button-hover         : #ffedd5;
+  --vl-overlay-warning-hover        : #fde047;
 }
 .vl-twilight.variant-yellow {
   --vl-accent: #eab308;
@@ -923,6 +931,7 @@
   --vl-overlay-minimap-slider-hover : #b8b8b84d;
   --vl-overlay-minimap-slider-active: #b8b8b880;
   --vl-overlay-button-hover         : #fde047;
+  --vl-overlay-warning-hover        : #fde047;
 }
 .vl-twilight.variant-green {
   --vl-accent: #84cc16;
@@ -978,6 +987,7 @@
   --vl-overlay-minimap-slider-hover : #b8b8b84d;
   --vl-overlay-minimap-slider-active: #b8b8b880;
   --vl-overlay-button-hover         : #bef264;
+  --vl-overlay-warning-hover        : #fde047;
 }
 .vl-twilight.variant-blue {
   --vl-accent: #93c5fd;
@@ -1033,6 +1043,7 @@
   --vl-overlay-minimap-slider-hover : #b8b8b84d;
   --vl-overlay-minimap-slider-active: #b8b8b880;
   --vl-overlay-button-hover         : #dbeafe;
+  --vl-overlay-warning-hover        : #fde047;
 }
 .vl-twilight.variant-purple {
   --vl-accent: #d8b4fe;
@@ -1088,6 +1099,7 @@
   --vl-overlay-minimap-slider-hover : #b8b8b84d;
   --vl-overlay-minimap-slider-active: #b8b8b880;
   --vl-overlay-button-hover         : #f3e8ff;
+  --vl-overlay-warning-hover        : #fde047;
 }
 
 /* Dawn */
@@ -1145,6 +1157,7 @@
   --vl-overlay-minimap-slider-hover : #5252524d;
   --vl-overlay-minimap-slider-active: #52525280;
   --vl-overlay-button-hover         : #7f1d1d;
+  --vl-overlay-warning-hover        : #854d0e;
 }
 .vl-dawn.variant-orange {
   --vl-accent: #7c2d12;
@@ -1200,6 +1213,7 @@
   --vl-overlay-minimap-slider-hover : #5252524d;
   --vl-overlay-minimap-slider-active: #52525280;
   --vl-overlay-button-hover         : #9a3412;
+  --vl-overlay-warning-hover        : #854d0e;
 }
 .vl-dawn.variant-yellow {
   --vl-accent: #854d0e;
@@ -1255,6 +1269,7 @@
   --vl-overlay-minimap-slider-hover : #5252524d;
   --vl-overlay-minimap-slider-active: #52525280;
   --vl-overlay-button-hover         : #713f12;
+  --vl-overlay-warning-hover        : #854d0e;
 }
 .vl-dawn.variant-green {
   --vl-accent: #3f6212;
@@ -1310,6 +1325,7 @@
   --vl-overlay-minimap-slider-hover : #5252524d;
   --vl-overlay-minimap-slider-active: #52525280;
   --vl-overlay-button-hover         : #365314;
+  --vl-overlay-warning-hover        : #854d0e;
 }
 .vl-dawn.variant-blue {
   --vl-accent: #1d4ed8;
@@ -1365,6 +1381,7 @@
   --vl-overlay-minimap-slider-hover : #5252524d;
   --vl-overlay-minimap-slider-active: #52525280;
   --vl-overlay-button-hover         : #1e40af;
+  --vl-overlay-warning-hover        : #854d0e;
 }
 .vl-dawn.variant-purple {
   --vl-accent: #7e22ce;
@@ -1420,6 +1437,7 @@
   --vl-overlay-minimap-slider-hover : #5252524d;
   --vl-overlay-minimap-slider-active: #52525280;
   --vl-overlay-button-hover         : #6b21a8;
+  --vl-overlay-warning-hover        : #854d0e;
 }
 
 /* Noon */
@@ -1477,6 +1495,7 @@
   --vl-overlay-minimap-slider-hover : #5252524d;
   --vl-overlay-minimap-slider-active: #52525280;
   --vl-overlay-button-hover         : #991b1b;
+  --vl-overlay-warning-hover        : #854d0e;
 }
 .vl-noon.variant-orange {
   --vl-accent: #c2410c;
@@ -1532,6 +1551,7 @@
   --vl-overlay-minimap-slider-hover : #5252524d;
   --vl-overlay-minimap-slider-active: #52525280;
   --vl-overlay-button-hover         : #9a3412;
+  --vl-overlay-warning-hover        : #854d0e;
 }
 .vl-noon.variant-yellow {
   --vl-accent: #854d0e;
@@ -1587,6 +1607,7 @@
   --vl-overlay-minimap-slider-hover : #5252524d;
   --vl-overlay-minimap-slider-active: #52525280;
   --vl-overlay-button-hover         : #713f12;
+  --vl-overlay-warning-hover        : #854d0e;
 }
 .vl-noon.variant-green {
   --vl-accent: #3f6212;
@@ -1642,6 +1663,7 @@
   --vl-overlay-minimap-slider-hover : #5252524d;
   --vl-overlay-minimap-slider-active: #52525280;
   --vl-overlay-button-hover         : #365314;
+  --vl-overlay-warning-hover        : #854d0e;
 }
 .vl-noon.variant-blue {
   --vl-accent: #1d4ed8;
@@ -1697,6 +1719,7 @@
   --vl-overlay-minimap-slider-hover : #5252524d;
   --vl-overlay-minimap-slider-active: #52525280;
   --vl-overlay-button-hover         : #1e40af;
+  --vl-overlay-warning-hover        : #854d0e;
 }
 .vl-noon.variant-purple {
   --vl-accent: #7e22ce;
@@ -1752,6 +1775,7 @@
   --vl-overlay-minimap-slider-hover : #5252524d;
   --vl-overlay-minimap-slider-active: #52525280;
   --vl-overlay-button-hover         : #6b21a8;
+  --vl-overlay-warning-hover        : #854d0e;
 }
 
 /* Aliases.

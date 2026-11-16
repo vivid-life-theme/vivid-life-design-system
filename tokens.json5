@@ -14,12 +14,11 @@
 // String values that begin with "$" are REFERENCES, resolved by the
 // build script:  "$palette.red.500" → "#ef4444"
 //
-// Version 0.6.0 · August 2026
+// The version lives in package.json.
 // ════════════════════════════════════════════════════════════════════
 {
   meta: {
     name: "Vivid Life Theme",
-    version: "0.6.0",
     description: "A multi-flavor color scheme system. 4 flavors × 6 variants = 24 themes.",
     source_palette: "https://farben.van-laar.de/",
     inspiration: ["https://catppuccin.com/", "https://draculatheme.com/"],
@@ -536,13 +535,22 @@
   // its border is what tells the two apart.
 
   overlay: {
-    // What each overlay is for and what it is gated against.
-    //   behind: "code"  every syntax slot, text.fg, text.fg_subtle and
-    //                   the four semantic colours must clear 4.5:1 on the
-    //                   flattened overlay, for all 6 variants
-    //   behind: "ui"    only the roles listed in `text` are gated, on
-    //                   every surface in `surfaces` (and `text_on_bg` on
-    //                   the canvas only)
+    // What each overlay is for and what it is gated against. Every role
+    // has exactly one gate class:
+    //   behind: "code"     every syntax slot, text.fg, text.fg_subtle and
+    //                      the four semantic colours must clear 4.5:1 (or
+    //                      `text_min`) on the flattened overlay, for all 6
+    //                      variants
+    //   behind: "ui"       a label wash: the roles in `text` on every
+    //                      surface in `surfaces` (`text_on_bg` on the
+    //                      canvas only, `text_on` on the surfaces it lists)
+    //   behind: "surface"  as "ui", plus visible: ΔE ≥ distinct.related_min
+    //                      from every surface
+    //   behind: "mark"     non-text: ΔE ≥ distinct.related_min from every
+    //                      surface, and `contrast_min` where set
+    //   behind: "fill"     a solid fill: the roles in `text` (accent_on
+    //                      allowed) at 4.5:1 on the flat over bg
+    // `surfaces` may name "frame", the variant's frame colour (§ 3i).
     // A recipe's `border` must clear 3:1 against `bg` and against its
     // own fill (WCAG 1.4.11).
     //
@@ -728,8 +736,13 @@
       // A solid hover fill for accent buttons: the accent's emphasis step
       // (§ 3h), one rung further from bg. Ports use `flat`. 90 % accent
       // over bg darkened dark-flavor buttons and dropped accent_on to
-      // 4.06:1 on Midnight-red; the emphasis step only gains contrast.
+      // 4.06:1 on Midnight-red. The emphasis step moves away from bg
+      // where it can; at the end of the ramp it steps back (Dawn orange
+      // 900 → 800, accent_on 6.70:1) and is still gated at 4.5:1.
       button_hover: { behind: "fill", text: ["accent_on"], use: "A primary button under the pointer." },
+      // The same for a warning-filled item (VS Code's "prominent" status
+      // bar item, Restricted Mode): semantic.warning's emphasis step.
+      warning_hover: { behind: "fill", text: ["accent_on"], use: "A warning-filled item under the pointer." },
     },
 
     recipes: {
@@ -792,9 +805,12 @@
         minimap_slider_hover: { color: "fg_subtle", alpha: 0.3 },
         minimap_slider_active: { color: "fg_subtle", alpha: 0.5 },
         button_hover: { color: "emphasis.accent", alpha: 1 },
+        warning_hover: { color: "emphasis.semantic.warning", alpha: 1 },
       },
       // Twilight's #404040 canvas sits above most 900 rungs, so its
-      // overlays darken outright — a deep tint, not a light wash.
+      // overlays darken outright — a deep tint, not a light wash. The
+      // exceptions lighten: the selections (§ 3e, THE EXCEPTION) and
+      // hover / active.
       twilight: {
         selection: { color: "accent", alpha: 0.25 },
         inactive_selection: { color: "accent", alpha: 0.15 },
@@ -852,10 +868,12 @@
         minimap_slider_hover: { color: "fg_subtle", alpha: 0.3 },
         minimap_slider_active: { color: "fg_subtle", alpha: 0.5 },
         button_hover: { color: "emphasis.accent", alpha: 1 },
+        warning_hover: { color: "emphasis.semantic.warning", alpha: 1 },
       },
       // Dawn's syntax sits at 4.52:1 at worst (function, blue.700), so
-      // nothing may darken the canvas at all. Every overlay lightens:
-      // the 100 rung, which is above #d4d4d4 for every hue. 300 works
+      // nothing may darken the canvas behind code. Every code overlay
+      // lightens: the 100 rung, which is above #d4d4d4 for every hue.
+      // (hover / active darken: they sit behind labels, not code.) 300 works
       // for yellow (the find match); it doesn't for the accent hues.
       dawn: {
         selection: { color: "accent.100", alpha: 1 },
@@ -914,6 +932,7 @@
         minimap_slider_hover: { color: "fg_subtle", alpha: 0.3 },
         minimap_slider_active: { color: "fg_subtle", alpha: 0.5 },
         button_hover: { color: "emphasis.accent", alpha: 1 },
+        warning_hover: { color: "emphasis.semantic.warning", alpha: 1 },
       },
       // Noon's canvas is near white, so there is little room above it;
       // the deeper syntax rungs in § 3c buy room below instead, and the
@@ -975,6 +994,7 @@
         minimap_slider_hover: { color: "fg_subtle", alpha: 0.3 },
         minimap_slider_active: { color: "fg_subtle", alpha: 0.5 },
         button_hover: { color: "emphasis.accent", alpha: 1 },
+        warning_hover: { color: "emphasis.semantic.warning", alpha: 1 },
       },
     },
   },

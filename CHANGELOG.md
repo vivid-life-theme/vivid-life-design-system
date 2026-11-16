@@ -10,6 +10,22 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ## [Unreleased]
 
+Follow-up to 0.14.0 from the review of #35.
+
+### Added
+
+- **`warning_hover`** overlay (`fill`): `semantic.warning`'s emphasis step, solid, for a warning-filled item under the pointer (VS Code's `statusBarItem.prominentHoverBackground`, which the port still darkened with black at 70 % / 40 %).
+
+### Fixed
+
+- README: `hover` / `active` supersede `flavors.*.state` for rows, tabs, menus and controls, not behind code. `editor.rangeHighlightBackground` maps to `highlight`, `notebook.cellHoverBackground` / `focusedCellBackground` to `line_highlight`; `hover` behind code would drop Dawn's `function` colour to 3.68:1. The status-bar hover keys and `activityBar.activeBorder` are mapped too.
+- Self-tests: `text_on` is now proven to gate `fg_muted` on its listed surfaces and only there, and every overlay's `hexa` composited over `bg` lands on `flat`.
+- Comments in `tokens.json5` describe all five gate classes and the hover / active exceptions to each flavor's direction rule; `button_hover`'s comment no longer claims the emphasis step always gains contrast (Dawn orange steps back, 6.70:1).
+
+### Removed
+
+- `meta.version` in `tokens.json5` / `tokens.json`: it had read `0.6.0` since August. `package.json` carries the version.
+
 ---
 
 ## [0.14.0] - 2026-11-16

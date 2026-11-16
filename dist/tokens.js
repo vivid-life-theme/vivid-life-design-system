@@ -2,7 +2,6 @@
 export default {
   "meta": {
     "name": "Vivid Life Theme",
-    "version": "0.6.0",
     "description": "A multi-flavor color scheme system. 4 flavors × 6 variants = 24 themes.",
     "source_palette": "https://farben.van-laar.de/",
     "inspiration": [
@@ -678,6 +677,13 @@ export default {
           "accent_on"
         ],
         "use": "A primary button under the pointer."
+      },
+      "warning_hover": {
+        "behind": "fill",
+        "text": [
+          "accent_on"
+        ],
+        "use": "A warning-filled item under the pointer."
       }
     },
     "recipes": {
@@ -875,6 +881,10 @@ export default {
         "button_hover": {
           "color": "emphasis.accent",
           "alpha": 1
+        },
+        "warning_hover": {
+          "color": "emphasis.semantic.warning",
+          "alpha": 1
         }
       },
       "twilight": {
@@ -1070,6 +1080,10 @@ export default {
         },
         "button_hover": {
           "color": "emphasis.accent",
+          "alpha": 1
+        },
+        "warning_hover": {
+          "color": "emphasis.semantic.warning",
           "alpha": 1
         }
       },
@@ -1267,6 +1281,10 @@ export default {
         "button_hover": {
           "color": "emphasis.accent",
           "alpha": 1
+        },
+        "warning_hover": {
+          "color": "emphasis.semantic.warning",
+          "alpha": 1
         }
       },
       "noon": {
@@ -1462,6 +1480,10 @@ export default {
         },
         "button_hover": {
           "color": "emphasis.accent",
+          "alpha": 1
+        },
+        "warning_hover": {
+          "color": "emphasis.semantic.warning",
           "alpha": 1
         }
       }
@@ -2006,6 +2028,12 @@ export default {
             "alpha": 1,
             "flat": "#fca5a5",
             "hexa": "#fca5a5ff"
+          },
+          "warning_hover": {
+            "color": "#fef9c3",
+            "alpha": 1,
+            "flat": "#fef9c3",
+            "hexa": "#fef9c3ff"
           }
         },
         "orange": {
@@ -2306,6 +2334,12 @@ export default {
             "alpha": 1,
             "flat": "#fdba74",
             "hexa": "#fdba74ff"
+          },
+          "warning_hover": {
+            "color": "#fef9c3",
+            "alpha": 1,
+            "flat": "#fef9c3",
+            "hexa": "#fef9c3ff"
           }
         },
         "yellow": {
@@ -2606,6 +2640,12 @@ export default {
             "alpha": 1,
             "flat": "#fde047",
             "hexa": "#fde047ff"
+          },
+          "warning_hover": {
+            "color": "#fef9c3",
+            "alpha": 1,
+            "flat": "#fef9c3",
+            "hexa": "#fef9c3ff"
           }
         },
         "green": {
@@ -2906,6 +2946,12 @@ export default {
             "alpha": 1,
             "flat": "#bef264",
             "hexa": "#bef264ff"
+          },
+          "warning_hover": {
+            "color": "#fef9c3",
+            "alpha": 1,
+            "flat": "#fef9c3",
+            "hexa": "#fef9c3ff"
           }
         },
         "blue": {
@@ -3206,6 +3252,12 @@ export default {
             "alpha": 1,
             "flat": "#dbeafe",
             "hexa": "#dbeafeff"
+          },
+          "warning_hover": {
+            "color": "#fef9c3",
+            "alpha": 1,
+            "flat": "#fef9c3",
+            "hexa": "#fef9c3ff"
           }
         },
         "purple": {
@@ -3506,6 +3558,12 @@ export default {
             "alpha": 1,
             "flat": "#f3e8ff",
             "hexa": "#f3e8ffff"
+          },
+          "warning_hover": {
+            "color": "#fef9c3",
+            "alpha": 1,
+            "flat": "#fef9c3",
+            "hexa": "#fef9c3ff"
           }
         }
       },
@@ -3902,6 +3960,12 @@ export default {
             "alpha": 1,
             "flat": "#fee2e2",
             "hexa": "#fee2e2ff"
+          },
+          "warning_hover": {
+            "color": "#fde047",
+            "alpha": 1,
+            "flat": "#fde047",
+            "hexa": "#fde047ff"
           }
         },
         "orange": {
@@ -4202,6 +4266,12 @@ export default {
             "alpha": 1,
             "flat": "#ffedd5",
             "hexa": "#ffedd5ff"
+          },
+          "warning_hover": {
+            "color": "#fde047",
+            "alpha": 1,
+            "flat": "#fde047",
+            "hexa": "#fde047ff"
           }
         },
         "yellow": {
@@ -4498,6 +4568,12 @@ export default {
             "hexa": "#b8b8b880"
           },
           "button_hover": {
+            "color": "#fde047",
+            "alpha": 1,
+            "flat": "#fde047",
+            "hexa": "#fde047ff"
+          },
+          "warning_hover": {
             "color": "#fde047",
             "alpha": 1,
             "flat": "#fde047",
@@ -4802,6 +4878,12 @@ export default {
             "alpha": 1,
             "flat": "#bef264",
             "hexa": "#bef264ff"
+          },
+          "warning_hover": {
+            "color": "#fde047",
+            "alpha": 1,
+            "flat": "#fde047",
+            "hexa": "#fde047ff"
           }
         },
         "blue": {
@@ -5102,6 +5184,12 @@ export default {
             "alpha": 1,
             "flat": "#dbeafe",
             "hexa": "#dbeafeff"
+          },
+          "warning_hover": {
+            "color": "#fde047",
+            "alpha": 1,
+            "flat": "#fde047",
+            "hexa": "#fde047ff"
           }
         },
         "purple": {
@@ -5402,6 +5490,12 @@ export default {
             "alpha": 1,
             "flat": "#f3e8ff",
             "hexa": "#f3e8ffff"
+          },
+          "warning_hover": {
+            "color": "#fde047",
+            "alpha": 1,
+            "flat": "#fde047",
+            "hexa": "#fde047ff"
           }
         }
       },
@@ -5798,6 +5892,12 @@ export default {
             "alpha": 1,
             "flat": "#7f1d1d",
             "hexa": "#7f1d1dff"
+          },
+          "warning_hover": {
+            "color": "#854d0e",
+            "alpha": 1,
+            "flat": "#854d0e",
+            "hexa": "#854d0eff"
           }
         },
         "orange": {
@@ -6098,6 +6198,12 @@ export default {
             "alpha": 1,
             "flat": "#9a3412",
             "hexa": "#9a3412ff"
+          },
+          "warning_hover": {
+            "color": "#854d0e",
+            "alpha": 1,
+            "flat": "#854d0e",
+            "hexa": "#854d0eff"
           }
         },
         "yellow": {
@@ -6398,6 +6504,12 @@ export default {
             "alpha": 1,
             "flat": "#713f12",
             "hexa": "#713f12ff"
+          },
+          "warning_hover": {
+            "color": "#854d0e",
+            "alpha": 1,
+            "flat": "#854d0e",
+            "hexa": "#854d0eff"
           }
         },
         "green": {
@@ -6698,6 +6810,12 @@ export default {
             "alpha": 1,
             "flat": "#365314",
             "hexa": "#365314ff"
+          },
+          "warning_hover": {
+            "color": "#854d0e",
+            "alpha": 1,
+            "flat": "#854d0e",
+            "hexa": "#854d0eff"
           }
         },
         "blue": {
@@ -6998,6 +7116,12 @@ export default {
             "alpha": 1,
             "flat": "#1e40af",
             "hexa": "#1e40afff"
+          },
+          "warning_hover": {
+            "color": "#854d0e",
+            "alpha": 1,
+            "flat": "#854d0e",
+            "hexa": "#854d0eff"
           }
         },
         "purple": {
@@ -7298,6 +7422,12 @@ export default {
             "alpha": 1,
             "flat": "#6b21a8",
             "hexa": "#6b21a8ff"
+          },
+          "warning_hover": {
+            "color": "#854d0e",
+            "alpha": 1,
+            "flat": "#854d0e",
+            "hexa": "#854d0eff"
           }
         }
       },
@@ -7694,6 +7824,12 @@ export default {
             "alpha": 1,
             "flat": "#991b1b",
             "hexa": "#991b1bff"
+          },
+          "warning_hover": {
+            "color": "#854d0e",
+            "alpha": 1,
+            "flat": "#854d0e",
+            "hexa": "#854d0eff"
           }
         },
         "orange": {
@@ -7994,6 +8130,12 @@ export default {
             "alpha": 1,
             "flat": "#9a3412",
             "hexa": "#9a3412ff"
+          },
+          "warning_hover": {
+            "color": "#854d0e",
+            "alpha": 1,
+            "flat": "#854d0e",
+            "hexa": "#854d0eff"
           }
         },
         "yellow": {
@@ -8294,6 +8436,12 @@ export default {
             "alpha": 1,
             "flat": "#713f12",
             "hexa": "#713f12ff"
+          },
+          "warning_hover": {
+            "color": "#854d0e",
+            "alpha": 1,
+            "flat": "#854d0e",
+            "hexa": "#854d0eff"
           }
         },
         "green": {
@@ -8594,6 +8742,12 @@ export default {
             "alpha": 1,
             "flat": "#365314",
             "hexa": "#365314ff"
+          },
+          "warning_hover": {
+            "color": "#854d0e",
+            "alpha": 1,
+            "flat": "#854d0e",
+            "hexa": "#854d0eff"
           }
         },
         "blue": {
@@ -8894,6 +9048,12 @@ export default {
             "alpha": 1,
             "flat": "#1e40af",
             "hexa": "#1e40afff"
+          },
+          "warning_hover": {
+            "color": "#854d0e",
+            "alpha": 1,
+            "flat": "#854d0e",
+            "hexa": "#854d0eff"
           }
         },
         "purple": {
@@ -9194,6 +9354,12 @@ export default {
             "alpha": 1,
             "flat": "#6b21a8",
             "hexa": "#6b21a8ff"
+          },
+          "warning_hover": {
+            "color": "#854d0e",
+            "alpha": 1,
+            "flat": "#854d0e",
+            "hexa": "#854d0eff"
           }
         }
       },
