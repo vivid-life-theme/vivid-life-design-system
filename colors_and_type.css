@@ -733,8 +733,8 @@
 /* Dawn */
 .vl-dawn.variant-red {
   --vl-accent: #991b1b;
-  --vl-frame                        : #bdbdbd;
-  --vl-frame-accent-text            : #7f1d1d;
+  --vl-frame                        : #fef6f6;
+  --vl-frame-accent-text            : #991b1b;
   --vl-overlay-selection            : #fee2e2;
   --vl-overlay-inactive-selection   : #fee2e280;
   --vl-overlay-line-highlight       : #f5f5f573;
@@ -758,7 +758,7 @@
 }
 .vl-dawn.variant-orange {
   --vl-accent: #7c2d12;
-  --vl-frame                        : #bdbdbd;
+  --vl-frame                        : #fff7f3;
   --vl-frame-accent-text            : #7c2d12;
   --vl-overlay-selection            : #ffedd5;
   --vl-overlay-inactive-selection   : #ffedd580;
@@ -783,8 +783,8 @@
 }
 .vl-dawn.variant-yellow {
   --vl-accent: #854d0e;
-  --vl-frame                        : #bdbdbd;
-  --vl-frame-accent-text            : #713f12;
+  --vl-frame                        : #fef8ea;
+  --vl-frame-accent-text            : #854d0e;
   --vl-overlay-selection            : #fef9c3;
   --vl-overlay-inactive-selection   : #fef9c380;
   --vl-overlay-line-highlight       : #f5f5f573;
@@ -808,8 +808,8 @@
 }
 .vl-dawn.variant-green {
   --vl-accent: #3f6212;
-  --vl-frame                        : #bdbdbd;
-  --vl-frame-accent-text            : #365314;
+  --vl-frame                        : #efffe2;
+  --vl-frame-accent-text            : #3f6212;
   --vl-overlay-selection            : #ecfccb;
   --vl-overlay-inactive-selection   : #ecfccb80;
   --vl-overlay-line-highlight       : #f5f5f573;
@@ -833,8 +833,8 @@
 }
 .vl-dawn.variant-blue {
   --vl-accent: #1d4ed8;
-  --vl-frame                        : #bdbdbd;
-  --vl-frame-accent-text            : #1e40af;
+  --vl-frame                        : #f5f9fe;
+  --vl-frame-accent-text            : #1d4ed8;
   --vl-overlay-selection            : #dbeafe;
   --vl-overlay-inactive-selection   : #dbeafe80;
   --vl-overlay-line-highlight       : #f5f5f573;
@@ -858,8 +858,8 @@
 }
 .vl-dawn.variant-purple {
   --vl-accent: #7e22ce;
-  --vl-frame                        : #bdbdbd;
-  --vl-frame-accent-text            : #6b21a8;
+  --vl-frame                        : #faf7fe;
+  --vl-frame-accent-text            : #7e22ce;
   --vl-overlay-selection            : #f3e8ff;
   --vl-overlay-inactive-selection   : #f3e8ff80;
   --vl-overlay-line-highlight       : #f5f5f573;
@@ -885,7 +885,7 @@
 /* Noon */
 .vl-noon.variant-red {
   --vl-accent: #b91c1c;
-  --vl-frame                        : #d4d4d4;
+  --vl-frame                        : #f0c5c0;
   --vl-frame-accent-text            : #991b1b;
   --vl-overlay-selection            : #fca5a573;
   --vl-overlay-inactive-selection   : #fca5a538;
@@ -910,7 +910,7 @@
 }
 .vl-noon.variant-orange {
   --vl-accent: #c2410c;
-  --vl-frame                        : #d4d4d4;
+  --vl-frame                        : #eec8b5;
   --vl-frame-accent-text            : #9a3412;
   --vl-overlay-selection            : #fdba7473;
   --vl-overlay-inactive-selection   : #fdba7438;
@@ -935,8 +935,8 @@
 }
 .vl-noon.variant-yellow {
   --vl-accent: #854d0e;
-  --vl-frame                        : #d4d4d4;
-  --vl-frame-accent-text            : #854d0e;
+  --vl-frame                        : #e0cfac;
+  --vl-frame-accent-text            : #713f12;
   --vl-overlay-selection            : #fde04773;
   --vl-overlay-inactive-selection   : #fde04738;
   --vl-overlay-line-highlight       : #1717170d;
@@ -960,7 +960,7 @@
 }
 .vl-noon.variant-green {
   --vl-accent: #3f6212;
-  --vl-frame                        : #d4d4d4;
+  --vl-frame                        : #c6d8b6;
   --vl-frame-accent-text            : #3f6212;
   --vl-overlay-selection            : #bef26473;
   --vl-overlay-inactive-selection   : #bef26438;
@@ -985,8 +985,8 @@
 }
 .vl-noon.variant-blue {
   --vl-accent: #1d4ed8;
-  --vl-frame                        : #d4d4d4;
-  --vl-frame-accent-text            : #1d4ed8;
+  --vl-frame                        : #bed2f3;
+  --vl-frame-accent-text            : #1e40af;
   --vl-overlay-selection            : #93c5fd73;
   --vl-overlay-inactive-selection   : #93c5fd38;
   --vl-overlay-line-highlight       : #1717170d;
@@ -1010,7 +1010,7 @@
 }
 .vl-noon.variant-purple {
   --vl-accent: #7e22ce;
-  --vl-frame                        : #d4d4d4;
+  --vl-frame                        : #d8caec;
   --vl-frame-accent-text            : #7e22ce;
   --vl-overlay-selection            : #d8b4fe73;
   --vl-overlay-inactive-selection   : #d8b4fe38;

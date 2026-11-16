@@ -1034,11 +1034,21 @@
   //   Twilight  the variant's 950, below its #404040 canvas at
   //             1.41–1.56:1. The mix would be almost as light as the
   //             canvas (1.09–1.24:1).
-  //   Dawn,     today's chrome (`bg_sunk`) on every variant — a
-  //   Noon      placeholder until the light flavors get their own round.
+  //   Noon      a pastel computed in OKLCH (L 0.86, C 0.05) with the hue
+  //             of the variant's 500: darker than #f5f5f5 at 1.39–1.43:1.
+  //             Near Tailwind's 200, which is uneven (yellow and green
+  //             1.07:1).
+  //   Dawn      the same pastel at L 0.98: BRIGHTER than its #d4d4d4
+  //             canvas, 1.39–1.42:1. A darker pastel drops Dawn's
+  //             success / warning (the 900 rungs, git decorations in a
+  //             sidebar) to 3.9–4.45:1 on the frame. A lighter frame
+  //             around a mid-grey editor fits Dawn's soft light.
   //
-  // A recipe is either { surface } or { color, mix?, ratio? }: `ratio`
-  // is the share of `color`, as in mix(a, b, p). The resolved values are
+  // A recipe is { surface }, { color, mix?, ratio? } or
+  // { hue_of, l, c }: `ratio` is the share of `color`, as in
+  // mix(a, b, p); `hue_of` names a colour target whose OKLCH hue the
+  // frame takes, at OKLCH lightness `l` and chroma `c` (chroma shrinks
+  // to fit sRGB). The resolved values are
   // emitted per (flavor, variant) as flavors.<flavor>.frame.<variant>:
   //   { bg, accent_text }
   //
@@ -1059,14 +1069,13 @@
   // sidebar descriptions take `fg_muted` there.
   frame: {
     min_step: 1.35, // luminance contrast; every dark-flavor frame clears it (tightest 1.39:1)
-    // Dawn's placeholder `bg_sunk` (#bdbdbd) is 1.27:1 from its canvas.
-    // Noon's (#d4d4d4) clears at 1.36:1.
-    step_exempt: ["dawn"],
+    step_exempt: [], // none; Dawn's old grey chrome (#bdbdbd) was 1.27:1
+    // Light flavors: second design round, see the spec's "Light flavors".
     recipes: {
       midnight: { color: "accent.900", mix: "accent.950", ratio: 0.5 },
       twilight: { color: "accent.950" },
-      dawn: { surface: "bg_sunk" },
-      noon: { surface: "bg_sunk" },
+      dawn: { hue_of: "accent.500", l: 0.98, c: 0.05 },
+      noon: { hue_of: "accent.500", l: 0.86, c: 0.05 },
     },
   },
 

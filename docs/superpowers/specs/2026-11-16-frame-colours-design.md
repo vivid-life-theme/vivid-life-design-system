@@ -75,7 +75,7 @@ Recipe per flavor. The rule: each flavor takes the frame shade that gives the cl
 | ---------- | ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
 | Midnight   | 50/50 mix of the variant's 900 and 950, mixed in sRGB | 950 alone is only 1.1–1.2:1 from `#171717`. The mix reaches 1.39–1.59:1 and looked best to the owner.  |
 | Twilight   | the variant's 950                                     | 950 sits below `#404040` at 1.41–1.56:1. The mix would be almost as light as the canvas (1.09–1.24:1). |
-| Dawn, Noon | today's chrome, `bg_sunk`, the same for every variant | placeholder until the light-flavor round                                                               |
+| Dawn, Noon | today's chrome, `bg_sunk`, the same for every variant | placeholder until the light-flavor round (superseded, see "Light flavors" below) |
 
 Resulting values for the dark flavors (as shown in the mockups):
 
@@ -180,3 +180,30 @@ Each repo releases through its own release process.
 
 - Mockup generator (throwaway): the visual companion session in `.superpowers/brainstorm/185029-1794831585/content/frames-dark-v3.html`. The approved configuration: frame "Proposed", sidebar "Frame", terminal panel "Frame header, editor grey", selection "Tinted".
 - Sepp's Workshop tokens: `~/Git-Repos/sepps-workshop/sepps-workshop-design-system/tokens.json5` (§ 3 surfaces, § 7 overlays).
+
+## Light flavors (decided 2026-11-16, second round)
+
+The owner compared five ideas in mockups: today's grey, the 100 tint, a calculated calm pastel, the 300 shade, and Midnight's dark frame around a light editor. Decision: the calculated pastel. It is the only idea that gives all six variants about the same step from the editor on both flavors. The 100 tint is invisible on Noon (1.00–1.12:1). The 300 shade is as light as Dawn's canvas and uneven on Noon. The dark frame needs its own light text and accent tokens, and it is as loud as the rejected 900 frames.
+
+The pastel is computed in OKLCH: fixed lightness and chroma, with the hue taken from the variant's 500 shade. It sits near Tailwind's 200 shade, but the plain 200 shade is uneven: 1.07:1 for yellow and green on Noon, 1.02–1.04:1 for red and blue on Dawn.
+
+| flavor | recipe | step from `bg` | why |
+|---|---|---|---|
+| Noon | OKLCH L 0.86, C 0.05, darker than the canvas | 1.39–1.43:1 | every frame gate passes |
+| Dawn | OKLCH L 0.98, C 0.05, *brighter* than the canvas | 1.39–1.42:1 | a darker pastel drops Dawn's `success` (green.900) and `warning` (yellow.900) to 3.9–4.45:1 on the frame, and git decorations in the sidebar use them |
+
+For Dawn the alternative was a darker pastel with `success` and `warning` moved to 950. That would make "added" and "conflict" almost black everywhere in Dawn, so it was rejected. Dawn's frame goes the opposite way from the other three flavors; a lighter frame around a mid-grey editor fits Dawn's soft-light character.
+
+Values:
+
+| variant | Dawn | Noon |
+|---|---|---|
+| red | `#fef6f6` | `#f0c5c0` |
+| orange | `#fff7f3` | `#eec8b5` |
+| yellow | `#fef8ea` | `#e0cfac` |
+| green | `#efffe2` | `#c6d8b6` |
+| blue | `#f5f9fe` | `#bed2f3` |
+| purple | `#faf7fe` | `#d8caec` |
+
+No flavor stays exempt from the frame step gate. The light-flavor selections keep today's recipes: they are already accent tints that keep 4.5:1, so the dark flavors' smudge problem never applied. The port rules for the frame apply unchanged (text `fg` / `fg_muted`, accent-hued text via `accent_text`, which steps darker on the light frames).
+

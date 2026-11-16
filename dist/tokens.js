@@ -872,9 +872,7 @@ export default {
   },
   "frame": {
     "min_step": 1.35,
-    "step_exempt": [
-      "dawn"
-    ],
+    "step_exempt": [],
     "recipes": {
       "midnight": {
         "color": "accent.900",
@@ -885,10 +883,14 @@ export default {
         "color": "accent.950"
       },
       "dawn": {
-        "surface": "bg_sunk"
+        "hue_of": "accent.500",
+        "l": 0.98,
+        "c": 0.05
       },
       "noon": {
-        "surface": "bg_sunk"
+        "hue_of": "accent.500",
+        "l": 0.86,
+        "c": 0.05
       }
     }
   },
@@ -2992,28 +2994,28 @@ export default {
       },
       "frame": {
         "red": {
-          "bg": "#bdbdbd",
-          "accent_text": "#7f1d1d"
+          "bg": "#fef6f6",
+          "accent_text": "#991b1b"
         },
         "orange": {
-          "bg": "#bdbdbd",
+          "bg": "#fff7f3",
           "accent_text": "#7c2d12"
         },
         "yellow": {
-          "bg": "#bdbdbd",
-          "accent_text": "#713f12"
+          "bg": "#fef8ea",
+          "accent_text": "#854d0e"
         },
         "green": {
-          "bg": "#bdbdbd",
-          "accent_text": "#365314"
+          "bg": "#efffe2",
+          "accent_text": "#3f6212"
         },
         "blue": {
-          "bg": "#bdbdbd",
-          "accent_text": "#1e40af"
+          "bg": "#f5f9fe",
+          "accent_text": "#1d4ed8"
         },
         "purple": {
-          "bg": "#bdbdbd",
-          "accent_text": "#6b21a8"
+          "bg": "#faf7fe",
+          "accent_text": "#7e22ce"
         }
       }
     },
@@ -3700,27 +3702,27 @@ export default {
       },
       "frame": {
         "red": {
-          "bg": "#d4d4d4",
+          "bg": "#f0c5c0",
           "accent_text": "#991b1b"
         },
         "orange": {
-          "bg": "#d4d4d4",
+          "bg": "#eec8b5",
           "accent_text": "#9a3412"
         },
         "yellow": {
-          "bg": "#d4d4d4",
-          "accent_text": "#854d0e"
+          "bg": "#e0cfac",
+          "accent_text": "#713f12"
         },
         "green": {
-          "bg": "#d4d4d4",
+          "bg": "#c6d8b6",
           "accent_text": "#3f6212"
         },
         "blue": {
-          "bg": "#d4d4d4",
-          "accent_text": "#1d4ed8"
+          "bg": "#bed2f3",
+          "accent_text": "#1e40af"
         },
         "purple": {
-          "bg": "#d4d4d4",
+          "bg": "#d8caec",
           "accent_text": "#7e22ce"
         }
       }

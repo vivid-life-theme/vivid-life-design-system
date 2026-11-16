@@ -432,6 +432,29 @@ export function resolveOverlay(tokens, flavor, variant, name, opts = {}) {
 }
 
 /**
+ * An OKLCH colour as sRGB hex. `hue` is in radians. Chroma is reduced in
+ * 0.002 steps until the colour fits the sRGB gamut, so a pale or very
+ * light colour keeps its hue and lightness and gives up saturation.
+ */
+export function oklchToHex(l, c, hue) {
+  const delin = (v) => (v <= 0.0031308 ? 12.92 * v : 1.055 * Math.pow(v, 1 / 2.4) - 0.055);
+  for (let ch = c; ch >= 0; ch -= 0.002) {
+    const A = ch * Math.cos(hue),
+      B = ch * Math.sin(hue);
+    const L_ = (l + 0.3963377774 * A + 0.2158037573 * B) ** 3;
+    const M_ = (l - 0.1055613458 * A - 0.0638541728 * B) ** 3;
+    const S_ = (l - 0.0894841775 * A - 1.291485548 * B) ** 3;
+    const rgb = [
+      4.0767416621 * L_ - 3.3077115913 * M_ + 0.2309699292 * S_,
+      -1.2684380046 * L_ + 2.6097574011 * M_ - 0.3413193965 * S_,
+      -0.0041960863 * L_ - 0.7034186147 * M_ + 1.707614701 * S_,
+    ];
+    if (rgb.every((v) => v >= -1e-4 && v <= 1 + 1e-4)) return toHex(rgb.map((v) => delin(Math.max(0, v)) * 255));
+  }
+  return toHex([l, l, l].map((v) => delin(v ** 3) * 255));
+}
+
+/**
  * The frame colour (tokens.json5 § 3i) for a (flavor, variant): the
  * flavor's recipe, with the variant supplying the hue.
  *
@@ -441,6 +464,10 @@ export function resolveFrame(tokens, flavor, variant) {
   const recipe = tokens.frame?.recipes?.[flavor];
   if (!recipe) throw new Error(`resolveFrame: no frame recipe for ${flavor}`);
   if (recipe.surface) return tokens.flavors[flavor].surface[recipe.surface];
+  if (recipe.hue_of) {
+    const [, a, b] = oklab(resolveColor(tokens, flavor, variant, recipe.hue_of));
+    return oklchToHex(recipe.l, recipe.c, Math.atan2(b, a));
+  }
   const color = resolveColor(tokens, flavor, variant, recipe.color);
   if (!recipe.mix) return color;
   return mix(color, resolveColor(tokens, flavor, variant, recipe.mix), recipe.ratio);
@@ -911,9 +938,18 @@ export function validateShapes(tokens) {
           errs.push(`✗ ${w} missing`);
           continue;
         }
-        keysOk(w, r, ["surface", "color", "mix", "ratio"]);
-        if ((r.surface === undefined) === (r.color === undefined)) {
-          errs.push(`✗ ${w}: needs exactly one of "surface" or "color"`);
+        keysOk(w, r, ["surface", "color", "mix", "ratio", "hue_of", "l", "c"]);
+        const forms = ["surface", "color", "hue_of"].filter((k) => r[k] !== undefined);
+        if (forms.length !== 1) {
+          errs.push(`✗ ${w}: needs exactly one of "surface", "color" or "hue_of"`);
+        }
+        if (r.hue_of !== undefined) {
+          targetOk(`${w}.hue_of`, r.hue_of, { noOverlay: true });
+          if (!(typeof r.l === "number" && r.l > 0 && r.l < 1)) errs.push(`✗ ${w}.l must be an OKLCH lightness in (0, 1)`);
+          if (!(typeof r.c === "number" && r.c >= 0 && r.c <= 0.4)) errs.push(`✗ ${w}.c must be an OKLCH chroma in [0, 0.4]`);
+          if (r.mix !== undefined || r.ratio !== undefined) errs.push(`✗ ${w}: a "hue_of" recipe takes no mix or ratio`);
+        } else if (r.l !== undefined || r.c !== undefined) {
+          errs.push(`✗ ${w}: "l" and "c" only go with "hue_of"`);
         }
         if (r.surface !== undefined) {
           surfaceOk(`${w}.surface`, r.surface);
@@ -2044,7 +2080,11 @@ async function selfTest() {
     [() => resolveFrame(real, "midnight", "red"), "#621414", "midnight frame is the 50/50 mix of 900 and 950"],
     [() => resolveFrame(real, "midnight", "blue"), "#1b306f", "midnight blue frame"],
     [() => resolveFrame(real, "twilight", "purple"), "#3b0764", "twilight frame is 950"],
-    [() => resolveFrame(real, "dawn", "red"), real.flavors.dawn.surface.bg_sunk, "dawn frame is today's chrome"],
+    [() => resolveFrame(real, "dawn", "red"), "#fef6f6", "dawn frame is a light pastel, brighter than its canvas"],
+    [() => resolveFrame(real, "dawn", "green"), "#efffe2", "dawn green frame"],
+    [() => resolveFrame(real, "noon", "blue"), "#bed2f3", "noon frame is a pastel darker than its canvas"],
+    [() => resolveFrame(real, "noon", "yellow"), "#e0cfac", "noon yellow frame"],
+    [() => real.frame.step_exempt.length, 0, "no flavor is exempt from the frame step"],
     [() => real.flavors.twilight.frame?.green?.bg, "#1a2e05", "frames are emitted per variant"],
     [() => frameAccentText(real, "midnight", "red"), "#fca5a5", "midnight red accent text steps to red.300 (accent is 3.42:1)"],
     [() => frameAccentText(real, "midnight", "blue"), real.palette.blue[300], "an accent that clears stays the accent"],
@@ -2065,7 +2105,16 @@ async function selfTest() {
       true,
       "a frame too close to bg is caught",
     ],
-    [() => has(check(mutated((t) => (t.frame.step_exempt = []))), "dawn/red frame vs bg"), true, "dawn's placeholder frame needs its exemption"],
+    [
+      () => has(check(mutated((t) => (t.flavors.dawn.frame.red.bg = t.flavors.dawn.surface.bg_sunk))), "dawn/red frame vs bg"),
+      true,
+      "dawn's old grey chrome (1.27:1) fails the step gate",
+    ],
+    [
+      () => has(check(mutated((t) => (t.flavors.dawn.frame.green.bg = "#a9bb9a"))), "dawn/green semantic.success on frame"),
+      true,
+      "a darker dawn pastel drops the git colours below 4.5:1",
+    ],
     [
       () => has(check(mutated((t) => (t.flavors.midnight.frame.red.accent_text = "#ef4444"))), "midnight/red frame.accent_text on frame"),
       true,
@@ -2103,6 +2152,21 @@ async function selfTest() {
       "app text_min is rejected unless the role's background overlay carries the same text_min",
     ],
     [() => has(validateShapes(mutated((t) => delete t.frame.step_exempt)), "frame.step_exempt"), true, "a missing frame.step_exempt is rejected"],
+    [
+      () => has(validateShapes(mutated((t) => (t.frame.recipes.noon = { hue_of: "accent.500", l: 1.2, c: 0.05 }))), "frame.recipes.noon.l"),
+      true,
+      "an OKLCH lightness outside (0, 1) is rejected",
+    ],
+    [
+      () => has(validateShapes(mutated((t) => (t.frame.recipes.noon = { hue_of: "accent.500", color: "accent", l: 0.86, c: 0.05 }))), "frame.recipes.noon"),
+      true,
+      "hue_of and color together are rejected",
+    ],
+    [
+      () => has(validateShapes(mutated((t) => (t.frame.recipes.noon = { hue_of: "accent.550", l: 0.86, c: 0.05 }))), "frame.recipes.noon.hue_of"),
+      true,
+      "a hue_of rung that doesn't exist is rejected",
+    ],
     [
       () => has(validateShapes(mutated((t) => (t.frame.recipes.dawn = { surface: "bg_sunk", mix: "accent.950", ratio: 0.5 }))), "frame.recipes.dawn"),
       true,

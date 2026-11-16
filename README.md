@@ -193,14 +193,14 @@ Vivid Life is a one-strong-colour theme. The work areas — editor and terminal 
 
 The rule: each flavor takes the frame shade that gives the clearest lightness step from its own editor background.
 
-| Flavor   | Frame                                      | Step from `bg` |
-| -------- | ------------------------------------------ | -------------- |
-| Midnight | 50/50 mix of the variant's `900` and `950` | 1.39–1.59:1    |
-| Twilight | the variant's `950`                        | 1.41–1.56:1    |
-| Dawn     | `bg_sunk` (placeholder)                    | 1.27:1, exempt |
-| Noon     | `bg_sunk` (placeholder)                    | 1.36:1         |
+| Flavor   | Frame                                                         | Step from `bg`         |
+| -------- | ------------------------------------------------------------- | ---------------------- |
+| Midnight | 50/50 mix of the variant's `900` and `950`                    | 1.39–1.59:1            |
+| Twilight | the variant's `950`                                           | 1.41–1.56:1            |
+| Dawn     | pastel, OKLCH L 0.98 / C 0.05, hue of the variant's `500`     | 1.39–1.42:1, brighter  |
+| Noon     | pastel, OKLCH L 0.86 / C 0.05, hue of the variant's `500`     | 1.39–1.43:1            |
 
-Dawn and Noon keep today's grey chrome until the light flavors get their own design round. On a dark flavor the yellow frame is brown; that's what dark yellow is.
+The light-flavor pastels are computed, not palette shades: they sit near Tailwind's `200`, but the plain `200` is uneven (1.07:1 for yellow and green on Noon). Dawn's frame is the one that goes the other way, brighter than its mid-grey canvas: a darker pastel would drop Dawn's `success` and `warning` (git decorations in a sidebar) below 4.5:1. On a dark flavor the yellow frame is brown; that's what dark yellow is.
 
 **Rules for ports:**
 
