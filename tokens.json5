@@ -28,7 +28,7 @@
   // ────────────────────────────────────────────────────────────────
   //   1.  PALETTE  —  the atomic colors
   // ────────────────────────────────────────────────────────────────
-  // 7 hues × 6 shades, drawn from Tailwind v3 defaults.
+  // 7 hues × 7 shades, drawn from Tailwind v3 defaults.
   // The user's palette source calls them: Rot, Orange, Gelb, Grün,
   // Blau, Purpur, Grau. We use English everywhere downstream.
   //
@@ -38,9 +38,15 @@
   // only rung that lets normal and bright stay distinct. It is a
   // Tailwind v3 default like every other shade here; adding it moved
   // no existing value. See issue #7.
+  //
+  // The 950 tier is the Tailwind v3.3+ default, added for the frame
+  // colour (§ 3i): Twilight's frame is the variant's 950, Midnight's a
+  // mix of 900 and 950. Like 800, adding it moved no existing value.
+  // See docs/superpowers/specs/2026-11-16-frame-colours-design.md.
 
   palette: {
     red: {
+      950: "#450a0a",
       900: "#7f1d1d",
       800: "#991b1b",
       700: "#b91c1c",
@@ -49,6 +55,7 @@
       100: "#fee2e2",
     },
     orange: {
+      950: "#431407",
       900: "#7c2d12",
       800: "#9a3412",
       700: "#c2410c",
@@ -57,6 +64,7 @@
       100: "#ffedd5",
     },
     yellow: {
+      950: "#422006",
       900: "#713f12",
       800: "#854d0e",
       700: "#a16207",
@@ -65,6 +73,7 @@
       100: "#fef9c3",
     },
     green: {
+      950: "#1a2e05",
       900: "#365314",
       800: "#3f6212",
       700: "#4d7c0f",
@@ -73,6 +82,7 @@
       100: "#ecfccb",
     },
     blue: {
+      950: "#172554",
       900: "#1e3a8a",
       800: "#1e40af",
       700: "#1d4ed8",
@@ -81,6 +91,7 @@
       100: "#dbeafe",
     },
     purple: {
+      950: "#3b0764",
       900: "#581c87",
       800: "#6b21a8",
       700: "#7e22ce",
@@ -89,6 +100,7 @@
       100: "#f3e8ff",
     },
     gray: {
+      950: "#0a0a0a",
       900: "#171717",
       800: "#262626",
       700: "#404040",
@@ -102,6 +114,7 @@
     // diff hunk headers, etc.). NOT part of the variant axis. NOT in
     // the default syntax token map.
     cyan: {
+      950: "#083344",
       900: "#164e63",
       800: "#155e75",
       700: "#0e7490",
@@ -194,8 +207,15 @@
   // emulator has no editor pane: bg_terminal plus these 12 slots ARE
   // the whole theme, and Midnight/Twilight differed in 2 of 16 slots
   // (Dawn/Noon in 3, all of them neutrals). Each flavor now sits on
-  // its own rung, which is also what frees bg_terminal to spread apart
-  // — see the bg_terminal comments in each flavor below.
+  // its own rung.
+  //
+  // `bg_terminal` used to be a surface of its own, spread apart from the
+  // editor canvas per flavor. It is now `bg` on every flavor: the editor
+  // and the terminal share one background, and in an embedded port the
+  // panel's tab row (the frame, § 3i) separates them. The four canvases
+  // (#171717 / #404040 / #d4d4d4 / #f5f5f5) are further apart than the
+  // old terminal backgrounds were, so a standalone terminal still shows
+  // its flavor. See docs/superpowers/specs/2026-11-16-frame-colours-design.md.
   //
   // ANSI hue names are NOT variant hues: ANSI has `magenta` and `cyan`,
   // the variant axis has `orange` and `purple`. ansi_hues maps the ANSI
@@ -220,7 +240,8 @@
   ansi_shade: {
     // Vivid 500 normals; 300 brights. blue/magenta used to sit at 300 in
     // both rows on the belief that their 500 rung couldn't clear a
-    // near-black bg. Against #0a0a0a it does (5.38 / 5.00 : 1), and the
+    // near-black bg. Against #0a0a0a it does (5.38 / 5.00 : 1; 4.87 / 4.53
+    // on today's #171717 bg_terminal), and the
     // distinctness gate (§ 3g) caught the identical pair. Issue #19.
     midnight: {
       normal: {
@@ -242,7 +263,7 @@
     },
     // One rung lighter than Midnight in both rows: pastel normals, washed
     // brights. This is what makes Twilight legible as its own flavor in a
-    // standalone emulator, and what lets bg_terminal rise to #333333.
+    // standalone emulator, on its #404040 canvas.
     twilight: {
       normal: {
         red: 300,
@@ -431,8 +452,8 @@
   // only the rung does. `flavors.*.semantic` is derived from this.
   //
   // Every resolved value must clear 4.5:1 against every surface tier
-  // except bg_scrim and bg_inset — that gate already exists in
-  // tools/build-tokens.mjs and is unchanged by this table.
+  // except bg_scrim, and against every frame (§ 3i) — those gates live
+  // in tools/build-tokens.mjs.
 
   semantic_hues: {
     success: "green",
@@ -493,10 +514,19 @@
   //   light flavors  tint with the 100 / 300 rung — a pale hue at or
   //                  above the canvas, the mirror image
   //
-  // The old selection (25% of the *accent* over bg) did the opposite on
-  // dark flavors: a light accent lightened the canvas toward the text.
-  // On Midnight it dropped comments to 2.13:1 and on Twilight
-  // `parameter` to 2.19:1.
+  // THE EXCEPTION: the two selections on the dark flavors. A selection
+  // is a short-lived signal, and that it is visible matters more than
+  // how readable the text inside it is at that moment. So on Midnight
+  // and Twilight the selection lightens the canvas in the accent hue
+  // (25 %, inactive 15 %), and its roles carry `text_min: 3`: every code
+  // colour clears 3:1 on it instead of 4.5:1 (worst: comment grey,
+  // 3.55:1 on Midnight, 3.10:1 on Twilight). Sepp's Workshop made the
+  // same call after its users found a dark selection too hard to see.
+  // Every other code overlay keeps 4.5:1. See docs/superpowers/specs/2026-11-16-frame-colours-design.md.
+  //
+  // (Before issue #19 the selection was 25 % of the accent too, gated at
+  // 4.5:1 — which it failed: 2.13:1 for comments on Midnight. The 900
+  // tint that replaced it kept 4.5:1 but read as a dark smudge.)
   //
   // Hue families stay stable across flavors so the overlays read the
   // same way everywhere: selection and its weaker kin use the accent's
@@ -531,13 +561,24 @@
         behind: "code",
         use: "Text selection — editor, terminal, shell command line, ::selection.",
         terminal_foreground: "fg",
+        text_min: 3, // see THE EXCEPTION above
       },
       inactive_selection: {
         behind: "code",
         use: "Selection in an unfocused editor or terminal.",
         terminal_foreground: "fg",
+        text_min: 3,
       },
       line_highlight: { behind: "code", use: "The line the cursor is on." },
+      // A hovered block inside a terminal app (Claude Code's message under
+      // the pointer). It used to borrow inactive_selection; when the dark
+      // selections became a 3:1 tint, it kept the old 900 recipe here so
+      // a hover stays at 4.5:1. Dawn and Noon match their inactive
+      // selection.
+      hover_tint: {
+        behind: "code",
+        use: "A block under the pointer or keyboard focus inside a terminal app.",
+      },
       find_match: { behind: "code", use: "The current search match." },
       find_match_other: { behind: "code", use: "Every other search match." },
       word_highlight_read: {
@@ -590,8 +631,8 @@
       // `bg_terminal`, the background a terminal app draws on but doesn't
       // own: app_roles (§ 17) gates it at ≥ distinct.related_min from
       // bg_terminal, and every code colour plus fg_muted at 4.5:1 on it.
-      // line_highlight was only ΔE 3.2 / 4.6 / 3.6 from bg_terminal on
-      // Twilight / Dawn / Noon. The accent is NOT gated on a panel: Noon's
+      // line_highlight was only ΔE 3.2 / 4.6 / 3.6 from the old
+      // bg_terminal on Twilight / Dawn / Noon. The accent is NOT gated on a panel: Noon's
       // orange accent sits at 4.75:1 on its canvas, and no grey far enough
       // from white to show keeps it there. Issue #22.
       panel: {
@@ -613,11 +654,10 @@
       // at 18%, 4.63:1 at 20% and fails at 21% (4.49:1). 18% keeps
       // a margin below that 20% limit.
       //
-      // `bg_inset` is deliberately absent. Twilight's #627084 sits at
-      // 4.62:1 for `fg` before any tint at all, so no percentage clears
-      // AA there. A port placing selected rows on `bg_inset` should
-      // carry the accent bar plus a `state.hover` / `state.active`
-      // overlay instead. `bg_scrim` is a modal backdrop.
+      // The frame (§ 3i) is not a surface name, because it varies by
+      // variant; the frame gates check this wash over it separately, so
+      // a selected row in a frame-coloured sidebar is covered.
+      // `bg_scrim` is a modal backdrop.
       selected: {
         behind: "ui",
         use: "The selected tab / list row / sidebar entry. Reinforces an underline or accent bar; never the sole cue.",
@@ -631,9 +671,10 @@
       // Midnight's budget is set by the comment grey (#999999): an
       // overlay may not rise much above #262626 in luminance.
       midnight: {
-        selection: { color: "accent.900", alpha: 0.5 },
-        inactive_selection: { color: "accent.900", alpha: 0.25 },
+        selection: { color: "accent", alpha: 0.25 },
+        inactive_selection: { color: "accent", alpha: 0.15 },
         line_highlight: { color: "gray.800", alpha: 1 },
+        hover_tint: { color: "accent.900", alpha: 0.25 },
         find_match: {
           color: "yellow.900",
           alpha: 0.5,
@@ -654,15 +695,16 @@
         diff_removed_gutter: { color: "red.900", alpha: 0.35 },
         diff_inserted_dimmed: { color: "green.900", alpha: 0.1 },
         diff_removed_dimmed: { color: "red.900", alpha: 0.1 },
-        panel: { color: "gray.800", alpha: 0.5 },
+        panel: { color: "gray.800", alpha: 1 }, // was 0.5: ΔE 3.5 from the new bg_terminal (#171717). At 1 it is ΔE 6.4, comment grey 5.31:1.
         selected: { color: "accent", alpha: 0.18 },
       },
       // Twilight's #404040 canvas sits above most 900 rungs, so its
       // overlays darken outright — a deep tint, not a light wash.
       twilight: {
-        selection: { color: "accent.900", alpha: 0.75 },
-        inactive_selection: { color: "accent.900", alpha: 0.4 },
+        selection: { color: "accent", alpha: 0.25 },
+        inactive_selection: { color: "accent", alpha: 0.15 },
         line_highlight: { color: "gray.800", alpha: 0.6 },
+        hover_tint: { color: "accent.900", alpha: 0.4 },
         find_match: {
           color: "yellow.900",
           alpha: 0.75,
@@ -694,6 +736,7 @@
         selection: { color: "accent.100", alpha: 1 },
         inactive_selection: { color: "accent.100", alpha: 0.5 },
         line_highlight: { color: "gray.100", alpha: 0.45 },
+        hover_tint: { color: "accent.100", alpha: 0.5 },
         find_match: {
           color: "yellow.300",
           alpha: 0.75,
@@ -724,6 +767,7 @@
         selection: { color: "accent.300", alpha: 0.45 },
         inactive_selection: { color: "accent.300", alpha: 0.22 },
         line_highlight: { color: "gray.900", alpha: 0.05 },
+        hover_tint: { color: "accent.300", alpha: 0.22 },
         find_match: {
           color: "yellow.300",
           alpha: 0.8,
@@ -791,15 +835,12 @@
     // requires `border.control` to clear `min` against every one of
     // them, on every flavor.
     //
-    // `bg_inset` is deliberately absent, the same exemption it already
-    // carries from the semantic-vs-surface gate and from
-    // overlay.roles.selected.surfaces. Clearing 3:1 on twilight's #627084
-    // would need ≈#c9c9c9 — the text ramp, i.e. the wireframe outcome
-    // this ruleset exists to avoid. A port drawing controls on docked
-    // chrome should give them a `bg_soft` fill (which is on this list)
-    // or rely on `state.hover` / `state.active`, not on a lighter
-    // border. `bg_scrim` is a modal backdrop, not a control surface;
-    // `bg_terminal` hosts no toolkit controls.
+    // The frame (§ 3i) is absent: it is coloured and varies by variant,
+    // so a grey outline is not gated against it. A port drawing controls
+    // on the frame (a search box in a sidebar) gives them a `bg_soft`
+    // fill, which is on this list, or relies on `state.hover` /
+    // `state.active`. `bg_scrim` is a modal backdrop, not a control
+    // surface; `bg_terminal` is `bg` and hosts no toolkit controls.
     surfaces: ["bg", "bg_soft", "bg_sunk", "bg_overlay"],
   },
 
@@ -905,14 +946,14 @@
       visible: ["selection", "find_match"],
       // Pairs that are on screen together: a selection with the search
       // hits around it, and — while the find widget has focus — the
-      // inactive selection with them. On the dark flavors the
-      // comment grey caps how far any overlay may lift the canvas, so a
-      // yellow selection (the Yellow variant's accent.900) and a yellow
-      // find match can't be pulled apart by fill: the best split is
-      // ΔE 6.2 on Midnight and 5.0 on Twilight. The find matches carry
-      // a border instead — the current match `semantic.warning`, every
-      // other match a quieter yellow rung — which separates them at
-      // ≥ 3:1 from either selection.
+      // inactive selection with them. When the dark selections were
+      // accent.900, a yellow selection and a yellow find match couldn't
+      // be pulled apart by fill (ΔE 6.2 on Midnight, 5.0 on Twilight).
+      // The find matches carry a border for that — the current match
+      // `semantic.warning`, every other match a quieter yellow rung —
+      // which separates them at ≥ 3:1 from either selection. The tinted
+      // selection (§ 3e, THE EXCEPTION) no longer needs it, but the
+      // borders stay: they are what marks a match inside a selection.
       apart: [
         ["selection", "find_match"],
         ["selection", "find_match_other"],
@@ -975,6 +1016,70 @@
   },
 
   // ────────────────────────────────────────────────────────────────
+  //   3i.  FRAME  —  the variant's colour around the work areas
+  // ────────────────────────────────────────────────────────────────
+  // Vivid Life is a one-strong-colour theme: the work areas (editor,
+  // terminal) keep the flavor's grey, and the variant's colour goes
+  // into the frame around them — title bar, activity bar, tab strip,
+  // status bar, sidebar, and the tab row of a bottom panel. Before this
+  // the only colour on screen was the accent, and regions were told
+  // apart by lightness alone. See
+  // docs/superpowers/specs/2026-11-16-frame-colours-design.md.
+  //
+  // THE RULE: each flavor takes the frame shade that gives the clearest
+  // lightness step from its own editor background.
+  //
+  //   Midnight  a 50/50 mix of the variant's 900 and 950. 950 alone is
+  //             only 1.1–1.2:1 from #171717; the mix reaches 1.39–1.59:1.
+  //   Twilight  the variant's 950, below its #404040 canvas at
+  //             1.41–1.56:1. The mix would be almost as light as the
+  //             canvas (1.09–1.24:1).
+  //   Noon      a pastel computed in OKLCH (L 0.86, C 0.05) with the hue
+  //             of the variant's 500: darker than #f5f5f5 at 1.39–1.43:1.
+  //             Near Tailwind's 200, which is uneven (yellow and green
+  //             1.07:1).
+  //   Dawn      the same pastel at L 0.98: BRIGHTER than its #d4d4d4
+  //             canvas, 1.39–1.42:1. A darker pastel drops Dawn's
+  //             success / warning (the 900 rungs, git decorations in a
+  //             sidebar) to 3.9–4.45:1 on the frame. A lighter frame
+  //             around a mid-grey editor fits Dawn's soft light.
+  //
+  // A recipe is { surface }, { color, mix?, ratio? } or
+  // { hue_of, l, c }: `ratio` is the share of `color`, as in
+  // mix(a, b, p); `hue_of` names a colour target whose OKLCH hue the
+  // frame takes, at OKLCH lightness `l` and chroma `c` (chroma shrinks
+  // to fit sRGB). The resolved values are
+  // emitted per (flavor, variant) as flavors.<flavor>.frame.<variant>:
+  //   { bg, accent_text }
+  //
+  // The build gates, per (flavor, variant):
+  //   • fg, fg_muted and the four semantic colours ≥ 4.5:1 on the frame
+  //     (git decorations in a sidebar are semantic colours)
+  //   • the accent ≥ control_boundary.min (3:1) — bars, badges and
+  //     indicators, not text. Midnight-red is the tightest at 3.42:1.
+  //   • accent_text ≥ 4.5:1 — accent-hued TEXT on the frame (a search
+  //     match in a file tree). It is the accent where that clears, else
+  //     the nearest rung of the hue further from the frame: Midnight's
+  //     red and orange step to their 300.
+  //   • the selected-item wash over the frame, with its text roles
+  //   • the frame ≥ min_step from bg, unless the flavor is in step_exempt
+  //
+  // PORT RULE: text on the frame is `fg` or `fg_muted` only. `fg_subtle`
+  // measures 3.96–4.52:1 on Midnight's frames; inactive tab labels and
+  // sidebar descriptions take `fg_muted` there.
+  frame: {
+    min_step: 1.35, // luminance contrast; every dark-flavor frame clears it (tightest 1.39:1)
+    step_exempt: [], // none; Dawn's old grey chrome (#bdbdbd) was 1.27:1
+    // Light flavors: second design round, see the spec's "Light flavors".
+    recipes: {
+      midnight: { color: "accent.900", mix: "accent.950", ratio: 0.5 },
+      twilight: { color: "accent.950" },
+      dawn: { hue_of: "accent.500", l: 0.98, c: 0.05 },
+      noon: { hue_of: "accent.500", l: 0.86, c: 0.05 },
+    },
+  },
+
+  // ────────────────────────────────────────────────────────────────
   //   4.  FLAVORS  —  the 4 base themes
   // ────────────────────────────────────────────────────────────────
   // Each flavor defines:
@@ -1001,19 +1106,18 @@
       type: "dark",
       surface: {
         bg: "$palette.gray.900", // #171717
-        bg_inset: "#434f60", // docked structural chrome (sidebar/panel/terminal/status bar) — fixed cool-slate tint, NOT a variant/accent color; see README § surface hierarchy. Exempt from the semantic-vs-surface WCAG gate (banners render on bg/bg_soft, never on bg_inset).
         bg_soft: "$palette.gray.700", // lifted panels
-        bg_sunk: "#0a0a0a", // slightly below canvas — outside strict palette
+        bg_sunk: "$palette.gray.950", // slightly below canvas
         bg_overlay: "$palette.gray.700", // floating menus, dropdowns
         bg_scrim: "#000000cc", // modal backdrop (80% black)
-        bg_terminal: "$flavors.midnight.surface.bg_sunk", // darkest of the four; anchors the low end of the bg_terminal spread. Clears ≥4.5:1 vs every ansi.* color except ansi.black (reverse-video anchor, == this value). See issues #5, #7.
+        bg_terminal: "$flavors.midnight.surface.bg", // editor and terminal share one background (§ 3b). Every ansi.* colour except the reverse-video anchor ansi.black clears ≥4.5:1 on it.
       },
       text: {
         fg: "$palette.gray.100",
         fg_muted: "$palette.gray.300",
         fg_subtle: "#999999", // was gray.500 (#737373, 3.78:1 on bg). 6.29:1, APCA Lc 46 — the comment colour, and the luminance ceiling every dark overlay in § 3e is solved against. Outside the strict palette: gray.500 is too dark, gray.300 is fg_muted. Issue #19.
         fg_disabled: "#525252",
-        fg_faint: "#686868", // 3.22:1 on bg, 3.55:1 on bg_terminal — see faint_text (§ 3f). Below fg_subtle (6.29:1) by ΔE 16.6. Dedicated literal: gray.500 (#737373, 3.78:1) also clears, but the rule takes the grey closest to the canvas, as border.control does. Issue #22.
+        fg_faint: "#686868", // 3.22:1 on bg (= bg_terminal) — see faint_text (§ 3f). Below fg_subtle (6.29:1) by ΔE 16.6. Dedicated literal: gray.500 (#737373, 3.78:1) also clears, but the rule takes the grey closest to the canvas, as border.control does. Issue #22.
       },
       accent_on: "$palette.gray.900", // text on an accent fill (button label, badge) — gated at 4.5:1 on all six accents and the four semantic colours. Dark flavors carry bright accents, so dark text; light flavors the mirror. Issue #22.
       border: {
@@ -1027,15 +1131,15 @@
         active: "#ffffff1f", // 12% white overlay
       },
       ansi: {
-        black: "#0a0a0a",
+        black: "$palette.gray.950",
         red: "$palette.red.500",
         green: "$palette.green.500",
         yellow: "$palette.yellow.500",
-        blue: "$palette.blue.500", // was blue.300 — identical to bright_blue. 5.38:1 on bg_terminal. Issue #19.
-        magenta: "$palette.purple.500", // was purple.300 — identical to bright_magenta. 5.00:1 on bg_terminal. Issue #19.
+        blue: "$palette.blue.500", // was blue.300 — identical to bright_blue. 4.87:1 on bg_terminal. Issue #19.
+        magenta: "$palette.purple.500", // was purple.300 — identical to bright_magenta. 4.53:1 on bg_terminal. Issue #19.
         cyan: "$palette.cyan.500",
         white: "$palette.gray.300",
-        bright_black: "#878787", // was $palette.gray.700 (#404040) — that shade only cleared 1.9:1 against bg_sunk/bg_terminal; #878787 clears 5.5:1. Dedicated literal (not a palette ref) so it doesn't move borders/text that also reference gray.700. See issue #5.
+        bright_black: "#878787", // was $palette.gray.700 (#404040) — that shade only cleared 1.9:1 against bg_sunk/bg_terminal; #878787 clears 4.99:1 on today's #171717 bg_terminal. Dedicated literal (not a palette ref) so it doesn't move borders/text that also reference gray.700. See issue #5.
         bright_red: "$palette.red.300",
         bright_green: "$palette.green.300",
         bright_yellow: "$palette.yellow.300",
@@ -1052,19 +1156,18 @@
       type: "dark",
       surface: {
         bg: "$palette.gray.700", // #404040
-        bg_inset: "#627084", // docked structural chrome (sidebar/panel/terminal/status bar) — fixed cool-slate tint, NOT a variant/accent color; see README § surface hierarchy. Exempt from the semantic-vs-surface WCAG gate (banners render on bg/bg_soft, never on bg_inset).
         bg_soft: "#525252", // neutral-600; lifted
         bg_sunk: "$palette.gray.900", // deeper recess
         bg_overlay: "#525252",
         bg_scrim: "#000000bb",
-        bg_terminal: "#333333", // was bg_sunk (#171717), only ΔL* 5.0 from Midnight's — indistinguishable in a standalone terminal emulator, which shows no other surface. #333333 is ΔL* 18.5 from Midnight, matching the editor-bg spread that already reads as flavor identity, while staying below bg (#404040) so the embedded terminal panel keeps its layer. Outside the strict palette, like bg_sunk on Midnight. See issue #7.
+        bg_terminal: "$flavors.twilight.surface.bg", // editor and terminal share one background (§ 3b). Was #333333 (issue #7).
       },
       text: {
         fg: "$palette.gray.100",
         fg_muted: "$palette.gray.300",
         fg_subtle: "#b8b8b8", // was #a3a3a3 (4.11:1 on bg). 5.23:1, APCA Lc 54, still ΔE 8.7 from fg_muted. Issue #19.
         fg_disabled: "#737373",
-        fg_faint: "#8f8f8f", // 3.21:1 on bg, 3.91:1 on bg_terminal — see faint_text (§ 3f). Issue #22.
+        fg_faint: "#8f8f8f", // 3.21:1 on bg (= bg_terminal) — see faint_text (§ 3f). Issue #22.
       },
       accent_on: "$palette.gray.900", // see midnight. Issue #22.
       border: {
@@ -1086,7 +1189,7 @@
         magenta: "$palette.purple.300",
         cyan: "$palette.cyan.300",
         white: "$palette.gray.300",
-        bright_black: "#a3a3a3", // was #878787 — that literal cleared 5.0:1 against the old bg_terminal (#171717) but only 3.5:1 against #333333. #a3a3a3 clears 5.0:1 (it was this flavor's fg_subtle until issue #19 lifted that to #b8b8b8). See issues #5, #7.
+        bright_black: "#adadad", // clears 4.5:1 on bg_terminal (#404040) with a little headroom: 4.62:1, ΔE 12.2 from ansi.white. #a3a3a3 cleared 5.0:1 on the old #333333 but only 4.11:1 here. See issues #5, #7 and the frame-colours spec.
         bright_red: "$palette.red.100",
         bright_green: "$palette.green.100",
         bright_yellow: "$palette.yellow.100",
@@ -1103,12 +1206,11 @@
       type: "light",
       surface: {
         bg: "$palette.gray.300", // #d4d4d4
-        bg_inset: "#788ba5", // docked structural chrome (sidebar/panel/terminal/status bar) — fixed cool-slate tint, NOT a variant/accent color; see README § surface hierarchy. Exempt from the semantic-vs-surface WCAG gate (banners render on bg/bg_soft, never on bg_inset).
         bg_soft: "$palette.gray.100", // lifted
         bg_sunk: "#bdbdbd", // outside strict palette
         bg_overlay: "$palette.gray.100",
         bg_scrim: "#17171788",
-        bg_terminal: "$flavors.dawn.surface.bg", // was bg_soft (#f5f5f5), only ΔL* 3.5 from Noon's — indistinguishable in a standalone terminal emulator. Dropping to the flavor canvas (#d4d4d4) gives ΔL* 15.1 from Noon and inherits the accent-shade table's own contrast guarantee for free, since this IS the surface that table is verified against. Cost: in embedded ports the terminal panel no longer differs from the editor canvas by fill — the panel is read from its bg_inset chrome and border instead. See issue #7.
+        bg_terminal: "$flavors.dawn.surface.bg", // editor and terminal share one background (§ 3b). Dawn was the first flavor to do this (issue #7).
       },
       text: {
         fg: "$palette.gray.900",
@@ -1154,19 +1256,18 @@
       type: "light",
       surface: {
         bg: "$palette.gray.100", // #f5f5f5
-        bg_inset: "#91a0b6", // docked structural chrome (sidebar/panel/terminal/status bar) — fixed cool-slate tint, NOT a variant/accent color; see README § surface hierarchy. Exempt from the semantic-vs-surface WCAG gate (banners render on bg/bg_soft, never on bg_inset).
         bg_soft: "#ffffff",
         bg_sunk: "$palette.gray.300",
         bg_overlay: "#ffffff",
         bg_scrim: "#17171788",
-        bg_terminal: "$flavors.noon.surface.bg_soft", // verified ≥4.5:1 vs every ansi.* color except ansi.bright_white (intentional reverse-video anchor); bright_black already clears 4.7:1 unchanged. See issue #5
+        bg_terminal: "$flavors.noon.surface.bg", // editor and terminal share one background (§ 3b). Was bg_soft (#ffffff). Every ansi.* colour except the reverse-video anchor ansi.bright_white clears ≥4.5:1 on it.
       },
       text: {
         fg: "$palette.gray.900",
         fg_muted: "$palette.gray.700",
         fg_subtle: "#525252",
         fg_disabled: "#737373",
-        fg_faint: "#898989", // 3.21:1 on bg, 3.50:1 on bg_terminal — see faint_text (§ 3f). Lighter than fg_disabled (#737373, 4.35:1): faint means the 3:1 floor, not a rung below disabled. Issue #22.
+        fg_faint: "#898989", // 3.21:1 on bg (= bg_terminal) — see faint_text (§ 3f). Lighter than fg_disabled (#737373, 4.35:1): faint means the 3:1 floor, not a rung below disabled. Issue #22.
       },
       accent_on: "$palette.gray.100", // see midnight. Issue #22.
       border: {
@@ -1188,7 +1289,7 @@
         magenta: "$palette.purple.700",
         cyan: "$palette.cyan.700",
         white: "$palette.gray.700",
-        bright_black: "$palette.gray.500",
+        bright_black: "#6f6f6f", // was gray.500 (#737373): 4.74:1 on the old #ffffff terminal, 4.35:1 on #f5f5f5. #6f6f6f clears 4.5:1 with a little headroom (4.61:1).
         bright_red: "$palette.red.900",
         bright_green: "$palette.green.900",
         bright_yellow: "$palette.yellow.900",
@@ -2302,12 +2403,13 @@
         use: "A message block, sidebar or composer. Must show on its own over bg_terminal (distinct.app.visible).",
       },
       message_hover: {
-        background: "overlay.inactive_selection",
+        background: "overlay.hover_tint",
         gate: "surface",
         use: "A message block under the pointer or keyboard focus. Not overlay.selected: that wash only gates fg, and a message can carry fg_subtle.",
       },
       selection: {
         background: "overlay.selection",
+        text_min: 3, // the selection exception (§ 3e): same signal, same floor
         gate: "surface",
         use: "Selected text.",
       },

@@ -17,7 +17,8 @@ export default {
       "500": "#ef4444",
       "700": "#b91c1c",
       "800": "#991b1b",
-      "900": "#7f1d1d"
+      "900": "#7f1d1d",
+      "950": "#450a0a"
     },
     "orange": {
       "100": "#ffedd5",
@@ -25,7 +26,8 @@ export default {
       "500": "#f97316",
       "700": "#c2410c",
       "800": "#9a3412",
-      "900": "#7c2d12"
+      "900": "#7c2d12",
+      "950": "#431407"
     },
     "yellow": {
       "100": "#fef9c3",
@@ -33,7 +35,8 @@ export default {
       "500": "#eab308",
       "700": "#a16207",
       "800": "#854d0e",
-      "900": "#713f12"
+      "900": "#713f12",
+      "950": "#422006"
     },
     "green": {
       "100": "#ecfccb",
@@ -41,7 +44,8 @@ export default {
       "500": "#84cc16",
       "700": "#4d7c0f",
       "800": "#3f6212",
-      "900": "#365314"
+      "900": "#365314",
+      "950": "#1a2e05"
     },
     "blue": {
       "100": "#dbeafe",
@@ -49,7 +53,8 @@ export default {
       "500": "#3b82f6",
       "700": "#1d4ed8",
       "800": "#1e40af",
-      "900": "#1e3a8a"
+      "900": "#1e3a8a",
+      "950": "#172554"
     },
     "purple": {
       "100": "#f3e8ff",
@@ -57,7 +62,8 @@ export default {
       "500": "#a855f7",
       "700": "#7e22ce",
       "800": "#6b21a8",
-      "900": "#581c87"
+      "900": "#581c87",
+      "950": "#3b0764"
     },
     "gray": {
       "100": "#f5f5f5",
@@ -65,7 +71,8 @@ export default {
       "500": "#737373",
       "700": "#404040",
       "800": "#262626",
-      "900": "#171717"
+      "900": "#171717",
+      "950": "#0a0a0a"
     },
     "cyan": {
       "100": "#cffafe",
@@ -73,7 +80,8 @@ export default {
       "500": "#06b6d4",
       "700": "#0e7490",
       "800": "#155e75",
-      "900": "#164e63"
+      "900": "#164e63",
+      "950": "#083344"
     }
   },
   "variant_hues": [
@@ -320,16 +328,22 @@ export default {
       "selection": {
         "behind": "code",
         "use": "Text selection — editor, terminal, shell command line, ::selection.",
-        "terminal_foreground": "fg"
+        "terminal_foreground": "fg",
+        "text_min": 3
       },
       "inactive_selection": {
         "behind": "code",
         "use": "Selection in an unfocused editor or terminal.",
-        "terminal_foreground": "fg"
+        "terminal_foreground": "fg",
+        "text_min": 3
       },
       "line_highlight": {
         "behind": "code",
         "use": "The line the cursor is on."
+      },
+      "hover_tint": {
+        "behind": "code",
+        "use": "A block under the pointer or keyboard focus inside a terminal app."
       },
       "find_match": {
         "behind": "code",
@@ -404,16 +418,20 @@ export default {
     "recipes": {
       "midnight": {
         "selection": {
-          "color": "accent.900",
-          "alpha": 0.5
+          "color": "accent",
+          "alpha": 0.25
         },
         "inactive_selection": {
-          "color": "accent.900",
-          "alpha": 0.25
+          "color": "accent",
+          "alpha": 0.15
         },
         "line_highlight": {
           "color": "gray.800",
           "alpha": 1
+        },
+        "hover_tint": {
+          "color": "accent.900",
+          "alpha": 0.25
         },
         "find_match": {
           "color": "yellow.900",
@@ -467,7 +485,7 @@ export default {
         },
         "panel": {
           "color": "gray.800",
-          "alpha": 0.5
+          "alpha": 1
         },
         "selected": {
           "color": "accent",
@@ -476,16 +494,20 @@ export default {
       },
       "twilight": {
         "selection": {
-          "color": "accent.900",
-          "alpha": 0.75
+          "color": "accent",
+          "alpha": 0.25
         },
         "inactive_selection": {
-          "color": "accent.900",
-          "alpha": 0.4
+          "color": "accent",
+          "alpha": 0.15
         },
         "line_highlight": {
           "color": "gray.800",
           "alpha": 0.6
+        },
+        "hover_tint": {
+          "color": "accent.900",
+          "alpha": 0.4
         },
         "find_match": {
           "color": "yellow.900",
@@ -559,6 +581,10 @@ export default {
           "color": "gray.100",
           "alpha": 0.45
         },
+        "hover_tint": {
+          "color": "accent.100",
+          "alpha": 0.5
+        },
         "find_match": {
           "color": "yellow.300",
           "alpha": 0.75,
@@ -630,6 +656,10 @@ export default {
         "line_highlight": {
           "color": "gray.900",
           "alpha": 0.05
+        },
+        "hover_tint": {
+          "color": "accent.300",
+          "alpha": 0.22
         },
         "find_match": {
           "color": "yellow.300",
@@ -840,18 +870,41 @@ export default {
       "fg"
     ]
   },
+  "frame": {
+    "min_step": 1.35,
+    "step_exempt": [],
+    "recipes": {
+      "midnight": {
+        "color": "accent.900",
+        "mix": "accent.950",
+        "ratio": 0.5
+      },
+      "twilight": {
+        "color": "accent.950"
+      },
+      "dawn": {
+        "hue_of": "accent.500",
+        "l": 0.98,
+        "c": 0.05
+      },
+      "noon": {
+        "hue_of": "accent.500",
+        "l": 0.86,
+        "c": 0.05
+      }
+    }
+  },
   "flavors": {
     "midnight": {
       "label": "Midnight",
       "type": "dark",
       "surface": {
         "bg": "#171717",
-        "bg_inset": "#434f60",
         "bg_soft": "#404040",
         "bg_sunk": "#0a0a0a",
         "bg_overlay": "#404040",
         "bg_scrim": "#000000cc",
-        "bg_terminal": "#0a0a0a"
+        "bg_terminal": "#171717"
       },
       "text": {
         "fg": "#f5f5f5",
@@ -912,20 +965,20 @@ export default {
       "overlay": {
         "red": {
           "selection": {
-            "color": "#7f1d1d",
-            "alpha": 0.5,
-            "flat": "#4b1a1a",
+            "color": "#ef4444",
+            "alpha": 0.25,
+            "flat": "#4d2222",
             "terminal": {
-              "flat": "#451414",
+              "flat": "#4d2222",
               "foreground": "#f5f5f5"
             }
           },
           "inactive_selection": {
-            "color": "#7f1d1d",
-            "alpha": 0.25,
-            "flat": "#311919",
+            "color": "#ef4444",
+            "alpha": 0.15,
+            "flat": "#371e1e",
             "terminal": {
-              "flat": "#270f0f",
+              "flat": "#371e1e",
               "foreground": "#f5f5f5"
             }
           },
@@ -933,6 +986,11 @@ export default {
             "color": "#262626",
             "alpha": 1,
             "flat": "#262626"
+          },
+          "hover_tint": {
+            "color": "#7f1d1d",
+            "alpha": 0.25,
+            "flat": "#311919"
           },
           "find_match": {
             "color": "#713f12",
@@ -998,8 +1056,8 @@ export default {
           },
           "panel": {
             "color": "#262626",
-            "alpha": 0.5,
-            "flat": "#1f1f1f"
+            "alpha": 1,
+            "flat": "#262626"
           },
           "selected": {
             "color": "#ef4444",
@@ -1009,20 +1067,20 @@ export default {
         },
         "orange": {
           "selection": {
-            "color": "#7c2d12",
-            "alpha": 0.5,
-            "flat": "#4a2215",
+            "color": "#f97316",
+            "alpha": 0.25,
+            "flat": "#502e17",
             "terminal": {
-              "flat": "#431c0e",
+              "flat": "#502e17",
               "foreground": "#f5f5f5"
             }
           },
           "inactive_selection": {
-            "color": "#7c2d12",
-            "alpha": 0.25,
-            "flat": "#301d16",
+            "color": "#f97316",
+            "alpha": 0.15,
+            "flat": "#392517",
             "terminal": {
-              "flat": "#27130c",
+              "flat": "#392517",
               "foreground": "#f5f5f5"
             }
           },
@@ -1030,6 +1088,11 @@ export default {
             "color": "#262626",
             "alpha": 1,
             "flat": "#262626"
+          },
+          "hover_tint": {
+            "color": "#7c2d12",
+            "alpha": 0.25,
+            "flat": "#301d16"
           },
           "find_match": {
             "color": "#713f12",
@@ -1095,8 +1158,8 @@ export default {
           },
           "panel": {
             "color": "#262626",
-            "alpha": 0.5,
-            "flat": "#1f1f1f"
+            "alpha": 1,
+            "flat": "#262626"
           },
           "selected": {
             "color": "#f97316",
@@ -1106,20 +1169,20 @@ export default {
         },
         "yellow": {
           "selection": {
-            "color": "#713f12",
-            "alpha": 0.5,
-            "flat": "#442b15",
+            "color": "#eab308",
+            "alpha": 0.25,
+            "flat": "#4c3e13",
             "terminal": {
-              "flat": "#3e250e",
+              "flat": "#4c3e13",
               "foreground": "#f5f5f5"
             }
           },
           "inactive_selection": {
-            "color": "#713f12",
-            "alpha": 0.25,
-            "flat": "#2e2116",
+            "color": "#eab308",
+            "alpha": 0.15,
+            "flat": "#372e15",
             "terminal": {
-              "flat": "#24170c",
+              "flat": "#372e15",
               "foreground": "#f5f5f5"
             }
           },
@@ -1127,6 +1190,11 @@ export default {
             "color": "#262626",
             "alpha": 1,
             "flat": "#262626"
+          },
+          "hover_tint": {
+            "color": "#713f12",
+            "alpha": 0.25,
+            "flat": "#2e2116"
           },
           "find_match": {
             "color": "#713f12",
@@ -1192,8 +1260,8 @@ export default {
           },
           "panel": {
             "color": "#262626",
-            "alpha": 0.5,
-            "flat": "#1f1f1f"
+            "alpha": 1,
+            "flat": "#262626"
           },
           "selected": {
             "color": "#eab308",
@@ -1203,20 +1271,20 @@ export default {
         },
         "green": {
           "selection": {
-            "color": "#365314",
-            "alpha": 0.5,
-            "flat": "#273516",
+            "color": "#84cc16",
+            "alpha": 0.25,
+            "flat": "#324417",
             "terminal": {
-              "flat": "#202f0f",
+              "flat": "#324417",
               "foreground": "#f5f5f5"
             }
           },
           "inactive_selection": {
-            "color": "#365314",
-            "alpha": 0.25,
-            "flat": "#1f2616",
+            "color": "#84cc16",
+            "alpha": 0.15,
+            "flat": "#273217",
             "terminal": {
-              "flat": "#151c0d",
+              "flat": "#273217",
               "foreground": "#f5f5f5"
             }
           },
@@ -1224,6 +1292,11 @@ export default {
             "color": "#262626",
             "alpha": 1,
             "flat": "#262626"
+          },
+          "hover_tint": {
+            "color": "#365314",
+            "alpha": 0.25,
+            "flat": "#1f2616"
           },
           "find_match": {
             "color": "#713f12",
@@ -1289,8 +1362,8 @@ export default {
           },
           "panel": {
             "color": "#262626",
-            "alpha": 0.5,
-            "flat": "#1f1f1f"
+            "alpha": 1,
+            "flat": "#262626"
           },
           "selected": {
             "color": "#84cc16",
@@ -1300,20 +1373,20 @@ export default {
         },
         "blue": {
           "selection": {
-            "color": "#1e3a8a",
-            "alpha": 0.5,
-            "flat": "#1b2951",
+            "color": "#93c5fd",
+            "alpha": 0.25,
+            "flat": "#364351",
             "terminal": {
-              "flat": "#14224a",
+              "flat": "#364351",
               "foreground": "#f5f5f5"
             }
           },
           "inactive_selection": {
-            "color": "#1e3a8a",
-            "alpha": 0.25,
-            "flat": "#192034",
+            "color": "#93c5fd",
+            "alpha": 0.15,
+            "flat": "#2a313a",
             "terminal": {
-              "flat": "#0f162a",
+              "flat": "#2a313a",
               "foreground": "#f5f5f5"
             }
           },
@@ -1321,6 +1394,11 @@ export default {
             "color": "#262626",
             "alpha": 1,
             "flat": "#262626"
+          },
+          "hover_tint": {
+            "color": "#1e3a8a",
+            "alpha": 0.25,
+            "flat": "#192034"
           },
           "find_match": {
             "color": "#713f12",
@@ -1386,8 +1464,8 @@ export default {
           },
           "panel": {
             "color": "#262626",
-            "alpha": 0.5,
-            "flat": "#1f1f1f"
+            "alpha": 1,
+            "flat": "#262626"
           },
           "selected": {
             "color": "#93c5fd",
@@ -1397,20 +1475,20 @@ export default {
         },
         "purple": {
           "selection": {
-            "color": "#581c87",
-            "alpha": 0.5,
-            "flat": "#381a4f",
+            "color": "#d8b4fe",
+            "alpha": 0.25,
+            "flat": "#473e51",
             "terminal": {
-              "flat": "#311349",
+              "flat": "#473e51",
               "foreground": "#f5f5f5"
             }
           },
           "inactive_selection": {
-            "color": "#581c87",
-            "alpha": 0.25,
-            "flat": "#271833",
+            "color": "#d8b4fe",
+            "alpha": 0.15,
+            "flat": "#342f3a",
             "terminal": {
-              "flat": "#1e0f29",
+              "flat": "#342f3a",
               "foreground": "#f5f5f5"
             }
           },
@@ -1418,6 +1496,11 @@ export default {
             "color": "#262626",
             "alpha": 1,
             "flat": "#262626"
+          },
+          "hover_tint": {
+            "color": "#581c87",
+            "alpha": 0.25,
+            "flat": "#271833"
           },
           "find_match": {
             "color": "#713f12",
@@ -1483,14 +1566,40 @@ export default {
           },
           "panel": {
             "color": "#262626",
-            "alpha": 0.5,
-            "flat": "#1f1f1f"
+            "alpha": 1,
+            "flat": "#262626"
           },
           "selected": {
             "color": "#d8b4fe",
             "alpha": 0.18,
             "flat": "#3a3341"
           }
+        }
+      },
+      "frame": {
+        "red": {
+          "bg": "#621414",
+          "accent_text": "#fca5a5"
+        },
+        "orange": {
+          "bg": "#60210d",
+          "accent_text": "#fdba74"
+        },
+        "yellow": {
+          "bg": "#5a300c",
+          "accent_text": "#eab308"
+        },
+        "green": {
+          "bg": "#28410d",
+          "accent_text": "#84cc16"
+        },
+        "blue": {
+          "bg": "#1b306f",
+          "accent_text": "#93c5fd"
+        },
+        "purple": {
+          "bg": "#4a1276",
+          "accent_text": "#d8b4fe"
         }
       }
     },
@@ -1499,12 +1608,11 @@ export default {
       "type": "dark",
       "surface": {
         "bg": "#404040",
-        "bg_inset": "#627084",
         "bg_soft": "#525252",
         "bg_sunk": "#171717",
         "bg_overlay": "#525252",
         "bg_scrim": "#000000bb",
-        "bg_terminal": "#333333"
+        "bg_terminal": "#404040"
       },
       "text": {
         "fg": "#f5f5f5",
@@ -1553,7 +1661,7 @@ export default {
         "magenta": "#d8b4fe",
         "cyan": "#67e8f9",
         "white": "#d4d4d4",
-        "bright_black": "#a3a3a3",
+        "bright_black": "#adadad",
         "bright_red": "#fee2e2",
         "bright_green": "#ecfccb",
         "bright_yellow": "#fef9c3",
@@ -1565,20 +1673,20 @@ export default {
       "overlay": {
         "red": {
           "selection": {
-            "color": "#7f1d1d",
-            "alpha": 0.75,
-            "flat": "#6f2626",
+            "color": "#fca5a5",
+            "alpha": 0.25,
+            "flat": "#6f5959",
             "terminal": {
-              "flat": "#6c2323",
+              "flat": "#6f5959",
               "foreground": "#f5f5f5"
             }
           },
           "inactive_selection": {
-            "color": "#7f1d1d",
-            "alpha": 0.4,
-            "flat": "#593232",
+            "color": "#fca5a5",
+            "alpha": 0.15,
+            "flat": "#5c4f4f",
             "terminal": {
-              "flat": "#512a2a",
+              "flat": "#5c4f4f",
               "foreground": "#f5f5f5"
             }
           },
@@ -1586,6 +1694,11 @@ export default {
             "color": "#262626",
             "alpha": 0.6,
             "flat": "#303030"
+          },
+          "hover_tint": {
+            "color": "#7f1d1d",
+            "alpha": 0.4,
+            "flat": "#593232"
           },
           "find_match": {
             "color": "#713f12",
@@ -1662,20 +1775,20 @@ export default {
         },
         "orange": {
           "selection": {
-            "color": "#7c2d12",
-            "alpha": 0.75,
-            "flat": "#6d321e",
+            "color": "#fdba74",
+            "alpha": 0.25,
+            "flat": "#6f5f4d",
             "terminal": {
-              "flat": "#6a2f1a",
+              "flat": "#6f5f4d",
               "foreground": "#f5f5f5"
             }
           },
           "inactive_selection": {
-            "color": "#7c2d12",
-            "alpha": 0.4,
-            "flat": "#58382e",
+            "color": "#fdba74",
+            "alpha": 0.15,
+            "flat": "#5c5248",
             "terminal": {
-              "flat": "#503126",
+              "flat": "#5c5248",
               "foreground": "#f5f5f5"
             }
           },
@@ -1683,6 +1796,11 @@ export default {
             "color": "#262626",
             "alpha": 0.6,
             "flat": "#303030"
+          },
+          "hover_tint": {
+            "color": "#7c2d12",
+            "alpha": 0.4,
+            "flat": "#58382e"
           },
           "find_match": {
             "color": "#713f12",
@@ -1759,20 +1877,20 @@ export default {
         },
         "yellow": {
           "selection": {
-            "color": "#713f12",
-            "alpha": 0.75,
-            "flat": "#653f1e",
+            "color": "#eab308",
+            "alpha": 0.25,
+            "flat": "#6b5d32",
             "terminal": {
-              "flat": "#623c1a",
+              "flat": "#6b5d32",
               "foreground": "#f5f5f5"
             }
           },
           "inactive_selection": {
-            "color": "#713f12",
-            "alpha": 0.4,
-            "flat": "#54402e",
+            "color": "#eab308",
+            "alpha": 0.15,
+            "flat": "#5a5138",
             "terminal": {
-              "flat": "#4c3826",
+              "flat": "#5a5138",
               "foreground": "#f5f5f5"
             }
           },
@@ -1780,6 +1898,11 @@ export default {
             "color": "#262626",
             "alpha": 0.6,
             "flat": "#303030"
+          },
+          "hover_tint": {
+            "color": "#713f12",
+            "alpha": 0.4,
+            "flat": "#54402e"
           },
           "find_match": {
             "color": "#713f12",
@@ -1856,20 +1979,20 @@ export default {
         },
         "green": {
           "selection": {
-            "color": "#365314",
-            "alpha": 0.75,
-            "flat": "#394e1f",
+            "color": "#84cc16",
+            "alpha": 0.25,
+            "flat": "#516336",
             "terminal": {
-              "flat": "#354b1c",
+              "flat": "#516336",
               "foreground": "#f5f5f5"
             }
           },
           "inactive_selection": {
-            "color": "#365314",
-            "alpha": 0.4,
-            "flat": "#3c482e",
+            "color": "#84cc16",
+            "alpha": 0.15,
+            "flat": "#4a553a",
             "terminal": {
-              "flat": "#344027",
+              "flat": "#4a553a",
               "foreground": "#f5f5f5"
             }
           },
@@ -1877,6 +2000,11 @@ export default {
             "color": "#262626",
             "alpha": 0.6,
             "flat": "#303030"
+          },
+          "hover_tint": {
+            "color": "#365314",
+            "alpha": 0.4,
+            "flat": "#3c482e"
           },
           "find_match": {
             "color": "#713f12",
@@ -1953,20 +2081,20 @@ export default {
         },
         "blue": {
           "selection": {
-            "color": "#1e3a8a",
-            "alpha": 0.75,
-            "flat": "#273c78",
+            "color": "#93c5fd",
+            "alpha": 0.25,
+            "flat": "#55616f",
             "terminal": {
-              "flat": "#233874",
+              "flat": "#55616f",
               "foreground": "#f5f5f5"
             }
           },
           "inactive_selection": {
-            "color": "#1e3a8a",
-            "alpha": 0.4,
-            "flat": "#323e5e",
+            "color": "#93c5fd",
+            "alpha": 0.15,
+            "flat": "#4c545c",
             "terminal": {
-              "flat": "#2b3656",
+              "flat": "#4c545c",
               "foreground": "#f5f5f5"
             }
           },
@@ -1974,6 +2102,11 @@ export default {
             "color": "#262626",
             "alpha": 0.6,
             "flat": "#303030"
+          },
+          "hover_tint": {
+            "color": "#1e3a8a",
+            "alpha": 0.4,
+            "flat": "#323e5e"
           },
           "find_match": {
             "color": "#713f12",
@@ -2050,20 +2183,20 @@ export default {
         },
         "purple": {
           "selection": {
-            "color": "#581c87",
-            "alpha": 0.75,
-            "flat": "#522575",
+            "color": "#d8b4fe",
+            "alpha": 0.25,
+            "flat": "#665d70",
             "terminal": {
-              "flat": "#4f2272",
+              "flat": "#665d70",
               "foreground": "#f5f5f5"
             }
           },
           "inactive_selection": {
-            "color": "#581c87",
-            "alpha": 0.4,
-            "flat": "#4a325c",
+            "color": "#d8b4fe",
+            "alpha": 0.15,
+            "flat": "#57515d",
             "terminal": {
-              "flat": "#422a55",
+              "flat": "#57515d",
               "foreground": "#f5f5f5"
             }
           },
@@ -2071,6 +2204,11 @@ export default {
             "color": "#262626",
             "alpha": 0.6,
             "flat": "#303030"
+          },
+          "hover_tint": {
+            "color": "#581c87",
+            "alpha": 0.4,
+            "flat": "#4a325c"
           },
           "find_match": {
             "color": "#713f12",
@@ -2145,6 +2283,32 @@ export default {
             "flat": "#5b5562"
           }
         }
+      },
+      "frame": {
+        "red": {
+          "bg": "#450a0a",
+          "accent_text": "#fca5a5"
+        },
+        "orange": {
+          "bg": "#431407",
+          "accent_text": "#fdba74"
+        },
+        "yellow": {
+          "bg": "#422006",
+          "accent_text": "#eab308"
+        },
+        "green": {
+          "bg": "#1a2e05",
+          "accent_text": "#84cc16"
+        },
+        "blue": {
+          "bg": "#172554",
+          "accent_text": "#93c5fd"
+        },
+        "purple": {
+          "bg": "#3b0764",
+          "accent_text": "#d8b4fe"
+        }
       }
     },
     "dawn": {
@@ -2152,7 +2316,6 @@ export default {
       "type": "light",
       "surface": {
         "bg": "#d4d4d4",
-        "bg_inset": "#788ba5",
         "bg_soft": "#f5f5f5",
         "bg_sunk": "#bdbdbd",
         "bg_overlay": "#f5f5f5",
@@ -2239,6 +2402,11 @@ export default {
             "color": "#f5f5f5",
             "alpha": 0.45,
             "flat": "#e3e3e3"
+          },
+          "hover_tint": {
+            "color": "#fee2e2",
+            "alpha": 0.5,
+            "flat": "#e9dbdb"
           },
           "find_match": {
             "color": "#fde047",
@@ -2337,6 +2505,11 @@ export default {
             "alpha": 0.45,
             "flat": "#e3e3e3"
           },
+          "hover_tint": {
+            "color": "#ffedd5",
+            "alpha": 0.5,
+            "flat": "#eae1d5"
+          },
           "find_match": {
             "color": "#fde047",
             "alpha": 0.75,
@@ -2433,6 +2606,11 @@ export default {
             "color": "#f5f5f5",
             "alpha": 0.45,
             "flat": "#e3e3e3"
+          },
+          "hover_tint": {
+            "color": "#fef9c3",
+            "alpha": 0.5,
+            "flat": "#e9e7cc"
           },
           "find_match": {
             "color": "#fde047",
@@ -2531,6 +2709,11 @@ export default {
             "alpha": 0.45,
             "flat": "#e3e3e3"
           },
+          "hover_tint": {
+            "color": "#ecfccb",
+            "alpha": 0.5,
+            "flat": "#e0e8d0"
+          },
           "find_match": {
             "color": "#fde047",
             "alpha": 0.75,
@@ -2627,6 +2810,11 @@ export default {
             "color": "#f5f5f5",
             "alpha": 0.45,
             "flat": "#e3e3e3"
+          },
+          "hover_tint": {
+            "color": "#dbeafe",
+            "alpha": 0.5,
+            "flat": "#d8dfe9"
           },
           "find_match": {
             "color": "#fde047",
@@ -2725,6 +2913,11 @@ export default {
             "alpha": 0.45,
             "flat": "#e3e3e3"
           },
+          "hover_tint": {
+            "color": "#f3e8ff",
+            "alpha": 0.5,
+            "flat": "#e4deea"
+          },
           "find_match": {
             "color": "#fde047",
             "alpha": 0.75,
@@ -2798,6 +2991,32 @@ export default {
             "flat": "#c5b4d3"
           }
         }
+      },
+      "frame": {
+        "red": {
+          "bg": "#fef6f6",
+          "accent_text": "#991b1b"
+        },
+        "orange": {
+          "bg": "#fff7f3",
+          "accent_text": "#7c2d12"
+        },
+        "yellow": {
+          "bg": "#fef8ea",
+          "accent_text": "#854d0e"
+        },
+        "green": {
+          "bg": "#efffe2",
+          "accent_text": "#3f6212"
+        },
+        "blue": {
+          "bg": "#f5f9fe",
+          "accent_text": "#1d4ed8"
+        },
+        "purple": {
+          "bg": "#faf7fe",
+          "accent_text": "#7e22ce"
+        }
       }
     },
     "noon": {
@@ -2805,12 +3024,11 @@ export default {
       "type": "light",
       "surface": {
         "bg": "#f5f5f5",
-        "bg_inset": "#91a0b6",
         "bg_soft": "#ffffff",
         "bg_sunk": "#d4d4d4",
         "bg_overlay": "#ffffff",
         "bg_scrim": "#17171788",
-        "bg_terminal": "#ffffff"
+        "bg_terminal": "#f5f5f5"
       },
       "text": {
         "fg": "#171717",
@@ -2859,7 +3077,7 @@ export default {
         "magenta": "#7e22ce",
         "cyan": "#0e7490",
         "white": "#404040",
-        "bright_black": "#737373",
+        "bright_black": "#6f6f6f",
         "bright_red": "#7f1d1d",
         "bright_green": "#365314",
         "bright_yellow": "#713f12",
@@ -2875,7 +3093,7 @@ export default {
             "alpha": 0.45,
             "flat": "#f8d1d1",
             "terminal": {
-              "flat": "#fed7d7",
+              "flat": "#f8d1d1",
               "foreground": "#171717"
             }
           },
@@ -2884,7 +3102,7 @@ export default {
             "alpha": 0.22,
             "flat": "#f7e3e3",
             "terminal": {
-              "flat": "#feebeb",
+              "flat": "#f7e3e3",
               "foreground": "#171717"
             }
           },
@@ -2892,6 +3110,11 @@ export default {
             "color": "#171717",
             "alpha": 0.05,
             "flat": "#eaeaea"
+          },
+          "hover_tint": {
+            "color": "#fca5a5",
+            "alpha": 0.22,
+            "flat": "#f7e3e3"
           },
           "find_match": {
             "color": "#fde047",
@@ -2972,7 +3195,7 @@ export default {
             "alpha": 0.45,
             "flat": "#f9dabb",
             "terminal": {
-              "flat": "#fee0c0",
+              "flat": "#f9dabb",
               "foreground": "#171717"
             }
           },
@@ -2981,7 +3204,7 @@ export default {
             "alpha": 0.22,
             "flat": "#f7e8d9",
             "terminal": {
-              "flat": "#fff0e0",
+              "flat": "#f7e8d9",
               "foreground": "#171717"
             }
           },
@@ -2989,6 +3212,11 @@ export default {
             "color": "#171717",
             "alpha": 0.05,
             "flat": "#eaeaea"
+          },
+          "hover_tint": {
+            "color": "#fdba74",
+            "alpha": 0.22,
+            "flat": "#f7e8d9"
           },
           "find_match": {
             "color": "#fde047",
@@ -3069,7 +3297,7 @@ export default {
             "alpha": 0.45,
             "flat": "#f9eca7",
             "terminal": {
-              "flat": "#fef1ac",
+              "flat": "#f9eca7",
               "foreground": "#171717"
             }
           },
@@ -3078,7 +3306,7 @@ export default {
             "alpha": 0.22,
             "flat": "#f7f0cf",
             "terminal": {
-              "flat": "#fff8d7",
+              "flat": "#f7f0cf",
               "foreground": "#171717"
             }
           },
@@ -3086,6 +3314,11 @@ export default {
             "color": "#171717",
             "alpha": 0.05,
             "flat": "#eaeaea"
+          },
+          "hover_tint": {
+            "color": "#fde047",
+            "alpha": 0.22,
+            "flat": "#f7f0cf"
           },
           "find_match": {
             "color": "#fde047",
@@ -3166,7 +3399,7 @@ export default {
             "alpha": 0.45,
             "flat": "#dcf4b4",
             "terminal": {
-              "flat": "#e2f9b9",
+              "flat": "#dcf4b4",
               "foreground": "#171717"
             }
           },
@@ -3175,7 +3408,7 @@ export default {
             "alpha": 0.22,
             "flat": "#e9f4d5",
             "terminal": {
-              "flat": "#f1fcdd",
+              "flat": "#e9f4d5",
               "foreground": "#171717"
             }
           },
@@ -3183,6 +3416,11 @@ export default {
             "color": "#171717",
             "alpha": 0.05,
             "flat": "#eaeaea"
+          },
+          "hover_tint": {
+            "color": "#bef264",
+            "alpha": 0.22,
+            "flat": "#e9f4d5"
           },
           "find_match": {
             "color": "#fde047",
@@ -3263,7 +3501,7 @@ export default {
             "alpha": 0.45,
             "flat": "#c9dff9",
             "terminal": {
-              "flat": "#cee5fe",
+              "flat": "#c9dff9",
               "foreground": "#171717"
             }
           },
@@ -3272,7 +3510,7 @@ export default {
             "alpha": 0.22,
             "flat": "#dfeaf7",
             "terminal": {
-              "flat": "#e7f2ff",
+              "flat": "#dfeaf7",
               "foreground": "#171717"
             }
           },
@@ -3280,6 +3518,11 @@ export default {
             "color": "#171717",
             "alpha": 0.05,
             "flat": "#eaeaea"
+          },
+          "hover_tint": {
+            "color": "#93c5fd",
+            "alpha": 0.22,
+            "flat": "#dfeaf7"
           },
           "find_match": {
             "color": "#fde047",
@@ -3360,7 +3603,7 @@ export default {
             "alpha": 0.45,
             "flat": "#e8d8f9",
             "terminal": {
-              "flat": "#edddff",
+              "flat": "#e8d8f9",
               "foreground": "#171717"
             }
           },
@@ -3369,7 +3612,7 @@ export default {
             "alpha": 0.22,
             "flat": "#efe7f7",
             "terminal": {
-              "flat": "#f6efff",
+              "flat": "#efe7f7",
               "foreground": "#171717"
             }
           },
@@ -3377,6 +3620,11 @@ export default {
             "color": "#171717",
             "alpha": 0.05,
             "flat": "#eaeaea"
+          },
+          "hover_tint": {
+            "color": "#d8b4fe",
+            "alpha": 0.22,
+            "flat": "#efe7f7"
           },
           "find_match": {
             "color": "#fde047",
@@ -3450,6 +3698,32 @@ export default {
             "alpha": 0.18,
             "flat": "#e0cfee"
           }
+        }
+      },
+      "frame": {
+        "red": {
+          "bg": "#f0c5c0",
+          "accent_text": "#991b1b"
+        },
+        "orange": {
+          "bg": "#eec8b5",
+          "accent_text": "#9a3412"
+        },
+        "yellow": {
+          "bg": "#e0cfac",
+          "accent_text": "#713f12"
+        },
+        "green": {
+          "bg": "#c6d8b6",
+          "accent_text": "#3f6212"
+        },
+        "blue": {
+          "bg": "#bed2f3",
+          "accent_text": "#1e40af"
+        },
+        "purple": {
+          "bg": "#d8caec",
+          "accent_text": "#7e22ce"
         }
       }
     }
@@ -4620,12 +4894,13 @@ export default {
         "use": "A message block, sidebar or composer. Must show on its own over bg_terminal (distinct.app.visible)."
       },
       "message_hover": {
-        "background": "overlay.inactive_selection",
+        "background": "overlay.hover_tint",
         "gate": "surface",
         "use": "A message block under the pointer or keyboard focus. Not overlay.selected: that wash only gates fg, and a message can carry fg_subtle."
       },
       "selection": {
         "background": "overlay.selection",
+        "text_min": 3,
         "gate": "surface",
         "use": "Selected text."
       },

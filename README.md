@@ -53,6 +53,7 @@ Every port is its own GitHub repo and its own Claude Code project; the [org prof
   - [6 accent variants (per flavor)](#6-accent-variants-per-flavor)
   - [Accent-shade ruleset](#accent-shade-ruleset)
   - [`--vl-accent-on`](#--vl-accent-on)
+  - [Frame](#frame)
   - [Overlays](#overlays)
   - [Selected-item wash](#selected-item-wash)
   - [Control boundaries](#control-boundaries)
@@ -138,7 +139,7 @@ Every port is its own GitHub repo and its own Claude Code project; the [org prof
 Seven hues, six shades each — Tailwind v3 defaults at `900 / 800 / 700 / 500 / 300 / 100`:
 
 <p align="center">
-  <img src="assets/palette.svg" alt="Source palette: 7 hues × 6 shades (900–100) plus Cyan extension" />
+  <img src="assets/palette.svg" alt="Source palette: 7 hues × 6 shades (900–100; the 950 tier is not shown) plus Cyan extension" />
 </p>
 
 The `800` tier exists for one job: the light-flavor ANSI normal set (see [ANSI palette](#ansi-palette-per-flavor)). On Dawn's `bg_terminal` the `700` tier can't clear 4.5:1 and `900` is already spoken for by the bright set, so `800` is the only rung that keeps normal and bright distinct. It's a Tailwind v3 default like every other shade here — adding it moved no existing value.
@@ -159,7 +160,7 @@ Each flavor uses one of four greys as its canvas (`900`, `700`, `300` and `100` 
 
 `Red · Orange · Yellow · Green · Blue · Purple` — applied as `<body class="vl-midnight variant-purple">`.
 
-**The variant only sets `--vl-accent`** (cursor, link, focus ring, button fill, badge, status-bar tint) and the accent-hued [overlays](#overlays) derived from it. It does **not** repaint syntax tokens. (Catppuccin's model — keeps a file's "shape" identical across variants.)
+**The variant only sets `--vl-accent`** (cursor, link, focus ring, button fill, badge), the [frame](#frame) colour, and the accent-hued [overlays](#overlays) derived from it. It does **not** repaint syntax tokens. (Catppuccin's model — keeps a file's "shape" identical across variants.)
 
 ### Accent-shade ruleset
 
@@ -186,6 +187,31 @@ Ports read it as `flavors[flavor].accent_on` (or the colour target `accent_on`).
 
 Don't compute it with `readableOn(accent)`. Before [issue #22](https://github.com/vivid-life-theme/vivid-life-design-system/issues/22) that helper split at luminance 0.5, far from the real crossover (≈ 0.18), and picked light text on six accents — 1.76:1 on Midnight's `yellow.500`. It now picks whichever side has the higher contrast, but the token is the contract.
 
+### Frame
+
+Vivid Life is a one-strong-colour theme. The work areas — editor and terminal — keep the flavor's grey, and the variant's colour goes into the **frame** around them: title bar, activity bar, tab strip, status bar, sidebar, and the tab row of a bottom panel. `tokens.json5 → frame` holds one recipe per flavor, and the build emits the result per theme as `flavors.<flavor>.frame.<variant>` = `{ bg, accent_text }`, and in CSS as `--vl-frame` / `--vl-frame-accent-text` on each `.vl-<flavor>.variant-<variant>`.
+
+The rule: each flavor takes the frame shade that gives the clearest lightness step from its own editor background.
+
+| Flavor   | Frame                                                         | Step from `bg`         |
+| -------- | ------------------------------------------------------------- | ---------------------- |
+| Midnight | 50/50 mix of the variant's `900` and `950`                    | 1.39–1.59:1            |
+| Twilight | the variant's `950`                                           | 1.41–1.56:1            |
+| Dawn     | pastel, OKLCH L 0.98 / C 0.05, hue of the variant's `500`     | 1.39–1.42:1, brighter  |
+| Noon     | pastel, OKLCH L 0.86 / C 0.05, hue of the variant's `500`     | 1.39–1.43:1            |
+
+The light-flavor pastels are computed, not palette shades: they sit near Tailwind's `200`, but the plain `200` is uneven (1.07:1 for yellow and green on Noon). Dawn's frame is the one that goes the other way, brighter than its mid-grey canvas: a darker pastel would drop Dawn's `success` and `warning` (git decorations in a sidebar) below 4.5:1. On a dark flavor the yellow frame is brown; that's what dark yellow is.
+
+**Rules for ports:**
+
+- Text on the frame is `fg` or `fg_muted`. Never `fg_subtle`: it measures 3.96–4.52:1 on Midnight's frames, so inactive tab labels and sidebar descriptions take `fg_muted`.
+- Accent-hued _text_ on the frame (a search match in a file tree) uses `frame.<variant>.accent_text`, not the accent. On Midnight-red and Midnight-orange the accent reaches only 3.42 / 4.35:1 there, so `accent_text` steps to the hue's `300`.
+- The accent itself is fine on the frame for bars, badges and indicators (≥ 3:1), except next to the selected-item wash: the accent bar of a selected row in a frame-coloured sidebar uses `accent_text`. The plain accent drops to 2.7:1 against the wash on Midnight-red and Noon-orange; `accent_text` is gated at 3:1 there.
+- A panel that hosts a terminal draws its tab row in the frame colour and the terminal in `bg_terminal`. That strip of frame is what separates terminal and editor, which share one background.
+- Controls on the frame (a search box in a sidebar) take a `bg_soft` fill; `border.control` is not gated against the frame.
+
+The build gates `fg`, `fg_muted`, the four semantic colours (git decorations), `accent_text` and the selected-item wash at 4.5:1 on every frame, the accent at 3:1, and the step from `bg` at `frame.min_step` (1.35:1) except on flavors in `frame.step_exempt`. Design and rationale: [frame-colours design](docs/superpowers/specs/2026-11-16-frame-colours-design.md).
+
 ### Overlays
 
 Everything that sits behind text — selection, the current line, find matches, word highlights, diff tints, the selected-item wash — is a recipe in `tokens.json5 → overlay`: a colour target and an alpha per flavor, optionally a border. The build resolves every recipe for all 24 themes and emits both halves:
@@ -200,8 +226,9 @@ A target with alpha support (VS Code, CSS) blends `color` at `alpha`; one withou
 
 | Overlay                                      | Hue family  | Gated as |
 | -------------------------------------------- | ----------- | -------- |
-| `selection`, `inactive_selection`            | accent      | code     |
+| `selection`, `inactive_selection`            | accent      | code 3:1 |
 | `line_highlight`                             | grey        | code     |
+| `hover_tint`                                 | accent      | code     |
 | `find_match`, `find_match_other` (+ borders) | yellow      | code     |
 | `word_highlight_read`, `_write`              | cyan        | code     |
 | `diff_{inserted,removed}_{line,text,gutter}` | green / red | code     |
@@ -213,7 +240,7 @@ A target with alpha support (VS Code, CSS) blends `color` at `alpha`; one withou
 
 > _Dark flavors tint with the 900 rung — a deep hue at or below the canvas luminance. Light flavors tint with the 100 / 300 rung — a pale hue at or above it._
 
-The previous selection did the opposite on dark flavors: 25% of a light accent lightened the canvas toward the text, and dropped Midnight comments to 2.13:1 and Twilight's `parameter` to 2.19:1. The 3:1-only check on `bg` never saw it.
+**The exception is the selection on the dark flavors.** A selection is a short-lived signal: that it shows matters more than how readable the text inside it is at that moment. A 900-rung selection kept 4.5:1 but read as a dark smudge rather than the variant's colour. So on Midnight and Twilight `selection` is 25 % of the accent over `bg` and `inactive_selection` 15 %, and both roles carry `text_min: 3`: every code colour clears 3:1 on them (worst: comment grey at 3.55:1 on Midnight, 3.10:1 on Twilight). `app_roles` surfaces drawn on a selection follow the same minimum. Every other code overlay keeps 4.5:1, and the terminal selection foreground keeps 4.5:1 too. Sepp's Workshop made the same call after its users found a dark selection too hard to see; see the [frame-colours design](docs/superpowers/specs/2026-11-16-frame-colours-design.md).
 
 #### Telling overlays apart
 
@@ -222,13 +249,13 @@ Contrast for the text on an overlay says nothing about whether the overlay itsel
 - `selection` and `find_match` sit at least 5 (`related_min`) from `bg`, and the selection at least 5 from `bg_terminal` too. Dawn is the tightest at 6.96: its selection is already `accent.100` at full opacity, the palette's lightest rung, and the syntax gate leaves no room to darken it.
 - A selection (active or inactive) and a find match (current or other) are on screen together, so each pair is either 7 (`min`) apart by fill, or one of the two carries a border that clears 3:1 against both fills.
 
-The border is the only option on the dark flavors. The comment grey caps how far any overlay may lift the canvas, and on the Yellow variant the selection is `yellow.900`, the same hue as the find match: Midnight/Yellow and Twilight/Yellow have **identical** selection and find-match fills, and the best split any rung or alpha allows is ΔE 6.2 on Midnight and 5.0 on Twilight. So both find overlays are outlined: the current match in `semantic.warning`, every other match in a quieter yellow rung (`yellow.500` dark, `yellow.700` light) that clears 3:1 against `bg`, its own fill and either selection on every flavor (tightest: Dawn at 3.32:1). Every overlay border is also gated against its own fill, not just `bg`.
+The border is the only option on the dark flavors. The comment grey caps how far any overlay may lift the canvas, and when the selection was `accent.900`, the Yellow variant's selection had the same hue as the find match: Midnight/Yellow and Twilight/Yellow had **identical** selection and find-match fills. The tinted selection now lightens the canvas while the find match darkens it, but the borders stay. So both find overlays are outlined: the current match in `semantic.warning`, every other match in a quieter yellow rung (`yellow.500` dark, `yellow.700` light) that clears 3:1 against `bg`, its own fill and either selection on every flavor (tightest: Dawn at 3.32:1). Every overlay border is also gated against its own fill, not just `bg`.
 
 #### Terminal selection
 
 `selection` and `inactive_selection` are also drawn behind terminal output, composited over `bg_terminal`, and their role carries a `terminal_foreground` (`fg`): **a terminal redraws selected text in `fg`** rather than leaving its ANSI colours on the tint. The build emits both as `overlay.<variant>.selection.terminal = { flat, foreground }` and gates the pair at 4.5:1 — the worst case is 8.83:1 (Twilight).
 
-Keeping the ANSI colours on the selection instead isn't possible. Midnight's and Noon's normal rows sit just above 4.5:1 on `bg_terminal` (Noon's `bright_black` at 4.74:1 on white, Midnight's `magenta` at 5.00:1 on `#0a0a0a`), so any tint all sixteen survive is close to invisible: ΔE 1.4 at best on Noon, 5.8 on Midnight. With the current recipes, 51 (ANSI colour, variant) pairs fall below AA on a selection, down to 3.59:1 (Noon/Red, `bright_black`). Set the selection foreground wherever the target has one — VS Code `terminal.selectionForeground`, Alacritty `selection.text`, kitty `selection_foreground`, WezTerm `selection_fg`. A terminal without one shows ANSI text below AA while it is selected; say so in that port's README.
+Keeping the ANSI colours on the selection instead isn't possible. Midnight's and Noon's normal rows sit just above 4.5:1 on `bg_terminal` (Noon's `bright_black` at 4.61:1, Midnight's `magenta` at 4.53:1), so any tint all sixteen survive is close to invisible. With the current recipes, 86 (ANSI colour, variant) pairs fall below AA on a selection, down to 2.55:1 (Midnight/Blue, `magenta`). Set the selection foreground wherever the target has one — VS Code `terminal.selectionForeground`, Alacritty `selection.text`, kitty `selection_foreground`, WezTerm `selection_fg`. A terminal without one shows ANSI text below AA while it is selected; say so in that port's README.
 
 Terminal find matches (`terminal.findMatchBackground` and friends) have no foreground setting anywhere, and the same arithmetic applies: ANSI text inside a terminal search hit is not gated.
 
@@ -250,7 +277,7 @@ Before [issue #19](https://github.com/vivid-life-theme/vivid-life-design-system/
 
 The tint is translucent, so it composites over whichever surface the row lands on, and a gate against the canvas alone would miss most of them. `tokens.json5 → overlay.roles.selected.surfaces` is the sanctioned list — `bg`, `bg_soft`, `bg_sunk`, `bg_overlay`, `bg_terminal` — and `tools/build-tokens.mjs` requires `text.fg` to clear 4.5:1 on the resolved tint for all 24 combinations on **every one of them**. The worst case is 5.20:1 (Twilight / orange on `bg_soft`).
 
-`bg_inset` is **not** on that list, and no percentage would put it there: Twilight's `#627084` already sits at 4.62:1 for `fg` before any tint at all, so any wash drops it below AA. That's a property of the surface — the same one the README already exempts from the semantic-vs-surface gate — not of the wash. **A port placing selected rows on `bg_inset` should use the accent bar plus a `state.hover` / `state.active` overlay instead of this wash.** `bg_scrim` is excluded too; it's a modal backdrop, not a row surface.
+The frame is not on that list because it varies by variant, but the frame gates check the wash over every frame too, so a selected row in a frame-coloured sidebar is covered. `bg_scrim` is excluded; it's a modal backdrop, not a row surface.
 
 #### Why 18%
 
@@ -298,7 +325,7 @@ A fill that carried the boundary on its own would have to be `#646464` on Midnig
 
 `control_boundary.surfaces` — `bg`, `bg_soft`, `bg_sunk`, `bg_overlay` — the four a control actually lands on: a dialog button on `bg`, a card button on `bg_soft`, a menu item on `bg_overlay`, an input well on `bg_sunk`.
 
-`bg_inset` is **not** on that list, the same exemption it already carries from the semantic-vs-surface gate and from the selected-item wash. Clearing 3:1 on Twilight's `#627084` would take ≈`#c9c9c9` — the text ramp, i.e. the wireframe outcome the ruleset exists to avoid. **A port drawing controls on docked chrome should give them a `bg_soft` fill** (which is gated) rather than a lighter border, or lean on `state.hover` / `state.active`. `bg_scrim` is a modal backdrop and `bg_terminal` hosts no toolkit controls, so neither is gated.
+The frame is **not** on that list: it is coloured and varies by variant, so a grey outline isn't gated against it. **A port drawing controls on the frame should give them a `bg_soft` fill** (which is gated) rather than relying on the outline, or lean on `state.hover` / `state.active`. `bg_scrim` is a modal backdrop and `bg_terminal` hosts no toolkit controls, so neither is gated.
 
 Background: [issue #15](https://github.com/vivid-life-theme/vivid-life-design-system/issues/15).
 
@@ -306,12 +333,12 @@ Background: [issue #15](https://github.com/vivid-life-theme/vivid-life-design-sy
 
 `text.fg_faint` (`--vl-fg-faint`) is the same rule applied to the text ramp: the grey closest to `faint_text.surfaces` (`bg`, `bg_terminal`) that still clears 3:1 on both. It's for faint rules, separators and incidental hints — marks that may recede but must not vanish. Before [issue #22](https://github.com/vivid-life-theme/vivid-life-design-system/issues/22) the Claude Code port borrowed `border.control` for this, which on Midnight sits at 5.54:1 and isn't faint at all.
 
-| Flavor   | `fg_faint` | vs `bg`  | vs `bg_terminal` |
-| -------- | ---------- | -------- | ---------------- |
-| Midnight | `#686868`  | **3.22** | 3.55             |
-| Twilight | `#8f8f8f`  | **3.21** | 3.91             |
-| Dawn     | `#737373`  | **3.20** | **3.20**         |
-| Noon     | `#898989`  | **3.21** | 3.50             |
+| Flavor   | `fg_faint` | vs `bg` (= `bg_terminal`) |
+| -------- | ---------- | ------------------------- |
+| Midnight | `#686868`  | **3.22**                  |
+| Twilight | `#8f8f8f`  | **3.21**                  |
+| Dawn     | `#737373`  | **3.20**                  |
+| Noon     | `#898989`  | **3.21**                  |
 
 3:1 is the non-text floor, not body text's 4.5:1: **never use `fg_faint` for a label, a message, or anything a user has to read.** It is only gated on `bg` and `bg_terminal` (on Midnight's `bg_soft` it falls to 1.86:1), and the build also requires it to stay fainter than `fg_subtle` on both. On Noon it is lighter than `fg_disabled` — "faint" means the 3:1 floor, not a rung below disabled.
 
@@ -358,12 +385,12 @@ The 16-color terminal palette is **not** stable across flavors — it's the one 
 
 | Flavor   | `bg_terminal` | normal | bright |
 | -------- | ------------- | ------ | ------ |
-| Midnight | `#0a0a0a`     | 500    | 300    |
-| Twilight | `#333333`     | 300    | 100    |
+| Midnight | `#171717`     | 500    | 300    |
+| Twilight | `#404040`     | 300    | 100    |
 | Dawn     | `#d4d4d4`     | 800    | 900    |
-| Noon     | `#ffffff`     | 700    | 900    |
+| Noon     | `#f5f5f5`     | 700    | 900    |
 
-Why per-flavor: an editor port hides the difference, because the canvas beside the terminal panel carries the flavor identity. A **standalone terminal emulator has no editor pane** — `bg_terminal` plus these 12 slots are the entire theme. Before this ruleset the ANSI palette was a 2-set system (one dark set shared by Midnight and Twilight, one light set shared by Dawn and Noon), so Midnight and Twilight differed in 2 of 16 slots (`black` and `red`) and Dawn and Noon in 3 (all neutrals). Giving each flavor its own rung is also what frees `bg_terminal` to spread apart: the pairs went from ΔL\* 5.0 / 3.5 to **ΔL\* 18.5 / 15.1**, at or above the editor-canvas spread that already reads as flavor identity.
+Why per-flavor: an editor port hides the difference, because the canvas beside the terminal panel carries the flavor identity. A **standalone terminal emulator has no editor pane** — `bg_terminal` plus these 12 slots are the entire theme. Before this ruleset the ANSI palette was a 2-set system (one dark set shared by Midnight and Twilight, one light set shared by Dawn and Noon), so Midnight and Twilight differed in 2 of 16 slots (`black` and `red`) and Dawn and Noon in 3 (all neutrals). Since the [frame-colours design](docs/superpowers/specs/2026-11-16-frame-colours-design.md), `bg_terminal` is the flavor's own `bg` on all four flavors: the editor and the terminal share one background, and in an embedded port the panel's tab row, drawn in the frame colour, separates them. The four canvases are further apart than the old terminal backgrounds (`#0a0a0a` / `#333333` / `#d4d4d4` / `#ffffff`) were, so a standalone emulator still shows its flavor.
 
 ANSI hue names are not variant hues — ANSI has `magenta` and `cyan` where the variant axis has `orange` and `purple`. `ansi_hues` maps each ANSI slot onto the palette hue it draws from. The four neutral slots (`black` / `white` / `bright_black` / `bright_white`) are not shade-driven and stay literal per flavor.
 
@@ -412,7 +439,7 @@ Every role names a colour target, optionally a background, and the **gate** it m
 | --------- | ---------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
 | `text`    | colour ≥ 4.5:1 on its background (or `bg_terminal`)                                                                          | `text`, `inactive`, `brand`, `permission`, `suggestion`, status colours, `merged`, `on_accent` |
 | `ui`      | colour ≥ 3:1 on `bg_terminal`                                                                                                | `input_border` (`border.control`), `hint` and `meter_track` (`fg_faint`), `meter_fill`         |
-| `surface` | `fg`, `fg_muted`, `fg_subtle`, every syntax slot and semantic colour ≥ 4.5:1 on the background, flattened over `bg_terminal` | `message`, `message_hover`, `selection`, the diff backgrounds                                  |
+| `surface` | `fg`, `fg_muted`, `fg_subtle`, every syntax slot and semantic colour ≥ 4.5:1 on the background (3:1 on a selection, for a role that sets `text_min`), flattened over `bg_terminal` | `message`, `message_hover`, `selection`, the diff backgrounds                                  |
 
 A `surface` role does **not** guarantee the accent on it. Noon's orange accent sits at 4.75:1 on its own canvas, and no grey far enough from white to show keeps it there.
 
@@ -565,8 +592,8 @@ If you're building a port (a VS Code extension, a GTK theme, a marketing site):
 2. **Iterate 24 themes** by `flavor × variant`. The accent is `palette[variant][accent_shade[flavor][variant]]`. The text-on-accent is `flavors[flavor].accent_on`.
 3. **Use the syntax map** from `flavors[flavor].syntax` directly for any editor port. Extended tokens fall back per `syntax_tokens.extended.{token}`.
 4. **If you need a value not in tokens**, open an issue / PR against this repo. Don't paper over it port-side.
-5. **For a terminal-emulator background** (VS Code's `terminal.background` and equivalents), use `surface.bg_terminal`, not `bg`/`bg_sunk`/`bg_soft` directly. It's the only surface tier verified against all 16 `ansi.*` colors per flavor — see the `bg_terminal` caveat below.
-6. **For a selected tab / row / sidebar entry**, use `--vl-state-selected` / `overlay.selected` (bake it over a surface other than `bg` with `resolveOverlay(tokens, flavor, variant, 'selected', { surface })` — native toolkits mostly lack alpha blending; GTK3/4 CSS has `alpha()` and `mix()` but not `color-mix()`). Pair it with an underline or accent bar; don't ship the wash as the only selection cue, keep the selected label at `fg`, and only place it on a surface listed in `overlay.roles.selected.surfaces` — **not** on `bg_inset`, where no percentage clears AA. See [Selected-item wash](#selected-item-wash).
+5. **For a terminal-emulator background** (VS Code's `terminal.background` and equivalents), use `surface.bg_terminal`, not `bg`/`bg_sunk`/`bg_soft` directly. It has the same value as `bg` on every flavor, but it is the name the 16 `ansi.*` colors are verified against — see the `bg_terminal` caveat below.
+6. **For a selected tab / row / sidebar entry**, use `--vl-state-selected` / `overlay.selected` (bake it over a surface other than `bg` with `resolveOverlay(tokens, flavor, variant, 'selected', { surface })` — native toolkits mostly lack alpha blending; GTK3/4 CSS has `alpha()` and `mix()` but not `color-mix()`). Pair it with an underline or accent bar; don't ship the wash as the only selection cue, keep the selected label at `fg`, and only place it on a surface listed in `overlay.roles.selected.surfaces` or on the frame (both gated). For the frame, pass `{ surface: 'frame' }`: `resolveOverlay(tokens, flavor, variant, 'selected', { surface: 'frame' })` composites over that variant's frame colour. See [Selected-item wash](#selected-item-wash).
 7. **For any interactive control** (button, input, select, toggle, menu item), draw its boundary with `border.control` — it is the only value gated at the 3:1 WCAG 1.4.11 asks of a component boundary, on every surface in `control_boundary.surfaces`. `border.default` and `border.strong` are dividers and emphasis lines; neither clears 3:1, and on three flavor/surface pairs `border.default` is the same hex as the surface behind it. Don't reach for a control fill instead — see [Control boundaries](#control-boundaries).
 8. **For a standalone terminal port** (xfce4-terminal, Windows Terminal, Alacritty, …), take the whole 16-color set from `flavors[flavor].ansi` — it is flavor-specific, not shared within the dark or light pair. Don't substitute a syntax or accent color for an ANSI slot, and don't reuse one flavor's ANSI block for its pair partner. See [ANSI palette](#ansi-palette-per-flavor).
 9. **For any background behind text** — selection, current line, find match, word highlight, diff — read `flavors[flavor].overlay[variant][name]` (`color` + `alpha`, or `flat`). Don't keep a port-side alpha table. For a terminal selection, use `overlay[variant].selection.terminal` — `flat` (the recipe over `bg_terminal`) as the selection background and `foreground` as the selection foreground; the same for `inactive_selection`. Set both: the ANSI colours are not readable on the selection. Draw `find_match_other` with its `border` as well as `find_match`; on the Yellow variant the border is what tells a search hit from the selection. See [Overlays](#overlays).
@@ -649,13 +676,13 @@ See `preview/03-iconography.html` for the live spec and `tokens.json5 → iconog
 
 ## Caveats
 
-- **`bg_sunk`** on Midnight (`#0a0a0a`) and Dawn (`#bdbdbd`), and `--vl-fg-subtle` on Midnight (`#999999`) and Twilight (`#b8b8b8`) are _outside_ the strict palette — needed for surface depth and comment readability respectively. Documented choices, not bugs.
+- **`bg_sunk`** on Dawn (`#bdbdbd`), and `--vl-fg-subtle` on Midnight (`#999999`) and Twilight (`#b8b8b8`) are _outside_ the strict palette — needed for surface depth and comment readability respectively. Documented choices, not bugs.
 - **CONTENT FUNDAMENTALS** / tone-of-voice guidelines are deliberately scoped out for now — themes don't ship copy, so the only writing surface is per-port release notes and the future website. Will revisit when the website exists.
 - **ANSI text on a terminal selection is not AA.** Terminals are expected to redraw selected text in `overlay.*.selection.terminal.foreground`; one without a selection-foreground setting falls below 4.5:1 for some ANSI colours. See [Terminal selection](#terminal-selection).
 - **Overlays are per (flavor, variant)**, emitted as `#rrggbbaa` CSS variables. Over `bg` they match the `flat` value in `tokens.json` to within one step of 8-bit alpha rounding. Ports targeting a format without alpha should use `flat` (or `resolveOverlay()` for another surface) rather than blending themselves.
-- **`surface.bg_inset`** is for docked structural chrome — sidebar, bottom panel, integrated terminal, status bar — as one visual group, distinct from the editor/content canvas (`bg`). It's a fixed, low-saturation cool-slate tint, the same hue family on every flavor, deliberately _not_ derived from `--vl-accent` (so it doesn't shift per variant and doesn't compete with syntax/ANSI hues). It is **exempt** from the semantic-vs-surface WCAG gate that other surface tokens satisfy — success/warning/danger/info banners render on `bg` or `bg_soft`, never directly on `bg_inset`. Ports should not stack alert/badge components on it without re-checking contrast. It is likewise outside the control-boundary gate: no non-text value clears 3:1 on it across all four flavors, so controls on docked chrome take a `bg_soft` fill rather than a lighter outline — see [Control boundaries](#control-boundaries).
-- **`surface.bg_terminal`** is the only surface tier verified to clear 4.5:1 against every `ansi.*` color per flavor (`bg`, `bg_sunk`, `bg_soft`, and `bg_overlay` each collide with at least one `ansi.*` color, exactly or in contrast, on at least one flavor — see [issue #5](https://github.com/vivid-life-theme/vivid-life-design-system/issues/5) for the full analysis). Its four values are `#0a0a0a` (midnight, = `bg_sunk`), `#333333` (twilight, a dedicated literal between `bg_sunk` and `bg`), `#d4d4d4` (dawn, = `bg`) and `#ffffff` (noon, = `bg_soft`) — chosen in [issue #7](https://github.com/vivid-life-theme/vivid-life-design-system/issues/7) to be far enough apart that a standalone terminal emulator, which shows no other surface, can still tell the flavors apart. One or two `ansi.*` slots per flavor are deliberately exempt from the 4.5:1 gate: `ansi.black` on dark flavors; `ansi.bright_white` on light flavors (both dawn and noon); and, on dawn specifically, `ansi.white` too (it is exactly `bg_terminal`). These sit intentionally close to (or exactly at) `bg_terminal` — that's the conventional reverse-video / "invisible" slot every real terminal color scheme leaves near-background, not a defect.
-- **Dawn's terminal panel has no fill of its own.** `bg_terminal` on dawn is the flavor canvas (`bg`), so in an _embedded_ port (VS Code's panel, an IDE's integrated terminal) the terminal reads as a distinct region from its `bg_inset` chrome and border rather than from a different background fill. This is the one cost of the issue #7 spread: dawn's ANSI normal set can't go lighter than `#d2d2d2` without dropping below AA, and every value above that collides with noon. The other three flavors keep a terminal fill distinct from their canvas.
+- **`surface.bg_inset` is gone.** The fixed slate tint for docked chrome was replaced by the variant-coloured [frame](#frame). Read `flavors.<flavor>.frame.<variant>.bg` / `--vl-frame` instead.
+- **`surface.bg_terminal`** is the surface every `ansi.*` color is gated against at 4.5:1 (`bg_sunk`, `bg_soft` and `bg_overlay` each collide with at least one `ansi.*` color on at least one flavor — see [issue #5](https://github.com/vivid-life-theme/vivid-life-design-system/issues/5)). It equals `bg` on all four flavors (`#171717`, `#404040`, `#d4d4d4`, `#f5f5f5`): the editor and the terminal share one background. Until the frame-colours design it was a spread of its own, chosen in [issue #7](https://github.com/vivid-life-theme/vivid-life-design-system/issues/7) so a standalone terminal emulator could tell the flavors apart; the four canvases are further apart still. Keep reading `bg_terminal` for terminal backgrounds: the name is the contract, the value may diverge again. One or two `ansi.*` slots per flavor are deliberately exempt from the 4.5:1 gate: `ansi.black` on dark flavors; `ansi.bright_white` on light flavors (both dawn and noon); and, on dawn specifically, `ansi.white` too (it is exactly `bg_terminal`). These sit intentionally close to (or exactly at) `bg_terminal` — that's the conventional reverse-video / "invisible" slot every real terminal color scheme leaves near-background, not a defect.
+- **No flavor's terminal panel has a fill of its own.** In an _embedded_ port (VS Code's panel, an IDE's integrated terminal) the terminal reads as a distinct region because the panel's tab row is drawn in the frame colour, not because of a different background fill.
 
 ---
 

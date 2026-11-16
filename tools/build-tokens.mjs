@@ -203,9 +203,9 @@ export function apcaContrast(txt, bg) {
    ===================================================================== */
 
 /**
- * @deprecated since issue #19 — the selection is no longer "25% of the
- * accent over bg" (that recipe lightened dark canvases toward the text
- * and dropped Midnight comments to 2.13:1). Read the real value with
+ * 25 % of the accent over bg: the selection recipe on the dark flavors
+ * (tokens.json5 § 3e, THE EXCEPTION), but not on Dawn and Noon. Read the
+ * real value for any flavor with
  * `resolveOverlay(tokens, flavor, variant, 'selection')`, or from
  * `tokens.flavors[flavor].overlay[variant].selection` in tokens.json.
  * Kept as plain colour math so existing callers don't break.
@@ -229,7 +229,7 @@ export function selection({ bg, accent, mixPct = 0.25 } = {}) {
  *
  * Unlike `selection()`, which always lands on the flavor canvas, this
  * one takes the surface explicitly: a selected row can sit on `bg`,
- * `bg_soft` or `bg_inset`, and the wash reads differently on each.
+ * `bg_soft` or the frame, and the wash reads differently on each.
  *
  *   selectedWash({ surface: '#171717', accent: '#d8b4fe' })  → '#3a3341'
  *
@@ -382,7 +382,12 @@ export function emphasisStep(tokens, flavor, variant, target, opts = {}) {
 
   const hex = resolveColor(tokens, flavor, variant, target, opts).toLowerCase();
   for (const [hue, rungs] of Object.entries(tokens.palette)) {
-    const order = Object.keys(rungs).sort((a, b) => a - b); // light → dark
+    // light → dark. The ramp ends at 900: the 950 tier exists for the
+    // frame colour (§ 3i), and stepping a dark accent into it would move
+    // every emphasis value that used to step back to 800.
+    const order = Object.keys(rungs)
+      .filter((k) => Number(k) <= 900)
+      .sort((a, b) => a - b);
     const i = order.findIndex((k) => rungs[k].toLowerCase() === hex);
     if (i < 0) continue;
     // Further from the surface: lighter on a dark surface, darker on a light one.
@@ -402,7 +407,8 @@ export function emphasisStep(tokens, flavor, variant, target, opts = {}) {
 
 /**
  * Resolve one overlay recipe (tokens.json5 § 3e) for a (flavor,
- * variant), composited over `surface` (default `bg`):
+ * variant), composited over `surface` (default `bg`; "frame" for the
+ * variant's frame colour):
  *
  *   resolveOverlay(tokens, 'midnight', 'purple', 'selection')
  *     → { color: '#581c87', alpha: 0.5, flat: '#37194f' }
@@ -418,12 +424,93 @@ export function resolveOverlay(tokens, flavor, variant, name, opts = {}) {
     throw new Error(`resolveOverlay: ${flavor}.${name} may not target another overlay`);
   }
   const surfaceName = opts.surface ?? "bg";
-  const base = tokens.flavors[flavor].surface[surfaceName];
+  // "frame" is the variant's frame (§ 3i), not a flavor surface.
+  const base = surfaceName === "frame" ? resolveFrame(tokens, flavor, variant) : tokens.flavors[flavor].surface[surfaceName];
   if (!base) throw new Error(`resolveOverlay: unknown surface "${surfaceName}"`);
   const color = resolveColor(tokens, flavor, variant, recipe.color);
   const out = { color, alpha: recipe.alpha, flat: alphaOver(color, base, recipe.alpha) };
   if (recipe.border) out.border = resolveColor(tokens, flavor, variant, recipe.border);
   return out;
+}
+
+/**
+ * An OKLCH colour as sRGB hex. `hue` is in radians. Chroma is reduced in
+ * 0.002 steps until the colour fits the sRGB gamut, so a pale or very
+ * light colour keeps its hue and lightness and gives up saturation.
+ */
+export function oklchToHex(l, c, hue) {
+  const delin = (v) => (v <= 0.0031308 ? 12.92 * v : 1.055 * Math.pow(v, 1 / 2.4) - 0.055);
+  for (let ch = c; ch >= 0; ch -= 0.002) {
+    const A = ch * Math.cos(hue),
+      B = ch * Math.sin(hue);
+    const L_ = (l + 0.3963377774 * A + 0.2158037573 * B) ** 3;
+    const M_ = (l - 0.1055613458 * A - 0.0638541728 * B) ** 3;
+    const S_ = (l - 0.0894841775 * A - 1.291485548 * B) ** 3;
+    const rgb = [
+      4.0767416621 * L_ - 3.3077115913 * M_ + 0.2309699292 * S_,
+      -1.2684380046 * L_ + 2.6097574011 * M_ - 0.3413193965 * S_,
+      -0.0041960863 * L_ - 0.7034186147 * M_ + 1.707614701 * S_,
+    ];
+    if (rgb.every((v) => v >= -1e-4 && v <= 1 + 1e-4)) return toHex(rgb.map((v) => delin(Math.max(0, v)) * 255));
+  }
+  return toHex([l, l, l].map((v) => delin(v ** 3) * 255));
+}
+
+/**
+ * The frame colour (tokens.json5 § 3i) for a (flavor, variant): the
+ * flavor's recipe, with the variant supplying the hue.
+ *
+ *   resolveFrame(tokens, 'twilight', 'purple') → '#3b0764'
+ */
+export function resolveFrame(tokens, flavor, variant) {
+  const recipe = tokens.frame?.recipes?.[flavor];
+  if (!recipe) throw new Error(`resolveFrame: no frame recipe for ${flavor}`);
+  if (recipe.surface) return tokens.flavors[flavor].surface[recipe.surface];
+  if (recipe.hue_of) {
+    const [, a, b] = oklab(resolveColor(tokens, flavor, variant, recipe.hue_of));
+    return oklchToHex(recipe.l, recipe.c, Math.atan2(b, a));
+  }
+  const color = resolveColor(tokens, flavor, variant, recipe.color);
+  if (!recipe.mix) return color;
+  return mix(color, resolveColor(tokens, flavor, variant, recipe.mix), recipe.ratio);
+}
+
+/**
+ * Accent-hued text that stays readable on the frame: the accent when it
+ * clears 4.5:1 there, otherwise the nearest rung of the variant's hue
+ * further from the frame (lighter on a dark frame, darker on a light
+ * one). Throws when no rung of the hue clears.
+ *
+ *   frameAccentText(tokens, 'midnight', 'red') → '#fca5a5'  (500 → 300)
+ */
+export function frameAccentText(tokens, flavor, variant, frame = resolveFrame(tokens, flavor, variant)) {
+  const accent = resolveAccent(tokens, flavor, variant);
+  if (contrast(accent, frame) >= 4.5) return accent;
+  const rungs = tokens.palette[variant];
+  const order = Object.keys(rungs).sort((a, b) => a - b); // light → dark
+  const i = order.indexOf(String(tokens.accent_shade[flavor][variant]));
+  const step = relLum(accent) > relLum(frame) ? -1 : 1;
+  for (let j = i + step; j >= 0 && j < order.length; j += step) {
+    if (contrast(rungs[order[j]], frame) >= 4.5) return rungs[order[j]];
+  }
+  throw new Error(`frameAccentText: no ${variant} rung clears 4.5:1 on ${flavor}/${variant} frame ${frame}`);
+}
+
+/**
+ * Fill in `flavors.<flavor>.frame.<variant> = { bg, accent_text }` from
+ * the frame recipes (tokens.json5 § 3i). Emitted after `overlay`.
+ * Mutates and returns `tokens`.
+ */
+export function expandFrames(tokens) {
+  for (const fName of Object.keys(tokens.flavors)) {
+    const byVariant = {};
+    for (const variant of tokens.variant_hues) {
+      const bg = resolveFrame(tokens, fName, variant);
+      byVariant[variant] = { bg, accent_text: frameAccentText(tokens, fName, variant, bg) };
+    }
+    tokens.flavors[fName].frame = byVariant;
+  }
+  return tokens;
 }
 
 /**
@@ -665,9 +752,9 @@ export function expandOverlays(tokens) {
   return tokens;
 }
 
-/** Parsed tokens.json5 → fully resolved token object (refs, shade tables, overlays). */
+/** Parsed tokens.json5 → fully resolved token object (refs, shade tables, overlays, frames). */
 export function resolveTokens(parsed) {
-  return expandOverlays(expandShadeTables(resolveRefs(parsed, parsed)));
+  return expandFrames(expandOverlays(expandShadeTables(resolveRefs(parsed, parsed))));
 }
 
 /**
@@ -769,7 +856,14 @@ export function validateShapes(tokens) {
         errs.push(`✗ ${w} must be an object`);
         continue;
       }
-      keysOk(w, role, ["behind", "use", "text", "text_on_bg", "surfaces", "terminal_foreground"]);
+      keysOk(w, role, ["behind", "use", "text", "text_on_bg", "surfaces", "terminal_foreground", "text_min"]);
+      if (role.text_min !== undefined) {
+        if (typeof role.text_min !== "number" || !(role.text_min > 1 && role.text_min <= 21)) {
+          errs.push(`✗ ${w}.text_min must be a number in (1, 21]`);
+        } else if (role.behind !== "code") {
+          errs.push(`✗ ${w}.text_min only applies to a "code" overlay`);
+        }
+      }
       if (role.terminal_foreground !== undefined && !TEXT_ALIASES.includes(role.terminal_foreground)) {
         errs.push(`✗ ${w}.terminal_foreground: "${role.terminal_foreground}" is not a text role`);
       }
@@ -818,6 +912,60 @@ export function validateShapes(tokens) {
         if (r.color === undefined) errs.push(`✗ ${w}.color missing`);
         else targetOk(`${w}.color`, r.color, { noOverlay: true });
         if (r.border !== undefined) targetOk(`${w}.border`, r.border, { noOverlay: true });
+      }
+    }
+  }
+
+  // ── frame (§ 3i) ────────────────────────────────────────────────────
+  const fr = tokens.frame;
+  if (!isObj(fr)) {
+    errs.push(`✗ frame missing`);
+  } else {
+    keysOk("frame", fr, ["min_step", "step_exempt", "recipes"]);
+    if (typeof fr.min_step !== "number" || !(fr.min_step > 1)) errs.push(`✗ frame.min_step must be a number > 1`);
+    if (fr.step_exempt === undefined) errs.push(`✗ frame.step_exempt missing (use [] for none)`);
+    for (const fl of stringList("frame.step_exempt", fr.step_exempt)) {
+      if (!flavors.includes(fl)) errs.push(`✗ frame.step_exempt: no such flavor "${fl}"`);
+    }
+    if (!isObj(fr.recipes)) {
+      errs.push(`✗ frame.recipes missing`);
+    } else {
+      for (const fl of Object.keys(fr.recipes)) {
+        if (!flavors.includes(fl)) errs.push(`✗ frame.recipes.${fl}: no such flavor`);
+      }
+      for (const fl of flavors) {
+        const r = fr.recipes[fl];
+        const w = `frame.recipes.${fl}`;
+        if (!isObj(r)) {
+          errs.push(`✗ ${w} missing`);
+          continue;
+        }
+        keysOk(w, r, ["surface", "color", "mix", "ratio", "hue_of", "l", "c"]);
+        const forms = ["surface", "color", "hue_of"].filter((k) => r[k] !== undefined);
+        if (forms.length !== 1) {
+          errs.push(`✗ ${w}: needs exactly one of "surface", "color" or "hue_of"`);
+        }
+        if (r.hue_of !== undefined) {
+          targetOk(`${w}.hue_of`, r.hue_of, { noOverlay: true });
+          if (!(typeof r.l === "number" && r.l > 0 && r.l < 1)) errs.push(`✗ ${w}.l must be an OKLCH lightness in (0, 1)`);
+          if (!(typeof r.c === "number" && r.c >= 0 && r.c <= 0.4)) errs.push(`✗ ${w}.c must be an OKLCH chroma in [0, 0.4]`);
+          if (r.mix !== undefined || r.ratio !== undefined) errs.push(`✗ ${w}: a "hue_of" recipe takes no mix or ratio`);
+        } else if (r.l !== undefined || r.c !== undefined) {
+          errs.push(`✗ ${w}: "l" and "c" only go with "hue_of"`);
+        }
+        if (r.surface !== undefined) {
+          surfaceOk(`${w}.surface`, r.surface);
+          // A frame is an opaque fill; bg_scrim is a translucent backdrop.
+          if (r.surface === "bg_scrim") errs.push(`✗ ${w}.surface: "bg_scrim" is translucent, not a fill`);
+          if (r.mix !== undefined || r.ratio !== undefined) errs.push(`✗ ${w}: a "surface" recipe takes no mix or ratio`);
+        }
+        if (r.color !== undefined) targetOk(`${w}.color`, r.color, { noOverlay: true });
+        if (r.mix !== undefined) targetOk(`${w}.mix`, r.mix, { noOverlay: true });
+        if ((r.mix === undefined) !== (r.ratio === undefined)) {
+          errs.push(`✗ ${w}: "mix" and "ratio" go together`);
+        } else if (r.ratio !== undefined && !(typeof r.ratio === "number" && r.ratio > 0 && r.ratio < 1)) {
+          errs.push(`✗ ${w}.ratio must be a number in (0, 1)`);
+        }
       }
     }
   }
@@ -1022,7 +1170,16 @@ export function validateShapes(tokens) {
         errs.push(`✗ ${w} must be an object`);
         continue;
       }
-      keysOk(w, role, ["color", "background", "style", "gate", "emphasis", "use"]);
+      keysOk(w, role, ["color", "background", "style", "gate", "emphasis", "use", "text_min"]);
+      // An app surface may take its overlay's looser floor (§ 3e, the
+      // selection exception) only by saying so, and only that floor.
+      if (role.text_min !== undefined) {
+        const ovName = String(role.background ?? "").startsWith("overlay.") ? role.background.slice(8) : undefined;
+        const ovMin = tokens.overlay?.roles?.[ovName]?.text_min;
+        if (role.gate !== "surface" || ovMin === undefined || role.text_min !== ovMin) {
+          errs.push(`✗ ${w}.text_min: only a "surface" role on an overlay with the same text_min may set it`);
+        }
+      }
       if (!APP_GATES.includes(role.gate)) {
         errs.push(`✗ ${w}.gate is "${role.gate}" — expected ${APP_GATES.map((g) => `"${g}"`).join(", ")}`);
       }
@@ -1200,7 +1357,7 @@ function check(tokens, { onPair } = {}) {
         if (role.behind === "code") {
           const o = f.overlay[hue][name];
           for (const [k, c] of Object.entries(codeText)) {
-            pair("overlay", `${fName}/${hue} ${k} on overlay.${name}`, c, o.flat, 4.5);
+            pair("overlay", `${fName}/${hue} ${k} on overlay.${name}`, c, o.flat, role.text_min ?? 4.5);
           }
         } else {
           for (const sName of role.surfaces) {
@@ -1232,8 +1389,8 @@ function check(tokens, { onPair } = {}) {
     // component's boundary is identifiable. It has to hold on every
     // surface a control lands on, not just the canvas — a dialog button
     // sits on `bg`, a card button on `bg_soft`, a menu item on
-    // `bg_overlay`, an input well on `bg_sunk`. `bg_inset` is exempt,
-    // for the reason given in tokens.json5 § 3f.
+    // `bg_overlay`, an input well on `bg_sunk`. The frame is not on the
+    // list, for the reason given in tokens.json5 § 3f.
     for (const sName of tokens.control_boundary.surfaces) {
       pair("control", `${fName}.border.control on ${sName}`, f.border.control, f.surface[sName], tokens.control_boundary.min);
     }
@@ -1300,11 +1457,9 @@ function check(tokens, { onPair } = {}) {
     }
 
     // Semantic colors must be readable (≥4.5:1) on every surface token
-    // except bg_scrim (a translucent overlay, not a fill) and bg_inset
-    // (docked structural chrome — banners render on bg/bg_soft, never here).
-    const semanticSurfaces = Object.entries(f.surface).filter(
-      ([k]) => k !== "bg_scrim" && k !== "bg_inset",
-    );
+    // except bg_scrim (a translucent overlay, not a fill). The frame
+    // gates below cover them on the frame.
+    const semanticSurfaces = Object.entries(f.surface).filter(([k]) => k !== "bg_scrim");
     for (const [role, color] of Object.entries(f.semantic)) {
       for (const [sName, sColor] of semanticSurfaces) {
         pair("semantic", `${fName}.semantic.${role} on ${sName}`, color, sColor, 4.5);
@@ -1372,7 +1527,9 @@ function check(tokens, { onPair } = {}) {
           : f.surface[appSurface];
         const where = `${fName}/${hue} app_roles.${name}`;
         if (role.gate === "surface") {
-          for (const [k, c] of Object.entries(panelText)) pair("app_roles", `${where}: ${k} on it`, c, back, 4.5);
+          // An app's selection is the same signal as the editor's and
+          // opts into its 3:1 floor (§ 3e); every other surface keeps 4.5:1.
+          for (const [k, c] of Object.entries(panelText)) pair("app_roles", `${where}: ${k} on it`, c, back, role.text_min ?? 4.5);
           continue;
         }
         const min = role.gate === "ui" ? tokens.control_boundary.min : 4.5;
@@ -1392,6 +1549,30 @@ function check(tokens, { onPair } = {}) {
     }
     for (const [n, target] of Object.entries(app.categorical[fName])) {
       pair("app_roles", `${fName} app_roles.categorical.${n}`, resolveColor(tokens, fName, v0, target), f.surface[appSurface], 4.5);
+    }
+
+    // Frame (§ 3i): the text a port may put on it, the semantic colours
+    // (git decorations in a sidebar), the accent as a non-text mark,
+    // accent-hued text, the selected-item wash, and a lightness step
+    // from bg.
+    const selRole = tokens.overlay.roles.selected;
+    const selRecipe = tokens.overlay.recipes[fName].selected;
+    for (const hue of tokens.variant_hues) {
+      const fr = f.frame[hue];
+      const w = `${fName}/${hue}`;
+      for (const k of ["fg", "fg_muted"]) pair("frame", `${w} text.${k} on frame`, f.text[k], fr.bg, 4.5);
+      for (const [role, color] of Object.entries(f.semantic)) pair("frame", `${w} semantic.${role} on frame`, color, fr.bg, 4.5);
+      pair("frame", `${w} accent on frame`, resolveAccent(tokens, fName, hue), fr.bg, tokens.control_boundary.min);
+      pair("frame", `${w} frame.accent_text on frame`, fr.accent_text, fr.bg, 4.5);
+      const wash = alphaOver(resolveColor(tokens, fName, hue, selRecipe.color), fr.bg, selRecipe.alpha);
+      for (const k of selRole.text) pair("frame", `${w} text.${k} on overlay.selected over frame`, f.text[k], wash, 4.5);
+      // The accent bar beside a selected row (WCAG 1.4.11): on the frame
+      // it is accent_text, because the accent drops to 2.7:1 against the
+      // wash on Midnight-red and Noon-orange.
+      pair("frame", `${w} frame.accent_text vs overlay.selected over frame`, fr.accent_text, wash, tokens.control_boundary.min);
+      if (!tokens.frame.step_exempt.includes(fName)) {
+        pair("frame", `${w} frame vs bg`, fr.bg, bg, tokens.frame.min_step);
+      }
     }
   }
 
@@ -1561,9 +1742,9 @@ async function selfTest() {
       "midnight selected wash (purple) on bg",
     ],
     [
-      () => selectedWash({ surface: "#434f60", accent: "#d8b4fe" }),
-      "#5e617c",
-      "midnight selected wash (purple) on bg_inset",
+      () => selectedWash({ surface: "#404040", accent: "#d8b4fe" }),
+      "#5b5562",
+      "midnight selected wash (purple) on bg_soft",
     ],
 
     // alphaOver
@@ -1648,8 +1829,8 @@ async function selfTest() {
       "overlay.selected over bg = the old 18% wash",
     ],
     [
-      () => resolveOverlay(real, "midnight", "purple", "selected", { surface: "bg_inset" }).flat,
-      selectedWash({ surface: "#434f60", accent: "#d8b4fe" }),
+      () => resolveOverlay(real, "midnight", "purple", "selected", { surface: "bg_soft" }).flat,
+      selectedWash({ surface: "#404040", accent: "#d8b4fe" }),
       "resolveOverlay over another surface matches selectedWash()",
     ],
     [
@@ -1731,7 +1912,7 @@ async function selfTest() {
     [
       () => has(check(mutated((t) => (t.app_roles.roles.hint.color = "fg_disabled"))), "midnight/red app_roles.hint"),
       true,
-      "a ui role below 3:1 on bg_terminal is caught (fg_disabled on Midnight: 2.53:1)",
+      "a ui role below 3:1 on bg_terminal is caught (fg_disabled on Midnight: 2.29:1)",
     ],
     [
       () => has(check(mutated((t) => (t.app_roles.roles.message_hover.background = "overlay.selected"))), "dawn/red app_roles.message_hover: text.fg_subtle on it"),
@@ -1762,9 +1943,9 @@ async function selfTest() {
       "an exempt categorical pair is skipped",
     ],
     [
-      () => has(distinctnessIssues(mutated((t) => (t.app_roles.roles.message.background = "overlay.line_highlight"))), "twilight/red: app_roles.message"),
+      () => has(distinctnessIssues(mutated((t) => (t.overlay.recipes.midnight.panel = { color: "gray.800", alpha: 0.5 }))), "midnight/red: app_roles.message"),
       true,
-      "a message block on line_highlight doesn't show over Twilight's bg_terminal (ΔE 3.2)",
+      "the old Midnight panel (ΔE 3.5 from bg_terminal) is caught",
     ],
 
     // validateShapes — typos fail instead of passing silently
@@ -1808,20 +1989,9 @@ async function selfTest() {
     // gates — the real tokens pass, and each gate bites
     [() => check(real).length, 0, "real tokens pass every gate"],
     [
-      () =>
-        has(
-          check(mutated((t) => {
-            for (const v of t.variant_hues) {
-              t.flavors.midnight.overlay[v].selection.flat = selection({
-                bg: t.flavors.midnight.surface.bg,
-                accent: resolveAccent(t, "midnight", v),
-              });
-            }
-          })),
-          "on overlay.selection",
-        ),
+      () => has(check(mutated((t) => (t.overlay.recipes.midnight.selection = { color: "accent", alpha: 0.6 }))), "midnight/blue app_roles.selection: syntax.comment on it"),
       true,
-      "the old lightening selection (25% accent) fails the syntax-on-overlay gate",
+      "an app selection below 3:1 is caught (it follows the overlay's text_min)",
     ],
     [
       () => has(check(mutated((t) => (t.flavors.dawn.syntax.number = "#c2410c"))), "dawn.syntax.number on bg"),
@@ -1866,7 +2036,7 @@ async function selfTest() {
           "midnight/red text.fg on overlay.selection over bg_terminal",
         ),
       true,
-      "a terminal selection foreground below 4.5:1 is caught (ANSI magenta: 3.89:1)",
+      "a terminal selection foreground below 4.5:1 is caught (ANSI magenta: 3.39:1)",
     ],
     [
       () => has(distinctnessIssues(mutated((t) => (t.flavors.dawn.syntax.parameter = "#7c2d12"))), "dawn: syntax parameter (#7c2d12) and type"),
@@ -1877,6 +2047,156 @@ async function selfTest() {
       () => has(distinctnessIssues(mutated((t) => (t.flavors.midnight.ansi.blue = t.flavors.midnight.ansi.bright_blue))), "ansi blue"),
       true,
       "an ANSI colour identical to its bright version is caught",
+    ],
+
+    // Frame colours (docs/superpowers/specs/2026-11-16-frame-colours-design.md)
+    [() => real.palette.purple[950], "#3b0764", "palette has the 950 rung"],
+    [() => resolveColor(real, "twilight", "green", "accent.950"), "#1a2e05", "accent.950 follows the variant"],
+    [
+      () => ["red", "orange", "yellow", "green", "blue", "purple", "gray", "cyan"].every((h) => /^#[0-9a-f]{6}$/.test(real.palette[h][950])),
+      true,
+      "every palette row has a 950",
+    ],
+    [() => real.flavors.midnight.surface.bg_sunk, real.palette.gray[950], "midnight bg_sunk is gray.950"],
+    [() => Object.values(real.flavors).every((f) => f.surface.bg_terminal === f.surface.bg), true, "bg_terminal is bg on every flavor"],
+    [() => real.flavors.twilight.ansi.bright_black, "#adadad", "twilight bright_black clears 4.5:1 on #404040"],
+    [() => real.flavors.noon.ansi.bright_black, "#6f6f6f", "noon bright_black clears 4.5:1 on #f5f5f5"],
+    [() => real.flavors.twilight.overlay.orange.selection.flat, alphaOver(real.palette.orange[300], "#404040", 0.25), "twilight selection is 25% accent over bg"],
+    [() => real.flavors.midnight.overlay.blue.inactive_selection.flat, alphaOver(real.palette.blue[300], "#171717", 0.15), "midnight inactive selection is 15% accent over bg"],
+    [
+      () => has(check(mutated((t) => (t.flavors.twilight.overlay.orange.selection.flat = "#5c5c5c"))), "twilight/orange syntax.comment on overlay.selection"),
+      false,
+      "a selection at 3.37:1 passes the 3:1 class",
+    ],
+    [
+      () => has(check(mutated((t) => (t.flavors.twilight.overlay.orange.find_match.flat = "#5c5c5c"))), "twilight/orange syntax.comment on overlay.find_match"),
+      true,
+      "a find match at 3.37:1 still fails 4.5:1",
+    ],
+    [
+      () => has(check(mutated((t) => (t.flavors.twilight.overlay.orange.selection.flat = "#7a7a7a"))), "twilight/orange syntax.comment on overlay.selection"),
+      true,
+      "a selection below 3:1 is caught",
+    ],
+    [
+      () => has(validateShapes(mutated((t) => (t.overlay.roles.selection.text_min = "3"))), "text_min must be a number"),
+      true,
+      "a non-numeric text_min is rejected",
+    ],
+    [() => resolveFrame(real, "midnight", "red"), "#621414", "midnight frame is the 50/50 mix of 900 and 950"],
+    [() => resolveFrame(real, "midnight", "blue"), "#1b306f", "midnight blue frame"],
+    [() => resolveFrame(real, "twilight", "purple"), "#3b0764", "twilight frame is 950"],
+    [() => resolveFrame(real, "dawn", "red"), "#fef6f6", "dawn frame is a light pastel, brighter than its canvas"],
+    [() => resolveFrame(real, "dawn", "green"), "#efffe2", "dawn green frame"],
+    [() => resolveFrame(real, "noon", "blue"), "#bed2f3", "noon frame is a pastel darker than its canvas"],
+    [() => resolveFrame(real, "noon", "yellow"), "#e0cfac", "noon yellow frame"],
+    [() => real.frame.step_exempt.length, 0, "no flavor is exempt from the frame step"],
+    [
+      () => resolveOverlay(real, "midnight", "red", "selected", { surface: "frame" }).flat,
+      alphaOver("#ef4444", "#621414", 0.18),
+      "resolveOverlay composites over the variant's frame",
+    ],
+    [
+      () => resolveColor(real, "noon", "blue", "overlay.selected", { surface: "frame" }),
+      alphaOver(real.palette.blue[700], "#bed2f3", 0.18),
+      "overlay.<name> resolves over the frame too",
+    ],
+    [
+      () => has(check(mutated((t) => (t.flavors.midnight.frame.red.accent_text = "#ef4444"))), "midnight/red frame.accent_text vs overlay.selected over frame"),
+      true,
+      "an accent bar below 3:1 against the selected wash on the frame is caught (midnight red accent: 2.74:1)",
+    ],
+    [() => real.flavors.twilight.frame?.green?.bg, "#1a2e05", "frames are emitted per variant"],
+    [() => frameAccentText(real, "midnight", "red"), "#fca5a5", "midnight red accent text steps to red.300 (accent is 3.42:1)"],
+    [() => frameAccentText(real, "midnight", "blue"), real.palette.blue[300], "an accent that clears stays the accent"],
+    [
+      () => {
+        try {
+          frameAccentText(real, "midnight", "red", "#808080");
+          return "resolved";
+        } catch (e) {
+          return /midnight\/red.*#808080/.test(e.message);
+        }
+      },
+      true,
+      "no clearing rung throws with flavor, variant and frame",
+    ],
+    [
+      () => has(check(mutated((t) => (t.flavors.midnight.frame.red.bg = t.flavors.midnight.surface.bg))), "midnight/red frame vs bg"),
+      true,
+      "a frame too close to bg is caught",
+    ],
+    [
+      () => has(check(mutated((t) => (t.flavors.dawn.frame.red.bg = t.flavors.dawn.surface.bg_sunk))), "dawn/red frame vs bg"),
+      true,
+      "dawn's old grey chrome (1.27:1) fails the step gate",
+    ],
+    [
+      () => has(check(mutated((t) => (t.flavors.dawn.frame.green.bg = "#a9bb9a"))), "dawn/green semantic.success on frame"),
+      true,
+      "a darker dawn pastel drops the git colours below 4.5:1",
+    ],
+    [
+      () => has(check(mutated((t) => (t.flavors.midnight.frame.red.accent_text = "#ef4444"))), "midnight/red frame.accent_text on frame"),
+      true,
+      "accent text below 4.5:1 on the frame is caught",
+    ],
+    [
+      () => has(check(mutated((t) => (t.flavors.midnight.frame.red.bg = "#7a7a7a"))), "midnight/red text.fg_muted on frame"),
+      true,
+      "fg_muted below 4.5:1 on the frame is caught",
+    ],
+    [
+      () => has(validateShapes(mutated((t) => (t.frame.recipes.twilight = { color: "accent.975" }))), "frame.recipes.twilight.color"),
+      true,
+      "a frame rung some hue lacks is rejected",
+    ],
+    [
+      () => has(validateShapes(mutated((t) => (t.frame.recipes.dawn = { surface: "bg_sunk", color: "accent" }))), "frame.recipes.dawn"),
+      true,
+      "surface and color together are rejected",
+    ],
+    [
+      () => has(validateShapes(mutated((t) => (t.frame.recipes.midnight = { color: "accent.900", mix: "accent.950" }))), "ratio"),
+      true,
+      "mix without ratio is rejected",
+    ],
+    [() => Object.values(real.flavors).some((f) => "bg_inset" in f.surface), false, "bg_inset is gone"],
+    [
+      () => has(check(mutated((t) => (t.app_roles.roles.message_hover.background = "overlay.inactive_selection"))), "twilight/orange app_roles.message_hover: syntax.comment on it"),
+      true,
+      "an app surface on a selection overlay keeps 4.5:1 unless it opts in (message_hover)",
+    ],
+    [
+      () => has(validateShapes(mutated((t) => (t.app_roles.roles.message.text_min = 3))), "text_min"),
+      true,
+      "app text_min is rejected unless the role's background overlay carries the same text_min",
+    ],
+    [() => has(validateShapes(mutated((t) => delete t.frame.step_exempt)), "frame.step_exempt"), true, "a missing frame.step_exempt is rejected"],
+    [
+      () => has(validateShapes(mutated((t) => (t.frame.recipes.noon = { hue_of: "accent.500", l: 1.2, c: 0.05 }))), "frame.recipes.noon.l"),
+      true,
+      "an OKLCH lightness outside (0, 1) is rejected",
+    ],
+    [
+      () => has(validateShapes(mutated((t) => (t.frame.recipes.noon = { hue_of: "accent.500", color: "accent", l: 0.86, c: 0.05 }))), "frame.recipes.noon"),
+      true,
+      "hue_of and color together are rejected",
+    ],
+    [
+      () => has(validateShapes(mutated((t) => (t.frame.recipes.noon = { hue_of: "accent.550", l: 0.86, c: 0.05 }))), "frame.recipes.noon.hue_of"),
+      true,
+      "a hue_of rung that doesn't exist is rejected",
+    ],
+    [
+      () => has(validateShapes(mutated((t) => (t.frame.recipes.dawn = { surface: "bg_sunk", mix: "accent.950", ratio: 0.5 }))), "frame.recipes.dawn"),
+      true,
+      "a surface recipe with mix is rejected",
+    ],
+    [
+      () => has(validateShapes(mutated((t) => (t.frame.recipes.dawn = { surface: "bg_scrim" }))), "frame.recipes.dawn.surface"),
+      true,
+      "a translucent frame surface is rejected",
     ],
   ];
 
@@ -1931,7 +2251,7 @@ async function main() {
     for (const e of shapeErrs) console.error("  " + e);
     process.exit(1);
   }
-  const tokens = expandOverlays(partial);
+  const tokens = expandFrames(expandOverlays(partial));
 
   // Gates run BEFORE anything is written, so a failing build leaves the
   // previous tokens.json / dist/tokens.js on disk untouched — a port on
@@ -1985,13 +2305,14 @@ async function main() {
 
   console.log(`\n✓ ${rows.length} contrast pairs gated, all pass:`);
   console.log("  accents on bg · text and every syntax slot on bg at 4.5:1");
-  console.log("  every syntax slot, fg, fg_subtle and semantic colour on every code overlay");
+  console.log("  every syntax slot, fg, fg_subtle and semantic colour on every code overlay (3:1 on the selections)");
   console.log("  the selected-item wash on every sanctioned surface · overlay borders at 3:1 on bg and fill");
   console.log("  the terminal selection foreground on selection over bg_terminal");
   console.log("  border.control at 3:1 on every control surface (WCAG 1.4.11)");
   console.log("  ansi.* on bg_terminal · semantic colours on every surface");
   console.log("  shell_roles, prompt_roles and app_roles on what they're drawn on");
   console.log("  accent_on on every accent and semantic fill · fg_faint at 3:1 on bg and bg_terminal");
+  console.log("  on every frame: fg, fg_muted, semantic colours, accent text, the selected wash · accent at 3:1 · the step from bg");
   console.log("✓ Resolved colours and overlays pass the OKLab distinctness gate.");
   console.log("✓ Shade tables, overlay recipes and role maps are well-formed.");
   const below = rows.filter((r) => r.apcaTarget && Math.abs(apcaContrast(r.fg, r.bg)) < r.apcaTarget);
