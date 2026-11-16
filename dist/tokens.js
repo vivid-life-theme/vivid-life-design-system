@@ -328,12 +328,14 @@ export default {
       "selection": {
         "behind": "code",
         "use": "Text selection — editor, terminal, shell command line, ::selection.",
-        "terminal_foreground": "fg"
+        "terminal_foreground": "fg",
+        "text_min": 3
       },
       "inactive_selection": {
         "behind": "code",
         "use": "Selection in an unfocused editor or terminal.",
-        "terminal_foreground": "fg"
+        "terminal_foreground": "fg",
+        "text_min": 3
       },
       "line_highlight": {
         "behind": "code",
@@ -412,12 +414,12 @@ export default {
     "recipes": {
       "midnight": {
         "selection": {
-          "color": "accent.900",
-          "alpha": 0.5
+          "color": "accent",
+          "alpha": 0.25
         },
         "inactive_selection": {
-          "color": "accent.900",
-          "alpha": 0.25
+          "color": "accent",
+          "alpha": 0.15
         },
         "line_highlight": {
           "color": "gray.800",
@@ -484,12 +486,12 @@ export default {
       },
       "twilight": {
         "selection": {
-          "color": "accent.900",
-          "alpha": 0.75
+          "color": "accent",
+          "alpha": 0.25
         },
         "inactive_selection": {
-          "color": "accent.900",
-          "alpha": 0.4
+          "color": "accent",
+          "alpha": 0.15
         },
         "line_highlight": {
           "color": "gray.800",
@@ -920,20 +922,20 @@ export default {
       "overlay": {
         "red": {
           "selection": {
-            "color": "#7f1d1d",
-            "alpha": 0.5,
-            "flat": "#4b1a1a",
+            "color": "#ef4444",
+            "alpha": 0.25,
+            "flat": "#4d2222",
             "terminal": {
-              "flat": "#4b1a1a",
+              "flat": "#4d2222",
               "foreground": "#f5f5f5"
             }
           },
           "inactive_selection": {
-            "color": "#7f1d1d",
-            "alpha": 0.25,
-            "flat": "#311919",
+            "color": "#ef4444",
+            "alpha": 0.15,
+            "flat": "#371e1e",
             "terminal": {
-              "flat": "#311919",
+              "flat": "#371e1e",
               "foreground": "#f5f5f5"
             }
           },
@@ -1017,20 +1019,20 @@ export default {
         },
         "orange": {
           "selection": {
-            "color": "#7c2d12",
-            "alpha": 0.5,
-            "flat": "#4a2215",
+            "color": "#f97316",
+            "alpha": 0.25,
+            "flat": "#502e17",
             "terminal": {
-              "flat": "#4a2215",
+              "flat": "#502e17",
               "foreground": "#f5f5f5"
             }
           },
           "inactive_selection": {
-            "color": "#7c2d12",
-            "alpha": 0.25,
-            "flat": "#301d16",
+            "color": "#f97316",
+            "alpha": 0.15,
+            "flat": "#392517",
             "terminal": {
-              "flat": "#301d16",
+              "flat": "#392517",
               "foreground": "#f5f5f5"
             }
           },
@@ -1114,20 +1116,20 @@ export default {
         },
         "yellow": {
           "selection": {
-            "color": "#713f12",
-            "alpha": 0.5,
-            "flat": "#442b15",
+            "color": "#eab308",
+            "alpha": 0.25,
+            "flat": "#4c3e13",
             "terminal": {
-              "flat": "#442b15",
+              "flat": "#4c3e13",
               "foreground": "#f5f5f5"
             }
           },
           "inactive_selection": {
-            "color": "#713f12",
-            "alpha": 0.25,
-            "flat": "#2e2116",
+            "color": "#eab308",
+            "alpha": 0.15,
+            "flat": "#372e15",
             "terminal": {
-              "flat": "#2e2116",
+              "flat": "#372e15",
               "foreground": "#f5f5f5"
             }
           },
@@ -1211,20 +1213,20 @@ export default {
         },
         "green": {
           "selection": {
-            "color": "#365314",
-            "alpha": 0.5,
-            "flat": "#273516",
+            "color": "#84cc16",
+            "alpha": 0.25,
+            "flat": "#324417",
             "terminal": {
-              "flat": "#273516",
+              "flat": "#324417",
               "foreground": "#f5f5f5"
             }
           },
           "inactive_selection": {
-            "color": "#365314",
-            "alpha": 0.25,
-            "flat": "#1f2616",
+            "color": "#84cc16",
+            "alpha": 0.15,
+            "flat": "#273217",
             "terminal": {
-              "flat": "#1f2616",
+              "flat": "#273217",
               "foreground": "#f5f5f5"
             }
           },
@@ -1308,20 +1310,20 @@ export default {
         },
         "blue": {
           "selection": {
-            "color": "#1e3a8a",
-            "alpha": 0.5,
-            "flat": "#1b2951",
+            "color": "#93c5fd",
+            "alpha": 0.25,
+            "flat": "#364351",
             "terminal": {
-              "flat": "#1b2951",
+              "flat": "#364351",
               "foreground": "#f5f5f5"
             }
           },
           "inactive_selection": {
-            "color": "#1e3a8a",
-            "alpha": 0.25,
-            "flat": "#192034",
+            "color": "#93c5fd",
+            "alpha": 0.15,
+            "flat": "#2a313a",
             "terminal": {
-              "flat": "#192034",
+              "flat": "#2a313a",
               "foreground": "#f5f5f5"
             }
           },
@@ -1405,20 +1407,20 @@ export default {
         },
         "purple": {
           "selection": {
-            "color": "#581c87",
-            "alpha": 0.5,
-            "flat": "#381a4f",
+            "color": "#d8b4fe",
+            "alpha": 0.25,
+            "flat": "#473e51",
             "terminal": {
-              "flat": "#381a4f",
+              "flat": "#473e51",
               "foreground": "#f5f5f5"
             }
           },
           "inactive_selection": {
-            "color": "#581c87",
-            "alpha": 0.25,
-            "flat": "#271833",
+            "color": "#d8b4fe",
+            "alpha": 0.15,
+            "flat": "#342f3a",
             "terminal": {
-              "flat": "#271833",
+              "flat": "#342f3a",
               "foreground": "#f5f5f5"
             }
           },
@@ -1573,20 +1575,20 @@ export default {
       "overlay": {
         "red": {
           "selection": {
-            "color": "#7f1d1d",
-            "alpha": 0.75,
-            "flat": "#6f2626",
+            "color": "#fca5a5",
+            "alpha": 0.25,
+            "flat": "#6f5959",
             "terminal": {
-              "flat": "#6f2626",
+              "flat": "#6f5959",
               "foreground": "#f5f5f5"
             }
           },
           "inactive_selection": {
-            "color": "#7f1d1d",
-            "alpha": 0.4,
-            "flat": "#593232",
+            "color": "#fca5a5",
+            "alpha": 0.15,
+            "flat": "#5c4f4f",
             "terminal": {
-              "flat": "#593232",
+              "flat": "#5c4f4f",
               "foreground": "#f5f5f5"
             }
           },
@@ -1670,20 +1672,20 @@ export default {
         },
         "orange": {
           "selection": {
-            "color": "#7c2d12",
-            "alpha": 0.75,
-            "flat": "#6d321e",
+            "color": "#fdba74",
+            "alpha": 0.25,
+            "flat": "#6f5f4d",
             "terminal": {
-              "flat": "#6d321e",
+              "flat": "#6f5f4d",
               "foreground": "#f5f5f5"
             }
           },
           "inactive_selection": {
-            "color": "#7c2d12",
-            "alpha": 0.4,
-            "flat": "#58382e",
+            "color": "#fdba74",
+            "alpha": 0.15,
+            "flat": "#5c5248",
             "terminal": {
-              "flat": "#58382e",
+              "flat": "#5c5248",
               "foreground": "#f5f5f5"
             }
           },
@@ -1767,20 +1769,20 @@ export default {
         },
         "yellow": {
           "selection": {
-            "color": "#713f12",
-            "alpha": 0.75,
-            "flat": "#653f1e",
+            "color": "#eab308",
+            "alpha": 0.25,
+            "flat": "#6b5d32",
             "terminal": {
-              "flat": "#653f1e",
+              "flat": "#6b5d32",
               "foreground": "#f5f5f5"
             }
           },
           "inactive_selection": {
-            "color": "#713f12",
-            "alpha": 0.4,
-            "flat": "#54402e",
+            "color": "#eab308",
+            "alpha": 0.15,
+            "flat": "#5a5138",
             "terminal": {
-              "flat": "#54402e",
+              "flat": "#5a5138",
               "foreground": "#f5f5f5"
             }
           },
@@ -1864,20 +1866,20 @@ export default {
         },
         "green": {
           "selection": {
-            "color": "#365314",
-            "alpha": 0.75,
-            "flat": "#394e1f",
+            "color": "#84cc16",
+            "alpha": 0.25,
+            "flat": "#516336",
             "terminal": {
-              "flat": "#394e1f",
+              "flat": "#516336",
               "foreground": "#f5f5f5"
             }
           },
           "inactive_selection": {
-            "color": "#365314",
-            "alpha": 0.4,
-            "flat": "#3c482e",
+            "color": "#84cc16",
+            "alpha": 0.15,
+            "flat": "#4a553a",
             "terminal": {
-              "flat": "#3c482e",
+              "flat": "#4a553a",
               "foreground": "#f5f5f5"
             }
           },
@@ -1961,20 +1963,20 @@ export default {
         },
         "blue": {
           "selection": {
-            "color": "#1e3a8a",
-            "alpha": 0.75,
-            "flat": "#273c78",
+            "color": "#93c5fd",
+            "alpha": 0.25,
+            "flat": "#55616f",
             "terminal": {
-              "flat": "#273c78",
+              "flat": "#55616f",
               "foreground": "#f5f5f5"
             }
           },
           "inactive_selection": {
-            "color": "#1e3a8a",
-            "alpha": 0.4,
-            "flat": "#323e5e",
+            "color": "#93c5fd",
+            "alpha": 0.15,
+            "flat": "#4c545c",
             "terminal": {
-              "flat": "#323e5e",
+              "flat": "#4c545c",
               "foreground": "#f5f5f5"
             }
           },
@@ -2058,20 +2060,20 @@ export default {
         },
         "purple": {
           "selection": {
-            "color": "#581c87",
-            "alpha": 0.75,
-            "flat": "#522575",
+            "color": "#d8b4fe",
+            "alpha": 0.25,
+            "flat": "#665d70",
             "terminal": {
-              "flat": "#522575",
+              "flat": "#665d70",
               "foreground": "#f5f5f5"
             }
           },
           "inactive_selection": {
-            "color": "#581c87",
-            "alpha": 0.4,
-            "flat": "#4a325c",
+            "color": "#d8b4fe",
+            "alpha": 0.15,
+            "flat": "#57515d",
             "terminal": {
-              "flat": "#4a325c",
+              "flat": "#57515d",
               "foreground": "#f5f5f5"
             }
           },

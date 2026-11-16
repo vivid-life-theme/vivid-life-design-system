@@ -213,7 +213,7 @@ A target with alpha support (VS Code, CSS) blends `color` at `alpha`; one withou
 
 > _Dark flavors tint with the 900 rung — a deep hue at or below the canvas luminance. Light flavors tint with the 100 / 300 rung — a pale hue at or above it._
 
-The previous selection did the opposite on dark flavors: 25% of a light accent lightened the canvas toward the text, and dropped Midnight comments to 2.13:1 and Twilight's `parameter` to 2.19:1. The 3:1-only check on `bg` never saw it.
+**The exception is the selection on the dark flavors.** A selection is a short-lived signal: that it shows matters more than how readable the text inside it is at that moment. A 900-rung selection kept 4.5:1 but read as a dark smudge rather than the variant's colour. So on Midnight and Twilight `selection` is 25 % of the accent over `bg` and `inactive_selection` 15 %, and both roles carry `text_min: 3`: every code colour clears 3:1 on them (worst: comment grey at 3.55:1 on Midnight, 3.10:1 on Twilight). `app_roles` surfaces drawn on a selection follow the same minimum. Every other code overlay keeps 4.5:1, and the terminal selection foreground keeps 4.5:1 too. Sepp's Workshop made the same call after its users found a dark selection too hard to see; see the [frame-colours design](docs/superpowers/specs/2026-11-16-frame-colours-design.md).
 
 #### Telling overlays apart
 
@@ -222,7 +222,7 @@ Contrast for the text on an overlay says nothing about whether the overlay itsel
 - `selection` and `find_match` sit at least 5 (`related_min`) from `bg`, and the selection at least 5 from `bg_terminal` too. Dawn is the tightest at 6.96: its selection is already `accent.100` at full opacity, the palette's lightest rung, and the syntax gate leaves no room to darken it.
 - A selection (active or inactive) and a find match (current or other) are on screen together, so each pair is either 7 (`min`) apart by fill, or one of the two carries a border that clears 3:1 against both fills.
 
-The border is the only option on the dark flavors. The comment grey caps how far any overlay may lift the canvas, and on the Yellow variant the selection is `yellow.900`, the same hue as the find match: Midnight/Yellow and Twilight/Yellow have **identical** selection and find-match fills, and the best split any rung or alpha allows is ΔE 6.2 on Midnight and 5.0 on Twilight. So both find overlays are outlined: the current match in `semantic.warning`, every other match in a quieter yellow rung (`yellow.500` dark, `yellow.700` light) that clears 3:1 against `bg`, its own fill and either selection on every flavor (tightest: Dawn at 3.32:1). Every overlay border is also gated against its own fill, not just `bg`.
+The border is the only option on the dark flavors. The comment grey caps how far any overlay may lift the canvas, and when the selection was `accent.900`, the Yellow variant's selection had the same hue as the find match: Midnight/Yellow and Twilight/Yellow had **identical** selection and find-match fills. The tinted selection now lightens the canvas while the find match darkens it, but the borders stay. So both find overlays are outlined: the current match in `semantic.warning`, every other match in a quieter yellow rung (`yellow.500` dark, `yellow.700` light) that clears 3:1 against `bg`, its own fill and either selection on every flavor (tightest: Dawn at 3.32:1). Every overlay border is also gated against its own fill, not just `bg`.
 
 #### Terminal selection
 
@@ -412,7 +412,7 @@ Every role names a colour target, optionally a background, and the **gate** it m
 | --------- | ---------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
 | `text`    | colour ≥ 4.5:1 on its background (or `bg_terminal`)                                                                          | `text`, `inactive`, `brand`, `permission`, `suggestion`, status colours, `merged`, `on_accent` |
 | `ui`      | colour ≥ 3:1 on `bg_terminal`                                                                                                | `input_border` (`border.control`), `hint` and `meter_track` (`fg_faint`), `meter_fill`         |
-| `surface` | `fg`, `fg_muted`, `fg_subtle`, every syntax slot and semantic colour ≥ 4.5:1 on the background, flattened over `bg_terminal` | `message`, `message_hover`, `selection`, the diff backgrounds                                  |
+| `surface` | `fg`, `fg_muted`, `fg_subtle`, every syntax slot and semantic colour ≥ 4.5:1 on the background (3:1 on a selection), flattened over `bg_terminal` | `message`, `message_hover`, `selection`, the diff backgrounds                                  |
 
 A `surface` role does **not** guarantee the accent on it. Noon's orange accent sits at 4.75:1 on its own canvas, and no grey far enough from white to show keeps it there.
 

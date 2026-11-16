@@ -422,8 +422,8 @@
 /* Midnight */
 .vl-midnight.variant-red {
   --vl-accent: #ef4444;
-  --vl-overlay-selection            : #7f1d1d80;
-  --vl-overlay-inactive-selection   : #7f1d1d40;
+  --vl-overlay-selection            : #ef444440;
+  --vl-overlay-inactive-selection   : #ef444426;
   --vl-overlay-line-highlight       : #262626;
   --vl-overlay-find-match           : #713f1280;
   --vl-overlay-find-match-border    : #fde047;
@@ -444,8 +444,8 @@
 }
 .vl-midnight.variant-orange {
   --vl-accent: #f97316;
-  --vl-overlay-selection            : #7c2d1280;
-  --vl-overlay-inactive-selection   : #7c2d1240;
+  --vl-overlay-selection            : #f9731640;
+  --vl-overlay-inactive-selection   : #f9731626;
   --vl-overlay-line-highlight       : #262626;
   --vl-overlay-find-match           : #713f1280;
   --vl-overlay-find-match-border    : #fde047;
@@ -466,8 +466,8 @@
 }
 .vl-midnight.variant-yellow {
   --vl-accent: #eab308;
-  --vl-overlay-selection            : #713f1280;
-  --vl-overlay-inactive-selection   : #713f1240;
+  --vl-overlay-selection            : #eab30840;
+  --vl-overlay-inactive-selection   : #eab30826;
   --vl-overlay-line-highlight       : #262626;
   --vl-overlay-find-match           : #713f1280;
   --vl-overlay-find-match-border    : #fde047;
@@ -488,8 +488,8 @@
 }
 .vl-midnight.variant-green {
   --vl-accent: #84cc16;
-  --vl-overlay-selection            : #36531480;
-  --vl-overlay-inactive-selection   : #36531440;
+  --vl-overlay-selection            : #84cc1640;
+  --vl-overlay-inactive-selection   : #84cc1626;
   --vl-overlay-line-highlight       : #262626;
   --vl-overlay-find-match           : #713f1280;
   --vl-overlay-find-match-border    : #fde047;
@@ -510,8 +510,8 @@
 }
 .vl-midnight.variant-blue {
   --vl-accent: #93c5fd;
-  --vl-overlay-selection            : #1e3a8a80;
-  --vl-overlay-inactive-selection   : #1e3a8a40;
+  --vl-overlay-selection            : #93c5fd40;
+  --vl-overlay-inactive-selection   : #93c5fd26;
   --vl-overlay-line-highlight       : #262626;
   --vl-overlay-find-match           : #713f1280;
   --vl-overlay-find-match-border    : #fde047;
@@ -532,8 +532,8 @@
 }
 .vl-midnight.variant-purple {
   --vl-accent: #d8b4fe;
-  --vl-overlay-selection            : #581c8780;
-  --vl-overlay-inactive-selection   : #581c8740;
+  --vl-overlay-selection            : #d8b4fe40;
+  --vl-overlay-inactive-selection   : #d8b4fe26;
   --vl-overlay-line-highlight       : #262626;
   --vl-overlay-find-match           : #713f1280;
   --vl-overlay-find-match-border    : #fde047;
@@ -556,8 +556,8 @@
 /* Twilight */
 .vl-twilight.variant-red {
   --vl-accent: #fca5a5;
-  --vl-overlay-selection            : #7f1d1dbf;
-  --vl-overlay-inactive-selection   : #7f1d1d66;
+  --vl-overlay-selection            : #fca5a540;
+  --vl-overlay-inactive-selection   : #fca5a526;
   --vl-overlay-line-highlight       : #26262699;
   --vl-overlay-find-match           : #713f12bf;
   --vl-overlay-find-match-border    : #fef9c3;
@@ -578,8 +578,8 @@
 }
 .vl-twilight.variant-orange {
   --vl-accent: #fdba74;
-  --vl-overlay-selection            : #7c2d12bf;
-  --vl-overlay-inactive-selection   : #7c2d1266;
+  --vl-overlay-selection            : #fdba7440;
+  --vl-overlay-inactive-selection   : #fdba7426;
   --vl-overlay-line-highlight       : #26262699;
   --vl-overlay-find-match           : #713f12bf;
   --vl-overlay-find-match-border    : #fef9c3;
@@ -600,8 +600,8 @@
 }
 .vl-twilight.variant-yellow {
   --vl-accent: #eab308;
-  --vl-overlay-selection            : #713f12bf;
-  --vl-overlay-inactive-selection   : #713f1266;
+  --vl-overlay-selection            : #eab30840;
+  --vl-overlay-inactive-selection   : #eab30826;
   --vl-overlay-line-highlight       : #26262699;
   --vl-overlay-find-match           : #713f12bf;
   --vl-overlay-find-match-border    : #fef9c3;
@@ -622,8 +622,8 @@
 }
 .vl-twilight.variant-green {
   --vl-accent: #84cc16;
-  --vl-overlay-selection            : #365314bf;
-  --vl-overlay-inactive-selection   : #36531466;
+  --vl-overlay-selection            : #84cc1640;
+  --vl-overlay-inactive-selection   : #84cc1626;
   --vl-overlay-line-highlight       : #26262699;
   --vl-overlay-find-match           : #713f12bf;
   --vl-overlay-find-match-border    : #fef9c3;
@@ -644,8 +644,8 @@
 }
 .vl-twilight.variant-blue {
   --vl-accent: #93c5fd;
-  --vl-overlay-selection            : #1e3a8abf;
-  --vl-overlay-inactive-selection   : #1e3a8a66;
+  --vl-overlay-selection            : #93c5fd40;
+  --vl-overlay-inactive-selection   : #93c5fd26;
   --vl-overlay-line-highlight       : #26262699;
   --vl-overlay-find-match           : #713f12bf;
   --vl-overlay-find-match-border    : #fef9c3;
@@ -666,8 +666,8 @@
 }
 .vl-twilight.variant-purple {
   --vl-accent: #d8b4fe;
-  --vl-overlay-selection            : #581c87bf;
-  --vl-overlay-inactive-selection   : #581c8766;
+  --vl-overlay-selection            : #d8b4fe40;
+  --vl-overlay-inactive-selection   : #d8b4fe26;
   --vl-overlay-line-highlight       : #26262699;
   --vl-overlay-find-match           : #713f12bf;
   --vl-overlay-find-match-border    : #fef9c3;

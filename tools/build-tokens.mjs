@@ -203,9 +203,9 @@ export function apcaContrast(txt, bg) {
    ===================================================================== */
 
 /**
- * @deprecated since issue #19 — the selection is no longer "25% of the
- * accent over bg" (that recipe lightened dark canvases toward the text
- * and dropped Midnight comments to 2.13:1). Read the real value with
+ * 25 % of the accent over bg: the selection recipe on the dark flavors
+ * (tokens.json5 § 3e, THE EXCEPTION), but not on Dawn and Noon. Read the
+ * real value for any flavor with
  * `resolveOverlay(tokens, flavor, variant, 'selection')`, or from
  * `tokens.flavors[flavor].overlay[variant].selection` in tokens.json.
  * Kept as plain colour math so existing callers don't break.
@@ -774,7 +774,14 @@ export function validateShapes(tokens) {
         errs.push(`✗ ${w} must be an object`);
         continue;
       }
-      keysOk(w, role, ["behind", "use", "text", "text_on_bg", "surfaces", "terminal_foreground"]);
+      keysOk(w, role, ["behind", "use", "text", "text_on_bg", "surfaces", "terminal_foreground", "text_min"]);
+      if (role.text_min !== undefined) {
+        if (typeof role.text_min !== "number" || !(role.text_min > 1 && role.text_min <= 21)) {
+          errs.push(`✗ ${w}.text_min must be a number in (1, 21]`);
+        } else if (role.behind !== "code") {
+          errs.push(`✗ ${w}.text_min only applies to a "code" overlay`);
+        }
+      }
       if (role.terminal_foreground !== undefined && !TEXT_ALIASES.includes(role.terminal_foreground)) {
         errs.push(`✗ ${w}.terminal_foreground: "${role.terminal_foreground}" is not a text role`);
       }
@@ -1205,7 +1212,7 @@ function check(tokens, { onPair } = {}) {
         if (role.behind === "code") {
           const o = f.overlay[hue][name];
           for (const [k, c] of Object.entries(codeText)) {
-            pair("overlay", `${fName}/${hue} ${k} on overlay.${name}`, c, o.flat, 4.5);
+            pair("overlay", `${fName}/${hue} ${k} on overlay.${name}`, c, o.flat, role.text_min ?? 4.5);
           }
         } else {
           for (const sName of role.surfaces) {
@@ -1377,7 +1384,11 @@ function check(tokens, { onPair } = {}) {
           : f.surface[appSurface];
         const where = `${fName}/${hue} app_roles.${name}`;
         if (role.gate === "surface") {
-          for (const [k, c] of Object.entries(panelText)) pair("app_roles", `${where}: ${k} on it`, c, back, 4.5);
+          // A surface that is an overlay keeps that overlay's minimum: an
+          // app's selection is the same signal as the editor's (§ 3e).
+          const ov = String(role.background ?? "").startsWith("overlay.") ? tokens.overlay.roles[role.background.slice(8)] : undefined;
+          const surfMin = ov?.text_min ?? 4.5;
+          for (const [k, c] of Object.entries(panelText)) pair("app_roles", `${where}: ${k} on it`, c, back, surfMin);
           continue;
         }
         const min = role.gate === "ui" ? tokens.control_boundary.min : 4.5;
@@ -1813,20 +1824,9 @@ async function selfTest() {
     // gates — the real tokens pass, and each gate bites
     [() => check(real).length, 0, "real tokens pass every gate"],
     [
-      () =>
-        has(
-          check(mutated((t) => {
-            for (const v of t.variant_hues) {
-              t.flavors.midnight.overlay[v].selection.flat = selection({
-                bg: t.flavors.midnight.surface.bg,
-                accent: resolveAccent(t, "midnight", v),
-              });
-            }
-          })),
-          "on overlay.selection",
-        ),
+      () => has(check(mutated((t) => (t.overlay.recipes.midnight.selection = { color: "accent", alpha: 0.6 }))), "midnight/blue app_roles.selection: syntax.comment on it"),
       true,
-      "the old lightening selection (25% accent) fails the syntax-on-overlay gate",
+      "an app selection below 3:1 is caught (it follows the overlay's text_min)",
     ],
     [
       () => has(check(mutated((t) => (t.flavors.dawn.syntax.number = "#c2410c"))), "dawn.syntax.number on bg"),
@@ -1871,7 +1871,7 @@ async function selfTest() {
           "midnight/red text.fg on overlay.selection over bg_terminal",
         ),
       true,
-      "a terminal selection foreground below 4.5:1 is caught (ANSI magenta: 3.89:1)",
+      "a terminal selection foreground below 4.5:1 is caught (ANSI magenta: 3.39:1)",
     ],
     [
       () => has(distinctnessIssues(mutated((t) => (t.flavors.dawn.syntax.parameter = "#7c2d12"))), "dawn: syntax parameter (#7c2d12) and type"),
@@ -1896,6 +1896,28 @@ async function selfTest() {
     [() => Object.values(real.flavors).every((f) => f.surface.bg_terminal === f.surface.bg), true, "bg_terminal is bg on every flavor"],
     [() => real.flavors.twilight.ansi.bright_black, "#adadad", "twilight bright_black clears 4.5:1 on #404040"],
     [() => real.flavors.noon.ansi.bright_black, "#6f6f6f", "noon bright_black clears 4.5:1 on #f5f5f5"],
+    [() => real.flavors.twilight.overlay.orange.selection.flat, alphaOver(real.palette.orange[300], "#404040", 0.25), "twilight selection is 25% accent over bg"],
+    [() => real.flavors.midnight.overlay.blue.inactive_selection.flat, alphaOver(real.palette.blue[300], "#171717", 0.15), "midnight inactive selection is 15% accent over bg"],
+    [
+      () => has(check(mutated((t) => (t.flavors.twilight.overlay.orange.selection.flat = "#5c5c5c"))), "twilight/orange syntax.comment on overlay.selection"),
+      false,
+      "a selection at 3.37:1 passes the 3:1 class",
+    ],
+    [
+      () => has(check(mutated((t) => (t.flavors.twilight.overlay.orange.find_match.flat = "#5c5c5c"))), "twilight/orange syntax.comment on overlay.find_match"),
+      true,
+      "a find match at 3.37:1 still fails 4.5:1",
+    ],
+    [
+      () => has(check(mutated((t) => (t.flavors.twilight.overlay.orange.selection.flat = "#7a7a7a"))), "twilight/orange syntax.comment on overlay.selection"),
+      true,
+      "a selection below 3:1 is caught",
+    ],
+    [
+      () => has(validateShapes(mutated((t) => (t.overlay.roles.selection.text_min = "3"))), "text_min must be a number"),
+      true,
+      "a non-numeric text_min is rejected",
+    ],
   ];
 
   let pass = 0,
@@ -2003,7 +2025,7 @@ async function main() {
 
   console.log(`\n✓ ${rows.length} contrast pairs gated, all pass:`);
   console.log("  accents on bg · text and every syntax slot on bg at 4.5:1");
-  console.log("  every syntax slot, fg, fg_subtle and semantic colour on every code overlay");
+  console.log("  every syntax slot, fg, fg_subtle and semantic colour on every code overlay (3:1 on the selections)");
   console.log("  the selected-item wash on every sanctioned surface · overlay borders at 3:1 on bg and fill");
   console.log("  the terminal selection foreground on selection over bg_terminal");
   console.log("  border.control at 3:1 on every control surface (WCAG 1.4.11)");

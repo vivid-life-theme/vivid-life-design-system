@@ -514,10 +514,19 @@
   //   light flavors  tint with the 100 / 300 rung — a pale hue at or
   //                  above the canvas, the mirror image
   //
-  // The old selection (25% of the *accent* over bg) did the opposite on
-  // dark flavors: a light accent lightened the canvas toward the text.
-  // On Midnight it dropped comments to 2.13:1 and on Twilight
-  // `parameter` to 2.19:1.
+  // THE EXCEPTION: the two selections on the dark flavors. A selection
+  // is a short-lived signal, and that it is visible matters more than
+  // how readable the text inside it is at that moment. So on Midnight
+  // and Twilight the selection lightens the canvas in the accent hue
+  // (25 %, inactive 15 %), and its roles carry `text_min: 3`: every code
+  // colour clears 3:1 on it instead of 4.5:1 (worst: comment grey,
+  // 3.55:1 on Midnight, 3.10:1 on Twilight). Sepp's Workshop made the
+  // same call after its users found a dark selection too hard to see.
+  // Every other code overlay keeps 4.5:1. See docs/superpowers/specs/2026-11-16-frame-colours-design.md.
+  //
+  // (Before issue #19 the selection was 25 % of the accent too, gated at
+  // 4.5:1 — which it failed: 2.13:1 for comments on Midnight. The 900
+  // tint that replaced it kept 4.5:1 but read as a dark smudge.)
   //
   // Hue families stay stable across flavors so the overlays read the
   // same way everywhere: selection and its weaker kin use the accent's
@@ -552,11 +561,13 @@
         behind: "code",
         use: "Text selection — editor, terminal, shell command line, ::selection.",
         terminal_foreground: "fg",
+        text_min: 3, // see THE EXCEPTION above
       },
       inactive_selection: {
         behind: "code",
         use: "Selection in an unfocused editor or terminal.",
         terminal_foreground: "fg",
+        text_min: 3,
       },
       line_highlight: { behind: "code", use: "The line the cursor is on." },
       find_match: { behind: "code", use: "The current search match." },
@@ -652,8 +663,8 @@
       // Midnight's budget is set by the comment grey (#999999): an
       // overlay may not rise much above #262626 in luminance.
       midnight: {
-        selection: { color: "accent.900", alpha: 0.5 },
-        inactive_selection: { color: "accent.900", alpha: 0.25 },
+        selection: { color: "accent", alpha: 0.25 },
+        inactive_selection: { color: "accent", alpha: 0.15 },
         line_highlight: { color: "gray.800", alpha: 1 },
         find_match: {
           color: "yellow.900",
@@ -681,8 +692,8 @@
       // Twilight's #404040 canvas sits above most 900 rungs, so its
       // overlays darken outright — a deep tint, not a light wash.
       twilight: {
-        selection: { color: "accent.900", alpha: 0.75 },
-        inactive_selection: { color: "accent.900", alpha: 0.4 },
+        selection: { color: "accent", alpha: 0.25 },
+        inactive_selection: { color: "accent", alpha: 0.15 },
         line_highlight: { color: "gray.800", alpha: 0.6 },
         find_match: {
           color: "yellow.900",
@@ -926,14 +937,14 @@
       visible: ["selection", "find_match"],
       // Pairs that are on screen together: a selection with the search
       // hits around it, and — while the find widget has focus — the
-      // inactive selection with them. On the dark flavors the
-      // comment grey caps how far any overlay may lift the canvas, so a
-      // yellow selection (the Yellow variant's accent.900) and a yellow
-      // find match can't be pulled apart by fill: the best split is
-      // ΔE 6.2 on Midnight and 5.0 on Twilight. The find matches carry
-      // a border instead — the current match `semantic.warning`, every
-      // other match a quieter yellow rung — which separates them at
-      // ≥ 3:1 from either selection.
+      // inactive selection with them. When the dark selections were
+      // accent.900, a yellow selection and a yellow find match couldn't
+      // be pulled apart by fill (ΔE 6.2 on Midnight, 5.0 on Twilight).
+      // The find matches carry a border for that — the current match
+      // `semantic.warning`, every other match a quieter yellow rung —
+      // which separates them at ≥ 3:1 from either selection. The tinted
+      // selection (§ 3e, THE EXCEPTION) no longer needs it, but the
+      // borders stay: they are what marks a match inside a selection.
       apart: [
         ["selection", "find_match"],
         ["selection", "find_match_other"],
