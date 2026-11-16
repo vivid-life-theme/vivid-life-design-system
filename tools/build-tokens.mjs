@@ -428,7 +428,9 @@ export function resolveOverlay(tokens, flavor, variant, name, opts = {}) {
   const base = surfaceName === "frame" ? resolveFrame(tokens, flavor, variant) : tokens.flavors[flavor].surface[surfaceName];
   if (!base) throw new Error(`resolveOverlay: unknown surface "${surfaceName}"`);
   const color = resolveColor(tokens, flavor, variant, recipe.color);
-  const out = { color, alpha: recipe.alpha, flat: alphaOver(color, base, recipe.alpha) };
+  const [r, g, b] = parseHex(color);
+  const hexa = toHex([r, g, b]) + Math.round(recipe.alpha * 255).toString(16).padStart(2, "0");
+  const out = { color, alpha: recipe.alpha, flat: alphaOver(color, base, recipe.alpha), hexa };
   if (recipe.border) out.border = resolveColor(tokens, flavor, variant, recipe.border);
   return out;
 }
@@ -779,6 +781,9 @@ export async function loadTokens(path = join(ROOT, "tokens.json5")) {
    ===================================================================== */
 
 const STYLES = ["italic", "bold", "underline", "reverse"];
+// Overlay gate classes (tokens.json5 § 3e): behind code, behind a label
+// ("ui"), a surface wash, a non-text mark, a solid fill under accent_on.
+const OVERLAY_CLASSES = ["code", "ui", "surface", "mark", "fill"];
 const APP_GATES = ["text", "ui", "surface"];
 
 /**
@@ -856,7 +861,7 @@ export function validateShapes(tokens) {
         errs.push(`✗ ${w} must be an object`);
         continue;
       }
-      keysOk(w, role, ["behind", "use", "text", "text_on_bg", "surfaces", "terminal_foreground", "text_min"]);
+      keysOk(w, role, ["behind", "use", "text", "text_on_bg", "text_on", "surfaces", "terminal_foreground", "text_min", "contrast_min"]);
       if (role.text_min !== undefined) {
         if (typeof role.text_min !== "number" || !(role.text_min > 1 && role.text_min <= 21)) {
           errs.push(`✗ ${w}.text_min must be a number in (1, 21]`);
@@ -867,20 +872,41 @@ export function validateShapes(tokens) {
       if (role.terminal_foreground !== undefined && !TEXT_ALIASES.includes(role.terminal_foreground)) {
         errs.push(`✗ ${w}.terminal_foreground: "${role.terminal_foreground}" is not a text role`);
       }
-      if (!["code", "ui"].includes(role.behind)) {
-        errs.push(`✗ ${w}.behind is "${role.behind}" — expected "code" or "ui"`);
+      // Every role has exactly one gate class (spec: overlay recipes).
+      if (!OVERLAY_CLASSES.includes(role.behind)) {
+        errs.push(`✗ ${w}.behind is "${role.behind}" — expected one of ${OVERLAY_CLASSES.map((c) => `"${c}"`).join(", ")}`);
       }
-      if (role.behind === "ui") {
+      if (role.contrast_min !== undefined && (role.behind !== "mark" || typeof role.contrast_min !== "number" || !(role.contrast_min > 1))) {
+        errs.push(`✗ ${w}.contrast_min: a number > 1, on a "mark" overlay only`);
+      }
+      // A fill's label is accent_on; every other class gates text roles.
+      const textOk = (t) => TEXT_ALIASES.includes(t) || (role.behind === "fill" && t === "accent_on");
+      if (["ui", "surface", "fill"].includes(role.behind)) {
         const text = stringList(`${w}.text`, role.text);
-        if (!text.length) errs.push(`✗ ${w}: a "ui" overlay needs a non-empty text list`);
+        if (!text.length) errs.push(`✗ ${w}: a "${role.behind}" overlay needs a non-empty text list`);
         for (const t of [...text, ...stringList(`${w}.text_on_bg`, role.text_on_bg)]) {
-          if (!TEXT_ALIASES.includes(t)) errs.push(`✗ ${w}: "${t}" is not a text role`);
+          if (!textOk(t)) errs.push(`✗ ${w}: "${t}" is not a text role here (accent_on only on a "fill")`);
         }
+      }
+      if (role.text_on !== undefined) {
+        if (!isObj(role.text_on) || !["ui", "surface"].includes(role.behind)) {
+          errs.push(`✗ ${w}.text_on: an object, on a "ui" or "surface" overlay only`);
+        } else {
+          for (const [t, list] of Object.entries(role.text_on)) {
+            if (!TEXT_ALIASES.includes(t)) errs.push(`✗ ${w}.text_on: "${t}" is not a text role`);
+            for (const sName of stringList(`${w}.text_on.${t}`, list)) {
+              if (!(role.surfaces ?? []).includes(sName)) errs.push(`✗ ${w}.text_on.${t}: "${sName}" is not in surfaces`);
+            }
+          }
+        }
+      }
+      if (["ui", "surface", "mark"].includes(role.behind)) {
         const surfaces = stringList(`${w}.surfaces`, role.surfaces);
         if (!surfaces.length) {
-          errs.push(`✗ ${w}: a "ui" overlay needs a non-empty surfaces list`);
+          errs.push(`✗ ${w}: a "${role.behind}" overlay needs a non-empty surfaces list`);
         }
-        for (const sName of surfaces) surfaceOk(`${w}.surfaces`, sName);
+        // "frame" is the variant's frame colour (§ 3i), not a flavor surface.
+        for (const sName of surfaces) if (sName !== "frame") surfaceOk(`${w}.surfaces`, sName);
       }
     }
     for (const fl of Object.keys(ov.recipes)) {
@@ -1354,30 +1380,51 @@ function check(tokens, { onPair } = {}) {
     };
     for (const [name, role] of Object.entries(tokens.overlay.roles)) {
       for (const hue of tokens.variant_hues) {
+        // The emitted overlay, or resolved here for a role added after expansion.
+        const res = f.overlay[hue][name] ?? resolveOverlay(tokens, fName, hue, name);
         if (role.behind === "code") {
-          const o = f.overlay[hue][name];
+          const o = res;
           for (const [k, c] of Object.entries(codeText)) {
             pair("overlay", `${fName}/${hue} ${k} on overlay.${name}`, c, o.flat, role.text_min ?? 4.5);
+          }
+        } else if (role.behind === "fill") {
+          const o = res;
+          for (const k of role.text) {
+            const c = k === "accent_on" ? f.accent_on : f.text[k];
+            pair("overlay", `${fName}/${hue} ${k} on overlay.${name}`, c, o.flat, 4.5);
           }
         } else {
           for (const sName of role.surfaces) {
             const o = resolveOverlay(tokens, fName, hue, name, { surface: sName });
-            for (const k of role.text) {
+            const base = sName === "frame" ? f.frame[hue].bg : f.surface[sName];
+            const where = `${fName}/${hue} overlay.${name} over ${sName}`;
+            if (role.behind === "mark") {
+              const dist = deltaE(o.flat, base);
+              if (dist < tokens.distinct.related_min) warns.push(`✗ ${where} is ${dist.toFixed(1)} from it in OKLab, need ${tokens.distinct.related_min}`);
+              if (role.contrast_min) pair("overlay", where, o.flat, base, role.contrast_min);
+              continue;
+            }
+            const text = [...role.text, ...Object.entries(role.text_on ?? {}).filter(([, l]) => l.includes(sName)).map(([k]) => k)];
+            for (const k of text) {
               pair("overlay", `${fName}/${hue} text.${k} on overlay.${name} over ${sName}`, f.text[k], o.flat, 4.5);
+            }
+            if (role.behind === "surface") {
+              const dist = deltaE(o.flat, base);
+              if (dist < tokens.distinct.related_min) warns.push(`✗ ${where} is ${dist.toFixed(1)} from it in OKLab, need ${tokens.distinct.related_min}`);
             }
           }
           for (const k of role.text_on_bg ?? []) {
-            pair("overlay", `${fName}/${hue} text.${k} on overlay.${name} over bg`, f.text[k], f.overlay[hue][name].flat, 4.5);
+            pair("overlay", `${fName}/${hue} text.${k} on overlay.${name} over bg`, f.text[k], res.flat, 4.5);
           }
         }
-        const border = f.overlay[hue][name].border;
+        const border = res.border;
         if (border) {
           pair("overlay", `${fName}/${hue} overlay.${name} border vs bg`, border, bg, tokens.control_boundary.min);
-          pair("overlay", `${fName}/${hue} overlay.${name} border vs its fill`, border, f.overlay[hue][name].flat, tokens.control_boundary.min);
+          pair("overlay", `${fName}/${hue} overlay.${name} border vs its fill`, border, res.flat, tokens.control_boundary.min);
         }
         // Behind terminal output the recipe composites over bg_terminal,
         // and the terminal redraws selected text in `terminal_foreground`.
-        const term = f.overlay[hue][name].terminal;
+        const term = res.terminal;
         if (term) {
           pair("overlay", `${fName}/${hue} text.${role.terminal_foreground} on overlay.${name} over bg_terminal`, term.foreground, term.flat, 4.5);
         }
@@ -2091,6 +2138,58 @@ async function selfTest() {
     [() => resolveFrame(real, "noon", "blue"), "#bed2f3", "noon frame is a pastel darker than its canvas"],
     [() => resolveFrame(real, "noon", "yellow"), "#e0cfac", "noon yellow frame"],
     [() => real.frame.step_exempt.length, 0, "no flavor is exempt from the frame step"],
+    // Overlay gate classes and hexa (docs/superpowers/specs/2026-11-16-overlay-recipes-design.md)
+    [() => real.flavors.midnight.overlay.purple.selection.hexa, "#d8b4fe40", "overlays publish hexa (#rrggbbaa)"],
+    [() => real.flavors.midnight.overlay.purple.line_highlight.hexa, "#262626ff", "an opaque recipe's hexa ends in ff"],
+    [() => has(validateShapes(mutated((t) => (t.overlay.roles.selection.behind = "glow"))), "overlay.roles.selection.behind"), true, "an unknown gate class is rejected"],
+    [
+      () => validateShapes(mutated((t) => t.overlay.roles.selected.surfaces.push("frame"))).length,
+      0,
+      "frame is a valid overlay surface",
+    ],
+    [
+      () =>
+        has(
+          check(
+            mutated((t) => {
+              t.overlay.roles.test_mark = { behind: "mark", surfaces: ["bg", "frame"], contrast_min: 3 };
+              for (const fl of Object.keys(t.flavors)) t.overlay.recipes[fl].test_mark = { color: "fg_subtle", alpha: 0.05 };
+            }),
+          ),
+          "overlay.test_mark",
+        ),
+      true,
+      "a mark below its visibility and contrast_min is caught",
+    ],
+    [
+      () =>
+        has(
+          check(
+            mutated((t) => {
+              t.overlay.roles.test_fill = { behind: "fill", text: ["accent_on"] };
+              for (const fl of Object.keys(t.flavors)) t.overlay.recipes[fl].test_fill = { color: "accent", alpha: 0.2 };
+            }),
+          ),
+          "accent_on on overlay.test_fill",
+        ),
+      true,
+      "a fill too weak for accent_on is caught",
+    ],
+    [() => has(validateShapes(mutated((t) => (t.overlay.roles.selected.text = ["accent_on"]))), "accent_on"), true, "accent_on is only a fill's text"],
+    [() => real.flavors.twilight.overlay.orange.highlight?.flat, alphaOver("#fdba74", "#404040", 0.15), "highlight is 15% accent over bg"],
+    [() => real.flavors.dawn.overlay.red.merge_current?.flat, real.palette.blue[100], "dawn merge_current is blue.100"],
+    [
+      () => real.flavors.midnight.overlay.red.validation_error?.flat,
+      alphaOver(real.flavors.midnight.semantic.danger, "#171717", 0.06),
+      "validation_error is 6% danger over bg",
+    ],
+    [
+      () => has(check(mutated((t) => (t.overlay.recipes.midnight.slider_active = { color: "fg_subtle", alpha: 0.7 }))), "midnight/yellow overlay.slider_active over frame"),
+      true,
+      "slider_active at 70% falls below 3:1 on Midnight's frame",
+    ],
+    [() => has(check(mutated((t) => (t.overlay.recipes.twilight.hover = { color: "gray.100", alpha: 0.04 }))), "overlay.hover over"), true, "an invisible hover is caught"],
+    [() => real.flavors.noon.overlay.blue.button_hover?.flat, real.palette.blue[800], "button_hover is the accent's emphasis step (noon blue 700 → 800)"],
     [
       () => resolveOverlay(real, "midnight", "red", "selected", { surface: "frame" }).flat,
       alphaOver("#ef4444", "#621414", 0.18),

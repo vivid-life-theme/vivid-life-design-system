@@ -665,6 +665,71 @@
         text_on_bg: ["fg_muted"],
         surfaces: ["bg", "bg_soft", "bg_sunk", "bg_overlay", "bg_terminal"],
       },
+
+      // ── Port-side washes (issue #28) ───────────────────────────────
+      // Every translucent colour a port used to decide itself, each with
+      // one gate class. See docs/superpowers/specs/2026-11-16-overlay-recipes-design.md.
+      //
+      // Short-lived editor highlights follow the selection's 3:1 rule
+      // (THE EXCEPTION above): no accent tint behind code reaches 4.5:1
+      // at any alpha, because syntax colours sit just above 4.5:1 on bg.
+      find_range: { behind: "code", text_min: 3, use: "The range a search is limited to." },
+      highlight: { behind: "code", text_min: 3, use: "Other occurrences of the selection; the hovered symbol." },
+      symbol_highlight: { behind: "code", text_min: 3, use: "The symbol under navigation, a matching bracket, a peek-view match." },
+      // Backgrounds code is read on for longer keep 4.5:1 and the
+      // direction rule, like find match and diff. Merge "incoming"
+      // content reuses diff_inserted_line, merge "common" content
+      // line_highlight: no grey passes on Midnight except that one.
+      merge_current: { behind: "code", use: "Merge editor: the current side's content." },
+      stack_frame: { behind: "code", use: "Debugger: a stack frame's line." },
+      stack_frame_focused: { behind: "code", use: "Debugger: the focused stack frame's line." },
+      // Washes behind a label: the same tints, weak enough for 4.5:1.
+      merge_current_header: { behind: "ui", text: ["fg", "fg_muted"], surfaces: ["bg"], use: "Merge editor: current-side header." },
+      merge_incoming_header: { behind: "ui", text: ["fg", "fg_muted"], surfaces: ["bg"], use: "Merge editor: incoming-side header." },
+      merge_common_header: { behind: "ui", text: ["fg", "fg_muted"], surfaces: ["bg"], use: "Merge editor: common-base header." },
+      validation_error: { behind: "ui", text: ["fg", "fg_muted"], surfaces: ["bg", "bg_soft", "bg_overlay"], use: "Input validation message; its coloured border carries the signal." },
+      validation_warning: { behind: "ui", text: ["fg", "fg_muted"], surfaces: ["bg", "bg_soft", "bg_overlay"], use: "Input validation message; its coloured border carries the signal." },
+      validation_info: { behind: "ui", text: ["fg", "fg_muted"], surfaces: ["bg", "bg_soft", "bg_overlay"], use: "Input validation message; its coloured border carries the signal." },
+      input_option_active: { behind: "ui", text: ["fg", "fg_muted"], surfaces: ["bg_soft", "bg_overlay"], use: "An active toggle inside an input (match case, regex)." },
+      slash_command: { behind: "ui", text: ["fg", "fg_muted"], surfaces: ["bg", "bg_soft"], use: "A slash command chip in a chat input." },
+      // Hover and pressed rows. fg is gated everywhere; fg_muted only on
+      // bg and the frame, where list rows use it: on Twilight's bg_soft
+      // and Dawn's bg_sunk it starts too close to 4.5:1 for any visible
+      // tint. Supersedes flavors.*.state.
+      hover: {
+        behind: "surface",
+        text: ["fg"],
+        text_on: { fg_muted: ["bg", "frame"] },
+        surfaces: ["bg", "bg_soft", "bg_sunk", "bg_overlay", "frame"],
+        use: "The row, tab or control under the pointer.",
+      },
+      active: {
+        behind: "surface",
+        text: ["fg"],
+        text_on: { fg_muted: ["bg", "frame"] },
+        surfaces: ["bg", "bg_soft", "bg_sunk", "bg_overlay", "frame"],
+        use: "A pressed item or a drop target.",
+      },
+      // Marks carry no text: visible on what they sit on, nothing more.
+      ruler_find: { behind: "mark", surfaces: ["bg"], use: "Overview ruler: search matches." },
+      mark: { behind: "mark", surfaces: ["bg"], use: "Overview ruler: range, selection and word highlights; minimap search matches." },
+      minimap_selection: { behind: "mark", surfaces: ["bg"], use: "Minimap: the selection." },
+      minimap_occurrence: { behind: "mark", surfaces: ["bg"], use: "Minimap: other occurrences of the selection." },
+      mark_inserted: { behind: "mark", surfaces: ["bg"], use: "Diff overview: inserted lines." },
+      mark_removed: { behind: "mark", surfaces: ["bg"], use: "Diff overview: removed lines." },
+      terminal_decoration: { behind: "mark", surfaces: ["bg"], use: "Terminal: the default command decoration." },
+      slider: { behind: "mark", surfaces: ["bg", "frame"], use: "Scrollbar thumb." },
+      slider_hover: { behind: "mark", surfaces: ["bg", "frame"], use: "Scrollbar thumb under the pointer." },
+      // 70 % was 2.70:1 on Midnight's yellow frame.
+      slider_active: { behind: "mark", surfaces: ["bg", "frame"], contrast_min: 3, use: "Scrollbar thumb being dragged." },
+      minimap_slider: { behind: "mark", surfaces: ["bg"], use: "Minimap viewport." },
+      minimap_slider_hover: { behind: "mark", surfaces: ["bg"], use: "Minimap viewport under the pointer." },
+      minimap_slider_active: { behind: "mark", surfaces: ["bg"], use: "Minimap viewport being dragged." },
+      // A solid hover fill for accent buttons: the accent's emphasis step
+      // (§ 3h), one rung further from bg. Ports use `flat`. 90 % accent
+      // over bg darkened dark-flavor buttons and dropped accent_on to
+      // 4.06:1 on Midnight-red; the emphasis step only gains contrast.
+      button_hover: { behind: "fill", text: ["accent_on"], use: "A primary button under the pointer." },
     },
 
     recipes: {
@@ -697,6 +762,36 @@
         diff_removed_dimmed: { color: "red.900", alpha: 0.1 },
         panel: { color: "gray.800", alpha: 1 }, // was 0.5: ΔE 3.5 from the new bg_terminal (#171717). At 1 it is ΔE 6.4, comment grey 5.31:1.
         selected: { color: "accent", alpha: 0.18 },
+        find_range: { color: "accent", alpha: 0.1 },
+        highlight: { color: "accent", alpha: 0.15 },
+        symbol_highlight: { color: "accent", alpha: 0.2 },
+        merge_current: { color: "blue.900", alpha: 0.3 },
+        stack_frame: { color: "yellow.900", alpha: 0.3 },
+        stack_frame_focused: { color: "yellow.900", alpha: 0.4 },
+        merge_current_header: { color: "semantic.info", alpha: 0.15 },
+        merge_incoming_header: { color: "semantic.success", alpha: 0.15 },
+        merge_common_header: { color: "fg_subtle", alpha: 0.2 },
+        validation_error: { color: "semantic.danger", alpha: 0.06 },
+        validation_warning: { color: "semantic.warning", alpha: 0.06 },
+        validation_info: { color: "semantic.info", alpha: 0.06 },
+        input_option_active: { color: "accent", alpha: 0.09 },
+        slash_command: { color: "ansi.cyan", alpha: 0.08 },
+        hover: { color: "gray.100", alpha: 0.1 },
+        active: { color: "gray.100", alpha: 0.12 },
+        ruler_find: { color: "accent", alpha: 0.6 },
+        mark: { color: "accent", alpha: 0.4 },
+        minimap_selection: { color: "accent", alpha: 0.25 },
+        minimap_occurrence: { color: "accent", alpha: 0.2 },
+        mark_inserted: { color: "semantic.success", alpha: 0.4 },
+        mark_removed: { color: "semantic.danger", alpha: 0.4 },
+        terminal_decoration: { color: "fg_subtle", alpha: 0.4 },
+        slider: { color: "fg_subtle", alpha: 0.3 },
+        slider_hover: { color: "fg_subtle", alpha: 0.5 },
+        slider_active: { color: "fg_subtle", alpha: 0.8 },
+        minimap_slider: { color: "fg_subtle", alpha: 0.2 },
+        minimap_slider_hover: { color: "fg_subtle", alpha: 0.3 },
+        minimap_slider_active: { color: "fg_subtle", alpha: 0.5 },
+        button_hover: { color: "emphasis.accent", alpha: 1 },
       },
       // Twilight's #404040 canvas sits above most 900 rungs, so its
       // overlays darken outright — a deep tint, not a light wash.
@@ -727,6 +822,36 @@
         diff_removed_dimmed: { color: "red.900", alpha: 0.2 },
         panel: { color: "gray.900", alpha: 0.55 },
         selected: { color: "accent", alpha: 0.18 },
+        find_range: { color: "accent", alpha: 0.1 },
+        highlight: { color: "accent", alpha: 0.15 },
+        symbol_highlight: { color: "accent", alpha: 0.2 },
+        merge_current: { color: "blue.900", alpha: 0.5 },
+        stack_frame: { color: "yellow.900", alpha: 0.5 },
+        stack_frame_focused: { color: "yellow.900", alpha: 0.6 },
+        merge_current_header: { color: "semantic.info", alpha: 0.15 },
+        merge_incoming_header: { color: "semantic.success", alpha: 0.15 },
+        merge_common_header: { color: "fg_subtle", alpha: 0.2 },
+        validation_error: { color: "semantic.danger", alpha: 0.06 },
+        validation_warning: { color: "semantic.warning", alpha: 0.06 },
+        validation_info: { color: "semantic.info", alpha: 0.06 },
+        input_option_active: { color: "accent", alpha: 0.09 },
+        slash_command: { color: "ansi.cyan", alpha: 0.08 },
+        hover: { color: "gray.100", alpha: 0.09 },
+        active: { color: "gray.100", alpha: 0.12 },
+        ruler_find: { color: "accent", alpha: 0.6 },
+        mark: { color: "accent", alpha: 0.4 },
+        minimap_selection: { color: "accent", alpha: 0.25 },
+        minimap_occurrence: { color: "accent", alpha: 0.2 },
+        mark_inserted: { color: "semantic.success", alpha: 0.4 },
+        mark_removed: { color: "semantic.danger", alpha: 0.4 },
+        terminal_decoration: { color: "fg_subtle", alpha: 0.4 },
+        slider: { color: "fg_subtle", alpha: 0.3 },
+        slider_hover: { color: "fg_subtle", alpha: 0.5 },
+        slider_active: { color: "fg_subtle", alpha: 0.8 },
+        minimap_slider: { color: "fg_subtle", alpha: 0.2 },
+        minimap_slider_hover: { color: "fg_subtle", alpha: 0.3 },
+        minimap_slider_active: { color: "fg_subtle", alpha: 0.5 },
+        button_hover: { color: "emphasis.accent", alpha: 1 },
       },
       // Dawn's syntax sits at 4.52:1 at worst (function, blue.700), so
       // nothing may darken the canvas at all. Every overlay lightens:
@@ -759,6 +884,36 @@
         diff_removed_dimmed: { color: "red.100", alpha: 0.25 },
         panel: { color: "gray.100", alpha: 0.6 },
         selected: { color: "accent", alpha: 0.18 },
+        find_range: { color: "accent", alpha: 0.1 },
+        highlight: { color: "accent", alpha: 0.15 },
+        symbol_highlight: { color: "accent", alpha: 0.2 },
+        merge_current: { color: "blue.100", alpha: 1 },
+        stack_frame: { color: "yellow.100", alpha: 0.5 },
+        stack_frame_focused: { color: "yellow.100", alpha: 0.7 },
+        merge_current_header: { color: "semantic.info", alpha: 0.15 },
+        merge_incoming_header: { color: "semantic.success", alpha: 0.15 },
+        merge_common_header: { color: "fg_subtle", alpha: 0.2 },
+        validation_error: { color: "semantic.danger", alpha: 0.06 },
+        validation_warning: { color: "semantic.warning", alpha: 0.06 },
+        validation_info: { color: "semantic.info", alpha: 0.06 },
+        input_option_active: { color: "accent", alpha: 0.09 },
+        slash_command: { color: "ansi.cyan", alpha: 0.08 },
+        hover: { color: "gray.950", alpha: 0.1 },
+        active: { color: "gray.950", alpha: 0.14 },
+        ruler_find: { color: "accent", alpha: 0.6 },
+        mark: { color: "accent", alpha: 0.4 },
+        minimap_selection: { color: "accent", alpha: 0.25 },
+        minimap_occurrence: { color: "accent", alpha: 0.2 },
+        mark_inserted: { color: "semantic.success", alpha: 0.4 },
+        mark_removed: { color: "semantic.danger", alpha: 0.4 },
+        terminal_decoration: { color: "fg_subtle", alpha: 0.4 },
+        slider: { color: "fg_subtle", alpha: 0.3 },
+        slider_hover: { color: "fg_subtle", alpha: 0.5 },
+        slider_active: { color: "fg_subtle", alpha: 0.8 },
+        minimap_slider: { color: "fg_subtle", alpha: 0.2 },
+        minimap_slider_hover: { color: "fg_subtle", alpha: 0.3 },
+        minimap_slider_active: { color: "fg_subtle", alpha: 0.5 },
+        button_hover: { color: "emphasis.accent", alpha: 1 },
       },
       // Noon's canvas is near white, so there is little room above it;
       // the deeper syntax rungs in § 3c buy room below instead, and the
@@ -790,6 +945,36 @@
         diff_removed_dimmed: { color: "red.300", alpha: 0.1 },
         panel: { color: "gray.900", alpha: 0.08 },
         selected: { color: "accent", alpha: 0.18 },
+        find_range: { color: "accent", alpha: 0.1 },
+        highlight: { color: "accent", alpha: 0.15 },
+        symbol_highlight: { color: "accent", alpha: 0.2 },
+        merge_current: { color: "blue.300", alpha: 0.3 },
+        stack_frame: { color: "yellow.300", alpha: 0.3 },
+        stack_frame_focused: { color: "yellow.300", alpha: 0.45 },
+        merge_current_header: { color: "semantic.info", alpha: 0.15 },
+        merge_incoming_header: { color: "semantic.success", alpha: 0.15 },
+        merge_common_header: { color: "fg_subtle", alpha: 0.2 },
+        validation_error: { color: "semantic.danger", alpha: 0.06 },
+        validation_warning: { color: "semantic.warning", alpha: 0.06 },
+        validation_info: { color: "semantic.info", alpha: 0.06 },
+        input_option_active: { color: "accent", alpha: 0.09 },
+        slash_command: { color: "ansi.cyan", alpha: 0.08 },
+        hover: { color: "gray.950", alpha: 0.1 },
+        active: { color: "gray.950", alpha: 0.14 },
+        ruler_find: { color: "accent", alpha: 0.6 },
+        mark: { color: "accent", alpha: 0.4 },
+        minimap_selection: { color: "accent", alpha: 0.25 },
+        minimap_occurrence: { color: "accent", alpha: 0.2 },
+        mark_inserted: { color: "semantic.success", alpha: 0.4 },
+        mark_removed: { color: "semantic.danger", alpha: 0.4 },
+        terminal_decoration: { color: "fg_subtle", alpha: 0.4 },
+        slider: { color: "fg_subtle", alpha: 0.3 },
+        slider_hover: { color: "fg_subtle", alpha: 0.5 },
+        slider_active: { color: "fg_subtle", alpha: 0.8 },
+        minimap_slider: { color: "fg_subtle", alpha: 0.2 },
+        minimap_slider_hover: { color: "fg_subtle", alpha: 0.3 },
+        minimap_slider_active: { color: "fg_subtle", alpha: 0.5 },
+        button_hover: { color: "emphasis.accent", alpha: 1 },
       },
     },
   },
@@ -1087,7 +1272,9 @@
   //   text     — foreground layers; fg_faint is the 3:1 step (§ 3f)
   //   accent_on — text on an accent fill
   //   border   — border weights
-  //   state    — interaction states (hover/active) as alpha overlays
+  //   state    — interaction states (hover/active) as alpha overlays;
+  //              superseded by overlay.hover / overlay.active (§ 3e),
+  //              which are gated on every surface. Kept for compatibility.
   //   ansi     — full 16-color terminal ANSI palette
   //
   // `semantic` and `syntax` are NOT authored here — they are derived
