@@ -190,7 +190,7 @@ The pastel is computed in OKLCH: fixed lightness and chroma, with the hue taken 
 | flavor | recipe | step from `bg` | why |
 |---|---|---|---|
 | Noon | OKLCH L 0.86, C 0.05, darker than the canvas | 1.39–1.43:1 | every frame gate passes |
-| Dawn | OKLCH L 0.98, C 0.05, *brighter* than the canvas | 1.39–1.42:1 | a darker pastel drops Dawn's `success` (green.900) and `warning` (yellow.900) to 3.9–4.45:1 on the frame, and git decorations in the sidebar use them |
+| Dawn | OKLCH L 0.98, C 0.05, *brighter* than the canvas (superseded, see "Dawn revision" below) | 1.39–1.42:1 | a darker pastel drops Dawn's `success` (green.900) and `warning` (yellow.900) to 3.9–4.45:1 on the frame, and git decorations in the sidebar use them |
 
 For Dawn the alternative was a darker pastel with `success` and `warning` moved to 950. That would make "added" and "conflict" almost black everywhere in Dawn, so it was rejected. Dawn's frame goes the opposite way from the other three flavors; a lighter frame around a mid-grey editor fits Dawn's soft-light character.
 
@@ -205,5 +205,34 @@ Values:
 | blue | `#f5f9fe` | `#bed2f3` |
 | purple | `#faf7fe` | `#d8caec` |
 
-No flavor stays exempt from the frame step gate. The light-flavor selections keep today's recipes: they are already accent tints that keep 4.5:1, so the dark flavors' smudge problem never applied. The port rules for the frame apply unchanged (text `fg` / `fg_muted`, accent-hued text via `accent_text`, which steps darker on the light frames).
+No flavor stays exempt from the frame step gate (superseded: Dawn is exempt since the revision below). The light-flavor selections keep today's recipes: they are already accent tints that keep 4.5:1, so the dark flavors' smudge problem never applied. The port rules for the frame apply unchanged (text `fg` / `fg_muted`, accent-hued text via `accent_text`, which steps darker on the light frames).
 
+
+## Dawn revision (issue #37)
+
+In the VS Code port the Dawn frame read as white around a grey editor, and the variant colour was barely visible. The cause is the sRGB gamut: at L 0.98 it has almost no room for chroma, so red, blue and purple were clamped to C 0.009 whatever the recipe asked for. Green reached 0.042, which is why it looked stronger than the other five.
+
+No Dawn frame can have visible colour and also clear the 1.35:1 step from `#d4d4d4`. A frame lighter than the canvas has to be near white to clear the step. A darker frame drops `fg_muted` (under the hover and pressed-row overlays) and `success` / `warning` below 4.5:1 before it gets there: at L 0.83, `fg_muted` on the pressed-row overlay measures 4.49:1. So Dawn's frame is set apart by hue, and Dawn is listed in `frame.step_exempt`.
+
+Three candidates passed every other gate. The owner chose B:
+
+| candidate | recipe | step from `bg` | chroma across variants | worst text on frame |
+|---|---|---|---|---|
+| A | L 0.93, C 0.05, brighter | 1.19–1.22:1 | 0.032–0.049 | 6.98:1 |
+| **B** | **L 0.91, C 0.05, brighter** | **1.12–1.15:1** | **0.043–0.051** | **6.52:1** |
+| C | L 0.84, C 0.05, darker | 1.08–1.12:1 | 0.050–0.051 | 5.22:1 |
+
+B keeps Dawn's lighter-than-canvas direction and has the most even chroma of the lighter options, matching Noon's C 0.05. A keeps more of the step, but red and blue stay weak. C is barely above the pressed-row overlay limit.
+
+Values:
+
+| variant | Dawn |
+|---|---|
+| red | `#ffd6d2` |
+| orange | `#fed8c5` |
+| yellow | `#f0e0bc` |
+| green | `#d6e9c6` |
+| blue | `#d1e2fe` |
+| purple | `#e8dafd` |
+
+`accent_text` is unchanged. A self-test now requires every Dawn frame to reach OKLCH chroma 0.04.

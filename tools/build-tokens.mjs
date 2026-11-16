@@ -2133,11 +2133,17 @@ async function selfTest() {
     [() => resolveFrame(real, "midnight", "red"), "#621414", "midnight frame is the 50/50 mix of 900 and 950"],
     [() => resolveFrame(real, "midnight", "blue"), "#1b306f", "midnight blue frame"],
     [() => resolveFrame(real, "twilight", "purple"), "#3b0764", "twilight frame is 950"],
-    [() => resolveFrame(real, "dawn", "red"), "#fef6f6", "dawn frame is a light pastel, brighter than its canvas"],
-    [() => resolveFrame(real, "dawn", "green"), "#efffe2", "dawn green frame"],
+    [() => resolveFrame(real, "dawn", "red"), "#ffd6d2", "dawn frame is a pastel brighter than its canvas"],
+    [() => resolveFrame(real, "dawn", "green"), "#d6e9c6", "dawn green frame"],
+    // Issue #37: at L 0.98 the gamut clamped red, blue and purple to C 0.009.
+    [
+      () => real.variant_hues.every((v) => Math.hypot(...oklab(resolveFrame(real, "dawn", v)).slice(1)) >= 0.04),
+      true,
+      "every dawn frame carries visible colour (OKLCH C ≥ 0.04)",
+    ],
     [() => resolveFrame(real, "noon", "blue"), "#bed2f3", "noon frame is a pastel darker than its canvas"],
     [() => resolveFrame(real, "noon", "yellow"), "#e0cfac", "noon yellow frame"],
-    [() => real.frame.step_exempt.length, 0, "no flavor is exempt from the frame step"],
+    [() => real.frame.step_exempt.join(), "dawn", "only dawn is exempt from the frame step"],
     // Overlay gate classes and hexa (docs/superpowers/specs/2026-11-16-overlay-recipes-design.md)
     [() => real.flavors.midnight.overlay.purple.selection.hexa, "#d8b4fe40", "overlays publish hexa (#rrggbbaa)"],
     [() => real.flavors.midnight.overlay.purple.line_highlight.hexa, "#262626ff", "an opaque recipe's hexa ends in ff"],
@@ -2251,9 +2257,14 @@ async function selfTest() {
       "a frame too close to bg is caught",
     ],
     [
-      () => has(check(mutated((t) => (t.flavors.dawn.frame.red.bg = t.flavors.dawn.surface.bg_sunk))), "dawn/red frame vs bg"),
+      () => has(check(mutated((t) => (t.flavors.noon.frame.red.bg = t.flavors.noon.surface.bg))), "noon/red frame vs bg"),
       true,
-      "dawn's old grey chrome (1.27:1) fails the step gate",
+      "a light-flavor frame too close to bg is caught",
+    ],
+    [
+      () => has(check(mutated((t) => (t.frame.step_exempt = []))), "dawn/red frame vs bg"),
+      true,
+      "dawn's frame needs its step exemption",
     ],
     [
       () => has(check(mutated((t) => (t.flavors.dawn.frame.green.bg = "#a9bb9a"))), "dawn/green semantic.success on frame"),

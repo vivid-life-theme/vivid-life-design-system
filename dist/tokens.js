@@ -1639,7 +1639,9 @@ export default {
   },
   "frame": {
     "min_step": 1.35,
-    "step_exempt": [],
+    "step_exempt": [
+      "dawn"
+    ],
     "recipes": {
       "midnight": {
         "color": "accent.900",
@@ -1651,7 +1653,7 @@ export default {
       },
       "dawn": {
         "hue_of": "accent.500",
-        "l": 0.98,
+        "l": 0.91,
         "c": 0.05
       },
       "noon": {
@@ -7433,27 +7435,27 @@ export default {
       },
       "frame": {
         "red": {
-          "bg": "#fef6f6",
+          "bg": "#ffd6d2",
           "accent_text": "#991b1b"
         },
         "orange": {
-          "bg": "#fff7f3",
+          "bg": "#fed8c5",
           "accent_text": "#7c2d12"
         },
         "yellow": {
-          "bg": "#fef8ea",
+          "bg": "#f0e0bc",
           "accent_text": "#854d0e"
         },
         "green": {
-          "bg": "#efffe2",
+          "bg": "#d6e9c6",
           "accent_text": "#3f6212"
         },
         "blue": {
-          "bg": "#f5f9fe",
+          "bg": "#d1e2fe",
           "accent_text": "#1d4ed8"
         },
         "purple": {
-          "bg": "#faf7fe",
+          "bg": "#e8dafd",
           "accent_text": "#7e22ce"
         }
       }
