@@ -2176,6 +2176,20 @@ async function selfTest() {
       "a fill too weak for accent_on is caught",
     ],
     [() => has(validateShapes(mutated((t) => (t.overlay.roles.selected.text = ["accent_on"]))), "accent_on"), true, "accent_on is only a fill's text"],
+    [() => real.flavors.twilight.overlay.orange.highlight?.flat, alphaOver("#fdba74", "#404040", 0.15), "highlight is 15% accent over bg"],
+    [() => real.flavors.dawn.overlay.red.merge_current?.flat, real.palette.blue[100], "dawn merge_current is blue.100"],
+    [
+      () => real.flavors.midnight.overlay.red.validation_error?.flat,
+      alphaOver(real.flavors.midnight.semantic.danger, "#171717", 0.06),
+      "validation_error is 6% danger over bg",
+    ],
+    [
+      () => has(check(mutated((t) => (t.overlay.recipes.midnight.slider_active = { color: "fg_subtle", alpha: 0.7 }))), "midnight/yellow overlay.slider_active over frame"),
+      true,
+      "slider_active at 70% falls below 3:1 on Midnight's frame",
+    ],
+    [() => has(check(mutated((t) => (t.overlay.recipes.twilight.hover = { color: "gray.100", alpha: 0.04 }))), "overlay.hover over"), true, "an invisible hover is caught"],
+    [() => real.flavors.noon.overlay.blue.button_hover?.flat, real.palette.blue[800], "button_hover is the accent's emphasis step (noon blue 700 → 800)"],
     [
       () => resolveOverlay(real, "midnight", "red", "selected", { surface: "frame" }).flat,
       alphaOver("#ef4444", "#621414", 0.18),
