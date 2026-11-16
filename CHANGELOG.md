@@ -12,6 +12,39 @@ Format: [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). Versioning: [S
 
 ---
 
+## [0.14.0] - 2026-11-16
+
+The variant's colour moves into a frame around the grey work areas, editor and terminal share one background, and the dark flavors get a selection in the accent's hue. Every translucent colour the VS Code port used to decide itself is now a gated overlay recipe ([#28](https://github.com/vivid-life-theme/vivid-life-design-system/issues/28)). Designs: `docs/superpowers/specs/2026-11-16-frame-colours-design.md` and `docs/superpowers/specs/2026-11-16-overlay-recipes-design.md`.
+
+### Added
+
+- **Frame colour** (`frame`, `tokens.json5` § 3i): one recipe per flavor, emitted per theme as `flavors.<flavor>.frame.<variant>` = `{ bg, accent_text }` and as `--vl-frame` / `--vl-frame-accent-text`. Midnight takes a 50/50 mix of the variant's 900 and 950, Twilight its 950, Noon a pastel computed in OKLCH (L 0.86, C 0.05) and Dawn the same pastel at L 0.98, brighter than its mid-grey canvas so its git colours keep 4.5:1. Gated: `fg`, `fg_muted`, the semantic colours, `accent_text` and the selected-item wash at 4.5:1 on every frame, the accent at 3:1, `accent_text` at 3:1 against the selected wash, and a 1.35:1 step from `bg`. Port rule: text on the frame is `fg` or `fg_muted`, never `fg_subtle`.
+- **The 950 rung** on every palette row (Tailwind v3.3+ defaults), and `--vl-<hue>-950` in CSS. Midnight's `bg_sunk` and `ansi.black` now reference `gray.950` (same value). The emphasis step still ends at 900.
+- **`resolveFrame()`, `frameAccentText()`, `oklchToHex()`**, and `resolveOverlay(…, { surface: "frame" })` for compositing over a theme's frame.
+- **Overlay gate classes**: every overlay role has exactly one of `code`, `ui` (label), `surface` (label + visible on every surface), `mark` (non-text visibility, optional `contrast_min`) and `fill` (`accent_on` on a solid colour). Roles may list `frame` as a surface; `text_on` limits a text role to some surfaces; `text_min` lowers a code overlay's floor.
+- **`hexa`** (`#rrggbbaa`) on every resolved overlay, next to `flat`.
+- **30 overlay recipes for the port-side washes**: `find_range`, `highlight`, `symbol_highlight` (3:1, like the selection); `merge_current`, `stack_frame`, `stack_frame_focused` (4.5:1, direction rule); `merge_*_header`, `validation_*`, `input_option_active`, `slash_command` (label washes); `hover`, `active` (gated on every surface including the frame; they supersede `flavors.*.state`); `ruler_find`, `mark`, `minimap_*`, `mark_inserted`, `mark_removed`, `terminal_decoration`, `slider*` (non-text marks); `button_hover` (the accent's emphasis step, solid). The README maps each to the VS Code keys it replaces.
+- **`hover_tint`** overlay: the Claude Code message hover keeps its old 900-rung recipe at 4.5:1.
+
+### Changed
+
+- ⚠️ **`surface.bg_terminal` is `bg` on every flavor** (was `#0a0a0a` / `#333333` / `#d4d4d4` / `#ffffff`). Editor and terminal share one background; in an embedded port the panel's tab row, drawn in the frame colour, separates them. The four canvases are further apart than the old terminal backgrounds, so standalone terminals still show their flavor.
+- ⚠️ **Twilight `ansi.bright_black`** `#a3a3a3` → `#adadad`, **Noon `ansi.bright_black`** `#737373` → `#6f6f6f`, to keep 4.5:1 on the new terminal backgrounds.
+- ⚠️ **Selection on Midnight and Twilight**: 25 % of the accent over `bg` (inactive 15 %) instead of a 900-rung tint that read as a dark smudge. Both roles carry `text_min: 3`; every other code overlay stays at 4.5:1, the terminal selection foreground too. `app_roles.selection` opts into the same floor explicitly.
+- ⚠️ **Midnight `overlay.panel`** `gray.800` at 50 % → 100 %, so a message block still shows on the new terminal background.
+- `app_roles.message_hover` moves from `inactive_selection` to the new `hover_tint` overlay (same look as before).
+- The `selection()` helper is no longer deprecated: it matches the dark flavors' recipe again.
+
+### Removed
+
+- ⚠️ **`surface.bg_inset`** and **`--vl-bg-inset`**. Ports read `flavors.<flavor>.frame.<variant>.bg` / `--vl-frame` instead.
+
+### Fixed
+
+- `validateShapes` rejects malformed frame recipes (missing `step_exempt`, a `surface` recipe with `mix`, a translucent `bg_scrim` frame, OKLCH values out of range).
+
+---
+
 ## [0.13.1] - 2026-10-14
 
 Docs-only patch. No token or colour values changed.
@@ -321,7 +354,8 @@ Initial npm release. The token system existed before this version; this is the f
 
 ---
 
-[unreleased]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.13.1...HEAD
+[unreleased]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.14.0...HEAD
+[0.14.0]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.13.1...v0.14.0
 [0.13.1]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.13.0...v0.13.1
 [0.13.0]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.12.0...v0.13.0
 [0.12.0]: https://github.com/vivid-life-theme/vivid-life-design-system/compare/v0.11.0...v0.12.0
