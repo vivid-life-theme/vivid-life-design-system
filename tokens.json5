@@ -1232,7 +1232,8 @@
   // docs/superpowers/specs/2026-11-16-frame-colours-design.md.
   //
   // THE RULE: each flavor takes the frame shade that gives the clearest
-  // lightness step from its own editor background.
+  // lightness step from its own editor background. Except Dawn, which
+  // is set apart by hue (step_exempt, see Dawn below).
   //
   //   Midnight  a 50/50 mix of the variant's 900 and 950. 950 alone is
   //             only 1.1–1.2:1 from #171717; the mix reaches 1.39–1.59:1.
@@ -1243,11 +1244,16 @@
   //             of the variant's 500: darker than #f5f5f5 at 1.39–1.43:1.
   //             Near Tailwind's 200, which is uneven (yellow and green
   //             1.07:1).
-  //   Dawn      the same pastel at L 0.98: BRIGHTER than its #d4d4d4
-  //             canvas, 1.39–1.42:1. A darker pastel drops Dawn's
+  //   Dawn      the same pastel at L 0.91: BRIGHTER than its #d4d4d4
+  //             canvas, 1.12–1.15:1, and the one flavor in step_exempt.
+  //             Dawn can't have both colour and the 1.35:1 step. A
+  //             frame that bright is near white, where sRGB leaves red,
+  //             blue and purple almost no chroma (L 0.98 clamped them to
+  //             C 0.009, issue #37). A darker frame drops fg_muted and
   //             success / warning (the 900 rungs, git decorations in a
-  //             sidebar) to 3.9–4.45:1 on the frame. A lighter frame
-  //             around a mid-grey editor fits Dawn's soft light.
+  //             sidebar) below 4.5:1 before it reaches the step. At
+  //             L 0.91 every variant keeps C 0.043–0.051, as on Noon,
+  //             so the hue sets the frame apart.
   //
   // A recipe is { surface }, { color, mix?, ratio? } or
   // { hue_of, l, c }: `ratio` is the share of `color`, as in
@@ -1273,13 +1279,13 @@
   // measures 3.96–4.52:1 on Midnight's frames; inactive tab labels and
   // sidebar descriptions take `fg_muted` there.
   frame: {
-    min_step: 1.35, // luminance contrast; every dark-flavor frame clears it (tightest 1.39:1)
-    step_exempt: [], // none; Dawn's old grey chrome (#bdbdbd) was 1.27:1
+    min_step: 1.35, // luminance contrast; every non-exempt frame clears it (tightest 1.39:1)
+    step_exempt: ["dawn"], // Dawn's frame is set apart by hue, 1.12–1.15:1 (see Dawn above, issue #37)
     // Light flavors: second design round, see the spec's "Light flavors".
     recipes: {
       midnight: { color: "accent.900", mix: "accent.950", ratio: 0.5 },
       twilight: { color: "accent.950" },
-      dawn: { hue_of: "accent.500", l: 0.98, c: 0.05 },
+      dawn: { hue_of: "accent.500", l: 0.91, c: 0.05 },
       noon: { hue_of: "accent.500", l: 0.86, c: 0.05 },
     },
   },

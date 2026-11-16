@@ -191,16 +191,16 @@ Don't compute it with `readableOn(accent)`. Before [issue #22](https://github.co
 
 Vivid Life is a one-strong-colour theme. The work areas — editor and terminal — keep the flavor's grey, and the variant's colour goes into the **frame** around them: title bar, activity bar, tab strip, status bar, sidebar, and the tab row of a bottom panel. `tokens.json5 → frame` holds one recipe per flavor, and the build emits the result per theme as `flavors.<flavor>.frame.<variant>` = `{ bg, accent_text }`, and in CSS as `--vl-frame` / `--vl-frame-accent-text` on each `.vl-<flavor>.variant-<variant>`.
 
-The rule: each flavor takes the frame shade that gives the clearest lightness step from its own editor background.
+The rule: each flavor takes the frame shade that gives the clearest lightness step from its own editor background. Except Dawn, which is set apart by hue (see below).
 
 | Flavor   | Frame                                                     | Step from `bg`        |
 | -------- | --------------------------------------------------------- | --------------------- |
 | Midnight | 50/50 mix of the variant's `900` and `950`                | 1.39–1.59:1           |
 | Twilight | the variant's `950`                                       | 1.41–1.56:1           |
-| Dawn     | pastel, OKLCH L 0.98 / C 0.05, hue of the variant's `500` | 1.39–1.42:1, brighter |
+| Dawn     | pastel, OKLCH L 0.91 / C 0.05, hue of the variant's `500` | 1.12–1.15:1, brighter |
 | Noon     | pastel, OKLCH L 0.86 / C 0.05, hue of the variant's `500` | 1.39–1.43:1           |
 
-The light-flavor pastels are computed, not palette shades: they sit near Tailwind's `200`, but the plain `200` is uneven (1.07:1 for yellow and green on Noon). Dawn's frame is the one that goes the other way, brighter than its mid-grey canvas: a darker pastel would drop Dawn's `success` and `warning` (git decorations in a sidebar) below 4.5:1. On a dark flavor the yellow frame is brown; that's what dark yellow is.
+The light-flavor pastels are computed, not palette shades: they sit near Tailwind's `200`, but the plain `200` is uneven (1.07:1 for yellow and green on Noon). Dawn's frame is the one that goes the other way, brighter than its mid-grey canvas: a darker pastel would drop Dawn's `success` and `warning` (git decorations in a sidebar), and `fg_muted` on a hovered or pressed row, below 4.5:1. It is also the one frame set apart by hue rather than lightness, and is listed in `frame.step_exempt`: a frame bright enough for the 1.35:1 step is near white, where sRGB leaves red, blue and purple almost no colour ([#37](https://github.com/vivid-life-theme/vivid-life-design-system/issues/37)). On a dark flavor the yellow frame is brown; that's what dark yellow is.
 
 **Rules for ports:**
 
