@@ -382,7 +382,12 @@ export function emphasisStep(tokens, flavor, variant, target, opts = {}) {
 
   const hex = resolveColor(tokens, flavor, variant, target, opts).toLowerCase();
   for (const [hue, rungs] of Object.entries(tokens.palette)) {
-    const order = Object.keys(rungs).sort((a, b) => a - b); // light → dark
+    // light → dark. The ramp ends at 900: the 950 tier exists for the
+    // frame colour (§ 3i), and stepping a dark accent into it would move
+    // every emphasis value that used to step back to 800.
+    const order = Object.keys(rungs)
+      .filter((k) => Number(k) <= 900)
+      .sort((a, b) => a - b);
     const i = order.findIndex((k) => rungs[k].toLowerCase() === hex);
     if (i < 0) continue;
     // Further from the surface: lighter on a dark surface, darker on a light one.
@@ -1878,6 +1883,16 @@ async function selfTest() {
       true,
       "an ANSI colour identical to its bright version is caught",
     ],
+
+    // Frame colours (docs/superpowers/specs/2026-11-16-frame-colours-design.md)
+    [() => real.palette.purple[950], "#3b0764", "palette has the 950 rung"],
+    [() => resolveColor(real, "twilight", "green", "accent.950"), "#1a2e05", "accent.950 follows the variant"],
+    [
+      () => ["red", "orange", "yellow", "green", "blue", "purple", "gray", "cyan"].every((h) => /^#[0-9a-f]{6}$/.test(real.palette[h][950])),
+      true,
+      "every palette row has a 950",
+    ],
+    [() => real.flavors.midnight.surface.bg_sunk, real.palette.gray[950], "midnight bg_sunk is gray.950"],
   ];
 
   let pass = 0,

@@ -28,7 +28,7 @@
   // ────────────────────────────────────────────────────────────────
   //   1.  PALETTE  —  the atomic colors
   // ────────────────────────────────────────────────────────────────
-  // 7 hues × 6 shades, drawn from Tailwind v3 defaults.
+  // 7 hues × 8 shades, drawn from Tailwind v3 defaults.
   // The user's palette source calls them: Rot, Orange, Gelb, Grün,
   // Blau, Purpur, Grau. We use English everywhere downstream.
   //
@@ -38,9 +38,15 @@
   // only rung that lets normal and bright stay distinct. It is a
   // Tailwind v3 default like every other shade here; adding it moved
   // no existing value. See issue #7.
+  //
+  // The 950 tier is the Tailwind v3.3+ default, added for the frame
+  // colour (§ 3i): Twilight's frame is the variant's 950, Midnight's a
+  // mix of 900 and 950. Like 800, adding it moved no existing value.
+  // See docs/superpowers/specs/2026-11-16-frame-colours-design.md.
 
   palette: {
     red: {
+      950: "#450a0a",
       900: "#7f1d1d",
       800: "#991b1b",
       700: "#b91c1c",
@@ -49,6 +55,7 @@
       100: "#fee2e2",
     },
     orange: {
+      950: "#431407",
       900: "#7c2d12",
       800: "#9a3412",
       700: "#c2410c",
@@ -57,6 +64,7 @@
       100: "#ffedd5",
     },
     yellow: {
+      950: "#422006",
       900: "#713f12",
       800: "#854d0e",
       700: "#a16207",
@@ -65,6 +73,7 @@
       100: "#fef9c3",
     },
     green: {
+      950: "#1a2e05",
       900: "#365314",
       800: "#3f6212",
       700: "#4d7c0f",
@@ -73,6 +82,7 @@
       100: "#ecfccb",
     },
     blue: {
+      950: "#172554",
       900: "#1e3a8a",
       800: "#1e40af",
       700: "#1d4ed8",
@@ -81,6 +91,7 @@
       100: "#dbeafe",
     },
     purple: {
+      950: "#3b0764",
       900: "#581c87",
       800: "#6b21a8",
       700: "#7e22ce",
@@ -89,6 +100,7 @@
       100: "#f3e8ff",
     },
     gray: {
+      950: "#0a0a0a",
       900: "#171717",
       800: "#262626",
       700: "#404040",
@@ -102,6 +114,7 @@
     // diff hunk headers, etc.). NOT part of the variant axis. NOT in
     // the default syntax token map.
     cyan: {
+      950: "#083344",
       900: "#164e63",
       800: "#155e75",
       700: "#0e7490",
@@ -1003,7 +1016,7 @@
         bg: "$palette.gray.900", // #171717
         bg_inset: "#434f60", // docked structural chrome (sidebar/panel/terminal/status bar) — fixed cool-slate tint, NOT a variant/accent color; see README § surface hierarchy. Exempt from the semantic-vs-surface WCAG gate (banners render on bg/bg_soft, never on bg_inset).
         bg_soft: "$palette.gray.700", // lifted panels
-        bg_sunk: "#0a0a0a", // slightly below canvas — outside strict palette
+        bg_sunk: "$palette.gray.950", // slightly below canvas
         bg_overlay: "$palette.gray.700", // floating menus, dropdowns
         bg_scrim: "#000000cc", // modal backdrop (80% black)
         bg_terminal: "$flavors.midnight.surface.bg_sunk", // darkest of the four; anchors the low end of the bg_terminal spread. Clears ≥4.5:1 vs every ansi.* color except ansi.black (reverse-video anchor, == this value). See issues #5, #7.
@@ -1027,7 +1040,7 @@
         active: "#ffffff1f", // 12% white overlay
       },
       ansi: {
-        black: "#0a0a0a",
+        black: "$palette.gray.950",
         red: "$palette.red.500",
         green: "$palette.green.500",
         yellow: "$palette.yellow.500",
