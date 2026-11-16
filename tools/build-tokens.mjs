@@ -1370,8 +1370,8 @@ function check(tokens, { onPair } = {}) {
     // Overlays (§ 3e). A "code" overlay sits behind whole lines of code,
     // so every syntax slot, fg, fg_subtle and the semantic colours must
     // stay readable on it — people read code while it is selected, on
-    // the current line, inside a find match. A "ui" overlay gates only
-    // its declared text roles, on every surface it may land on.
+    // the current line, inside a find match. The other classes ("ui",
+    // "surface", "mark", "fill") are described in tokens.json5 § 3e.
     const codeText = {
       ...Object.fromEntries(Object.entries(f.syntax).map(([k, v]) => [`syntax.${k}`, v])),
       "text.fg": f.text.fg,
@@ -2190,6 +2190,31 @@ async function selfTest() {
     ],
     [() => has(check(mutated((t) => (t.overlay.recipes.twilight.hover = { color: "gray.100", alpha: 0.04 }))), "overlay.hover over"), true, "an invisible hover is caught"],
     [() => real.flavors.noon.overlay.blue.button_hover?.flat, real.palette.blue[800], "button_hover is the accent's emphasis step (noon blue 700 → 800)"],
+    [
+      () => has(check(mutated((t) => (t.overlay.recipes.twilight.hover = { color: "gray.100", alpha: 0.2 }))), "twilight/red text.fg_muted on overlay.hover over bg"),
+      true,
+      "text_on gates fg_muted on the surfaces it lists",
+    ],
+    [
+      () => has(check(mutated((t) => (t.overlay.recipes.twilight.hover = { color: "gray.100", alpha: 0.2 }))), "text.fg_muted on overlay.hover over bg_soft"),
+      false,
+      "text_on leaves fg_muted ungated on the other surfaces",
+    ],
+    [
+      () =>
+        Object.values(real.flavors).every((f) =>
+          Object.values(f.overlay).every((byName) =>
+            Object.values(byName).every((o) => {
+              const [r, g, b, a] = parseHex(o.hexa);
+              const back = alphaOver(toHex([r, g, b]), f.surface.bg, a / 255);
+              return parseHex(back).every((c, i) => Math.abs(c - parseHex(o.flat)[i]) <= 1);
+            }),
+          ),
+        ),
+      true,
+      "every hexa composited over bg lands on flat (±1 per channel)",
+    ],
+    [() => real.flavors.dawn.overlay.yellow.warning_hover?.flat, real.palette.yellow[800], "warning_hover is semantic.warning's emphasis step (dawn 900 → 800)"],
     [
       () => resolveOverlay(real, "midnight", "red", "selected", { surface: "frame" }).flat,
       alphaOver("#ef4444", "#621414", 0.18),

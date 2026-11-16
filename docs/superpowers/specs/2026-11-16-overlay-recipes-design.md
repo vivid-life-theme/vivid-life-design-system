@@ -97,7 +97,7 @@ Starting values; the builder may move them within the gates. `active` stays stro
 
 ### Button hover: `fill` class
 
-`button_hover`: the accent's emphasis step (§ 3h), solid; the port uses `flat`. Covers `button.hoverBackground` and `extensionButton.prominentHoverBackground`. *Builder's call, replacing the planned "accent 90 % over bg":* that darkened dark-flavor buttons and dropped `accent_on` to 4.06:1 on Midnight-red; the emphasis step always gains contrast and matches Sepp's lighter `accent_hover`. `activityBar.activeBorder` (accent 90 % today) takes the plain accent: no recipe.
+`button_hover`: the accent's emphasis step (§ 3h), solid; the port uses `flat`. Covers `button.hoverBackground` and `extensionButton.prominentHoverBackground`. *Builder's call, replacing the planned "accent 90 % over bg":* that darkened dark-flavor buttons and dropped `accent_on` to 4.06:1 on Midnight-red; the emphasis step moves away from `bg` where it can (at the end of the ramp it steps back, e.g. Dawn orange 900 → 800, still gated at 4.5:1) and matches Sepp's lighter `accent_hover`. `warning_hover` (semantic.warning's emphasis step) covers `statusBarItem.prominentHoverBackground` the same way. `activityBar.activeBorder` (accent 90 % today) takes the plain accent: no recipe.
 
 Hover values as built: Twilight 9 %, Noon 10 % / 14 % (`gray.100` / `gray.950` are slightly weaker than pure white / black).
 
