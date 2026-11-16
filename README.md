@@ -139,7 +139,7 @@ Every port is its own GitHub repo and its own Claude Code project; the [org prof
 Seven hues, six shades each — Tailwind v3 defaults at `900 / 800 / 700 / 500 / 300 / 100`:
 
 <p align="center">
-  <img src="assets/palette.svg" alt="Source palette: 7 hues × 6 shades (900–100) plus Cyan extension" />
+  <img src="assets/palette.svg" alt="Source palette: 7 hues × 6 shades (900–100; the 950 tier is not shown) plus Cyan extension" />
 </p>
 
 The `800` tier exists for one job: the light-flavor ANSI normal set (see [ANSI palette](#ansi-palette-per-flavor)). On Dawn's `bg_terminal` the `700` tier can't clear 4.5:1 and `900` is already spoken for by the bright set, so `800` is the only rung that keeps normal and bright distinct. It's a Tailwind v3 default like every other shade here — adding it moved no existing value.

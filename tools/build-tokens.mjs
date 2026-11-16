@@ -894,6 +894,7 @@ export function validateShapes(tokens) {
   } else {
     keysOk("frame", fr, ["min_step", "step_exempt", "recipes"]);
     if (typeof fr.min_step !== "number" || !(fr.min_step > 1)) errs.push(`✗ frame.min_step must be a number > 1`);
+    if (fr.step_exempt === undefined) errs.push(`✗ frame.step_exempt missing (use [] for none)`);
     for (const fl of stringList("frame.step_exempt", fr.step_exempt)) {
       if (!flavors.includes(fl)) errs.push(`✗ frame.step_exempt: no such flavor "${fl}"`);
     }
@@ -914,7 +915,12 @@ export function validateShapes(tokens) {
         if ((r.surface === undefined) === (r.color === undefined)) {
           errs.push(`✗ ${w}: needs exactly one of "surface" or "color"`);
         }
-        if (r.surface !== undefined) surfaceOk(`${w}.surface`, r.surface);
+        if (r.surface !== undefined) {
+          surfaceOk(`${w}.surface`, r.surface);
+          // A frame is an opaque fill; bg_scrim is a translucent backdrop.
+          if (r.surface === "bg_scrim") errs.push(`✗ ${w}.surface: "bg_scrim" is translucent, not a fill`);
+          if (r.mix !== undefined || r.ratio !== undefined) errs.push(`✗ ${w}: a "surface" recipe takes no mix or ratio`);
+        }
         if (r.color !== undefined) targetOk(`${w}.color`, r.color, { noOverlay: true });
         if (r.mix !== undefined) targetOk(`${w}.mix`, r.mix, { noOverlay: true });
         if ((r.mix === undefined) !== (r.ratio === undefined)) {
@@ -2095,6 +2101,17 @@ async function selfTest() {
       () => has(validateShapes(mutated((t) => (t.app_roles.roles.message.text_min = 3))), "text_min"),
       true,
       "app text_min is rejected unless the role's background overlay carries the same text_min",
+    ],
+    [() => has(validateShapes(mutated((t) => delete t.frame.step_exempt)), "frame.step_exempt"), true, "a missing frame.step_exempt is rejected"],
+    [
+      () => has(validateShapes(mutated((t) => (t.frame.recipes.dawn = { surface: "bg_sunk", mix: "accent.950", ratio: 0.5 }))), "frame.recipes.dawn"),
+      true,
+      "a surface recipe with mix is rejected",
+    ],
+    [
+      () => has(validateShapes(mutated((t) => (t.frame.recipes.dawn = { surface: "bg_scrim" }))), "frame.recipes.dawn.surface"),
+      true,
+      "a translucent frame surface is rejected",
     ],
   ];
 

@@ -52,45 +52,52 @@
 }
 
 
-/* ── Base palette — 7 hues × 6 shades + cyan extension ─────────── */
+/* ── Base palette — 7 hues × 7 shades + cyan extension ─────────── */
 
 :root {
+  --vl-red-950        : #450a0a;
   --vl-red-900        : #7f1d1d;
   --vl-red-800        : #991b1b;
   --vl-red-700        : #b91c1c;
   --vl-red-500        : #ef4444;
   --vl-red-300        : #fca5a5;
   --vl-red-100        : #fee2e2;
+  --vl-orange-950     : #431407;
   --vl-orange-900     : #7c2d12;
   --vl-orange-800     : #9a3412;
   --vl-orange-700     : #c2410c;
   --vl-orange-500     : #f97316;
   --vl-orange-300     : #fdba74;
   --vl-orange-100     : #ffedd5;
+  --vl-yellow-950     : #422006;
   --vl-yellow-900     : #713f12;
   --vl-yellow-800     : #854d0e;
   --vl-yellow-700     : #a16207;
   --vl-yellow-500     : #eab308;
   --vl-yellow-300     : #fde047;
   --vl-yellow-100     : #fef9c3;
+  --vl-green-950      : #1a2e05;
   --vl-green-900      : #365314;
   --vl-green-800      : #3f6212;
   --vl-green-700      : #4d7c0f;
   --vl-green-500      : #84cc16;
   --vl-green-300      : #bef264;
   --vl-green-100      : #ecfccb;
+  --vl-blue-950       : #172554;
   --vl-blue-900       : #1e3a8a;
   --vl-blue-800       : #1e40af;
   --vl-blue-700       : #1d4ed8;
   --vl-blue-500       : #3b82f6;
   --vl-blue-300       : #93c5fd;
   --vl-blue-100       : #dbeafe;
+  --vl-purple-950     : #3b0764;
   --vl-purple-900     : #581c87;
   --vl-purple-800     : #6b21a8;
   --vl-purple-700     : #7e22ce;
   --vl-purple-500     : #a855f7;
   --vl-purple-300     : #d8b4fe;
   --vl-purple-100     : #f3e8ff;
+  --vl-gray-950       : #0a0a0a;
   --vl-gray-900       : #171717;
   --vl-gray-800       : #262626;
   --vl-gray-700       : #404040;
@@ -99,6 +106,7 @@
   --vl-gray-100       : #f5f5f5;
 
   /* extension hue — protocol/convention-required cyan only */
+  --vl-cyan-950       : #083344;
   --vl-cyan-900       : #164e63;
   --vl-cyan-800       : #155e75;
   --vl-cyan-700       : #0e7490;
